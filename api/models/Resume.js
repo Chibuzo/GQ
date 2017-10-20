@@ -1,0 +1,71 @@
+/**
+ * Resume.js
+ *
+ * @description :: TODO: You might write a short summary of how this model works and what it represents here.
+ * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
+ */
+
+module.exports = {
+
+    attributes: {
+        fullname: {
+            type: 'string'
+        },
+
+        email: {
+            type: 'string',
+            unique: 'true',
+            email: 'true',
+        },
+
+        gender: {
+            type: 'string'
+        },
+
+        phone: {
+            type: 'string',
+            unique: 'true'
+        },
+
+        address: {
+            type: 'string'
+        },
+
+        introduction: {
+            type: 'string'
+        },
+
+        educations: {
+            collection: 'education',
+            via: 'resume'
+        },
+
+        qualifications: {
+            collection: 'qualification',
+            via: 'resume'
+        },
+
+        employments: {
+            collection: 'employment',
+            via: 'resume'
+        },
+
+        referencecontacts: {
+            collection: 'referencecontact',
+            via: 'resume'
+        },
+
+        employment_status: {
+            type: 'string'
+        },
+
+        available_date: {
+            type: 'date'
+        },
+
+        user: {
+            model: 'user'
+        }
+    }
+};
+
