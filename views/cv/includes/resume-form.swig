@@ -63,11 +63,11 @@
 
 	<div class="form-group">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<label>Employment Status</label>
 				{% if resume.employment_status == 'Employed' %}
 					{% set employed = 'selected=selected' %}
-				{% elseif resume.employment_status == 'Unemployment' %}
+				{% elseif resume.employment_status == 'Unemployed' %}
 					{% set unemployed = 'selected=selected' %}
 				{% endif %}
 				<select name="employment_status" class="form-control" required>
@@ -76,9 +76,13 @@
 					<option value="Unemployed" {{ unemployed }}>Unemployed</option>
 				</select>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<label>Available Date</label>
 				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
+			</div>
+			<div class="col-md-4">
+				<label>Expected Salary</label>
+				<input type="text" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}" required>
 			</div>
 		</div>
 	</div>
@@ -88,9 +92,22 @@
 		<div class="form-group">
 			{% for edu in resume.educations %}
 				<div class="row inst-row">
-					<div class="col-md-7">
+					<div class="col-md-3">
 						<label>Institution</label>
 						<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution" value="{{ edu.institution }}" required>
+					</div>
+					<div class="col-md-1">
+						<label>Honour</label>
+						<select name="honour[]" class="form-control">
+							<option value=""></option>
+							<option value="BSc">BSc</option>
+							<option value="Msc">Msc</option>
+							<option value="PhD">PhD</option>
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label>Programme</label>
+						<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}" required>
 					</div>
 					<div class="col-md-2">
 						<label>start Date</label>
@@ -109,9 +126,22 @@
 
 			{% if resume.educations.length < 1 %}
 			<div class="row inst-row">
-				<div class="col-md-7">
+				<div class="col-md-3">
 					<label>Institution</label>
 					<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution" required>
+				</div>
+				<div class="col-md-1">
+					<label>Honour</label>
+					<select name="honour[]" class="form-control">
+						<option value=""></option>
+						<option value="BSc">BSc</option>
+						<option value="Msc">Msc</option>
+						<option value="PhD">PhD</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label>Programme</label>
+					<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
 				</div>
 				<div class="col-md-2">
 					<label>start Date</label>
@@ -121,7 +151,7 @@
 					<label>End Date</label>
 					<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" required>
 				</div>
-				<input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
+				<input type="hidden" name="inst_id[]" />
 				<div class="col-md-1">
 					<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
 				</div>
@@ -129,9 +159,22 @@
 			{% endif %}
 
 			<div class="row inst-row addable" id="another-inst">
-				<div class="col-md-7">
+				<div class="col-md-3">
 					<label>Institution</label>
 					<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution">
+				</div>
+				<div class="col-md-1">
+					<label>Honour</label>
+					<select name="honour[]" class="form-control">
+						<option value=""></option>
+						<option value="BSc">B.Sc</option>
+						<option value="Msc">MSc</option>
+						<option value="PhD">PhD</option>
+					</select>
+				</div>
+				<div class="col-md-3">
+					<label>Programme</label>
+					<input type="text" name="programme[]" class="form-control" placeholder="Field of Study">
 				</div>
 				<div class="col-md-2">
 					<label>start Date</label>
@@ -149,18 +192,18 @@
 	</fieldset>
 
 	<fieldset id="qualifications">
-		<legend>Qualifications Obtained</legend>
+		<legend>Qualifications/Professional Certificstions Obtained</legend>
 		<div class="form-group">
 			{% for qual in resume.qualifications %}
 				<div class="row qual-row">
 					<div class="col-md-9">
 						<label>Qualification</label>
-						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain" value="{{ qual.qualification }}" required>
+						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain" value="{{ qual.qualification }}">
 					</div>
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
-						<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained" value="{{ qual.date_obtained | date('Y-m-d') }}" required>
+						<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained" value="{{ qual.date_obtained | date('Y-m-d') }}">
 					</div>
 					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
 					<div class="col-md-1">
@@ -173,12 +216,12 @@
 				<div class="row qual-row">
 					<div class="col-md-9">
 						<label>Qualification</label>
-						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain" required>
+						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain">
 					</div>
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
-						<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained" required>
+						<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained">
 					</div>
 					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
 					<div class="col-md-1">

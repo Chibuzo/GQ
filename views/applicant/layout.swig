@@ -61,14 +61,14 @@
 
             <ul class="nav">
                 <li clas="active">
-                    <a href="/admin/dashboard">
+                    <a href="/applicant/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
                 <li class="">
-                    <a href="/job/manage">
+                    <a href="/applications/list">
                         <i class="pe-7s-timer"></i>
                         <p>Manage Applications</p>
                     </a>
@@ -76,9 +76,9 @@
 
 
                 <li class="">
-                    <a href="/user/professional-profile">
-                        <i class="pe-7s-network"></i>
-                        <p>Corporate Profile</p>
+                    <a href="/applicant/resume-page">
+                        <i class="pe-7s-id"></i>
+                        <p>My Resume</p>
                     </a>
                 </li>
 
@@ -90,7 +90,7 @@
                 {#</li>#}
 
                 <li>
-                    <a href="/user/profile">
+                    <a href="/applicant/profile">
                         <i class="pe-7s-user"></i>
                         <p>Personal Profile</p>
                     </a>

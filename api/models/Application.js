@@ -12,6 +12,10 @@ module.exports = {
             model: 'job'
         },
 
+        company: {
+            model: 'company'
+        },
+
         applicant: {
             model: 'user'
         },

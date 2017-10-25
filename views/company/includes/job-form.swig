@@ -21,16 +21,28 @@
 
 					<div class="form-group">
 						<label>Job Requirements</label>
-						<textarea name="requirements" class="form-control" required></textarea>
+						<textarea name="requirements" class="form-control editor"></textarea>
+					</div>
+
+					<div class="form-group">
+						<label>Nice-to-have</label>
+						<textarea name="nice_to_have" class="form-control editor"></textarea>
 					</div>
 
 					<div class="form-group">
 						<div class="row">
 							<div class="col-md-6">
-								<label>Publish</label>
-								<select name="publish_now" class="form-control">
-									<option value="1">Publish Now</option>
-									<option value="0">Publish Later</option>
+								{#<label>Publish</label>#}
+								{#<select name="publish_now" class="form-control">#}
+									{#<option value="1">Publish Now</option>#}
+									{#<option value="0">Publish Later</option>#}
+								{#</select>#}
+								<label>Job Level</label>
+								<select name="job_level" class="form-control">
+									<option value=""></option>
+									<option value="Entry">Entry Level</option>
+									<option value="Intermediate">Intermediate</option>
+									<option value="Professional">Professional</option>
 								</select>
 							</div>
 							<div class="col-md-6">

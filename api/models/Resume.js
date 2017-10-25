@@ -63,6 +63,10 @@ module.exports = {
             type: 'date'
         },
 
+        expected_salary: {
+            type: 'float'
+        },
+
         user: {
             model: 'user'
         }

@@ -12,6 +12,14 @@ module.exports = {
           type: 'string'
       },
 
+      honour: {
+          type: 'string'
+      },
+
+      programme: {
+          type: 'string'
+      },
+
       start_date: {
           type: 'date'
       },

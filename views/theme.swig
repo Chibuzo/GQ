@@ -43,6 +43,11 @@
 	.auth-panel {
 		margin-top: 130px;
 	}
+
+	#header.alt {
+		border: #ccc solid thin;
+		padding: 34px 1px
+	}
 </style>
 <body>
 {% block body %} {% endblock %}

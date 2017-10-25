@@ -78,7 +78,7 @@ module.exports = {
                         fullname: q('contact_person'),
                         email: q('contact_email'),
                         password: encryptedPassword,
-                        company: q('company_id'),
+                        company: req.session.coy_id,
                         user_type: 'company'
                     };
                     User.create(user).exec(function() {});
