@@ -20,6 +20,18 @@
             type: 'string'
         },
 
+        job_level: {
+            type: 'string'
+        },
+
+        location: {
+            type: 'string'
+        },
+
+        nice_to_have: {
+            type: 'string'
+        },
+
         num_of_hires: {
             type: 'integer'
         },

@@ -45,8 +45,9 @@
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
 								<a href="" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+								<a href="" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>
 								<a href="" class="upload-csv" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
-								<a href="" class="del-job" rel="tooltip" title="Edit Job"><i class="fa fa-trash-o fa-lg"></i></a>
+								<a href="" class="del-job" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -78,6 +79,20 @@ $(document).ready(function() {
 
 	$("#csv").change(function() {
 		$("#form-csv").submit();
+	});
+
+
+	$(".del-job").click(function (e) {
+		e.preventDefault();
+		var $this = $(this);
+		if (confirm("Are you sure you want to delete this job?")) {
+			var id = $(this).parents('tr').attr('id');
+			$.get('/job/remove', { id: id }, function(d) {
+				if (d.status.trim() == 'success') {
+					$this.parents('tr').fadeOut();
+				}
+			}, 'JSON');
+		}
 	});
 });
 </script>

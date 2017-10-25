@@ -115,7 +115,7 @@ module.exports = {
                         req.session.coy_id = foundUser.company;
                         return res.redirect('/company/dashboard');
                     } else if (foundUser.user_type == 'Applicant') {
-                        return res.redirect('/user/dashboard');
+                        return res.redirect('/applicant/dashboard');
                         //return res.json(200, { status: 'success', user_type: foundUser.user_type });
                     }
                 }
@@ -128,7 +128,7 @@ module.exports = {
             return res.view ('user/signin');
         }
         if (req.session.user_type == 'Applicant') {
-            return res.view('user/dashboard');
+            return res.view('applicant/dashboard');
         }
     },
 

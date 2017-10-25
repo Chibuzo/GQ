@@ -26,6 +26,19 @@
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
+    <script src="/js/plugins/tinymce.min.js"></script>
+    <script>tinymce.init({
+            selector:'textarea.editor',
+            menubar: false,
+            plugins: [
+                'lists preview',
+            ],
+            toolbar: 'bullist numlist outdent indent',
+            content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tinymce.com/css/codepen.min.css']
+        });
+    </script>
 
     <style>
         .ok-header {
@@ -38,6 +51,10 @@
 
         .opt-icons .fa {
             margin: 2px 4px;
+        }
+
+        .mce-notification {
+            display: none !important;
         }
     </style>
 </head>

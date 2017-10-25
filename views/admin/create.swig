@@ -5,7 +5,7 @@
         <div class="row">
             <div class="col-md-6 col-md-offset-3 auth-panel">
                 <h2 class="text-center">Authentication</h2><br>
-                <form action="" method="post" class="form-vertical" id="signin">
+                <form action="" method="post" class="form-vertical" id="signup">
                     <div class="form-group">
                         <label for="fullname">FULL NAME</label>
                         <input type="text" name="fullname" id="fullname" class="form-control input-lg" required />

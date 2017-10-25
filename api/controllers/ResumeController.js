@@ -22,14 +22,13 @@ module.exports = {
     save: function(req, res) {
         var q = req.param;
         var data = {
-            //fullname: q('fname') + ' ' + q('lname'),
-            //email: q('email'),
             gender: q('gender'),
             phone: q('phone'),
             address: q('address'),
             introduction: q('introduction'),
             employment_status: q('employment_status'),
             available_date: q('available_date'),
+            expected_salary: q('expected_salary')
         };
 
         Resume.update({ id: q('resume_id') }, data).exec(function(err, resume) {
@@ -43,6 +42,8 @@ module.exports = {
 
                 var education = {
                     institution: q('institution')[i],
+                    honour: q('honour')[i],
+                    programme: q('programme')[i],
                     start_date: new Date(Date.parse(q('inst_start_date')[i])).toISOString(),
                     end_date: new Date(Date.parse(q('inst_end_date')[i])).toISOString(),
                     resume: q('resume_id')
