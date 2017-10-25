@@ -17,17 +17,17 @@ module.exports.routes = {
 
     'POST /user/signup': 'UserController.signup',
 
-    'GET /user/profile': 'UserController.profile',
+    'GET /applicant/profile': 'UserController.profile',
 
     'GET /signout': 'UserController.signout',
 
-    'GET /user/professional-profile': 'ResumeController.updateResume',
+    'GET /applicant/resume-page': 'ResumeController.updateResume',
 
     'POST /resume/update': 'ResumeController.save',
 
     'POST /user/update': 'UserController.updateProfile',
 
-    'GET /user/dashboard': 'UserController.dashboard',
+    'GET /applicant/dashboard': 'UserController.dashboard',
 
     'GET /admin/create': { view: 'admin/create' },
 
@@ -57,6 +57,18 @@ module.exports.routes = {
 
     'GET /job/manage': 'JobController.viewJobs',
 
-    'POST /job/add-new': 'JobController.addNewJob'
+    'POST /job/add-new': 'JobController.addNewJob',
+
+    'GET /job/remove': 'JobController.deleteJob',
+
+    'GET /jobs': 'JobController.listJobs',
+
+    'GET /job/apply/:id': 'JobController.apply',
+
+    'GET /job/:id/:title': 'JobController.showJob',
+
+    'GET /applications/list': 'ApplicationController.viewApplications',
+
+    'GET /test': 'TestController.testApi'
 
 };

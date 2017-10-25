@@ -8,7 +8,7 @@ module.exports = {
     },
     
     sendVerificationEmail: function(coy) {
-        var base_url = 'http://127.0.0.1:1337/';
+        var base_url = 'http://144.217.245.35:1330/';
         var email_b64 = new Buffer(coy.contact_email).toString('base64');
         var crypto = require('crypto');
         var hash = crypto.createHash('md5').update(coy.contact_email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
