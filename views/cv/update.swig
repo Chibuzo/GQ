@@ -1,4 +1,4 @@
-{% extends '../user/layout.swig' %}
+{% extends '../applicant/layout.swig' %}
 {% set title = 'User Profile' %}
 {% block page_title %}
 	<i class="pe-7s-user"></i> &nbsp;My Profile

@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<button class="btn btn-danger btn-fill pull-right btnsm" data-toggle="modal" data-target="#jobModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</button>
+		<a href="/job/addjob" class="btn btn-danger btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
 	</div>
 
 	<div class="col-md-12">
@@ -18,13 +18,14 @@
 				</div>
 			</div>
 			<div class="content table-responsive table-full-width">
-				<table class="table table-striped">
+				<table class="table table-striped tablebordered">
 					<thead>
 					<tr>
 						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
 						<th>Date Added</th>
 						<th>Job Title</th>
-						<th>Applications</th>
+						<th>Job Cateogory</th>
+						<th style="width: 60px">Applications</th>
 						<th>Status</th>
 						<th><i class="fa fa-calendar"></i> Published On</th>
 						<th><i class="fa fa-calendar"></i> Closes On</th>
@@ -39,12 +40,13 @@
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ job.createdAt | date('d M, Y') }}</td>
 							<td>{{ job.job_title }}</td>
-							<td class="text-right">{{ applications }}</td>
+							<td>{{ job.category.category }}</td>
+							<td class="text-right"><a href="/job/view-applications">{{ applications }}</a></td>
 							<td>{{ job.status }}</td>
 							<td>{{ job.date_published | date('d M, Y') }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
-								<a href="" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+								<a href="/job/editjob/{{ job.id }}" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
 								<a href="" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>
 								<a href="" class="upload-csv" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
 								<a href="" class="del-job" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
@@ -80,6 +82,14 @@ $(document).ready(function() {
 	$("#csv").change(function() {
 		$("#form-csv").submit();
 	});
+
+
+//	$(".edit-job").click(function(e) {
+//		e.preventDefault();
+//
+//		var $thisParent = $(this).parents('tr');
+//		var category_id = $thisParent.find('td:nth-child(4)').attr('id');
+//	})
 
 
 	$(".del-job").click(function (e) {

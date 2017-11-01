@@ -70,7 +70,7 @@ module.exports = {
                             fname: user[0].fullname.split(' ')[0],
                             lname: user[0].fullname.split(' ')[1]
                         };
-                        return res.view('user/profile', { user: user[0], me: me, first_time: true });
+                        return res.view('applicant/profile', { user: user[0], me: me, first_time: true });
                     });
                 }
             }
@@ -133,24 +133,7 @@ module.exports = {
     },
 
     updateDetails: function(req, res) {
-        var q = req.param;
-        var data = {
-            phone: q('phone'),
-            address: q('address'),
-            user: req.session.userId
-        };
-        User.update({ id: q('user_id') }, { fullname: q('fullname'), phone: q('phone') }).exec(function() {});
-        UserContact.findOne({ id: q('contact_id') }).exec(function(err, cn) {
-            if (err) { return res.json(200, { status: 'error', msg: err }); }
-            if (cn) {
-                UserContact.update({ id: q('contact_id') }, data).exec(function() {});
-            } else {
-                UserContact.create(data).exec(function(err) {
-                    if (err) console.log(err);
-                });
-            }
-        });
-        return res.json(200, { status: 'success' });
+
     },
 
     signout: function (req, res) {
@@ -174,7 +157,7 @@ module.exports = {
                 fname: _user.fullname.split(' ')[0],
                 lname: _user.fullname.split(' ')[1]
             };
-            return res.view('user/profile', { user: _user, me: me });
+            return res.view('applicant/profile', { user: _user, me: me });
         });
     },
 

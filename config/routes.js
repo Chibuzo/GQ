@@ -29,6 +29,10 @@ module.exports.routes = {
 
     'GET /applicant/dashboard': 'UserController.dashboard',
 
+    'GET /applicant/view-applications': 'ApplicationController.viewApplications',
+
+    'GET /admin/setup': 'AdminController.setup',
+
     'GET /admin/create': { view: 'admin/create' },
 
     'POST /admin/create': 'AdminController.addAdmin',
@@ -37,7 +41,9 @@ module.exports.routes = {
 
     'GET /admin/signout': 'AdminController.signout',
 
-    'GET admin/dashboard': 'AdminController.dashboard',
+    'GET /admin/dashboard': 'AdminController.dashboard',
+
+    'GET /admin/manage-test': 'JobTestController.manageJobTests',
 
     'POST /company-request/send-request': 'CompanyRequestController.submitRequest',
 
@@ -57,7 +63,11 @@ module.exports.routes = {
 
     'GET /job/manage': 'JobController.viewJobs',
 
-    'POST /job/add-new': 'JobController.addNewJob',
+    'GET /job/addjob': 'JobController.newJobForm',
+
+    'POST /job/save': 'JobController.saveJob',
+
+    'GET /job/editjob/:job_id': 'JobController.editJob',
 
     'GET /job/remove': 'JobController.deleteJob',
 
@@ -67,8 +77,20 @@ module.exports.routes = {
 
     'GET /job/:id/:title': 'JobController.showJob',
 
-    'GET /applications/list': 'ApplicationController.viewApplications',
+    'POST /job/add-test': 'JobTestController.assignTest',
 
-    'GET /test': 'TestController.testApi'
+    'POST /jobtest/remove-job': 'JobTestController.removeTest',
+
+    'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
+
+    //'GET /job/view-applications':
+
+    'GET /test': 'TestController.testApi',
+
+    'GET /gettest/:test_id': 'TestController.getLandingPage',
+
+    'POST /test/result': 'TestController.receiveAndSaveResult',
+
+    'GET /savetest': 'TestController.saveTest'
 
 };

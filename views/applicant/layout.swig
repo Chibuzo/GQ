@@ -68,7 +68,7 @@
                 </li>
 
                 <li class="">
-                    <a href="/applications/list">
+                    <a href="/applicant/view-applications">
                         <i class="pe-7s-timer"></i>
                         <p>Manage Applications</p>
                     </a>
