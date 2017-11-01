@@ -54,18 +54,25 @@ module.exports = {
 
     },
     
-    sendWalletBackUpEmail: function(username, email, mnemonic) {
+    sendAppliedJobNotice: function(job, user) {
+        var email_b64 = new Buffer(user.email).toString('base64');
+        var crypto = require('crypto');
+        var hash = crypto.createHash('md5').update(user.email + 'okirikwenEE129Okpkenakai').digest('hex');
+
         var data = {
-            user: username,
-            mnemonic: mnemonic
+            user: user.fullname,
+            job_title: job.job_title,
+            company: job.company.company_name,
+            email: email_b64,
+            hash: hash
         };
         var opts = {
-            from: "CapitalX <no-reply@capitalx.ng>",
-            sender: "no-reply@capitalx.ng",
-            to: email,
-            subject: "Capitalx Bitcoin Wallet backup"
+            from: "Get Qualified <no-reply@getqualified.ng>",
+            sender: "no-reply@getqualified.ng",
+            to: user.email,
+            subject: "Get Qualified - Complete Your Job Application"
         };
-        module.exports.sendEmail('walletBackupEmail', data, opts, function(err) {
+        module.exports.sendEmail('appliedJobNotice', data, opts, function(err) {
             if (err) console.log(err);
         });
     }

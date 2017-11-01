@@ -18,6 +18,10 @@ module.exports = {
             unique: 'true'
         },
 
+        phone: {
+            type: 'string'
+        },
+
         password: {
             type: 'string'
         },

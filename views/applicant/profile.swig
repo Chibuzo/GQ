@@ -115,7 +115,7 @@ $(document).ready(function() {
         $.post('/user/update', $(this).serialize(), function(d) {
             if (d.status.trim() == 'success') {
                 if ($("#btn-submit").data('opt') == 'update-job-profile') {
-                    location.replace('/user/professional-profile');
+                    location.replace('/applicant/resume-page');
                 } else {
                     var msg = "Your profile has been successfully updated!";
                     showNotification('top', 'left', 'success', msg, 'pe-7s-bell');

@@ -39,8 +39,14 @@
 							<td>{{ job.job.job_level }}</td>
 							<td>{{ job.status }}</td>
 							<td>{{ job.job.closing_date | date('d M, Y') }}</td>
-							<td class="opt-icons text-center">
-								<a href="" class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests"> Write Test</a>
+							<td class="opt-icons text-center dropdown">
+								<a href="" class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Write Test</a>
+								<ul class='dropdown-menu pull-left'>
+									<li class='dropdown-header'>Required Online Tests for the Job</li>
+									{% for test in job.tests %}
+										<li><a href="/gettest/{{ test.test.test_id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.job_category }}</a></li>
+									{% endfor %}
+								</ul>
 							</td>
 						</tr>
 					{% endfor %}
@@ -55,7 +61,13 @@
 
 {% block scriptTag %}
 <script type="text/javascript">
-	$(document).ready(function() {
+$(document).ready(function() {
+	$(".get-test").click(function (e) {
+		e.preventDefault();
+		var test_id = $(this).data('test_id');
+		$.post('/test/getlanding-page', { 'test_id': test_id }, function (d) {
 
-	});
+		})
+	})
+});
 </script>

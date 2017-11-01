@@ -6,15 +6,32 @@
  */
 
 module.exports = {
-	viewJobs: function(req, res) {
-        var coy_id = req.session.coy_id;
-        Job.find({ company: coy_id }).exec(function(err, jobs) {
-            if (err) return;
-            return res.view('company/manage-jobs', { jobs: jobs });
+    newJobForm: function (req, res) {
+        JobCategory.find().exec(function (err, categories) {
+            return res.view('company/addjob', { jobcategories: categories });
         });
     },
 
-    addNewJob: function (req, res) {
+    editJob: function (req, res) {
+        Job.findOne({ id: req.param('job_id'), company: req.session.coy_id }).exec(function (err, job) {
+            JobCategory.find().exec(function (err, categories) {
+                return res.view('company/editjob', { job: job, jobcategories: categories });
+            });
+        });
+    },
+
+    // for company hirings
+	viewJobs: function(req, res) {
+        var coy_id = req.session.coy_id;
+        Job.find({ company: coy_id }).populate('category').populate('applications').exec(function(err, jobs) {
+            if (err) return;
+            JobCategory.find().exec(function (err, categories) {
+                return res.view('company/manage-jobs', { jobs: jobs, jobcategories: categories });
+            });
+        });
+    },
+
+    saveJob: function (req, res) {
         var q = req.param;
         var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
         if (publish) publish_date = new Date().toISOString();
@@ -23,6 +40,7 @@ module.exports = {
             job_description: q('description'),
             job_requirements: q('requirements'),
             job_level: q('job_level'),
+            category: q('category'),
             location: q('location'),
             nice_to_have: q('nice_to_have'),
             published: publish,
@@ -30,17 +48,31 @@ module.exports = {
             closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
             company: req.session.coy_id
         };
-        Job.create(data).exec(function(err, job) {
-            if (err) return;
-            return res.redirect('/job/manage');
+        if (_.isNumber(parseInt(q('job_id')))) {
+            Job.update({ id: q('job_id') }, data).exec(function() {
+                return res.redirect('/job/manage');
+            });
+        } else {
+            Job.create(data).exec(function (err, job) {
+                //if (err) return;
+                return res.redirect('/job/manage');
+            });
+        }
+    },
+
+    getJobTests: function (req, res) {
+        Job.findOne({ id: req.param('job_id') }).populate('job_tests').exec(function (err, jobtests) {
+            if (err) return res.serverError(err);
+            return res.json(200, { status: 'success', jobtests: jobtests });
         });
     },
 
     readApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');
 
+        var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/csv-files'),
+            dirname: require('path').resolve(sails.config.appPath, csvpath),
             saveAs: function(file, cb) {
                 var ext = file.filename.split('.').pop();
                 filename = 'job_' + job_id + '.' + ext;
@@ -52,16 +84,56 @@ module.exports = {
                 return res.badRequest(err);
             }
             const fs = require('fs');
-            fs.readFile(csvpath, 'utf8', function(err, data) {
-                //var dataArr = data.split();
-                console.log(data);
+            fs.readFile(csvpath + '/' + filename, 'utf8', function(err, data) {
+                var rows = data.split('\r\n');
+                // sign up the applicants
+                async.each(rows, function(row, cb) {
+                    var entry = row.split(',');
+                    var data = {
+                        fullname: entry[0].trim(),
+                        email: entry[1].trim(),
+                        phone: entry[2].trim(),
+                        user_type: 'Applicant'
+                    };
+                    Job.findOne({ id: job_id }).populate('company').exec(function (j_err, job) {
+                        if (j_err) return;
+                        User.create(data).exec(function(err, user) {
+                            if (err) {
+                                if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
+                                    // already a user so we try to automatically apply for this job on his behalf
+                                    User.findOne({ email: entry[1].trim() }).exec(function (err, old_user) {
+                                        if (err) return;
+                                        if (old_user.status == 'Inactive') {
+                                            sendMail.sendAppliedJobNotice(job, old_user);
+                                        }
+                                        JobService.apply(job_id, old_user.id).then(function (resp) {
+                                            //console.log(resp);
+                                        }).catch(function (err) {
+                                            console.log(err);
+                                        });
+                                        cb();
+                                    });
+                                }
+                            }
+                            if (user) {
+                                JobService.apply(job_id, user.id);
+                                sendMail.sendAppliedJobNotice(job, user);
+                                cb();
+                            }
+                        });
+                    });
+                },
+                function (err) {
+                    if (err) return console.log(err);
+                    return res.redirect('/job/manage');
+                });
             });
         });
     },
 
     listJobs: function(req, res) {
         var today = new Date().toISOString();
-        Job.find({ closing_date: { '>': today } }).populate('company').exec(function(err, jobs) {
+        Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             return res.view('jobs', { jobs: jobs });
         });
@@ -78,16 +150,12 @@ module.exports = {
     apply: function(req, res) {
         var job_id = req.param('id');
         if (req.session.userId && req.session.user_type == 'Applicant') {
-            Job.findOne({ id: job_id }).exec(function (err, job) {
-                if (err) return;
-                var data = {
-                    job: job_id,
-                    company: job.company,
-                    applicant: req.session.userId
-                };
-                Application.create(data).exec(function() {
-                    return res.redirect('/applications/list');
-                });
+            JobService.apply(job_id, req.session.userId).then(function(resp) {
+                if (resp) {
+                    return res.redirect('/applicant/view-applications');
+                } else {
+                    // your village people
+                }
             });
         } else {
             // sign up or login to continue
@@ -96,7 +164,6 @@ module.exports = {
 
     deleteJob: function (req, res) {
         var id = req.param('id');
-        console.log(req.session.coy_id);
         if (!req.session.coy_id) return;
         Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
             if (err) return;

@@ -24,6 +24,10 @@
             type: 'string'
         },
 
+        category: {
+            model: 'jobcategory'
+        },
+
         location: {
             type: 'string'
         },
@@ -39,6 +43,11 @@
         applications: {
             collection: 'application',
             via: 'job'
+        },
+
+        job_tests: {
+            collection: 'jobtest',
+            via: 'test'
         },
 
         published: {

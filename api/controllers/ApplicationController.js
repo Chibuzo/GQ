@@ -9,7 +9,19 @@ module.exports = {
     viewApplications: function(req, res) {
         Application.find({ applicant: req.session.userId }).populate('job').populate('company').exec(function(err, applications) {
             if (err) return;
-            return res.view('applicant/applications', { jobs: applications });
+            // we need to fetch the tests for each application
+            var _applications = [];
+            async.each(applications, function (app, cb) {
+                JobTest.find({ job: app.job.id }).populate('test').exec(function(err, tests) {
+                    app.tests = tests;
+                    _applications.push(app);
+                });
+                cb();
+            },
+            function (err) {
+                if (err) console.log(err);
+                return res.view('applicant/applications', { jobs: _applications });
+            });
         });
     }
 };

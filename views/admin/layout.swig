@@ -35,6 +35,10 @@
         .opt-icons {
             text-align: center;
         }
+
+        .opt-icons .fa {
+            margin: 2px 5px;
+        }
     </style>
 </head>
 <body>
@@ -82,6 +86,13 @@
                     <a href="/admin/users">
                         <i class="pe-7s-users"></i>
                         <p>Applicants</p>
+                    </a>
+                </li>
+
+                <li class="">
+                    <a href="/admin/manage-test">
+                        <i class="pe-7s-report"></i>
+                        <p>Manage Tests</p>
                     </a>
                 </li>
 

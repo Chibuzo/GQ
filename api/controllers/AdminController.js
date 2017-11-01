@@ -147,20 +147,12 @@ module.exports = {
         });
     },
 
-    settings: function(req, res) {
-        Category.find({ removed: 'false' }).exec(function(err, cat) {
+    setup: function(req, res) {
+        JobCategory.find({ removed: 'false' }).exec(function(err, cat) {
             if (err) {
                 return res.badRequest(err);
             }
-            SubCategory.find({ removed: 'false' }).populate('category').exec(function(err, sub_cat) {
-                if (err) {
-                    return res.badRequest(err);
-                }
-                BankAccount.find().exec(function(err, acc) {
-                    if (err) return console.log(err);
-                    return res.view('admin/settings', { categories: cat, sub_categories: sub_cat, accounts: acc });
-                });
-            });
+            return res.view('admin/settings', { categories: cat });
         });
     },
 
