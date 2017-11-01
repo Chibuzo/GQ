@@ -7,33 +7,48 @@
 
 module.exports = {
 	testApi: function(req, res) {
-        var HTTP = require('machinepack-http');
-        var data = {
-            'request': {
-                'authentication': {
-                    'password': '1p2r9o6d4u5t1c',
-                    'partner': '1296451'
+        var request = require('request');
+        //var request = require('superagent');
+        var body = {
+            "request": {
+                "authentication": {
+                    "password": "1p2r9o6d4u5t1c",
+                    "partnerid": "1296451"
                 },
-                'method': {
-                    'name': 'GetTestList'
+                "method": {
+                    "name": "GetTestList"
                 }
             }
         };
-        HTTP.get({
-            url: '/webservices/',
-            baseUrl: 'https://productivepeople.expertrating.com',
-            data: data
-        }).exec({
-            error: function (err) {
-                console.log(err.response.error.info);
-            },
-            requestFailed: function (err) {
-                console.log(err.response.error.info);
-            },
-            success: function (data) {
-                console.dir(data.response.error.info);
-                return res.ok();
-            }
+
+        //request.post('https://assessments.getqualified.work/webservices/')
+        //    //.set('Content-Type', 'application/x-www-form-urlencode')
+        //    .set('Content-Type', 'application/json')
+        //    //.type('form')
+        //    .send(body)
+        //    .end((err, res) => {
+        //        //if (err) console.log(err);
+        //        console.log(res.text);
+        //});
+        var option = {
+            url: "https://assessments.getqualified.work/webservices/",
+            //headers: { "Content-Type": 'application/x-www-form-urlencode' },
+            method: "POST",
+            body: { "request": {
+                    "authentication": {
+                        "password": "1p2r9o6d4u5t1c",
+                        "partnerid": "1296451"
+                    },
+                    "method": {
+                        "name": "GetTestList"
+                    }
+                }},
+                json: true
+            };
+        request(option, function(err, response, body) {
+            console.log(err);
+            //console.log('Response: ' + JSON.stringify(response));
+            console.log('Body: ' + JSON.stringify(body));
         });
     }
 };

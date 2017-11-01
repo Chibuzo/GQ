@@ -24,6 +24,7 @@
     "machinepack-http": "^3.1.2",
     "machinepack-passwords": "^2.3.0",
     "rc": "1.0.1",
+    "request": "^2.83.0",
     "sails": "~0.12.11",
     "sails-disk": "~0.10.9",
     "sails-hook-email": "^0.12.1",
