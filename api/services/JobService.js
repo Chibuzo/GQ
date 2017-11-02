@@ -12,7 +12,7 @@ module.exports = {
                     if (err) return reject(err);
                     var data = {
                         job: job_id,
-                        company: job.company.id,
+                        company: job.company,
                         applicant: applicant_id
                     };
                     Application.create(data).exec(function (err) {

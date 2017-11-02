@@ -15,7 +15,7 @@ module.exports = {
                     category: cat.id
                 };
                 CBTTest.create(data).exec(function (err) {
-                    console.log(err);
+                    //console.log(err);
                 });
             });
         });

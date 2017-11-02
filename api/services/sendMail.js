@@ -21,7 +21,7 @@ module.exports = {
         var opts = {
             from: "Get Qualified <no-reply@getqualifed.ng>",
             sender: "no-reply@getqualifed.ng",
-            to: 'chibuzo.henry@gmail.com',
+            to: coy.contact_email,
             subject: "GQ Company Verification"
         };
         module.exports.sendEmail('verificationEmail', data, opts, function(err) {

@@ -8,6 +8,7 @@
 module.exports = {
 	testApi: function(req, res) {
         var request = require('request');
+        var qs = require('querystring');
         var body = {
             "request": {
                 "authentication": {
@@ -23,17 +24,9 @@ module.exports = {
         var option = {
             url: "https://assessments.getqualified.work/webservices/",
             method: "POST",
-            body: { "request": {
-                    "authentication": {
-                        "password": "1p2r9o6d4u5t1c",
-                        "partnerid": "1296451"
-                    },
-                    "method": {
-                        "name": "GetTestList"
-                    }
-                }},
-                json: true
-            };
+            form: qs.stringify(body),
+            json: true
+        };
         request(option, function(err, response, body) {
             console.log(err);
             //console.log('Response: ' + JSON.stringify(response));
@@ -173,7 +166,7 @@ module.exports = {
             "category": "Intelligence and Aptitude"
         }]};
 
-        //CBTService.saveTest(data);
+        CBTService.saveTest(data);
     },
 
     getLandingPage: function (req, res) {
@@ -188,7 +181,7 @@ module.exports = {
             returnURL: 'http://144.217.245.35:1330/test/result',
             dev: true,
             debug: true,
-            reuse: false,
+            reuse: true,
             er_internal: '1296451'
         };
         request.post('https://assessments.getqualified.work/webservices/generateticket.aspx', { form: qs.stringify(data) }, function(err, response, body) {
@@ -203,8 +196,29 @@ module.exports = {
     receiveAndSaveResult: function (req, res) {
         //var data = req.param;
         //console.log(data);
+        var request = require('request');
+        var qs = require('querystring');
         var body = req.allParams();
         console.log(body);
+        var body = {
+            "response": {
+                "info": {
+                    "success": "0",
+                    "transcript_id": "",
+                    "error": ""
+                }
+            }
+        };
+
+        request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
+            console.log(body);
+            //var result = JSON.parse(body);
+            //if (err || result.response.info.success != 1) {
+            //    // show error page
+            //}
+            //return res.redirect(result.response.info.ticket);
+        });
+
         return res;
     }
 

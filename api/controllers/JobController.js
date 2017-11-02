@@ -48,13 +48,13 @@ module.exports = {
             closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
             company: req.session.coy_id
         };
-        if (_.isNumber(parseInt(q('job_id')))) {
+        if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
             Job.update({ id: q('job_id') }, data).exec(function() {
                 return res.redirect('/job/manage');
             });
         } else {
             Job.create(data).exec(function (err, job) {
-                //if (err) return;
+                if (err) return console.log(err);
                 return res.redirect('/job/manage');
             });
         }

@@ -91,6 +91,8 @@ module.exports.routes = {
 
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
+    'GET /test/result': 'TestController.receiveAndSaveResult',
+
     'GET /savetest': 'TestController.saveTest'
 
 };
