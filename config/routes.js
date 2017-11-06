@@ -31,6 +31,10 @@ module.exports.routes = {
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
 
+    'GET /applicant/video': 'ApplicantController.videoPage',
+
+    'POST /applicant/add-video': 'ApplicantController.uploadVideo',
+
     'GET /admin/setup': 'AdminController.setup',
 
     'GET /admin/create': { view: 'admin/create' },

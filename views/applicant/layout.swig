@@ -82,12 +82,12 @@
                     </a>
                 </li>
 
-                {#<li class="">#}
-                    {#<a href="/admin/users">#}
-                        {#<i class="pe-7s-users"></i>#}
-                        {#<p>Applicants</p>#}
-                    {#</a>#}
-                {#</li>#}
+                <li class="">
+                    <a href="/applicant/video">
+                        <i class="pe-7s-video"></i>
+                        <p>My Video</p>
+                    </a>
+                </li>
 
                 <li>
                     <a href="/applicant/profile">

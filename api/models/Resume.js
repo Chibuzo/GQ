@@ -67,6 +67,10 @@ module.exports = {
             type: 'float'
         },
 
+        video_file: {
+            type: 'string'
+        },
+
         user: {
             model: 'user'
         }
