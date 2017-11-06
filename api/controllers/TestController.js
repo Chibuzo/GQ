@@ -194,33 +194,47 @@ module.exports = {
     },
     
     receiveAndSaveResult: function (req, res) {
-        //var data = req.param;
-        //console.log(data);
-        var request = require('request');
-        var qs = require('querystring');
-        var body = req.allParams();
-        console.log(body);
-        var body = {
-            "response": {
-                "info": {
-                    "success": "0",
-                    "transcript_id": "",
-                    "error": ""
-                }
-            }
-        };
-
-        request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
-            console.log(body);
-            //var result = JSON.parse(body);
-            //if (err || result.response.info.success != 1) {
-            //    // show error page
-            //}
-            //return res.redirect(result.response.info.ticket);
+        //var request = require('request');
+        //var qs = require('querystring');
+        var body = req.allParams().slice(1, -1);    // remove indian shit
+        req.on('data', function(data) {
+            console.log(data);
+            console.log(JSON.parse(data));
         });
+        var result = JSON.parse(body);
+        console.log(result.request.method);
+        //var data = {
+        //    test_id: result.response
+        //}
+        //var body = {
+        //    "response": {
+        //        "info": {
+        //            "success": "0",
+        //            "transcript_id": "",
+        //            "error": ""
+        //        }
+        //    }
+        //};
+        //
+        //request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
+        //    console.log(body);
+        //    //var result = JSON.parse(body);
+        //    //if (err || result.response.info.success != 1) {
+        //    //    // show error page
+        //    //}
+        //    //return res.redirect(result.response.info.ticket);
+        //});
 
         return res;
-    }
+    },
+
+    //testJson: function(req, res) {
+    //    var json = { '{"request": {"authentication": {"password": "1p2r9o6d4u5t1c","partnerid": "1296451"},"method": {"name": "SubmitUserTestResult","user_id": "3", "transcript_id": "5007815", "test_id": "10155", "test_name": "Productive People Quality Assurance Associate Test", "percentage": "12", "percentile": "88", "average_score": "8", "test_result": "FAIL", "reporturl": "http://assessments.getqualified.work/CreateNewPdf.aspx?transcriptid': '5007815", "time": "2017-11-02T01:25:39Z"}}}' };
+    //    var data = JSON.parse(json);
+    //    console.log(data)
+    //    console.log(data.request.method)
+    //    return res;
+    //}
 
 };
 
