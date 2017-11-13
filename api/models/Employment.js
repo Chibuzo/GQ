@@ -16,6 +16,14 @@ module.exports = {
           type: 'string'
       },
 
+      location: {
+          type: 'string'
+      },
+
+      duties: {
+          type: 'text'
+      },
+
       start_date: {
           type: 'date'
       },

@@ -50,8 +50,26 @@ module.exports = {
         });
     },
     
-    sendErrMsg: function(err, data) {
-
+    sendCompanyInviteEmail: function(user, coy) {
+        var base_url = 'http://144.217.245.35:1330/';
+        var email_b64 = new Buffer(user.email).toString('base64');
+        var crypto = require('crypto');
+        var hash = crypto.createHash('md5').update(user.email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
+        var data = {
+            user: user.fullname,
+            company: coy.company_name,
+            contact_name: coy.contact_person,
+            url: base_url + 'company/activate-user/' + hash + '/' + email_b64
+        };
+        var opts = {
+            from: "Get Qualified <no-reply@getqualifed.ng>",
+            sender: "no-reply@getqualifed.ng",
+            to: user.email,
+            subject: "GQ Company User Verification"
+        };
+        module.exports.sendEmail('companyUserActivationEmail', data, opts, function(err) {
+            if (err) console.log(err);
+        });
     },
     
     sendAppliedJobNotice: function(job, user) {

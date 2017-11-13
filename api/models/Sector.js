@@ -1,5 +1,5 @@
 /**
- * JobTest.js
+ * Sector.js
  *
  * @description :: TODO: You might write a short summary of how this model works and what it represents here.
  * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
@@ -8,24 +8,19 @@
 module.exports = {
 
   attributes: {
-      test: {
-          model: 'cbttest'
+      title: {
+          type: 'string',
+          unique: true
       },
 
-      test_title: {
-          type: 'string'
+      companies: {
+          collection: 'company',
+          via: 'sector'
       },
 
-      job_level: {
-          type: 'string'
-      },
-
-      job_category: {
-          type: 'string'
-      },
-
-      job: {
-          model: 'job'
+      removed: {
+          type: 'boolean',
+          defaultsTo: 'false'
       }
   }
 };

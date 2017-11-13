@@ -49,6 +49,18 @@ module.exports.routes = {
 
     'GET /admin/manage-test': 'JobTestController.manageJobTests',
 
+    'GET /admin/manage-courses': 'CourseController.getCourses',
+
+    'GET /courses': 'CourseController.listCourses',
+
+    'GET /course/addnew': 'CourseController.addNew',
+
+    'POST /course/save': 'CourseController.saveCourse',
+
+    'GET /courses/list': 'CourseController.getCourses',
+
+    'POST /sector/addsector': 'SectorController.addSector',
+
     'POST /company-request/send-request': 'CompanyRequestController.submitRequest',
 
     'GET /company-request/view-requests': 'CompanyRequestController.viewPendingRequests',
@@ -62,6 +74,16 @@ module.exports.routes = {
     'GET /company/profile': 'CompanyController.profile',
 
     'POST /company/upload-csv': 'JobController.readApplicationCSV',
+
+    'GET /company/users': 'CompanyController.getUsers',
+
+    'POST /company/adduser': 'CompanyController.addUser',
+
+    'GET /company/activate-user/:hash/:email': 'CompanyController.activateUser',
+
+    'POST /company/update-user': 'CompanyController.updateUser',
+
+    'POST /company/remove-user': 'CompanyController.removeUser',
 
     'GET /coy/setup/:hash/:email': 'CompanyController.initialSetup',
 
@@ -98,6 +120,4 @@ module.exports.routes = {
     'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult'
 
     //'GET /savetest': 'TestController.saveTest',
-
-
 };

@@ -252,80 +252,127 @@
 		<legend>Employment History</legend>
 		<div class="form-group">
 			{% for emp in resume.employments %}
-				<div class="row employment-row">
-					<div class="col-md-4">
-						<label>Company/Organisation</label>
-						<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" value="{{ emp.company }}" required>
+				<div class="employment-row">
+					<div class="row">
+						<div class="col-md-4">
+							<label>Company/Organisation</label>
+							<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" value="{{ emp.company }}" required>
+						</div>
+
+						<div class="col-md-4">
+							<label>Job Title</label>
+							<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role" value="{{ emp.role }}" required>
+						</div>
+
+						<div class="col-md-4">
+							<label>Location</label>
+							<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
+						</div>
 					</div>
 
-					<div class="col-md-3">
-						<label>Job Title</label>
-						<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role" value="{{ emp.role }}" required>
+					<div class="row">
+						<div class="col-md-12">
+							<label>Job functions</label>
+							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+						</div>
 					</div>
 
-					<div class="col-md-2">
-						<label>start Date</label>
-						<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}" required>
-					</div>
-					<div class="col-md-2">
-						<label>End Date</label>
-						<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}" required>
-					</div>
-					<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
-					<div class="col-md-1">
-						<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+					<div class="row">
+						<div class="col-md-5">
+							<label>start Date</label>
+							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}" required>
+						</div>
+						<div class="col-md-5">
+							<label>End Date</label>
+							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}" required>
+						</div>
+						<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
+						<div class="col-md-1">
+							<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+						</div>
 					</div>
 				</div>
 			{% endfor %}
 
 			{% if resume.employments.length < 1 %}
-				<div class="row employment-row">
+				<div class="employment-row">
+					<div class="row">
+						<div class="col-md-4">
+							<label>Company/Organisation</label>
+							<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" required>
+						</div>
+
+						<div class="col-md-4">
+							<label>Job Title</label>
+							<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role" required>
+						</div>
+
+						<div class="col-md-4">
+							<label>Location</label>
+							<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-12">
+							<label>Job functions</label>
+							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+						</div>
+					</div>
+
+					<div class="row">
+						<div class="col-md-5">
+							<label>start Date</label>
+							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" required>
+						</div>
+						<div class="col-md-5">
+							<label>End Date</label>
+							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" required>
+						</div>
+						<div class="col-md-1">
+							<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+						</div>
+					</div>
+				</div>
+			{% endif %}
+
+			<div class="employment-row addable" id="another-employment">
+				<div class="row">
 					<div class="col-md-4">
 						<label>Company/Organisation</label>
 						<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" required>
 					</div>
 
-					<div class="col-md-3">
+					<div class="col-md-4">
 						<label>Job Title</label>
-						<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role" required>
+						<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role">
 					</div>
 
-					<div class="col-md-2">
-						<label>start Date</label>
-						<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" required>
+					<div class="col-md-4">
+						<label>Location</label>
+						<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
 					</div>
-					<div class="col-md-2">
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<label>Job functions</label>
+						<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+					</div>
+				</div>
+
+				<div class="row">
+					<div class="col-md-5">
+						<label>start Date</label>
+						<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
+					</div>
+					<div class="col-md-5">
 						<label>End Date</label>
 						<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" required>
 					</div>
-					<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
 					<div class="col-md-1">
 						<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
 					</div>
-				</div>
-			{% endif %}
-
-			<div class="row employment-row addable" id="another-employment">
-				<div class="col-md-4">
-					<label>Company/Organisation</label>
-					<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation">
-				</div>
-
-				<div class="col-md-3">
-					<label>Job Title</label>
-					<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role">
-				</div>
-
-				<div class="col-md-2">
-					<label>start Date</label>
-					<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
-				</div>
-				<div class="col-md-2">
-					<label>End Date</label>
-					<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
-				</div>
-				<div class="col-md-1">
-					<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
 				</div>
 			</div>
 		</div>
