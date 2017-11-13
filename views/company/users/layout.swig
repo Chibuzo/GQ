@@ -26,19 +26,6 @@
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
-    <script src="/js/plugins/tinymce.min.js"></script>
-    <script>tinymce.init({
-            selector:'textarea.editor',
-            menubar: false,
-            plugins: [
-                'lists preview',
-            ],
-            toolbar: 'bullist numlist outdent indent',
-            content_css: [
-                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
-                '//www.tinymce.com/css/codepen.min.css']
-        });
-    </script>
 
     <style>
         .ok-header {
@@ -51,10 +38,6 @@
 
         .opt-icons .fa {
             margin: 2px 4px;
-        }
-
-        .mce-notification {
-            display: none !important;
         }
     </style>
 </head>
@@ -78,7 +61,7 @@
 
             <ul class="nav">
                 <li clas="active">
-                    <a href="/admin/dashboard">
+                    <a href="#/applicant/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
@@ -91,25 +74,10 @@
                     </a>
                 </li>
 
-
-                <li class="">
-                    <a href="/company/users">
-                        <i class="pe-7s-users"></i>
-                        <p>Manage Users</p>
-                    </a>
-                </li>
-
                 <li>
-                    <a href="/company/profile">
+                    <a href="/company/user-profile">
                         <i class="pe-7s-user"></i>
-                        <p>Company Profile</p>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/admin/setup">
-                        <i class="pe-7s-tools"></i>
-                        <p>Settings</p>
+                        <p>My Profile</p>
                     </a>
                 </li>
             </ul>
@@ -139,7 +107,7 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a href="/admin/signout">
+                            <a href="/signout">
                                 <i class="fa fa-sign-out"></i> Logout
                             </a>
                         </li>

@@ -4,7 +4,7 @@
     <i class="pe-7s-tools"></i> Settings
 {% endblock %}
 {% block body %}
-    <div class="col-md-12">
+    <div class="col-md-6">
         <div class="card">
             <div class="header">
                 <h4 class="title">Job Categories</h4>
@@ -24,7 +24,7 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th style="width: 90%">Job Category</th>
+                        <th style="width: 80%">Job Category</th>
                         <th class="text-center">Action</th>
                     </tr>
                     </thead>
@@ -44,18 +44,18 @@
         </div>
     </div>
 
-    <div class="col-md-6 hidden">
+    <div class="col-md-6">
         <div class="card">
             <div class="header">
-                <h4 class="title">Genre</h4>
-                <p class="category">Manage Music Genre</p><br>
+                <h4 class="title">Company Sector</h4>
+                <p class="category">Manage Sectors/Industry</p><br>
                 <div class="row">
-                    <form action="/setting/addgenre" method="post">
+                    <form action="/sector/addsector" method="post">
                         <div class="col-md-9">
-                            <input type="text" name="genre" class="form-control" placeholder="Enter genre title..." />
+                            <input type="text" name="sector" class="form-control" placeholder="Enter sector or industry..." />
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add Genre</button>
+                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add Sector</button>
                         </div>
                     </form>
                 </div>
@@ -64,17 +64,17 @@
                 <table class="table table-striped">
                     <thead>
                     <tr>
-                        <th style="width: 500px">Genre Title</th>
+                        <th style="width: 80%">Sector</th>
                         <th class="text-center">Action</th>
                     </tr>
                     </thead>
                     <tbody>
-                    {% for genre in genres %}
+                    {% for sector in sectors %}
                         <tr>
-                            <td>{{ genre.genre_title }}</td>
+                            <td>{{ sector.title }}</td>
                             <td class="opt-icons">
-                                <a href="" class="edit-genre" rel="tooltip" title="Edit Genre"><i class="fa fa-pencil"></i></a>
-                                <a href="" rel="tooltip" title="Remove Genre"><i class="fa fa-trash"></i></a>
+                                <a href="" class="edit-sector" rel="tooltip" title="Edit Sector"><i class="fa fa-pencil fa-lg"></i></a>
+                                <a href="" rel="tooltip" title="Remove Sector"><i class="fa fa-trash fa-lg"></i></a>
                             </td>
                         </tr>
                     {% endfor %}
@@ -86,6 +86,6 @@
 
 {% endblock %}
 
-{% block script %}
+{% block scriptTag %}
 
 {% endblock %}

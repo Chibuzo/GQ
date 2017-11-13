@@ -14,9 +14,11 @@
 						<label>Password</label>
 						<input type="password" name="password" class="form-control input-lg" required />
 					</div>
+					<input type="hidden" name="return_url" value="{{ return_url }}" />
 					<div class="alert alert-danger hidden"></div>
 					<button type="submit" class="btn btn-default input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Sign In </button>
 				</form>
+				<p>Not yet a member? <a href="/signup">Sign Up</a></p>
 			</div>
 		</div>
 	</section>

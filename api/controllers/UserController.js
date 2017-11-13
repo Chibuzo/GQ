@@ -31,7 +31,7 @@ module.exports = {
                 var data = {
                     fullname: req.param('fname') + ' ' + req.param('lname'),
                     email: req.param('email'),
-                    user_type: 'Applicant'
+                    user_type: req.param('user_type')
                 };
 
                 User.create(data).exec(function(err, newUser) {
@@ -53,9 +53,9 @@ module.exports = {
         var hash = req.param('hash');
         User.findOne({ email : email }).exec(function(err, user) {
             if (err) return;
-            if (user.status == 'Active') {
-                return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
-            }
+            //if (user.status == 'Active') {
+            //    return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
+            //}
             if (user) {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
@@ -70,8 +70,14 @@ module.exports = {
                             fname: user[0].fullname.split(' ')[0],
                             lname: user[0].fullname.split(' ')[1]
                         };
-                        return res.view('applicant/profile', { user: user[0], me: me, first_time: true });
+                        if (user[0].user_type == 'Applicant') {
+                            return res.view('applicant/profile', {user: user[0], me: me, first_time: true});
+                        } else if (user[0].user_type == 'company') {
+                            return res.view('company/users/profile', { user: user[0], me: me });
+                        }
                     });
+                } else {
+                    console.log('Invalid hash');
                 }
             }
         });
@@ -111,7 +117,9 @@ module.exports = {
                     req.session.userId = foundUser.id;
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
-                    if (foundUser.user_type == 'company') {
+                    if (req.param('return_url').length > 3) {
+                        return res.redirect(req.param('return_url'));
+                    } else if (foundUser.user_type == 'company-admin') {
                         req.session.coy_id = foundUser.company;
                         return res.redirect('/company/dashboard');
                     } else if (foundUser.user_type == 'Applicant') {

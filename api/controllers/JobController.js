@@ -158,7 +158,7 @@ module.exports = {
                 }
             });
         } else {
-            // sign up or login to continue
+            return res.view('login', { return_url: '/job/' + job_id });
         }
     },
 

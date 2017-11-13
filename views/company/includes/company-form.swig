@@ -20,10 +20,16 @@
 		<div class="row">
 			<div class="col-md-12">
 				<label for="title">Sector</label>
-				{#<select name="sector" class="form-control" required>#}
-				{#<option value="">-- Choose Company Sector</option>#}
-				{#<option value="#}
-				<input type="text" name="sector" class="form-control" value="{{ company.sector }}" required/>
+				<select name="sector" class="form-control" required>
+					<option value="">-- Choose Company Sector --</option>
+					{% for sector in sectors %}
+						{% if company.sector == sector.id %}
+							<option value="{{ sector.id }}" selected="selected">{{ sector.title }}</option>
+						{% else %}
+							<option value="{{ sector.id }}">{{ sector.title }}</option>
+						{% endif %}
+					{% endfor %}
+				</select>
 			</div>
 		</div>
 	</div>
@@ -32,6 +38,26 @@
 			<div class="col-md-12">
 				<label for="title">Address</label>
 				<input type="text" name="address" class="form-control" id="address" value="{{ company.address }}" required/>
+			</div>
+		</div>
+	</div>
+	<div class="form-group">
+		<div class="row">
+			<div class="col-md-4">
+				<label for="phone">Resident Country</label>
+				<select name="country" class="form-control">
+					<option value="">Select Country</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<label for="email">State</label>
+				<select name="state" class="form-control">
+					<option value="">Select State</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<label for="email">City</label>
+				<input type="text" name="city" class="form-control" />
 			</div>
 		</div>
 	</div>

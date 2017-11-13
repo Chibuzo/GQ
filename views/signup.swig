@@ -21,6 +21,7 @@
 						<label>Email</label>
 						<input type="email" name="email" class="form-control input-lg" placeholder="Email Address" required />
 					</div>
+					<input type="hidden" name="return_url" value="{{ return_url }}" />
 					<div class="alert alert-danger hidden"></div>
 					<button type="submit" class="btn btn-default input-lg btn-block">&nbsp; Sign Up </button>
 				</form>
@@ -38,7 +39,7 @@
 
 			$(this).find('button').html("<i class='fa fa-cog fa-spin'></i> Processing").prop('disabled', true);
 
-			$.post('/user/signup', $(this).serialize(), function(d) {
+			$.post('/user/signup', $(this).serialize() + '&user_type=Applicant', function(d) {
 				if (d.status.trim() == 'success') {
 					location.replace('/login');
 				} else {

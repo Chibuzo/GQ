@@ -22,6 +22,8 @@ module.exports = {
         req.param('test').forEach(function(test) {
             var data = {
                 test: test,
+                test_title: req.param('test_title'),
+                job_level: req.param('job_level'),
                 job_category: req.param('category'),
                 job: req.param('job_category')
             };

@@ -152,7 +152,12 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
-            return res.view('admin/settings', { categories: cat });
+            Sector.find({ removed: 'false' }).exec(function(err, sectors) {
+                if (err) {
+                    return res.badRequest(err);
+                }
+                return res.view('admin/settings', { categories: cat, sectors: sectors });
+            });
         });
     },
 

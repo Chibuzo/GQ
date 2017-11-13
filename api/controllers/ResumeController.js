@@ -80,6 +80,8 @@ module.exports = {
                 var employment = {
                     company: q('company')[i],
                     role: q('job_title')[i],
+                    location: q('loction')[i],
+                    duties: q('duty')[i],
                     start_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
                     end_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
                     resume: q('resume_id')

@@ -8,8 +8,8 @@
 module.exports = {
 
   attributes: {
-      test_id: {
-          type: 'string'
+      test: {
+          modal: 'CBTTest'
       },
 
       applicant: {
@@ -17,11 +17,11 @@ module.exports = {
       },
 
       percentage: {
-          type: 'float'
+          type: 'integer'
       },
 
       percentile: {
-          type: 'float'
+          type: 'integer'
       },
 
       average_score: {
