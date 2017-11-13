@@ -34,6 +34,10 @@ module.exports = {
 
       transcript_id: {
           type: 'string'
+      },
+
+      jobtest: {
+          model: 'jobtest'
       }
   }
 };

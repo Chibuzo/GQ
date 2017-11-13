@@ -91,7 +91,7 @@
 
                 <li class="">
                     <a href="/admin/manage-test">
-                        <i class="pe-7s-report"></i>
+                        <i class="pe-7s-notebook"></i>
                         <p>Manage Tests</p>
                     </a>
                 </li>
