@@ -22,23 +22,24 @@
 					<thead>
 					<tr>
 						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
-						<th>Date Added</th>
+						<th style="width: 120px">Date Added</th>
 						<th>Course Title</th>
-						<th>Course Cateogory</th>
 						<th>Course Abstract</th>
+						<th class="text-right">Subscriptions</th>
 						<th>Status</th>
-						<th class="text-center">Action</th>
+						<th style="width: 100px" class="text-center">Action</th>
 					</tr>
 					</thead>
 					<tbody>
 					{% set n = 0 %}
 					{% for course in courses %}
+						{% set subs = course.subscriptions.length %}
 						<tr id="{{ course.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ course.createdAt | date('d M, Y') }}</td>
 							<td>{{ course.course_title }}</td>
-							<td>{{ course.category.category }}</td>
 							<td>{{ course.abstract }}</td>
+							<td class="text-right">{{ subs }}</td>
 							<td>{{ course.status }}</td>
 							<td class="opt-icons text-center">
 								<a href="/course/editcourse/{{ course.id }}" class="edit-cours" rel="tooltip" title="Edit Course"><i class="fa fa-pencil fa-lg"></i></a>

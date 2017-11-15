@@ -74,6 +74,13 @@
                     </a>
                 </li>
 
+                <li class="">
+                    <a href="/assessments">
+                        <i class="pe-7s-network"></i>
+                        <p>Assessments</p>
+                    </a>
+                </li>
+
 
                 <li class="">
                     <a href="/admin/view-companies">

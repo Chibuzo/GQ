@@ -8,8 +8,8 @@
 module.exports = {
 
   attributes: {
-      test: {
-          modal: 'CBTTest'
+      test_id: {
+          type: 'string'
       },
 
       applicant: {

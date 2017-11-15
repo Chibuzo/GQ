@@ -57,6 +57,8 @@ module.exports.routes = {
 
     'POST /course/save': 'CourseController.saveCourse',
 
+    'POST /course/subscribe': 'CourseController.subscribe',
+
     'GET /courses/list': 'CourseController.getCourses',
 
     'POST /sector/addsector': 'SectorController.addSector',
@@ -118,6 +120,8 @@ module.exports.routes = {
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
     'GET /savetest': 'TestController.saveTest',
+
+    'GET /assessments': 'CBTTestController.getTestResult',
 
     //'GET /test/json': 'TestController.testJson'
 };

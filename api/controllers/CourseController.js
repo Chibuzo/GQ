@@ -26,7 +26,7 @@ module.exports = {
     },
 
     getCourses: function(req, res) {
-        Course.find().exec(function(err, courses) {
+        Course.find().populate('subscriptions').exec(function(err, courses) {
             if (err) return res.badRequest();
             return res.view('course/manage-courses', { courses: courses });
         });
@@ -36,6 +36,12 @@ module.exports = {
         //CourseCategor.find().exec(function(err, courseCat) {
             return res.view('course/addcourse');
         //})
+    },
+
+    subscribe: function(req, res) {
+        var course_id = req.param('course_id');
+        CourseSub.findOrCreate({ course: course_id, candidate: req.session.userId }, { course: course_id, candidate: req.session.userId }).exec(function() {});
+        return res.ok();
     }
 };
 

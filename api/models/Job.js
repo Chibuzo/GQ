@@ -4,12 +4,11 @@
      * @description :: TODO: You might write a short summary of how this model works and what it represents here.
      * @docs        :: http://sailsjs.org/documentation/concepts/models-and-orm/models
      */
+module.exports = {
 
-    module.exports = {
-
-        attributes: {
-            job_title: {
-                type: 'string'
+    attributes: {
+        job_title: {
+            type: 'string'
         },
 
         job_description: {
@@ -45,9 +44,12 @@
             via: 'job'
         },
 
-        job_tests: {
-            collection: 'jobtest',
-            via: 'test'
+        //job_tests: {
+        //    collection: 'jobtest',
+        //    via: 'test'
+        //},
+        job_test: {
+            model: 'cbttest'
         },
 
         published: {

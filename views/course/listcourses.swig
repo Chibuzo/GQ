@@ -77,7 +77,7 @@ select.input-lg {
 				{% for course in courses %}
 					{#{% set path = job.job_title.split(' ') %}#}
 					<div class="col-md-4">
-						<div class="job">
+						<div class="job" id="{{ course.id }}">
 							<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}">{{ course.course_title }}</a></h3>
 							<div class="info-thumb">
 								<ul class="info-thumb-ls">
@@ -86,6 +86,9 @@ select.input-lg {
 								</ul>
 							</div>
 							<div class="job-desc">{{ course.abstract }}</div>
+							<div class="course-menu">
+								<button class="btn btn-sm btn-danger pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Join Course</button>
+							</div>
 						</div>
 					</div>
 				{% endfor %}
@@ -97,4 +100,49 @@ select.input-lg {
 		</div>
 	</div>
 </div>
+
+	<div class="modal fade in" id="joinCourseModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						×
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Course Title</h4>
+				</div>
+
+				<div class="modal-body">
+					<div class="alert alert-info hidden"></div>
+					<p>This course hasn't yet started. However, you can subscribe so we keep you posted...</p>
+				</div>
+				<span id="course_id" class="hidden"></span>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						<i class="fa fa-times"></i> Cancel
+					</button>
+					<button type="submit" class="btn btn-info" id="subscribe">
+						<i class="fa fa-check-circle-o"></i> Subscribe
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
+
+{% block scriptTag %}
+<script type="text/javascript">
+$(document).ready(function() {
+	$(".joinCourse").click(function() {
+		var course_id = $(this).parents('.job').attr('id');
+		$("#course_id").text(course_id);
+	});
+
+
+	$("#subscribe").click(function() {
+		//var $this = $(this);
+		var course_id = $("#course_id").text();
+		$.post('/course/subscribe', { 'course_id': course_id });
+		$(".alert-info").text("We'll let you know when the course begins").removeClass('hidden');
+	});
+});
+</script>

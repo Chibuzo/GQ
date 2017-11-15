@@ -20,6 +20,11 @@ module.exports = {
           model: 'coursecategory'
       },
 
+      subscriptions: {
+          collection: 'coursesub',
+          via: 'course'
+      },
+
       status: {
           type: 'string',
           defaultsTo: 'Active'

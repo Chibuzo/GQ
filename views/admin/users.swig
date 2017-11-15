@@ -1,4 +1,4 @@
-{% extends 'admin-layout.swig' %}
+{% extends 'layout.swig' %}
 {% set title = 'Dashboard' %}
 {% block body %}
 	<div class="row wrapper border-bottom white-bg page-heading">
