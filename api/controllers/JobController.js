@@ -60,12 +60,12 @@ module.exports = {
         }
     },
 
-    getJobTests: function (req, res) {
-        Job.findOne({ id: req.param('job_id') }).populate('job_tests').exec(function (err, jobtests) {
-            if (err) return res.serverError(err);
-            return res.json(200, { status: 'success', jobtests: jobtests });
-        });
-    },
+    //getJobTests: function (req, res) {
+    //    Job.findOne({ id: req.param('job_id') }).populate('job_tests').exec(function (err, jobtests) {
+    //        if (err) return res.serverError(err);
+    //        return res.json(200, { status: 'success', jobtests: jobtests });
+    //    });
+    //},
 
     readApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');

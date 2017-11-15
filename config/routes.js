@@ -103,6 +103,8 @@ module.exports.routes = {
 
     'GET /job/apply/:id': 'JobController.apply',
 
+    'GET /job/view-candidates/:job_id': 'JobCandidateController.getJobCandidates',
+
     'GET /job/:id/:title': 'JobController.showJob',
 
     'POST /job/add-test': 'JobTestController.assignTest',
@@ -111,17 +113,15 @@ module.exports.routes = {
 
     'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
 
-    //'GET /job/view-applications':
-
     'GET /test': 'TestController.testApi',
 
     'GET /gettest/:test_id': 'TestController.getLandingPage',
 
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
-    'GET /savetest': 'TestController.saveTest',
+    'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult'
 
     'GET /assessments': 'CBTTestController.getTestResult',
 
-    //'GET /test/json': 'TestController.testJson'
+    //'GET /savetest': 'TestController.saveTest',
 };

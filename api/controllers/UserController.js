@@ -125,6 +125,9 @@ module.exports = {
                     } else if (foundUser.user_type == 'Applicant') {
                         return res.redirect('/applicant/dashboard');
                         //return res.json(200, { status: 'success', user_type: foundUser.user_type });
+                    } else if (foundUser.user_type == 'company') {
+                        req.session.coy_id = foundUser.company;
+                        return res.redirect('/company/dashboard');
                     }
                 }
             });

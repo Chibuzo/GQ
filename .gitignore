@@ -44,9 +44,6 @@ config/email.js
 assets/applicant_videos/*
 
 
-
-
-
 ################################################
 # Dependencies
 #

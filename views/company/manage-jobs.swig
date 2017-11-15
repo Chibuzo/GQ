@@ -41,7 +41,7 @@
 							<td>{{ job.createdAt | date('d M, Y') }}</td>
 							<td>{{ job.job_title }}</td>
 							<td>{{ job.category.category }}</td>
-							<td class="text-right"><a href="/job/view-applications">{{ applications }}</a></td>
+							<td class="text-right"><a href="/job/view-candidates/{{ job.id }}">{{ applications }}</a></td>
 							<td>{{ job.status }}</td>
 							<td>{{ job.date_published | date('d M, Y') }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
