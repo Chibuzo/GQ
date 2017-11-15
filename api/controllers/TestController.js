@@ -199,7 +199,7 @@ module.exports = {
         var data = JSON.parse(temp);
         var result = data.request.method;
 
-        JobTest({ test: result.test_id }).exec(function(err, jobtest) {
+        //JobTest.find({ test: result.test_id }).exec(function(err, jobtest) {
             var test_result = {
                 test_id: result.test_id,
                 applicant: result.user_id,
@@ -208,24 +208,32 @@ module.exports = {
                 average_score: result.average_score,
                 test_result: result.test_result,
                 transcript_id: result.transcript_id,
-                jobtest: jobtest.id
+                //jobtest: jobtest[0].id
             };
-            console.log(test_result);
             TestResult.create(test_result).exec(function (err) {
                 if (err) console.log(err);
-                return res.redirect('/test/show-result/' + result.test_id);
+                console.log('Saved');
             });
-        });
+        //});
 
-        //var body = {
-        //    "response": {
-        //        "info": {
-        //            "success": "0",
-        //            "transcript_id": "",
-        //            "error": ""
-        //        }
-        //    }
-        //}
+        var request = require('request');
+        var qs = require('querystring');
+
+        var body = {
+            "response": {
+                "info": {
+                    "success": "1",
+                    "transcript_id": result.transcript_id,
+                }
+            }
+        };
+        request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
+            var data = JSON.parse(body);
+            //if (err || result.response.info.success != 1) {
+            //    // show error page
+            //}
+            return res.redirect('/test/show-result/' + result.test_id);
+        });
     }
 };
 

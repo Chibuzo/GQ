@@ -101,6 +101,8 @@ module.exports.routes = {
 
     'GET /job/apply/:id': 'JobController.apply',
 
+    'GET /job/view-candidates/:job_id': 'JobCandidateController.getJobCandidates',
+
     'GET /job/:id/:title': 'JobController.showJob',
 
     'POST /job/add-test': 'JobTestController.assignTest',
@@ -108,8 +110,6 @@ module.exports.routes = {
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
 
     'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
-
-    //'GET /job/view-applications':
 
     'GET /test': 'TestController.testApi',
 

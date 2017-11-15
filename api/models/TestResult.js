@@ -7,38 +7,38 @@
 
 module.exports = {
 
-  attributes: {
-      test: {
-          modal: 'CBTTest'
-      },
+    attributes: {
+        test_id: {
+            type: 'string'
+        },
 
-      applicant: {
-          model: 'user'
-      },
+        applicant: {
+            model: 'user'
+        },
 
-      percentage: {
-          type: 'integer'
-      },
+        percentage: {
+            type: 'integer'
+        },
 
-      percentile: {
-          type: 'integer'
-      },
+        percentile: {
+            type: 'integer'
+        },
 
-      average_score: {
-          type: 'float'
-      },
+        average_score: {
+            type: 'float'
+        },
 
-      test_result: {
-          type: 'string'
-      },
+        test_result: {
+            type: 'string'
+        },
 
-      transcript_id: {
-          type: 'string'
-      },
+        transcript_id: {
+            type: 'string'
+        },
 
-      jobtest: {
-          model: 'jobtest'
-      }
-  }
+        jobtest: {
+            model: 'jobtest'
+        }
+    }
 };
 

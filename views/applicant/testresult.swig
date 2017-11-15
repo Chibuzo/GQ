@@ -5,11 +5,13 @@
 {% endblock %}
 
 {% block body %}
-	<h2>{{ test.category.category }} Test Result</h2>
+	<h3>{{ test.category.category }} Test Result</h3>
 	<p>{{ result.jobtest.test_title }}</p>
-	<div><strong>Type: </strong>{{ test.category.category }}</div>
-	<div><strong>Percentage Score: </strong>{{ result.percentage }}</div>
-	<div><strong>Percentile: </strong>{{ result.percentile }}</div>
-	<div><strong>Average Score: </strong>{{ result.average_score }}</div>
-	<div><strong>Result: </strong>{{ result.test_result }}</div>
+	<dl class="dl-horizontal">
+		<dt>Type:</dt><dd>{{ test.category.category }}</dd>
+		<dt>Percentage Score:</dt><dd>{{ result.percentage }}%</dd>
+		<dt>Percentile: </dt><dd>{{ result.percentile }}</dd>
+		<dt>Average Score: </dt><dd>{{ result.average_score }}</dd>
+		<dt>Result: </dt><dd>{{ result.test_result }}</dd>
+	</dl>
 {% endblock %}
