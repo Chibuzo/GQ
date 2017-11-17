@@ -20,7 +20,7 @@ module.exports = {
         });
     },
 
-    // for company hirings
+    // for company hiring
 	viewJobs: function(req, res) {
         var coy_id = req.session.coy_id;
         Job.find({ company: coy_id }).populate('category').populate('applications').exec(function(err, jobs) {
@@ -152,15 +152,21 @@ module.exports = {
     apply: function(req, res) {
         var job_id = req.param('id');
         if (req.session.userId && req.session.user_type == 'Applicant') {
-            JobService.apply(job_id, req.session.userId).then(function(resp) {
-                if (resp) {
-                    return res.redirect('/applicant/view-applications');
-                } else {
-                    // your village people
+            // check resume completion status
+            Resume.find({ user: req.session.userId }).exec(function(err, resume) {
+                if (resume.status === undefined || resume.status == 'Incomplete') {
+                    return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                 }
+                JobService.apply(job_id, req.session.userId).then(function(resp) {
+                    if (resp) {
+                        return res.json(200, { status: 'success' });
+                    } else {
+                        // your village people don't want you to get a job
+                    }
+                });
             });
         } else {
-            return res.view('login', { return_url: '/job/' + job_id });
+            return res.json(200, { status: 'login' });
         }
     },
 

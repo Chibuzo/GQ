@@ -73,6 +73,11 @@ module.exports = {
 
         user: {
             model: 'user'
+        },
+
+        status: {
+            type: 'string',
+            defaultsTo: 'Incomplete'
         }
     }
 };

@@ -180,9 +180,13 @@ module.exports = {
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
-            returnURL: 'http://144.217.245.35:1330/test/result',
-            dev: true,
-            debug: true,
+            returnURL: 'http://144.217.245.35:1330/test/show-result/' + req.param('test_id'),
+            dev: false,
+            debug: false,
+            //secure_mode: 1,
+            //browser_proctoring: 1,
+            //webcam_proctoring: 1,
+            //webcam_mandatory: 1,
             reuse: true,
             er_internal: '1296451'
         };

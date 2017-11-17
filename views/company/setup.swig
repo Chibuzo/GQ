@@ -31,6 +31,14 @@
 .upload-div .details {
   padding-top: 35px;
 }
+
+.coy-logo {
+    width: 200px;
+}
+
+.coy-logo img {
+    width: 100%;
+}
 </style>
 <div class="content">
     <div class="container-fluid">
@@ -57,7 +65,11 @@
                     <div class="content">
                         <div class="author">
                             <a href="#">
-                                <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
+                                {% if company.logo_name.length < 3 %}
+                                    <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
+                                {% else %}
+                                    <div class="coy-logo"><img class="avatar border-gray" src="/logos/company.logo_name" alt="..."/></div>
+                                {% endif %}
 
                                 <h4 class="title">{{ company.company_name }}<br />
                                     <small>{{ company.contact_email }}</small>
@@ -110,6 +122,14 @@ $(document).ready(function() {
 
     $("#form-company-setup").submit(function(e) {
         e.preventDefault();
+
+        // let's see if password MUST be set at this time
+        if ($("#check_first").val() == 'true') {
+            if ($("#password").val().length < 3) {
+                showNotification('bottom', 'center', 'danger', "Error: You MUST set password to continue.", 'pe-7s-attention');
+                return false;
+            }
+        }
 
         var form = $('#form-company-setup')[0];
         var data = new FormData(form);

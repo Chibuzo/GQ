@@ -11,6 +11,8 @@ module.exports.routes = {
 
     '/login': { view: 'login' },
 
+    '/login/:return_url': 'UserController.specialLoginPage',
+
     '/admin': { view: 'admin/login' },
 
     'GET /user/activate/:email/:hash': 'UserController.activateAccount',
@@ -122,6 +124,8 @@ module.exports.routes = {
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
     'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult',
+
+    'GET /result/getVideo': 'ResumeController.getVideo',
 
     'GET /assessments': 'CBTTestController.getTestResult',
 

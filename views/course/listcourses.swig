@@ -163,7 +163,7 @@
 				<span id="course_id" class="hidden"></span>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<i class="fa fa-times"></i> Cancel
+						<i class="fa fa-times"></i> Close
 					</button>
 					<button type="submit" class="btn btn-info" id="subscribe">
 						<i class="fa fa-check-circle-o"></i> Subscribe
