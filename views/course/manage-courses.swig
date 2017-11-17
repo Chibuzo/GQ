@@ -18,7 +18,7 @@
 				</div>
 			</div>
 			<div class="content table-responsive table-full-width">
-				<table class="table table-striped tablebordered">
+				<table class="table table-striped dataTable">
 					<thead>
 					<tr>
 						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
@@ -59,6 +59,7 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/plugins/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -73,6 +74,14 @@ $(document).ready(function() {
 				}
 			}, 'JSON');
 		}
+	});
+
+	$('.dataTable').DataTable({
+		pageLength: 25,
+		responsive: true,
+		"aoColumnDefs": [
+			{ 'bSortable': false, 'aTargets': [ 2, 3 ] }
+		]
 	});
 });
 </script>

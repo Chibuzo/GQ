@@ -173,6 +173,8 @@ module.exports = {
         var request = require('request');
         var qs = require('querystring');
 
+        req.session.job_id = req.param('job_id');
+
         var data = {
             password: '1p2r9o6d4u5t1c',
             partnerid: '1296451',
@@ -199,40 +201,20 @@ module.exports = {
         var data = JSON.parse(temp);
         var result = data.request.method;
 
-        //JobTest.find({ test: result.test_id }).exec(function(err, jobtest) {
-            var test_result = {
-                test_id: result.test_id,
-                applicant: result.user_id,
-                percentage: result.percentage,
-                percentile: result.percentile,
-                average_score: result.average_score,
-                test_result: result.test_result,
-                transcript_id: result.transcript_id,
-                //jobtest: jobtest[0].id
-            };
-            TestResult.create(test_result).exec(function (err) {
-                if (err) console.log(err);
-                console.log('Saved');
-            });
-        //});
-
-        var request = require('request');
-        var qs = require('querystring');
-
-        var body = {
-            "response": {
-                "info": {
-                    "success": "1",
-                    "transcript_id": result.transcript_id,
-                }
-            }
+        var test_result = {
+            test_id: result.test_id,
+            applicant: result.user_id,
+            percentage: result.percentage,
+            percentile: result.percentile,
+            average_score: result.average_score,
+            test_result: result.test_result,
+            transcript_id: result.transcript_id,
+            //jobtest: jobtest[0].id
         };
-        request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
-            var data = JSON.parse(body);
-            //if (err || result.response.info.success != 1) {
-            //    // show error page
-            //}
-            return res.redirect('/test/show-result/' + result.test_id);
+        TestResult.create(test_result).exec(function (err) {
+            if (err) console.log(err);
+            // update application status
+            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Awaiting Review' }).exec(function() {});
         });
     }
 };

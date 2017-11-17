@@ -10,7 +10,7 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
-
+    <link href="/styles/dataTables.min.css" rel="stylesheet" />
     <!-- Bootstrap core CSS     -->
     <link href="/styles/bootstrap.min.css" rel="stylesheet" />
 
@@ -76,7 +76,7 @@
 
                 <li class="">
                     <a href="/assessments">
-                        <i class="pe-7s-network"></i>
+                        <i class="pe-7s-news-paper"></i>
                         <p>Assessments</p>
                     </a>
                 </li>
@@ -105,7 +105,7 @@
 
                 <li class="">
                     <a href="/admin/manage-test">
-                        <i class="pe-7s-notebook"></i>
+                        <i class="pe-7s-display2"></i>
                         <p>Manage Tests</p>
                     </a>
                 </li>

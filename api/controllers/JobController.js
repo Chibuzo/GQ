@@ -42,6 +42,7 @@ module.exports = {
             job_level: q('job_level'),
             category: q('category'),
             location: q('location'),
+            location: q('location'),
             nice_to_have: q('nice_to_have'),
             published: publish,
             date_published: publish_date,
@@ -135,6 +136,7 @@ module.exports = {
         var today = new Date().toISOString();
         Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
+            console.log(jobs)
             return res.view('jobs', { jobs: jobs });
         });
     },

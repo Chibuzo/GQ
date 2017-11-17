@@ -44,7 +44,7 @@
 								<ul class='dropdown-menu pull-left'>
 									<li class='dropdown-header'>Required Online Tests for the Job</li>
 									{% for test in job.tests %}
-										<li><a href="/gettest/{{ test.test.test_id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.job_category }}</a></li>
+										<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.job_category }}</a></li>
 									{% endfor %}
 								</ul>
 							</td>

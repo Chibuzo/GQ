@@ -4,13 +4,27 @@
 		<input type="text" name="title" class="form-control" value="{{ job.job_title }}" required/>
 	</div>
 	<div class="form-group">
-		<label>Job Category</label>
-		<select name="category" class="form-control" required>
-			<option value="">-- Select Job Category --</option>
-			{% for cat in jobcategories %}
-				<option value="{{ cat.id }}">{{ cat.category }}</option>
-			{% endfor %}
-		</select>
+		<div class="row">
+			<div class="col-md-6">
+				<label>Job Category</label>
+				<select name="category" class="form-control" required>
+					<option value="">-- Select Job Category --</option>
+					{% for cat in jobcategories %}
+						<option value="{{ cat.id }}">{{ cat.category }}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-md-6">
+				<label>Job Location</label>
+				<select name="location" class="form-control" required>
+					<option value="">-- Select Job Location --</option>
+					{#{% for cat in jobcategories %}#}
+						<option value="Lagos">Lagos</option>
+						<option value="Abuja">Abuja</option>
+					{#{% endfor %}#}
+				</select>
+			</div>
+		</div>
 	</div>
 	<div class="form-group">
 		<label>Job Description</label>

@@ -22,7 +22,7 @@ module.exports = {
 
         status: {
             type: 'string',
-            defaultsTo: 'Pending'
+            defaultsTo: 'Take test'
         }
     }
 };

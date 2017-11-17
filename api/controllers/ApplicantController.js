@@ -6,6 +6,19 @@
  */
 
 module.exports = {
+    dashboard: function(req, res) {
+        TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
+            var test_results = [];
+            results.forEach(function(result) {
+                CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
+                    result.test.push(test);
+                    test_results.push(result);
+                    return res.view('applicant/dashboard', { results: test_result });
+                });
+            });
+        });
+    },
+
     videoPage: function(req, res) {
         Resume.findOne({ user: req.session.userId }).exec(function(err, resume) {
             var fullname = resume.fullname.split(' ').join('-');
@@ -18,29 +31,36 @@ module.exports = {
         var filename;
         var hr = process.hrtime();
         req.file('video_file').upload({
-                dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_videos/'),
-                saveAs: function(file, cb) {
-                    if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
-                        return res.badRequest('Unsupported video format.');
-                    }
-                    var ext = file.filename.split('.').pop();
-                    filename = req.param('video_file').length > 3 ? req.param('video_file') : req.param('video_title') + "_" + hr[1] + '.' + ext;
-                    return cb(null, filename);
-                },
-                maxBytes: 100 * 1024 * 1024
+            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_videos/'),
+            saveAs: function (file, cb) {
+                if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
+                    return res.badRequest('Unsupported video format.');
+                }
+                var ext = file.filename.split('.').pop();
+                filename = req.param('video_file').length > 3 ? req.param('video_file') : req.param('video_title') + "_" + hr[1] + '.' + ext;
+                return cb(null, filename);
             },
-            function(err) {
+            maxBytes: 100 * 1024 * 1024
+        },
+        function (err) {
+            if (err) {
+                return res.badRequest(err);
+            }
+            console.log(filename);
+            Resume.update({id: req.param('resume_id')}, {video_file: filename}).exec(function (err) {
                 if (err) {
                     return res.badRequest(err);
                 }
-                console.log(filename);
-                Resume.update({ id: req.param('resume_id') }, { video_file: filename }).exec(function(err) {
-                    if (err) {
-                        return res.badRequest(err);
-                    }
-                    return res.redirect('/applicant/video');
-                });
+                return res.redirect('/applicant/video');
             });
+        });
+    },
+
+    showLanding: function(req, res) {
+        Course.find({ status: 'Active' }).limit(4).exec(function(err, courses) {
+            if (err) return res.badRequest();
+            return res.view('employee', { courses: courses });
+        });
     }
 };
 

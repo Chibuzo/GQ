@@ -5,6 +5,8 @@ module.exports.routes = {
         view: 'index'
     },
 
+    '/employee': 'ApplicantController.showLanding',
+
     '/signup': { view: 'signup' },
 
     '/login': { view: 'login' },
@@ -27,7 +29,7 @@ module.exports.routes = {
 
     'POST /user/update': 'UserController.updateProfile',
 
-    'GET /applicant/dashboard': 'UserController.dashboard',
+    'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
 
@@ -115,13 +117,15 @@ module.exports.routes = {
 
     'GET /test': 'TestController.testApi',
 
-    'GET /gettest/:test_id': 'TestController.getLandingPage',
+    'GET /gettest/:test_id/:job_id': 'TestController.getLandingPage',
 
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
-    'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult'
+    'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult',
 
     'GET /assessments': 'CBTTestController.getTestResult',
+
+    //'GET /loadschools': 'BatchController.loadSchools'
 
     //'GET /savetest': 'TestController.saveTest',
 };
