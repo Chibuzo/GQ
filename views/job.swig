@@ -2,6 +2,17 @@
 {% set title = job.title %}
 {% block body %}
 <style>
+	@media screen and (min-width: 1200px) and (max-width: 2000px) {
+		.gq-container {
+			width: 1320px;
+			margin: auto;
+		}
+
+		.feature-row {
+			margin-top: 310px;
+		}
+	}
+
 .info-thumb {
 	padding-bottom: 13px;
 	font-size: 14px;
@@ -24,7 +35,35 @@
 }
 </style>
 
-<div class="clearfix container" style="margin-top: 100px">
+<header>
+	<nav class="navbar navbardefault main-nav">
+		<div class="gq-container">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbarbrand" href="#"><img src="/images/logo.png" id="logo"/></a>
+			</div>
+
+			<!-- Collect the nav links, forms, and other content for toggling -->
+			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+				<ul class="nav navbar-nav navbar-right">
+					<li class="active"><a href="/">Home <span class="sr-only">Home</span></a></li>
+					<li><a href="/courses">Courses</a></li>
+					<li><a href="/jobs">Jobs</a></li>
+					<li><a href="/login">Login</a></li>
+					<li><a href class="btn btn-default">Sign Up</a> </li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+</header>
+
+	<div class="clearfix container" style="margin-top: 60px">
 	<div class="row">
 		<div class="col-md-9">
 			<div class="job">
@@ -32,8 +71,8 @@
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
 						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} UBA</li>
-						<li><i class="fa fa-map-marker"></i> {{ job.location }} Lagos</li>
-						<li><i class="fa fa-asterisk"></i> {{ job.level }} Entry</li>
+						<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
+						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
 					</ul>
 				</div>
 				<div class="job-desc">{{ job.job_description }}</div>
