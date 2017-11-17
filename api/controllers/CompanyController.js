@@ -42,7 +42,7 @@ module.exports = {
                             if (err) return console.log(err);
                             req.session.coy_id = cmpy.id;
                             Sector.find({ removed: 'false' }).exec(function(err, sectors) {
-                                return res.view('company/setup', { company: cmpy, sectors: sectors });
+                                return res.view('company/setup', { company: cmpy, sectors: sectors, first_time: 'true' });
                             });
                         });
                     });

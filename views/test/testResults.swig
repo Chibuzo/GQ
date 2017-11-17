@@ -1,4 +1,4 @@
-{% extends 'layout.swig' %}
+{% extends '../admin/layout.swig' %}
 {% set title = 'Assessment Results' %}
 {% block page_title %}
 	<i class="pe-7s-timer"></i> Candidates' Results
@@ -34,14 +34,14 @@
 						<tr id="{{ result.applicant.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ result.createdAt | date('d M, Y') }}</td>
-							<td></td>
+							<td>{{ result.applicant.fullname }}</td>
 							<td>{{ result.percentage }}%</td>
 							<td class="textright">{{ result.percentile }}</td>
 							<td class="">{{ result.average_score }}</td>
 							<td>{{ result.test_result }}</td>
 							<td class="opt-icons text-center">
 								<a href="" rel="tooltip" title="View Resume"><i class="fa fa-list-alt fa-lg"></i> </a>
-								<a href="" class="view-tests" rel="tooltip" title="Watch Video"><i class="fa fa-video-camera fa-lg"></i></a>
+								<a href="#videoModal" data-toggle="modal" class="view-tests watch-video" rel="tooltip" title="Watch Video"><i class="fa fa-video-camera fa-lg"></i></a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -54,12 +54,45 @@
 {% endblock %}
 
 {% block modals %}
-	{% include "includes/job-form.swig" %}
+	<div class="modal fade in" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+						×
+					</button>
+					<h4 class="modal-title" id="myModalLabel">Candidate's Video</h4>
+				</div>
+
+				<div class="modal-body">
+					<div>
+						<video style="margin-top: 15px" width="550" height="350" controls=controls id="video-pane">
+							<source src="/assets/applicants-video/" type="video/mp4"></source>
+						</video>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">
+						<i class="fa fa-times"></i> Close
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block scriptTag %}
 <script type="text/javascript">
 	$(document).ready(function() {
-
+		$(".watch-video").click(function(e) {
+			e.preventDefault();
+			var user_id = $(this).parents('tr').attr('id');
+			$.get('/result/getVideo', { 'candidate_id': user_id }, function(d) {
+				if (d.status.trim() == 'success') {
+//                $(".modal-title").text(d.resume.fullname + "'s Video");
+					$("#video-pane").html("<source src='/applicant_videos/" + d.resume.video_file + "' type='video/mp4'></source>");
+				}
+			});
+		});
 	});
 </script>

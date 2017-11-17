@@ -129,6 +129,12 @@
 
                     <ul class="nav navbar-nav navbar-right">
                         <li>
+                            <a href="/jobs">Jobs</a>
+                        </li>
+                        <li>
+                            <a href="/courses">Courses</a>
+                        </li>
+                        <li>
                             <a href="/signout">
                                 <i class="fa fa-sign-out"></i> Logout
                             </a>

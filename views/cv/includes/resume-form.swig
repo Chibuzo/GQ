@@ -54,6 +54,27 @@
 
 	<div class="form-group">
 		<div class="row">
+			<div class="col-md-4">
+				<label for="phone">Resident Country</label>
+				<select name="country" class="form-control">
+					<option value="">Select Country</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<label for="email">State</label>
+				<select name="state" class="form-control">
+					<option value="">Select State</option>
+				</select>
+			</div>
+			<div class="col-md-4">
+				<label for="email">City</label>
+				<input type="text" name="city" class="form-control" />
+			</div>
+		</div>
+	</div>
+
+	<div class="form-group">
+		<div class="row">
 			<div class="col-md-12">
 				<label>Introduction</label>
 				<textarea name="introduction" class="form-control" placeholder="Short profile introduction, not more than 150 words" required>{{ resume.introduction }}</textarea>
@@ -192,7 +213,7 @@
 	</fieldset>
 
 	<fieldset id="qualifications">
-		<legend>Qualifications/Professional Certificstions Obtained</legend>
+		<legend>Qualifications/Professional Certifications Obtained</legend>
 		<div class="form-group">
 			{% for qual in resume.qualifications %}
 				<div class="row qual-row">
@@ -216,7 +237,7 @@
 				<div class="row qual-row">
 					<div class="col-md-9">
 						<label>Qualification</label>
-						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain">
+						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
 					</div>
 
 					<div class="col-md-2">
@@ -233,7 +254,7 @@
 			<div class="row qual-row addable" id="another-qualification">
 				<div class="col-md-9">
 					<label>Qualification</label>
-					<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain">
+					<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
 				</div>
 
 				<div class="col-md-2">

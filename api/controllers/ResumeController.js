@@ -115,6 +115,14 @@ module.exports = {
             }
             return res.json(200, { status: 'success' });
         });
+    },
+
+    getVideo: function(req, res) {
+        var candidate_id = req.param('candidate_id');
+        Resume.find({ user: candidate_id }).exec(function(err, resume) {
+            if (err) return res.json(200, { status: 'error' });
+            return res.json(200, { status: 'success', resume: resume[0] });
+        });
     }
 };
 

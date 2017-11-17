@@ -19,9 +19,9 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label for="title">Sector</label>
+				<label for="title">Industry</label>
 				<select name="sector" class="form-control" required>
-					<option value="">-- Choose Company Sector --</option>
+					<option value="">-- Choose Company Industry --</option>
 					{% for sector in sectors %}
 						{% if company.sector == sector.id %}
 							<option value="{{ sector.id }}" selected="selected">{{ sector.title }}</option>
@@ -88,13 +88,14 @@
 		<div class="row">
 			<div class="col-md-6">
 				<label for="phone">Password</label>
-				<input type="password" name="password" class="form-control" id="password" required/>
+				<input type="password" name="password" class="form-control" id="password"/>
 			</div>
 			<div class="col-md-6">
 				<label for="email">Verify Password</label>
-				<input type="password" name="verify_password" class="form-control" id="verify-password" required />
+				<input type="password" name="verify_password" class="form-control" id="verify-password" />
 			</div>
 		</div>
+		<input type="hidden" name="first_check" id="first_check" value="{{ first_time }}">
 	</div>
 	{#<input type="hidden" name="company_id" id="company_id" value="{{ company.id }}"/>#}
 

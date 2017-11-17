@@ -26,7 +26,7 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="header">
-						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Edit Your Corporate Profile</h4>
+						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Edit Your Resume</h4>
 					</div>
 					<div class="row">
 						<div class="col-md-12" style="padding: 50px">
@@ -48,6 +48,10 @@ $(document).ready(function() {
 		e.preventDefault();
 		$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
 		$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+		$('.datep').datepicker({
+			format: 'yyyy-mm-dd',
+			autoHide: true
+		});
 	});
 
 
@@ -64,6 +68,10 @@ $(document).ready(function() {
 		e.preventDefault();
 		$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
 		$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+		$('.datep').datepicker({
+			format: 'yyyy-mm-dd',
+			autoHide: true
+		});
 	});
 
 
@@ -80,6 +88,10 @@ $(document).ready(function() {
 		e.preventDefault();
 		$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
 		$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+		$('.datep').datepicker({
+			format: 'yyyy-mm-dd',
+			autoHide: true
+		});
 	});
 
 

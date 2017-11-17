@@ -96,6 +96,9 @@ module.exports = {
             if (err) return res.json(200, { status: 'Err', msg: err });
             if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
 
+            if (foundUser.status == 'Inactive') {
+                return res.json(200, { status: 'Err', msg: 'This account is still pending confirmation' });
+            }
             Passwords.checkPassword({
                 passwordAttempt: req.param('password'),
                 encryptedPassword: foundUser.password
@@ -233,6 +236,12 @@ module.exports = {
             }
             //return res.redirect('/user/profile');
         });
+    },
+
+    specialLoginPage: function(req, res) {
+        //var path = req.param('return_url');
+        var return_url = req.param('return_url');
+        return res.view('login', { return_url: return_url });
     }
 };
 

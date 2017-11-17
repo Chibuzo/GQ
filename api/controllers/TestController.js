@@ -178,9 +178,13 @@ module.exports = {
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
-            returnURL: 'http://144.217.245.35:1330/test/result',
-            dev: true,
-            debug: true,
+            returnURL: 'http://144.217.245.35:1330/test/show-result/' + req.param('test_id'),
+            dev: false,
+            debug: false,
+            //secure_mode: 1,
+            //browser_proctoring: 1,
+            //webcam_proctoring: 1,
+            //webcam_mandatory: 1,
             reuse: true,
             er_internal: '1296451'
         };
@@ -199,40 +203,18 @@ module.exports = {
         var data = JSON.parse(temp);
         var result = data.request.method;
 
-        //JobTest.find({ test: result.test_id }).exec(function(err, jobtest) {
-            var test_result = {
-                test_id: result.test_id,
-                applicant: result.user_id,
-                percentage: result.percentage,
-                percentile: result.percentile,
-                average_score: result.average_score,
-                test_result: result.test_result,
-                transcript_id: result.transcript_id,
-                //jobtest: jobtest[0].id
-            };
-            TestResult.create(test_result).exec(function (err) {
-                if (err) console.log(err);
-                console.log('Saved');
-            });
-        //});
-
-        var request = require('request');
-        var qs = require('querystring');
-
-        var body = {
-            "response": {
-                "info": {
-                    "success": "1",
-                    "transcript_id": result.transcript_id,
-                }
-            }
+        var test_result = {
+            test_id: result.test_id,
+            applicant: result.user_id,
+            percentage: result.percentage,
+            percentile: result.percentile,
+            average_score: result.average_score,
+            test_result: result.test_result,
+            transcript_id: result.transcript_id,
+            //jobtest: jobtest[0].id
         };
-        request.post('https://assessments.getqualified.work/webservices/', { form: qs.stringify(body) }, function(err, response, body) {
-            var data = JSON.parse(body);
-            //if (err || result.response.info.success != 1) {
-            //    // show error page
-            //}
-            return res.redirect('/test/show-result/' + result.test_id);
+        TestResult.create(test_result).exec(function (err) {
+            if (err) console.log(err);
         });
     }
 };
