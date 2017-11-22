@@ -36,8 +36,14 @@
     width: 200px;
 }
 
-.coy-logo img {
+.image {
     width: 100%;
+    min-height: 400px;
+}
+
+.card-user .content {
+    min-height: 100px;
+    margintop: 106px;
 }
 </style>
 <div class="content">
@@ -61,17 +67,16 @@
             <div class="col-md-4">
                 <div class="card card-user">
                     <div class="image">
-                        <!--                                <img src="https://ununsplash.imgix.net/photo-1431578500526-4d9613015464?fit=crop&fm=jpg&h=300&q=75&w=400" alt="..."/>-->
+                        {% if company.logo_name.length < 3 %}
+                            <img src="/images/company_logo.jpg" alt="..."/>
+                        {% else %}
+                            <img src="/logos/{{ company.logo_name }}" alt="Company Logo"/>
+                        {% endif %}
                     </div>
                     <div class="content">
                         <div class="author">
                             <a href="#">
-                                {% if company.logo_name.length < 3 %}
-                                    <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
-                                {% else %}
-                                    <div class="coy-logo"><img class="avatar border-gray" src="/logos/company.logo_name" alt="..."/></div>
-                                {% endif %}
-
+                                <img src="" />
                                 <h4 class="title">{{ company.company_name }}<br />
                                     <small>{{ company.contact_email }}</small>
                                 </h4>
@@ -80,9 +85,7 @@
                     </div>
                     <hr>
                     <div class="text-center">
-                        <!--<button href="#" class="btn btn-simple"><i class="fa fa-facebook-square"></i></button>
-						<button href="#" class="btn btn-simple"><i class="fa fa-twitter"></i></button>
-						<button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>-->
+
                     </div>
                 </div>
             </div>
@@ -95,30 +98,30 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
-    $("#logo-btn").click(function () {
-        $("#logo").click();
-    });
+//    $("#logo-btn").click(function () {
+//        $("#logo").click();
+//    });
 
 
-    $("#logo").on('change', function () {
-        if (typeof (FileReader) != "undefined") {
-            var image_holder = $("#thumbnail-holder");
-            image_holder.empty();
-
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                $("<img />", {
-                    "src": e.target.result,
-                    "class": "preview-image"
-                }).appendTo(image_holder);
-
-            }
-            image_holder.show();
-            reader.readAsDataURL($(this)[0].files[0]);
-        } else {
-            alert("This browser does not support FileReader.");
-        }
-    });
+//    $("#logo").on('change', function () {
+//        if (typeof (FileReader) != "undefined") {
+//            var image_holder = $("#thumbnail-holder");
+//            image_holder.empty();
+//
+//            var reader = new FileReader();
+//            reader.onload = function (e) {
+//                $("<img />", {
+//                    "src": e.target.result,
+//                    "class": "preview-image"
+//                }).appendTo(image_holder);
+//
+//            }
+//            image_holder.show();
+//            reader.readAsDataURL($(this)[0].files[0]);
+//        } else {
+//            alert("This browser does not support FileReader.");
+//        }
+//    });
 
 
     $("#form-company-setup").submit(function(e) {

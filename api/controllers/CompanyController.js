@@ -27,7 +27,7 @@ module.exports = {
                     // mofo detected! redirect...
                     req.session.coy_id = com.id;
                     Sector.find({ removed: 'false' }).exec(function(err, sectors) {
-                        return res.view('company/setup', { company: com[0], sectors: sectors });
+                        return res.view('company/setup', { company: com[0], sectors: sectors, first_time: 'true' });
                     });
                 } else {
                     CompanyRequest.findOne({ contact_email: email }).exec(function (err, coy) {
@@ -54,6 +54,23 @@ module.exports = {
     updateDetails: function (req, res) {
         var q = req.param;
 
+        var data = {
+            company_name: q('company_name'),
+            sector: q('sector'),
+            contact_person: q('contact_person'),
+            contact_phone: q('contact_phone'),
+            contact_email: q('contact_email'),
+            description: q('description'),
+            address: q('address'),
+            country: q('country'),
+            r_state: q('state'),
+            city: q('city'),
+            sector: q('sector'),
+        };
+        Company.update({ id: req.session.coy_id }, data).exec(function (err, com) {
+            //if (err) return;
+        });
+
         var allowedImgTypes = ['image/png', 'image/jpeg', 'image/gif'];
         var filename;
         req.file('logo').upload({
@@ -69,13 +86,18 @@ module.exports = {
         },
         function(err) {
             if (err) {
-                return res.badRequest(err);
+                return res.ok();
             }
+            if (!_.isEmpty(q('logo_name'))) filename = q('logo_name');
+            Company.update({ id: req.session.coy_id }, { logo_name: filename }).exec(function() {});
+        });
+
+        if (q('first_check') == 'true') {
             Passwords.encryptPassword({
                 password: q('password'),
             }).exec({
                 error: function (err) {
-                    return res.serverError(err);
+                    return res.json(200, { status: 'error', msg: err });
                 },
                 success: function (encryptedPassword) {
                     // add access user for this company
@@ -84,31 +106,14 @@ module.exports = {
                         email: q('contact_email'),
                         password: encryptedPassword,
                         company: req.session.coy_id,
-                        user_type: 'company-admin'
+                        user_type: 'company-admin',
+                        status: 'Active'
                     };
-                    User.create(user).exec(function() {});
-                    var data = {
-                        company_name: q('company_name'),
-                        sector: q('sector'),
-                        contact_person: q('contact_person'),
-                        contact_phone: q('contact_phone'),
-                        contact_email: q('contact_email'),
-                        description: q('description'),
-                        address: q('address'),
-                        country: q('country'),
-                        r_state: q('state'),
-                        city: q('city'),
-                        sector: q('sector'),
-                        logo_name: filename
-                    };
-                    Company.update({ id: req.session.coy_id }, data).exec(function (err, com) {
-                        if (err) return;
-                        //return res.view('company/setup', { company: com });
-                        return res.json(200, { status: 'success' });
-                    });
+                    User.create(user).exec(function () {});
                 }
             });
-        });
+        }
+        return res.json(200, { status: 'success' });
     },
 
     profile: function(req, res) {

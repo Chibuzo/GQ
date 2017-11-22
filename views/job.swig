@@ -70,7 +70,7 @@
 				<h3>{{ job.job_title }}</h3>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
-						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} UBA</li>
+						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} </li>
 						<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
 						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
 					</ul>

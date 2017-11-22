@@ -84,42 +84,46 @@
 			</div>
 		</div>
 	</div>
-	<div class="form-group">
-		<div class="row">
-			<div class="col-md-6">
-				<label for="phone">Password</label> [ <span class="red">*</span> ]
-				<input type="password" name="password" class="form-control" id="password"/>
+
+	{% if first_time == 'true' %}
+		<div class="form-group">
+			<div class="row">
+				<div class="col-md-6">
+					<label for="phone">Password</label>
+					<input type="password" name="password" class="form-control" id="password"/>
+				</div>
+				<div class="col-md-6">
+					<label for="email">Verify Password</label>
+					<input type="password" name="verify_password" class="form-control" id="verify-password" />
+				</div>
 			</div>
-			<div class="col-md-6">
-				<label for="email">Verify Password</label> [ <span class="red">*</span> ]
-				<input type="password" name="verify_password" class="form-control" id="verify-password" />
-			</div>
+			<input type="hidden" name="first_check" id="first_check" value="{{ first_time }}">
 		</div>
-		<input type="hidden" name="first_check" id="first_check" value="{{ first_time }}">
-	</div>
+	{% endif %}
 	{#<input type="hidden" name="company_id" id="company_id" value="{{ company.id }}"/>#}
+	<input type="hidden" name="logo_name" value="{{ company.logo_name }}" />
+	<div class="form-group uploaddiv">
+		{#<div class="row">#}
+			{#<div class="col-md-4">#}
+				{#<div class="preview">#}
+					{#<strong>Business Logo</strong>#}
 
-	<div class="form-group upload-div">
-		<div class="row">
-			<div class="col-md-4">
-				<div class="preview">
-					<strong>Business Logo</strong>
-
-					<div class="artwork" id="thumbnail-holder">
-					</div>
-					<br>
-					<button type="button" class="btn btn-default btn-block" id="logo-btn">Select Logo Image
-					</button>
-				</div>
-			</div>
-			<div class="col-md-8">
-				<div class="details">
-					Thumbnail details
-				</div>
-			</div>
-		</div>
+					{#<div class="artwork" id="thumbnail-holder">#}
+					{#</div>#}
+					{#<br>#}
+					{#<button type="button" class="btn btn-default btn-block" id="logo-btn">Select Logo Image#}
+					{#</button>#}
+				{#</div>#}
+			{#</div>#}
+			{#<div class="col-md-8">#}
+				{#<div class="details">#}
+					{#Thumbnail details#}
+				{#</div>#}
+			{#</div>#}
+		{#</div>#}
+		<label for="logo">Company Logo Image</label>
+		<input type="file" name="logo" class="form-control-file"  id="logo"/>
 	</div>
-	<input type="file" name="logo" class="hidden" id="logo"/>
 	<!--<input type="file" name="video_files" class="hidden" id="video-file" />-->
 	<button type="submit" class="clearfix btn btn-warning btn-fill pull-right" id=""><i class="fa fa-save"></i> Update Details</button>
 </form>
