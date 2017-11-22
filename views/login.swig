@@ -4,7 +4,7 @@
 	<section class="container" style="margin-top: 20px">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3 auth-panel">
-				<h2 class="text-center">Authentication</h2><br>
+				<h2 class="text-center">Log In</h2><br>
 				<form action="/user/login" method="post" class="form-vertical" id="sgnin">
 					<div class="form-group">
 						<label>Email</label>

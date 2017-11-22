@@ -55,6 +55,8 @@ module.exports.routes = {
 
     'GET /admin/manage-courses': 'CourseController.getCourses',
 
+    'GET /admin/gq-test': 'GQTestController.manageTest',
+
     'GET /courses': 'CourseController.listCourses',
 
     'GET /course/addnew': 'CourseController.addNew',
@@ -115,6 +117,8 @@ module.exports.routes = {
 
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
 
+    'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
+
     'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
 
     'GET /test': 'TestController.testApi',
@@ -132,4 +136,6 @@ module.exports.routes = {
     //'GET /loadschools': 'BatchController.loadSchools'
 
     //'GET /savetest': 'TestController.saveTest',
+
+    'GET /countries': 'BatchController.countries'
 };

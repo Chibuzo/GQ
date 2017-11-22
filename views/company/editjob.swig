@@ -46,12 +46,17 @@ $(document).ready(function() {
 	// update select controls
 	var job_category_id = {{ job.category | json | safe }};
 	var job_level = {{ job.job_level | json | safe }};
+	var contract_type = {{ job.contract_type | json | safe }};
 	$("select[name=category]").find('option').filter(function(i) {
 		return job_category_id == $(this).val();
 	}).attr("selected", "selected");
 
 	$("select[name=job_level]").find('option').filter(function(i) {
 		return job_level == $(this).val();
+	}).attr("selected", "selected");
+
+	$("select[name=contract_type]").find('option').filter(function(i) {
+		return contract_type == $(this).val();
 	}).attr("selected", "selected");
 });
 </script>

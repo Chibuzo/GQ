@@ -2,7 +2,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label for="title">Name of Company/Organisation</label>
+				<label for="title">Name of Company/Organisation </label> [ <span class="red">*</span> ]
 				<input type="text" name="company_name" class="form-control" id="company_name"
 					   value="{{ company.company_name }}" required/>
 			</div>
@@ -20,7 +20,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<label for="title">Industry</label>
-				<select name="sector" class="form-control" required>
+				<select name="sector" class="form-control">
 					<option value="">-- Choose Company Industry --</option>
 					{% for sector in sectors %}
 						{% if company.sector == sector.id %}
@@ -64,7 +64,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label for="title">Contact Person</label>
+				<label for="title">Contact Person</label> [ <span class="red">*</span> ]
 				<input type="text" name="contact_person" class="form-control" id="contact_person"
 					   value="{{ company.contact_person }}" required/>
 			</div>
@@ -87,11 +87,11 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-6">
-				<label for="phone">Password</label>
+				<label for="phone">Password</label> [ <span class="red">*</span> ]
 				<input type="password" name="password" class="form-control" id="password"/>
 			</div>
 			<div class="col-md-6">
-				<label for="email">Verify Password</label>
+				<label for="email">Verify Password</label> [ <span class="red">*</span> ]
 				<input type="password" name="verify_password" class="form-control" id="verify-password" />
 			</div>
 		</div>

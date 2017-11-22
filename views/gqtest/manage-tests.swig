@@ -1,19 +1,19 @@
-{% extends 'layout.swig' %}
-{% set title = 'Manage Jobs' %}
+{% extends '../admin/layout.swig' %}
+{% set title = 'Manage Test' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Manage Job Board
+	<i class="pe-7s-edit"></i> Manage Tests
 {% endblock %}
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/job/addjob" class="btn btn-danger btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
+		<a href="/gqtest/createnew" class="btn btn-danger btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Create New Test</a>
 	</div>
 
 	<div class="col-md-12">
 		<div class="card">
 			<div class="header row">
 				<div class="col-md-6">
-					<h4 class="title">All Jobs</h4>
+					<h4 class="title">All Tests</h4>
 					<p class="category"></p>
 				</div>
 			</div>
@@ -23,35 +23,31 @@
 					<tr>
 						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
 						<th>Date Added</th>
-						<th>Job Title</th>
-						<th>Job Level</th>
-						<th class="hidden">Job Category</th>
-						<th>Contract Type</th>
-						<th style="width: 60px">Applications</th>
+						<th>Test Name</th>
+						<th>Category</th>
+						<th>Duration</th>
+						<th>Questions</th>
 						<th>Status</th>
-						<th><i class="fa fa-calendar"></i> Closes On</th>
 						<th class="text-center">Action</th>
 					</tr>
 					</thead>
 					<tbody>
 					{% set n = 0 %}
-					{% for job in jobs %}
-						{% set applications = job.applications.length %}
-						<tr id="{{ job.id }}">
+					{% for test in tests %}
+						{% set no_of_quests = test.questions.length %}
+						<tr id="{{ test.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-							<td>{{ job.createdAt | date('d M, Y') }}</td>
-							<td>{{ job.job_title }}</td>
-							<td class="hidden">{{ job.category.category }}</td>
-							<td>{{ job.job_level }}</td>
-							<td>{{ job.contract_level }}</td>
-							<td class="text-right"><a href="/job/view-candidates/{{ job.id }}">{{ applications }}</a></td>
-							<td>{{ job.status }}</td>
-							<td>{{ job.closing_date | date('d M, Y') }}</td>
+							<td>{{ test.createdAt | date('d M, Y') }}</td>
+							<td>{{ test.test_name }}</td>
+							<td>{{ test.category }}</td>
+							<td>{{ test.duration }}</td>
+							<td>{{ no_of_quests }}</td>
+							<td>{{ test.status }}</td>
 							<td class="opt-icons text-center">
-								<a href="/job/editjob/{{ job.id }}" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+								<a href="/gqtest/edittest/{{ test.id }}" class="edit-test" rel="tooltip" title="Edit Test"><i class="fa fa-pencil fa-lg"></i></a>
 								<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>
-								<a href="" class="upload-csv" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
-								<a href="" class="del-job" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
+								<a href="" class="upload-test-questions" rel="tooltip" title="Upload test questions"><i class="fa fa-file-text-o fa-lg"></i></a>
+								<a href="" class="del-test" rel="tooltip" title="Delete test"><i class="fa fa-trash-o fa-lg"></i></a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -61,14 +57,14 @@
 		</div>
 	</div>
 
-	<form action="/company/upload-csv" method="post" id="form-csv" enctype="multipart/form-data">
-		<input type="hidden" name="job_id" id="job_id" />
-		<input type="file" name="csv" id="csv" class="hidden" />
+	<form action="/gqtest/upload-questions" method="post" id="form-excel" enctype="multipart/form-data">
+		<input type="hidden" name="test_id" id="test_id" />
+		<input type="file" name="excel" id="excel" class="hidden" />
 	</form>
 {% endblock %}
 
 {% block modals %}
-{% include "includes/job-form.swig" %}
+{% include "includes/test-form.swig" %}
 {% include "includes/manage-test-modal.swig" %}
 {% endblock %}
 
@@ -77,8 +73,8 @@
 $(document).ready(function() {
 	$(".upload-csv").click(function(e) {
 		e.preventDefault();
-		var job_id = $(this).parents('tr').attr('id');
-		$("#job_id").val(job_id);
+		var test_id = $(this).parents('tr').attr('id');
+		$("#test_id").val(test_id);
 		$("#csv").click();
 	});
 
@@ -88,11 +84,11 @@ $(document).ready(function() {
 
 
 	$(".view-tests").click(function() {
-		var job_title = $(this).parents('tr').find('td:nth-child(3)').text();
-		var job_category = $(this).parents('tr').find('td:nth-child(4)').text();
-		var job_level = $(this).parents('tr').find('td:nth-child(5)').text();
-		$("#manageTestModal").find('.modal-title').text(job_title);
-		$.get('/getJobTest/' + job_category + '/' + job_level, function(d) {
+		var test_title = $(this).parents('tr').find('td:nth-child(3)').text();
+		var test_category = $(this).parents('tr').find('td:nth-child(4)').text();
+		var test_level = $(this).parents('tr').find('td:nth-child(5)').text();
+		$("#manageTestModal").find('.modal-title').text(test_title);
+		$.get('/gettestTest/' + test_category + '/' + test_level, function(d) {
 			if (d.status.trim() == 'success') {
 				var test_html = '';
 				if (d.test.length < 1) {
@@ -103,7 +99,7 @@ $(document).ready(function() {
 				d.test.forEach(function(test) {
 					test_html += "<tr>" +
 							"<td>" + test.test_title + "</td>" +
-							"<td>" + test.job_category + "</td>" +
+							"<td>" + test.test_category + "</td>" +
 							"<td>" + test.test.total_questions + "</td>" +
 							"<td>" + test.test.duration + "</td>" +
 							"</tr>";
@@ -115,12 +111,12 @@ $(document).ready(function() {
 	});
 
 
-	$(".del-job").click(function (e) {
+	$(".del-test").click(function (e) {
 		e.preventDefault();
 		var $this = $(this);
-		if (confirm("Are you sure you want to delete this job?")) {
+		if (confirm("Are you sure you want to delete this test?")) {
 			var id = $(this).parents('tr').attr('id');
-			$.get('/job/remove', { id: id }, function(d) {
+			$.get('/test/remove', { id: id }, function(d) {
 				if (d.status.trim() == 'success') {
 					$this.parents('tr').fadeOut();
 				}

@@ -47,6 +47,7 @@
                 <div class="card">
                     <div class="header">
                         <h4 class="title">Company Profile</h4>
+                        <small>Fields marked in asterisk are compulsary</small>
                     </div>
 
                     <div class="row">

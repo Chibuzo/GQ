@@ -21,7 +21,8 @@
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th syle="width: 20%">Test Name</th>
 						<th>Test Title</th>
-						<th style="width: 20%">Job Cateogry</th>
+						<th>Job Cateogry</th>
+						<th>Job Level</th>
 						<th style="width: 120px">No of Questions</th>
 						<th style="with: 190px" class="text-right">Pass Mark</th>
 						<th></th>
@@ -34,6 +35,7 @@
 							<td>{{ test.test.test_name }}</td>
 							<td>{{ test.test_title }}</td>
 							<td>{{ test.job_category }}</td>
+							<td>{{ test.job_level }}</td>
 							<td class="text-right">{{ test.test.total_questions }}</td>
 							<td class="text-right">{{ test.test.pass_mark }}</td>
 							<td class="opt-icons">

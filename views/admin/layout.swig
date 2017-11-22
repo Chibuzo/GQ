@@ -110,6 +110,13 @@
                     </a>
                 </li>
 
+                <li class="">
+                    <a href="#/admin/gq-test">
+                        <i class="pe-7s-edit"></i>
+                        <p>GQ Tests</p>
+                    </a>
+                </li>
+
                 <li>
                     <a href="/user/profile">
                         <i class="pe-7s-user"></i>

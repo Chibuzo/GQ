@@ -5,7 +5,7 @@
 				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 					×
 				</button>
-				<h4 class="modal-title" id="myModalLabel">Access Request</h4>
+				<h4 class="modal-title" id="myModalLabel">Company Sign Up</h4>
 			</div>
 
 			<form action="/company/request" method="post" id="form-request-access">

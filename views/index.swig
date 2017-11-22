@@ -20,7 +20,7 @@ header {
 	min-height: 600px;
 }
 
-header h1, h4 {
+header h1, header h4 {
 	color: #fff;
 }
 
@@ -118,7 +118,7 @@ header h1, h4 {
 					<li><a href="#">About</a></li>
 					<li><a href="/courses">Courses</a></li>
 					<li><a href="/login">Login</a></li>
-					<li><a href class="btn btn-default">Sign Up</a> </li>
+					<li><a href="/signup" class="btn btn-default">Sign Up</a> </li>
 				</ul>
 			</div>
 		</div>

@@ -33,6 +33,17 @@ module.exports = {
         });
     },
 
+    getJobTest: function(req, res) {
+        var category = req.param('category');
+        var job_level = req.param('job_level');
+        JobTest.find({ job_category: category, job_level: job_level }).populate('test').exec(function(err, tests) {
+            if (err) {
+                return res.json(200, { status: 'error', msg: err });
+            }
+            return res.json(200, { status: 'success', test: tests });
+        });
+    },
+
     removeTest: function (req, res) {
         var job_id = req.param('job_id');
         JobTest.destroy({ id: job_id }).exec(function() {

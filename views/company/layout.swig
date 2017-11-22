@@ -105,13 +105,6 @@
                         <p>Company Profile</p>
                     </a>
                 </li>
-
-                <li>
-                    <a href="/admin/setup">
-                        <i class="pe-7s-tools"></i>
-                        <p>Settings</p>
-                    </a>
-                </li>
             </ul>
         </div>
     </div>

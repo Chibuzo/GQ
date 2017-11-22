@@ -23,8 +23,16 @@ module.exports = {
             type: 'string'
         },
 
+        contract_type: {
+            type: 'string'
+        },
+
         category: {
             model: 'jobcategory'
+        },
+
+        country: {
+            type: 'string'
         },
 
         location: {

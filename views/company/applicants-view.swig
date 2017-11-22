@@ -48,6 +48,11 @@
                     {% endfor %}
                     </tbody>
                 </table>
+                {% if results.length < 1 %}
+                    <div class="row">
+                        <div class="col-md-12" style="padding: 0 45px"><div class="alert alert-warning"><i class="fa fa-info-circle fa-lg"></i> No candidate has taken a test for this job.</div></div>
+                    </div>
+                {% endif %}
             </div>
         </div>
     </div>

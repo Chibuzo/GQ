@@ -24,6 +24,11 @@ module.exports = {
                 }
             });
         });
+    },
+
+    countries: function (req, res) {
+        CountryStateService.getCountryStates(658);
+        return res.ok();
     }
 };
 

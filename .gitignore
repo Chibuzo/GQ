@@ -41,7 +41,10 @@
 
 config/local.js
 config/email.js
+assets/logos/*
+assets/csv-files/*
 assets/applicant_videos/*
+views/emailTemplates/*
 
 
 ################################################

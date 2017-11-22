@@ -1,5 +1,5 @@
-{% extends 'layout.swig' %}
-{% set title = 'Add Job' %}
+{% extends '../admin/layout.swig' %}
+{% set title = 'Create New Test' %}
 {% block page_title %}
 	<i class="pe-7s-timer"></i> &nbsp;Add New Job
 {% endblock %}
@@ -26,11 +26,11 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="header">
-						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Add New Job</h4>
+						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Create New Test</h4>
 					</div>
 					<div class="row">
 						<div class="col-md-12" style="padding: 50px">
-							{% include 'includes/job-form.swig' %}
+							{% include 'includes/test-form.swig' %}
 						</div>
 					</div>
 				</div>
@@ -43,8 +43,7 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
-	var coun = {{ countries | json | safe }};
-	console.log(coun);
+
 });
 </script>
 {% endblock %}

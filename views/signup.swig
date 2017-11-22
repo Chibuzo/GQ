@@ -4,7 +4,7 @@
 	<section class="container" style="margin-top: 20px">
 		<div class="row">
 			<div class="col-md-6 col-md-offset-3 auth-panel">
-				<h2 class="text-center">Sign Up</h2><br>
+				<h2 class="text-center">Candidate Sign Up</h2><br><br>
 				<form action="/user/signup" method="post" class="form-vertical" id="signup">
 					<div class="form-group">
 						<label>Fullname</label>

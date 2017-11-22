@@ -16,13 +16,20 @@
 			</div>
 			<div class="col-md-6">
 				<label>Job Location</label>
-				<select name="location" class="form-control" required>
-					<option value="">-- Select Job Location --</option>
-					{#{% for cat in jobcategories %}#}
-						<option value="Lagos">Lagos</option>
-						<option value="Abuja">Abuja</option>
-					{#{% endfor %}#}
-				</select>
+				<div class="row">
+					<div class="col-md-6">
+						<select name="country" class="form-control" required>
+							<option value="">-- Country --</option>
+							{% for country in countries %}
+								<option value="{{ country.geonameId }}">{{ country.countryName }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-6">
+						<input type="text" name="location" placeholder="City, State" class="form-control" />
+					</div>
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -43,23 +50,33 @@
 
 	<div class="form-group">
 		<div class="row">
-			<div class="col-md-6">
-				{#<label>Publish</label>#}
-				{#<select name="publish_now" class="form-control">#}
-				{#<option value="1">Publish Now</option>#}
-				{#<option value="0">Publish Later</option>#}
-				{#</select>#}
+			<div class="col-md-4">
 				<label>Job Level</label>
 				<select name="job_level" id="job_level" class="form-control">
 					<option value=""></option>
+					{#<option value="Entry">Entry Level</option>#}
+					{#<option value="Intermediate">Intermediate</option>#}
+					{#<option value="Professional">Professional</option>#}
 					<option value="Entry">Entry Level</option>
-					<option value="Intermediate">Intermediate</option>
-					<option value="Professional">Professional</option>
+					<option value="Associate">Associate</option>
+					<option value="Senior">Senior</option>
+					<option value="Manager">Manager</option>
+					<option value="Director">Director</option>
+					<option value="Executive">Executive</option>
 				</select>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
+				<label>Contract Type</label>
+				<select name="contract_type" id="contract_type" class="form-control">
+					<option value=""></option>
+					<option value="Entry">Full time</option>
+					<option value="Intermediate">Part time</option>
+					<option value="Professional">Internship</option>
+				</select>
+			</div>
+			<div class="col-md-4">
 				<label>Closing Date</label>
-				<input name="closing_date" id="closing_date" type="text"value="{{ job.closing_date | date('d-m-Y') }}" class="form-control datep"/>
+				<input name="closing_date" id="closing_date" type="text"value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep"/>
 			</div>
 		</div>
 	</div>

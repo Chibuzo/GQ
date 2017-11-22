@@ -26,8 +26,13 @@
 								<select name="job_level" id="job_level" class="form-control">
 									<option value=""></option>
 									<option value="Entry">Entry Level</option>
-									<option value="Intermediate">Intermediate</option>
-									<option value="Professional">Professional</option>
+									{#<option value="Intermediate">Intermediate</option>#}
+									{#<option value="Professional">Professional</option>#}
+									<option value="Associate">Associate</option>
+									<option value="Senior">Senior</option>
+									<option value="Manager">Manager</option>
+									<option value="Director">Director</option>
+									<option value="Executive">Executive</option>
 								</select>
 							</div>
 						</div>
