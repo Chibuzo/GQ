@@ -21,7 +21,7 @@ header {
 }
 
 header h1, header h4 {
-	color: #fff;
+	color: #2D51A3;
 }
 
 .white {

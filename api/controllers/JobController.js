@@ -90,39 +90,41 @@ module.exports = {
                 // sign up the applicants
                 async.each(rows, function(row, cb) {
                     var entry = row.split(',');
-                    var data = {
-                        fullname: entry[0].trim(),
-                        email: entry[1].trim(),
-                        phone: entry[2].trim(),
-                        user_type: 'Applicant'
-                    };
-                    Job.findOne({ id: job_id }).populate('company').exec(function (j_err, job) {
-                        if (j_err) return;
-                        User.create(data).exec(function(err, user) {
-                            if (err) {
-                                if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
-                                    // already a user so we try to automatically apply for this job on his behalf
-                                    User.findOne({ email: entry[1].trim() }).exec(function (err, old_user) {
-                                        if (err) return;
-                                        if (old_user.status == 'Inactive') {
-                                            sendMail.sendAppliedJobNotice(job, old_user);
-                                        }
-                                        JobService.apply(job_id, old_user.id).then(function (resp) {
-                                            //console.log(resp);
-                                        }).catch(function (err) {
-                                            console.log(err);
+                    if (entry[0] !== undefined && entry[1] !== undefined && entry[2] !== undefined) {
+                        var data = {
+                            fullname: entry[0].trim(),
+                            email: entry[1].trim(),
+                            phone: entry[2].trim(),
+                            user_type: 'Applicant'
+                        };
+                        Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                            if (j_err) return;
+                            User.create(data).exec(function (err, user) {
+                                if (err) {
+                                    if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
+                                        // already a user so we try to automatically apply for this job on his behalf
+                                        User.findOne({email: entry[1].trim()}).exec(function (err, old_user) {
+                                            if (err) return;
+                                            if (old_user.status == 'Inactive') {
+                                                sendMail.sendAppliedJobNotice(job, old_user);
+                                            }
+                                            JobService.apply(job_id, old_user.id).then(function (resp) {
+                                                //console.log(resp);
+                                            }).catch(function (err) {
+                                                console.log(err);
+                                            });
+                                            cb();
                                         });
-                                        cb();
-                                    });
+                                    }
                                 }
-                            }
-                            if (user) {
-                                JobService.apply(job_id, user.id);
-                                sendMail.sendAppliedJobNotice(job, user);
-                                cb();
-                            }
+                                if (user) {
+                                    JobService.apply(job_id, user.id);
+                                    sendMail.sendAppliedJobNotice(job, user);
+                                    cb();
+                                }
+                            });
                         });
-                    });
+                    }
                 },
                 function (err) {
                     if (err) return console.log(err);

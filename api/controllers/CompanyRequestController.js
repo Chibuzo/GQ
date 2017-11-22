@@ -21,7 +21,7 @@ module.exports = {
     },
 
     viewPendingRequests: function(req, res) {
-        CompanyRequest.find().exec(function(err, reqs) {
+        CompanyRequest.find({ status: 'Pending' }).exec(function(err, reqs) {
             if (err) return console.log(err);
             return res.view('admin/coy-requests', { requests: reqs });
         });
