@@ -124,6 +124,8 @@
 							<option value="BSc">BSc</option>
 							<option value="Msc">Msc</option>
 							<option value="PhD">PhD</option>
+							<option value="HND">HND</option>
+							<option value="OND">OND</option>
 						</select>
 					</div>
 					<div class="col-md-3">
@@ -158,6 +160,8 @@
 						<option value="BSc">BSc</option>
 						<option value="Msc">Msc</option>
 						<option value="PhD">PhD</option>
+						<option value="HND">HND</option>
+						<option value="OND">OND</option>
 					</select>
 				</div>
 				<div class="col-md-3">
@@ -301,11 +305,11 @@
 					<div class="row">
 						<div class="col-md-5">
 							<label>start Date</label>
-							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}" required>
+							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}">
 						</div>
 						<div class="col-md-5">
 							<label>End Date</label>
-							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}" required>
+							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}">
 						</div>
 						<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
 						<div class="col-md-1">
@@ -320,12 +324,12 @@
 					<div class="row">
 						<div class="col-md-4">
 							<label>Company/Organisation</label>
-							<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" required>
+							<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation">
 						</div>
 
 						<div class="col-md-4">
 							<label>Job Title</label>
-							<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role" required>
+							<input type="text" name="job_title[]" class="form-control" placeholder="Job Title/Role">
 						</div>
 
 						<div class="col-md-4">
@@ -344,11 +348,11 @@
 					<div class="row">
 						<div class="col-md-5">
 							<label>start Date</label>
-							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" required>
+							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
 						</div>
 						<div class="col-md-5">
 							<label>End Date</label>
-							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" required>
+							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
 						</div>
 						<div class="col-md-1">
 							<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
@@ -361,7 +365,7 @@
 				<div class="row">
 					<div class="col-md-4">
 						<label>Company/Organisation</label>
-						<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation" required>
+						<input type="text" name="company[]" class="form-control" placeholder="Name of Company/Organisation">
 					</div>
 
 					<div class="col-md-4">
@@ -389,7 +393,7 @@
 					</div>
 					<div class="col-md-5">
 						<label>End Date</label>
-						<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" required>
+						<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
 					</div>
 					<div class="col-md-1">
 						<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
@@ -451,34 +455,34 @@
 				<div class="row">
 					<div class="col-md-6">
 						<label>First name</label>
-						<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}" required>
+						<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}">
 					</div>
 
 					<div class="col-md-6">
 						<label>Last name</label>
-						<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="" required>
+						<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<label>Company/Organisation</label>
-						<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}" required>
+						<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}">
 					</div>
 
 					<div class="col-md-6">
 						<label>Job Title</label>
-						<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}" required>
+						<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}">
 					</div>
 				</div>
 				<div class="row">
 					<div class="col-md-6">
 						<label>Email</label>
-						<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}" required>
+						<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}">
 					</div>
 
 					<div class="col-md-5">
 						<label>Phone</label>
-						<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" required>
+						<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" >
 					</div>
 					<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 					<div class="col-md-1">

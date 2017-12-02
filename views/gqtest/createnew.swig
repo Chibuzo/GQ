@@ -1,7 +1,7 @@
 {% extends '../admin/layout.swig' %}
 {% set title = 'Create New Test' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> &nbsp;Add New Job
+	<i class="pe-7s-edit"></i> &nbsp;Create New Text
 {% endblock %}
 
 {% block body %}
@@ -18,6 +18,10 @@
 
 	fieldset {
 		margin-top: 23px;
+	}
+
+	.add-quest-btn {
+		display: none;
 	}
 </style>
 <div class="content">
@@ -41,6 +45,7 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script type="text/javascript" src="/js/gqTestBackend.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 

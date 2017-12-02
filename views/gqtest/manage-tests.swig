@@ -45,8 +45,7 @@
 							<td>{{ test.status }}</td>
 							<td class="opt-icons text-center">
 								<a href="/gqtest/edittest/{{ test.id }}" class="edit-test" rel="tooltip" title="Edit Test"><i class="fa fa-pencil fa-lg"></i></a>
-								<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>
-								<a href="" class="upload-test-questions" rel="tooltip" title="Upload test questions"><i class="fa fa-file-text-o fa-lg"></i></a>
+								<a href="/gqtest/viewresults/{{ test.id }}" rel="tooltip" title="View Test Results"><i class="fa fa-eye fa-lg"></i></a>
 								<a href="" class="del-test" rel="tooltip" title="Delete test"><i class="fa fa-trash-o fa-lg"></i></a>
 							</td>
 						</tr>
@@ -64,59 +63,20 @@
 {% endblock %}
 
 {% block modals %}
-{% include "includes/test-form.swig" %}
-{% include "includes/manage-test-modal.swig" %}
+{#{% include "includes/test-form.swig" %}#}
+{#{% include "includes/manage-test-modal.swig" %}#}
 {% endblock %}
 
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
-	$(".upload-csv").click(function(e) {
-		e.preventDefault();
-		var test_id = $(this).parents('tr').attr('id');
-		$("#test_id").val(test_id);
-		$("#csv").click();
-	});
-
-	$("#csv").change(function() {
-		$("#form-csv").submit();
-	});
-
-
-	$(".view-tests").click(function() {
-		var test_title = $(this).parents('tr').find('td:nth-child(3)').text();
-		var test_category = $(this).parents('tr').find('td:nth-child(4)').text();
-		var test_level = $(this).parents('tr').find('td:nth-child(5)').text();
-		$("#manageTestModal").find('.modal-title').text(test_title);
-		$.get('/gettestTest/' + test_category + '/' + test_level, function(d) {
-			if (d.status.trim() == 'success') {
-				var test_html = '';
-				if (d.test.length < 1) {
-					$("#manageTestModal .modal-body").find('.alert-info').removeClass('hidden');
-					$("#tb-tests").html('');
-					return;
-				}
-				d.test.forEach(function(test) {
-					test_html += "<tr>" +
-							"<td>" + test.test_title + "</td>" +
-							"<td>" + test.test_category + "</td>" +
-							"<td>" + test.test.total_questions + "</td>" +
-							"<td>" + test.test.duration + "</td>" +
-							"</tr>";
-				});
-				$("#manageTestModal").find(".modal-body").find('.alert-info').addClass('hidden');
-				$("#tb-tests").html(test_html);
-			}
-		}, 'JSON');
-	});
-
 
 	$(".del-test").click(function (e) {
 		e.preventDefault();
 		var $this = $(this);
 		if (confirm("Are you sure you want to delete this test?")) {
 			var id = $(this).parents('tr').attr('id');
-			$.get('/test/remove', { id: id }, function(d) {
+			$.get('/gqtest/remove', { id: id }, function(d) {
 				if (d.status.trim() == 'success') {
 					$this.parents('tr').fadeOut();
 				}

@@ -36,6 +36,10 @@ module.exports = {
           type: 'string'
       },
 
+      opt_e: {
+          type: 'string'
+      },
+
       answer: {
           type: 'string'
       }

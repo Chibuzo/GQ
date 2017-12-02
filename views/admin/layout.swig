@@ -26,6 +26,19 @@
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
+    <script src="/js/plugins/tinymce.min.js"></script>
+    <script>tinymce.init({
+            selector:'textarea.editor',
+            menubar: false,
+            plugins: [
+                'lists preview',
+            ],
+            toolbar: 'bullist numlist outdent indent',
+            content_css: [
+                '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
+                '//www.tinymce.com/css/codepen.min.css']
+        });
+    </script>
 
     <style>
         .ok-header {
@@ -38,6 +51,10 @@
 
         .opt-icons .fa {
             margin: 2px 5px;
+        }
+
+        .mce-notification {
+            display: none !important;
         }
     </style>
 </head>
@@ -111,7 +128,7 @@
                 </li>
 
                 <li class="">
-                    <a href="#/admin/gq-test">
+                    <a href="/admin/gq-test">
                         <i class="pe-7s-edit"></i>
                         <p>GQ Tests</p>
                     </a>
@@ -222,7 +239,22 @@
         });
     });
 
-    {% block script %} {% endblock %}
+    function showNotification(from, align, color, message, ico){
+        //color = Math.floor((Math.random() * 4) + 1);
+
+        $.notify({
+            icon: ico, //"pe-7s-gift",
+            message: message
+
+        },{
+            type: color,
+            timer: 4000,
+            placement: {
+                from: from,
+                align: align
+            }
+        });
+    }
 </script>
 
 </html>

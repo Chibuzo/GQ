@@ -82,22 +82,8 @@
                     </a>
                 </li>
 
-                <li class="">
-                    <a href="/applicant/video">
-                        <i class="pe-7s-video"></i>
-                        <p>My Video</p>
-                    </a>
-                </li>
-
                 <li>
                     <a href="/applicant/profile">
-                        <i class="pe-7s-user"></i>
-                        <p>Personal Profile</p>
-                    </a>
-                </li>
-
-                <li>
-                    <a href="/admin/setup">
                         <i class="pe-7s-tools"></i>
                         <p>Settings</p>
                     </a>
@@ -179,7 +165,9 @@
 </body>
 
 <!--   Core JS Files   -->
-<script src="/js/jquery-1.10.2.js" type="text/javascript"></script>
+{#<script src="/js/jquery-1.10.2.js" type="text/javascript"></script>#}
+<script src="/js/jquery-3.min.js" type="text/javascript"></script>
+
 <script src="/js/bootstrap.min.js" type="text/javascript"></script>
 
 <!--  Checkbox, Radio & Switch Plugins -->

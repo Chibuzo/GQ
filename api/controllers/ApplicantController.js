@@ -9,13 +9,17 @@ module.exports = {
     dashboard: function(req, res) {
         TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
             var test_results = [];
-            results.forEach(function(result) {
-                CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
-                    result.test.push(test);
-                    test_results.push(result);
-                    return res.view('applicant/dashboard', { results: test_result });
+            if (results.length > 0) {
+                results.forEach(function(result) {
+                    CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
+                        result.test.push(test);
+                        test_results.push(result);
+                        return res.view('applicant/dashboard', { results: test_result });
+                    });
                 });
-            });
+            } else {
+                return res.view('applicant/dashboard');
+            }
         });
     },
 

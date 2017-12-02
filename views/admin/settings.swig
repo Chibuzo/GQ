@@ -47,15 +47,15 @@
     <div class="col-md-6">
         <div class="card">
             <div class="header">
-                <h4 class="title">Company Sector</h4>
-                <p class="category">Manage Sectors/Industry</p><br>
+                <h4 class="title">Company Sector/Industry</h4>
+                <p class="category">Manage Industry</p><br>
                 <div class="row">
                     <form action="/sector/addsector" method="post">
                         <div class="col-md-9">
                             <input type="text" name="sector" class="form-control" placeholder="Enter sector or industry..." />
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add Sector</button>
+                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add Industry</button>
                         </div>
                     </form>
                 </div>

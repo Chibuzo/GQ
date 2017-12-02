@@ -57,6 +57,28 @@ module.exports.routes = {
 
     'GET /admin/gq-test': 'GQTestController.manageTest',
 
+    'GET /gqtest/createnew': 'GQTestController.createTestPage',
+
+    'POST /gqtest/savetest': 'GQTestController.saveTest',
+
+    'POST /gqtest/savequestion': 'GQTestController.saveQuestion',
+
+    'GET /gqtest/edittest/:test_id': 'GQTestController.editTest',
+
+    'GET /gqtest/getquestion/:question_id': 'GQTestController.getQuestion',
+
+    'GET /gqtest/load-default-test-instruction': 'GQTestController.loadDefaultInstruction',
+
+    'GET /gqtest/load-default': 'GQTestController.loadGQDefaultTest',
+
+    'POST /gqtest/return-answer': 'GQTestController.returnAnswer',
+
+    'GET /gqtest/marktest/:test_id/:no_of_questions': 'GQTestController.markTest',
+
+    'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
+
+    'GET /gqtest/remove': 'GQTestController.deleteTest',
+
     'GET /courses': 'CourseController.listCourses',
 
     'GET /course/addnew': 'CourseController.addNew',

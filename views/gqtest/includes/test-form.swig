@@ -1,11 +1,11 @@
-<form action="/gqtest/save" method="post" id="form-job">
+<form action="/gqtest/savetest" method="post" id="form-test">
 	<div class="form-group">
 		<label>Test Name</label>
-		<input type="text" name="test_name" class="form-control" value="{{ test.test_name }}" required/>
+		<input type="text" name="test_name" id="test_name" class="form-control" value="{{ test.test_name }}" required/>
 	</div>
-	<div class="form-group">
+	<div class="form-group hidable">
 		<div class="row">
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<label>Test Category</label>
 				<select name="category" class="form-control" required>
 					<option value="">-- Select Test Category --</option>
@@ -14,44 +14,56 @@
 					<option value="Quantitative Test">Quantitative Test</option>
 				</select>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-4">
+				<label>Difficulty Level</label>
+				<select name="difficulty" class="form-control" required>
+					<option value="">-- Select Difficulty Level --</option>
+					<option value="Easy">Easy</option>
+					<option value="Medium">Medium</option>
+					<option value="Hard">Hard</option>
+				</select>
+			</div>
+			<div class="col-md-4">
 				<label>Test Duration</label>
-				<input type="text" name="duration" class="form-control" placeholder="Test duration" />
+				<input type="text" name="duration" class="form-control" value="{{ test.duration }}" placeholder="Test duration" required />
 			</div>
 		</div>
 	</div>
-	<div class="form-group">
+	<div class="form-group hidable">
 		<label>Instructions</label>
-		<textarea name="instruction" rows="7" class="form-control editor" required>{{ test.instruction }}</textarea>
+		<textarea name="instructions" rows="7" class="form-control editor">{{ test.instructions }}</textarea>
 	</div>
 
-	<div class="form-group">
+	<div class="form-group hidable">
 		<div class="row">
 			<div class="col-md-6">
-				<label>Extract Questions from Excel</label>
-				<label class="radio"><input name="add_question_type" type="radio" class="form-control" data-toggle="radio" value="excel" /></label>
+				<label></label>
+				<label class="radio">Extract Questions from Excel<input name="add_question_type" type="radio" class="form-control" data-toggle="radio" value="excel" /></label>
 			</div>
 			<div class="col-md-6">
-				<label>Add Questions Manually</label>
-				<label class="radio"><input name="add_question_type" type="radio" class="form-control" data-toggle="radio" value="manual" /></label>
+				<label></label>
+				<label class="radio">Add Questions Manually<input name="add_question_type" type="radio" class="form-control" data-toggle="radio" value="manual" checked /></label>
 			</div>
 		</div>
 	</div>
 
-	<div class="form-group">
-		<label>Nice-to-have</label>
-		<textarea name="nice_to_have" class="form-control editor">{{ job.nice_to_have }}</textarea>
+	<div class="form-group hidden hidable" id="upload-div">
+		<label>Include Excel File</label>
+		<input type="file" name="excelsheet" class="form-control-file" />
 	</div>
 
 
 	<input type="hidden" name="test_id" id="test-id" value="{{ test.id }}"/>
 
-	<div class="form-group text-right">
-		<button type="reset" class="btn btn-default btn-lg">
-			<i class="fa fa-refresh"></i> Clear fields
+	<div class="form-group text-right hidable">
+		<button type="reset" class="btn btn-default reset-btn">
+			<i class="fa fa-refresh"></i> Reset
 		</button>
-		<button type="submit" class="btn btn-info btn-lg">
-			<i class="fa fa-save"></i> Save Job
+		{#<button type="button" class="btn btn-info add-quest-btn">#}
+			{#<i class="fa fa-plus"></i> Add Question#}
+		{#</button>#}
+		<button type="submit" class="btn btn-info">
+			<i class="fa fa-save"></i> Save Test
 		</button>
 	</div>
 </form>

@@ -7,16 +7,27 @@
 
 module.exports = {
 	updateResume: function(req, res) {
+        var test_id = 8;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
-            if (err) return;
-            var me = {
-                fname: resume.user.fullname.split(' ')[0],
-                lname: resume.user.fullname.split(' ')[1]
-            };
-            return res.view('cv/update', { resume: resume, me: me });
-        });
+                if (err) return;
+                var me = {
+                    fname: resume.user.fullname.split(' ')[0],
+                    lname: resume.user.fullname.split(' ')[1]
+                };
+                // check for test result
+                GQTestResult.find({test: test_id, candidate: req.session.userId}).populate('test').exec(function (err, test_result) {
+                    if (err) console.log(err)
+                    if (test_result.length > 0) {
+                        GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function(result) {
+                            return res.view('cv/update', { resume: resume, me: me, result: result, test_title: test_result[0].test.test_name });
+                        });
+                    } else {
+                        return res.view('cv/update', { resume: resume, me: me});
+                    }
+                });
+            });
     },
 
     save: function(req, res) {

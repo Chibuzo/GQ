@@ -16,6 +16,10 @@ module.exports = {
           type: 'string'
       },
 
+      difficulty: {
+          type: 'string'
+      },
+
       duration: {
           type: 'integer' // in minutes
       },
