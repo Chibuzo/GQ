@@ -44,6 +44,7 @@ config/email.js
 assets/logos/*
 assets/csv-files/*
 assets/applicant_videos/*
+assets/cbt-images/*
 views/emailTemplates/*
 
 
