@@ -1,10 +1,15 @@
 {% extends 'layout.swig' %}
 {% set title = 'User Profile' %}
 {% block page_title %}
-  <i class="pe-7s-user"></i> &nbsp;My Profile
+  <i class="pe-7s-user"></i> &nbsp;My Settings
 {% endblock %}
 
 {% block body %}
+<style>
+.avatar {
+    width: 250px;
+}
+</style>
 <div class="content">
             <div class="container-fluid">
                 <div class="row">
@@ -39,7 +44,7 @@
                                             </div>
                                         </div>
 
-                                        <div class=""><h3>Change Password</h3></div>
+                                        <div class=""><h4 class="title">Change Password</h4></div>
                                         <div class="form-group">
                                             <div class="row">
                                                 {% if !first_time %}
@@ -51,12 +56,12 @@
 
                                                 <div class="col-md-4">
                                                     <label>New Password</label>
-                                                    <input type="password" name="new_password" class="form-control" placeholder="Enter your new password">
+                                                    <input type="password" name="new_password" id="new_password" class="form-control" placeholder="Enter your new password">
                                                 </div>
 
                                                 <div class="col-md-4">
                                                     <label>Re-type New Password</label>
-                                                    <input type="password" name="verify_password" class="form-control" placeholder="Re-type your new password">
+                                                    <input type="password" name="verify_password" id="verify_password" class="form-control" placeholder="Re-type your new password">
                                                 </div>
                                             </div>
                                         </div>
@@ -81,13 +86,16 @@
                             </div>
                             <div class="content">
                                 <div class="author">
-                                     <a href="#">
-                                    <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
-
-                                      <h4 class="title">{{ user.fullname }}<br />
-                                         <small>{{ user.email }}</small>
-                                      </h4>
-                                    </a>
+                                     <a href="" id="change-pic">
+                                     {% if passport.length > 3 %}
+                                         <img class="avatar border-gray" src="/applicant_passports/{{ passport }}" alt="..."/>
+                                     {% else %}
+                                         <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
+                                     {% endif %}
+                                     </a>
+                                    <h4 class="title">{{ user.fullname }}<br />
+                                        <small>{{ user.email }}</small>
+                                    </h4>
                                 </div><br>
 
                             </div>
@@ -98,6 +106,11 @@
                                 <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>-->
                             </div>
                         </div>
+                        <form action="/applicant/add-passport" method="post" id="form-passport-upload" enctype="multipart/form-data">
+                            <input type="hidden" name="photo_title" value="{{ me.fname }}-{{ me.lname }}" />
+                            <input type="hidden" name="user_id" value="{{ user.id }}">
+                            <input type="file" name="passport" style="display: none" id="file-control" />
+                        </form>
                     </div>
 
                 </div>
@@ -112,6 +125,11 @@ $(document).ready(function() {
     $("#form-profile").submit(function(e) {
         e.preventDefault();
 
+        // check password match
+        if ($("#new_password").val() != $("#verify_password").val()) {
+            showNotification('bottom', 'center', 'danger', "Password doesn't match", 'pe-7s-bell');
+            return false;
+        }
         $.post('/user/update', $(this).serialize(), function(d) {
             if (d.status.trim() == 'success') {
                 if ($("#btn-submit").data('opt') == 'update-job-profile') {
@@ -120,8 +138,20 @@ $(document).ready(function() {
                     var msg = "Your profile has been successfully updated!";
                     showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
                 }
+            } else {
+                showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
             }
         }, 'JSON');
+    });
+
+
+    $("#change-pic").click(function(e) {
+        e.preventDefault();
+        $("#file-control").click();
+    });
+
+    $("#file-control").change(function() {
+        $("#form-passport-upload").submit();
     });
 })
 </script>

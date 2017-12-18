@@ -8,10 +8,9 @@
 module.exports = {
     newJobForm: function (req, res) {
         JobCategory.find().exec(function (err, categories) {
-            CountryStateService.getCountries().then(function(countries) {
-                return res.view('company/addjob', { jobcategories: categories, countries: countries.countries.geonames });
+            CountryStateService.getCountries().then(function(resp) {
+                return res.view('company/addjob', { jobcategories: categories, countries: resp.countries });
             }).catch(function(err) {
-                console.log(err);
                 return res.ok();
             });
         });
@@ -20,7 +19,11 @@ module.exports = {
     editJob: function (req, res) {
         Job.findOne({ id: req.param('job_id'), company: req.session.coy_id }).exec(function (err, job) {
             JobCategory.find().exec(function (err, categories) {
-                return res.view('company/editjob', { job: job, jobcategories: categories });
+                CountryStateService.getCountries().then(function(resp) {
+                    return res.view('company/editjob', { job: job, jobcategories: categories, countries: resp.countries });
+                }).catch(function(err) {
+                    return res.ok();
+                });
             });
         });
     },
@@ -142,9 +145,9 @@ module.exports = {
 
     listJobs: function(req, res) {
         var today = new Date().toISOString();
-        Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
+        //Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
+        Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
-            console.log(jobs)
             return res.view('jobs', { jobs: jobs });
         });
     },
@@ -153,6 +156,8 @@ module.exports = {
         var job_id = req.param('id');
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
+            var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
+            Job.update({ id: job_id }, { view_count: views }).exec(function() {});
             return res.view('job', { job: job });
         });
     },
@@ -163,7 +168,7 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume.status === undefined || resume.status == 'Incomplete') {
-                    return res.json(200, { status: 'error', msg: 'IncompleteResume' });
+                    return res.json(200, { status: 'error', msg: 'Incomplete Resume' });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {

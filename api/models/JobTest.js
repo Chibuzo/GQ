@@ -12,6 +12,10 @@ module.exports = {
           model: 'cbttest'
       },
 
+      test_source: {
+          type: 'string' // gq or expertrating
+      },
+
       test_title: {
           type: 'string'
       },

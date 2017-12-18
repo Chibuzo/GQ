@@ -7,19 +7,34 @@
 
 module.exports = {
     dashboard: function(req, res) {
-        TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
-            var test_results = [];
-            if (results.length > 0) {
-                results.forEach(function(result) {
-                    CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
-                        result.test.push(test);
-                        test_results.push(result);
-                        return res.view('applicant/dashboard', { results: test_result });
-                    });
+        // find GQ Test results
+        GQTestResult.find({candidate: req.session.userId}).populate('test').exec(function (err, test_result) {
+            //if (err) console.log(err)
+            var gq_results = [];
+            async.eachSeries(test_result, function(test, cb) {
+                GQTestService.prepareCandidateResult(test.test.id, test.score, test.no_of_questions).then(function(result) {
+                    result.test_title = test.test.test_name;
+                    gq_results.push(result);
+                    cb();
                 });
-            } else {
-                return res.view('applicant/dashboard');
-            }
+            },
+            function() {
+                // check for expertrating test result
+                TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
+                    var test_results = [];
+                    if (results.length > 0) {
+                        results.forEach(function(result) {
+                            CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
+                                result.test_title = test[0].test_name;
+                                test_results.push(result);
+                            });
+                        });
+                        return res.view('applicant/dashboard', { xpr_results: xpr_result, gq_results: gq_results });
+                    } else {
+                        return res.view('applicant/dashboard', { gq_results: gq_results });
+                    }
+                });
+            });
         });
     },
 
@@ -48,14 +63,38 @@ module.exports = {
         },
         function (err) {
             if (err) {
-                return res.badRequest(err);
+                return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' });
             }
-            console.log(filename);
             Resume.update({id: req.param('resume_id')}, {video_file: filename}).exec(function (err) {
                 if (err) {
                     return res.badRequest(err);
                 }
-                return res.redirect('/applicant/video');
+                return res.redirect('/applicant/resume-page');
+            });
+        });
+    },
+
+    uploadPassport: function(req, res) {
+        var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+        var filename;
+        req.file('passport').upload({
+            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_passports/'),
+            saveAs: function (file, cb) {
+                if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
+                    return res.badRequest('Unsupported photo format.');
+                }
+                var ext = file.filename.split('.').pop();
+                filename = req.param('photo_title') + "_" + req.session.userId + '.' + ext;
+                return cb(null, filename);
+            },
+            maxBytes: 16 * 1024 * 1024
+        },
+        function (err) {
+            if (err) {
+                return res.badRequest(err);
+            }
+            Resume.update({ user: req.session.userId }, { passport: filename }).exec(function () {
+                return res.redirect('/applicant/profile');
             });
         });
     },

@@ -5,10 +5,11 @@ $(".load-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
     $.get('/gqtest/load-default-test-instruction', function(d) {
         if (d.status.trim() == 'success') {
-            $("#test-notice").fadeOut();
+            $("#test-notice").fadeOut(function() {
+                $("#start-test").removeClass('hidden');
+            });
             $(".test-title").text(d.test_name);
             $(".instruction").html(d.instructions);
-            $("#start-test").removeClass('hidden');
         }
     }, 'JSON');
 });
@@ -59,16 +60,22 @@ $(".question-nums").on('click', '.question-num', function() {
     var cur_question = $("#current_quest").text();
     if (cur_question != question) {
         fetchNextQuestion(questions, question - 1);
+        $(this).removeClass('skipped_q answered_q').addClass('active_q');
+    }
+});
+
+
+// submit test
+$("#submit-test").click(function(e) {
+    e.preventDefault();
+    if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        saveAnswer();
+        submitTest();
     }
 });
 
 
 function fetchNextQuestion(questions, next_quest) {
-    // save the state of the current question
-    var quest_id = $("#current_quest").data('quest-id');
-    var ans = $("input[name=opt]:checked").val();
-    saveAnswer(quest_id, ans);
-
     var next_question, cur_question = $("#current_quest").text();
     var question_num = parseInt($("#total_questions").text());
 
@@ -79,19 +86,24 @@ function fetchNextQuestion(questions, next_quest) {
         next_question = 0;
         cur_question = 1;
     }
+
     // overide next question
     if (next_quest || next_quest == 0) {
         next_question = next_quest;
         cur_question = next_quest + 1;
     }
     if (parseInt(cur_question) > parseInt(question_num)) {
-        submitTest();
+        //submitTest();
         return;
     }
+
+    // save the state of the current question
+    saveAnswer();
+
     $("input[name=opt]").prop('checked', false).parents('label').removeClass('checked');
 
     $(".question-num").removeClass('active_q');
-    $("#quest-" + cur_question).addClass('active_q');
+    $("#quest-" + cur_question).removeClass('skipped_q answered_q').addClass('active_q');
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     $(".question-image").html("<img src='/cbt-images/" + questions[next_question].image_file + "' />");
     $(".question").html(questions[next_question].question);
@@ -109,7 +121,9 @@ function fetchNextQuestion(questions, next_quest) {
 }
 
 
-function saveAnswer(quest_id, ans) {
+function saveAnswer() {
+    var quest_id = $("#current_quest").data('quest-id');
+    var ans = $("input[name=opt]:checked").val();
     var cur_question = $("#current_quest").text();
 
     if (ans) {
@@ -160,6 +174,6 @@ function startTimer() {
         hours : hrs,
         minutes : mins,
         size : "md",
-        timeup: submitTest
+        timeUp: submitTest
     });
 }

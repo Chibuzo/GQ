@@ -19,7 +19,7 @@
 					<thead>
 					<tr>
 						<th><i class="fa fa-calendar"></i> Date</th>
-						<th syle="width: 20%">Test Name</th>
+						{#<th syle="width: 20%">Test Name</th>#}
 						<th>Test Title</th>
 						<th>Job Cateogry</th>
 						<th>Job Level</th>
@@ -32,7 +32,7 @@
 					{% for test in jobtests %}
 						<tr id="{{ test.id }}">
 							<td>{{ test.createdAt | date('d M, Y') }}</td>
-							<td>{{ test.test.test_name }}</td>
+							{#<td>{{ test.test.test_name }}</td>#}
 							<td>{{ test.test_title }}</td>
 							<td>{{ test.job_category }}</td>
 							<td>{{ test.job_level }}</td>

@@ -71,6 +71,10 @@ module.exports = {
             type: 'string'
         },
 
+        passport: {
+            type: 'string'
+        },
+
         user: {
             model: 'user'
         },

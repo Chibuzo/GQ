@@ -19,6 +19,10 @@
 	fieldset {
 		margin-top: 23px;
 	}
+
+	.mce-branding {
+		font-size: 0;
+	}
 </style>
 <div class="content">
 	<div class="container-fluid">
@@ -47,6 +51,8 @@ $(document).ready(function() {
 	var job_category_id = {{ job.category | json | safe }};
 	var job_level = {{ job.job_level | json | safe }};
 	var contract_type = {{ job.contract_type | json | safe }};
+	var country = {{ job.country | json | safe }};
+
 	$("select[name=category]").find('option').filter(function(i) {
 		return job_category_id == $(this).val();
 	}).attr("selected", "selected");
@@ -57,6 +63,10 @@ $(document).ready(function() {
 
 	$("select[name=contract_type]").find('option').filter(function(i) {
 		return contract_type == $(this).val();
+	}).attr("selected", "selected");
+
+	$("select[name=country]").find('option').filter(function(i) {
+		return country == $(this).val();
 	}).attr("selected", "selected");
 });
 </script>

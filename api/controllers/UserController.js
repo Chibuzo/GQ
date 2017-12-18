@@ -171,7 +171,9 @@ module.exports = {
                 fname: _user.fullname.split(' ')[0],
                 lname: _user.fullname.split(' ')[1]
             };
-            return res.view('applicant/profile', { user: _user, me: me });
+            Resume.find({ user: req.session.userId }).exec(function(err, resume) {
+                return res.view('applicant/profile', { user: _user, me: me, passport: resume[0].passport });
+            });
         });
     },
 
@@ -203,18 +205,17 @@ module.exports = {
                         });
                     }
                 });
-            } else {
+            } else if(req.param('current_password') && req.param('new_password')) {
                 Passwords.checkPassword({
                     passwordAttempt: req.param('current_password'),
-                    encryptedPassword: user.password
+                    encryptedPassword: user[0].password
                 }).exec({
                     error: function (err) {
                         console.log(err);
                         //return res.json(200, { status: 'Err', msg: err });
                     },
                     incorrect: function () {
-                        console.log(err);
-                        //return res.json(200, { status: 'Err', msg : 'User not found' });
+                        return res.json(200, { status: 'error', msg: 'Wrong password' });
                     },
                     success: function () {
                         Passwords.encryptPassword({
@@ -233,6 +234,8 @@ module.exports = {
                         });
                     }
                 });
+            } else {    // this would never happen though
+                return res.json(200, { status: 'success' });
             }
             //return res.redirect('/user/profile');
         });

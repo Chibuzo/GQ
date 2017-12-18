@@ -52,12 +52,27 @@ module.exports = {
             via: 'job'
         },
 
+        view_count: {
+            type: 'integer',
+            defaultsTo: 0
+        },
+
         //job_tests: {
         //    collection: 'jobtest',
         //    via: 'test'
         //},
         job_test: {
             model: 'cbttest'
+        },
+
+        gq_grade: {
+            type: 'integer',
+            defaultsTo: 50
+        },
+
+        jobtest_grade: {
+            type: 'integer',
+            defaultsTo: 50
         },
 
         published: {

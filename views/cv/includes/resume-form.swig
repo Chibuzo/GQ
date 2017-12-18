@@ -56,19 +56,24 @@
 		<div class="row">
 			<div class="col-md-4">
 				<label for="phone">Resident Country</label>
-				<select name="country" class="form-control">
-					<option value="">Select Country</option>
+				<select name="country" class="form-control" required>
+					{% for country in countries %}
+						<option value="{{ country.country }}">{{ country.country }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-md-4">
 				<label for="email">State</label>
 				<select name="state" class="form-control">
 					<option value="">Select State</option>
+					{% for state in states %}
+						<option value="{{ state.state_name }}">{{ state.state_name }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-md-4">
 				<label for="email">City</label>
-				<input type="text" name="city" class="form-control" />
+				<input type="text" name="city" class="form-control" required />
 			</div>
 		</div>
 	</div>
@@ -103,7 +108,7 @@
 			</div>
 			<div class="col-md-4">
 				<label>Expected Salary</label>
-				<input type="text" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}" required>
+				<input type="text" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
 			</div>
 		</div>
 	</div>
@@ -115,14 +120,14 @@
 				<div class="row inst-row">
 					<div class="col-md-3">
 						<label>Institution</label>
-						<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution" value="{{ edu.institution }}" required>
+						<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
 					</div>
 					<div class="col-md-1">
 						<label>Honour</label>
 						<select name="honour[]" class="form-control">
 							<option value=""></option>
-							<option value="BSc">BSc</option>
-							<option value="Msc">Msc</option>
+							<option value="BSc">Bachelors</option>
+							<option value="Msc">Masters</option>
 							<option value="PhD">PhD</option>
 							<option value="HND">HND</option>
 							<option value="OND">OND</option>
@@ -151,14 +156,14 @@
 			<div class="row inst-row">
 				<div class="col-md-3">
 					<label>Institution</label>
-					<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution" required>
+					<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
 				</div>
 				<div class="col-md-1">
 					<label>Honour</label>
 					<select name="honour[]" class="form-control">
 						<option value=""></option>
-						<option value="BSc">BSc</option>
-						<option value="Msc">Msc</option>
+						<option value="BSc">Bachelors</option>
+						<option value="Msc">Masters</option>
 						<option value="PhD">PhD</option>
 						<option value="HND">HND</option>
 						<option value="OND">OND</option>
@@ -186,15 +191,17 @@
 			<div class="row inst-row addable" id="another-inst">
 				<div class="col-md-3">
 					<label>Institution</label>
-					<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution">
+					<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution">
 				</div>
 				<div class="col-md-1">
 					<label>Honour</label>
 					<select name="honour[]" class="form-control">
 						<option value=""></option>
-						<option value="BSc">B.Sc</option>
-						<option value="Msc">MSc</option>
+						<option value="BSc">Bachelors</option>
+						<option value="Msc">Masters</option>
 						<option value="PhD">PhD</option>
+						<option value="HND">HND</option>
+						<option value="OND">OND</option>
 					</select>
 				</div>
 				<div class="col-md-3">
@@ -303,11 +310,11 @@
 					</div>
 
 					<div class="row">
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<label>start Date</label>
 							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}">
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<label>End Date</label>
 							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}">
 						</div>
@@ -346,11 +353,11 @@
 					</div>
 
 					<div class="row">
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<label>start Date</label>
 							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
 						</div>
-						<div class="col-md-5">
+						<div class="col-md-4">
 							<label>End Date</label>
 							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
 						</div>
@@ -387,11 +394,11 @@
 				</div>
 
 				<div class="row">
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<label>start Date</label>
 						<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
 					</div>
-					<div class="col-md-5">
+					<div class="col-md-4">
 						<label>End Date</label>
 						<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
 					</div>
@@ -539,6 +546,7 @@
 	</fieldset>
 
 	<input type="hidden" name="resume_id" value="{{ resume.id }}" />
+	<input type="hidden" name="status" value="{{ resume.status }}" />
 	<button type="submit" class="btn btn-info btn-fill pull-right btn-lg" id="btn-submit">Update Profile</button>
 </form>
 

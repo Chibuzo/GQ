@@ -31,10 +31,16 @@
 	<div class="col-md-3">
 		<div class="widget-box">
 			<div class="col-md-6">
-				<i class="pe-7s-music"></i>
+				<i class="pe-7s-portfolio"></i>
 			</div>
 			<div class="col-md-6 text-center">
-				<h3>{{ s_count }}</h3>
+				{% set active_jobs = 0 %}
+				{% for job in jobs %}
+					{% if job.status == 'Active' %}
+						{% set active_jobs = active_jobs + 1 %}
+					{% endif %}
+				{% endfor %}
+				<h3>{{ active_jobs }}</h3>
 				<p>Active Jobs</p>
 			</div>
 		</div>
@@ -43,23 +49,11 @@
 	<div class="col-md-3">
 		<div class="widget-box">
 			<div class="col-md-6">
-				<i class="pe-7s-album"></i>
+				<i class="pe-7s-portfolio"></i>
 			</div>
 			<div class="col-md-6 text-center">
-				<h3>{{ a_count }}</h3>
-				<p>Albums</p>
-			</div>
-		</div>
-	</div>
-
-	<div class="col-md-3">
-		<div class="widget-box">
-			<div class="col-md-6">
-				<i class="pe-7s-video"></i>
-			</div>
-			<div class="col-md-6 text-center">
-				<h3>{{ v_count }}</h3>
-				<p>Videos</p>
+				<h3>{{ jobs.length }}</h3>
+				<p>All Jobs</p>
 			</div>
 		</div>
 	</div>
@@ -70,8 +64,60 @@
 				<i class="pe-7s-users"></i>
 			</div>
 			<div class="col-md-6 text-center">
-				<h3>{{ u_count }}</h3>
-				<p>Users</p>
+				<h3>{{ v_count }}6</h3>
+				<p>Applicants</p>
+			</div>
+		</div>
+	</div>
+
+	<div class="col-md-3">
+		<div class="widget-box">
+			<div class="col-md-6">
+				<i class="pe-7s-graph3"></i>
+			</div>
+			<div class="col-md-6 text-center">
+				<h3>{{ u_count }}0</h3>
+				<p>Engagements</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-md-6">
+		<div class="card">
+			<div class="header">
+				<h4 class="title">Recent Test Results</h4>
+				<p class="category"></p>
+			</div>
+			<div class="content table-responsive table-full-width">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Job Role</th>
+							<th class="text-center">Applicants</th>
+							<th class="text-center">Views</th>
+							<th class="text-center">Application %</th>
+							<th>Accessed %</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+					{% for job in jobs %}
+						{% if job.status == 'Active' %}
+							{% set app_percent = job.applications.length / job.view_count %}
+							<tr>
+								<td>{{ job.job_title }}</td>
+								<td class="text-center">{{ job.applications.length }}</td>
+								<td class="text-center">{{ job.view_count }}</td>
+								<td class="text-center">{{ app_percent }}%</td>
+								<td>Don't know</td>
+								<td></td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</div>

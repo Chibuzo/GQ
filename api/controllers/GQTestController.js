@@ -88,14 +88,14 @@ module.exports = {
     },
 
     loadDefaultInstruction: function(req, res) {
-        GQTest.find({ id: 8 }).exec(function(err, test) {
+        GQTest.find({ id: 7 }).exec(function(err, test) {
             if (err) return;
             return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
         });
     },
 
     loadGQDefaultTest: function(req, res) {
-        GQTest.find({ id: 8 }).populate('questions').exec(function(err, test) {
+        GQTest.find({ id: 7 }).populate('questions').exec(function(err, test) {
             if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
             req.session.suppliedAnswers = [];
             return res.json(200, {
@@ -136,7 +136,7 @@ module.exports = {
         // save or update candidate's test score
         GQTestResult.find({ candidate: req.session.userId, test: test_id }).exec(function(err, test_result) {
             if (err) return console.log(err);
-            if (test_result.length > 0) { console.log('Result Found');
+            if (test_result.length > 0) {
                 GQTestResult.update({ id: test_result[0].id }, { score: score }).exec(function() {
                     GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
                         return res.json(200, { status: 'success', result: resp });
@@ -163,25 +163,29 @@ module.exports = {
         var test_id = req.param('test_id');
         GQTestResult.find({ test: test_id }).populate('candidate').populate('test').limit(100).exec(function(err, results) {
             if (err) {}
-            GQTestResult.find({test: test_id}).groupBy('test').average('score').exec(function(err, test_ave) {
+            if (results.length > 0) {
+                GQTestResult.find({test: test_id}).groupBy('test').average('score').exec(function(err, test_ave) {
 
-                var test_results = [];
-                results.forEach(function(result) {
-                    var percentage = (parseInt(result.score) / parseInt(result.no_of_questions)) * 100;
-                    test_results.push({
-                        score: result.score,
-                        percentage: percentage,
-                        average_score: test_ave[0].score,
-                        result: percentage > 69 ? 'Passed' : 'Failed',
-                        test_date: result.updateAt
+                    var test_results = [];
+                    results.forEach(function(result) {
+                        var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+                        test_results.push({
+                            score: result.score,
+                            percentage: percentage,
+                            average_score: test_ave[0].score,
+                            result: percentage > 69 ? 'Passed' : 'Failed',
+                            test_date: result.updatedAt
+                        });
+                    });
+                    return res.view('gqtest/view-results', {
+                        results: test_results,
+                        test: results[0].test,
+                        candidate: results[0].candidate
                     });
                 });
-                return res.view('gqtest/view-results', {
-                    results: test_results,
-                    test: results[0].test,
-                    candidate: results[0].candidate
-                });
-            });
+            } else {
+                return res.json(200, { status: 'success', result: {} });
+            }
         });
     },
 

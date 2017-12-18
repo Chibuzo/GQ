@@ -43,7 +43,7 @@
 							<td>{{ job.job_title }}</td>
 							<td class="hidden">{{ job.category.category }}</td>
 							<td>{{ job.job_level }}</td>
-							<td>{{ job.contract_level }}</td>
+							<td>{{ job.contract_type }}</td>
 							<td class="text-right"><a href="/job/view-candidates/{{ job.id }}">{{ applications }}</a></td>
 							<td>{{ job.status }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
@@ -88,10 +88,11 @@ $(document).ready(function() {
 
 
 	$(".view-tests").click(function() {
+		var job_id = $(this).parents('tr').attr('id');
 		var job_title = $(this).parents('tr').find('td:nth-child(3)').text();
 		var job_category = $(this).parents('tr').find('td:nth-child(4)').text();
 		var job_level = $(this).parents('tr').find('td:nth-child(5)').text();
-		$("#manageTestModal").find('.modal-title').text(job_title);
+		$("#manageTestModal").find('.modal-title').text('Role: ' + job_title);
 		$.get('/getJobTest/' + job_category + '/' + job_level, function(d) {
 			if (d.status.trim() == 'success') {
 				var test_html = '';
@@ -108,6 +109,7 @@ $(document).ready(function() {
 							"<td>" + test.test.duration + "</td>" +
 							"</tr>";
 				});
+				$("#job_id").val(job_id);
 				$("#manageTestModal").find(".modal-body").find('.alert-info').addClass('hidden');
 				$("#tb-tests").html(test_html);
 			}
@@ -126,6 +128,18 @@ $(document).ready(function() {
 				}
 			}, 'JSON');
 		}
+	});
+
+
+	$('#save-rating').click(function() {
+		var gq_rating = parseInt($("#gq_assessment").val());
+		var jobtest_rating = parseInt($("#job_assessment").val());
+		if (gq_rating + jobtest_rating != 100) {
+			alert("The contribution of both tests must equal 100");
+			return false;
+		}
+		$.post('/job/set-test-rating', { job_id: $("#job_id").val(), gq_rating: gq_rating , job_test: jobtest_rating });
+		$("#manageTestModal").find(".modal-body").find('.alert-success').hide().removeClass('hidden').fadeIn().fadeOut(12000);
 	});
 });
 </script>

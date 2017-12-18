@@ -38,10 +38,22 @@
 						</div>
 					</div>
 					<div class="form-group">
-						<label>Test List</label>
+
+					</div>
+					<div class="form-group">
+						<label>Expertrating Test List</label>
 						<select name="test[]" class="form-control" required>
 							<option value=""></option>
 							{% for test in tests %}
+								<option value="{{ test.id }}">{{ test.test_name }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="form-group hidden">
+						<label>GQ Test List</label>
+						<select name="test[]" class="form-control">
+							<option value=""></option>
+							{% for test in gq_tests %}
 								<option value="{{ test.id }}">{{ test.test_name }}</option>
 							{% endfor %}
 						</select>

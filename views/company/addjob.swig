@@ -19,6 +19,10 @@
 	fieldset {
 		margin-top: 23px;
 	}
+
+	.mce-branding {
+		font-size: 0;
+	}
 </style>
 <div class="content">
 	<div class="container-fluid">
@@ -43,8 +47,9 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
-	var coun = {{ countries | json | safe }};
-	console.log(coun);
+	$("select[name=country]").find('option').filter(function(i) {
+		return 'Nigeria' == $(this).val();
+	}).attr("selected", "selected");
 });
 </script>
 {% endblock %}
