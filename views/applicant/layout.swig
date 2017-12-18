@@ -27,6 +27,8 @@
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
 
+    <link href="/styles/easy-autocomplete.min.css" rel="stylesheet"/>
+
     <style>
         .ok-header {
             margin-top: 10px;
@@ -179,6 +181,7 @@
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="/js/light-bootstrap-dashboard.js"></script>
 <script src="/js/datepicker.min.js"></script>
+<script src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 
 {% block scriptTag %} {% endblock %}
 <script>

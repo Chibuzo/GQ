@@ -1,5 +1,5 @@
 {% extends 'layout.swig' %}
-{% set title = 'Company Dashboard' %}
+{% set title = 'Candidate Dashboard' %}
 {% block page_title %}
 	<i class="pe-7s-graph"></i> Dashboard
 {% endblock %}
@@ -18,17 +18,27 @@
 							<tr>
 								<th>TEST TITLE</th>
 								<th>SCORE</th>
-								<th>PERCENTILE</th>
-								<th>AVERAGE</th>
+								<th>PERCENTAGE</th>
+								<th class="text-center">AVERAGE</th>
 								<th>RESULT</th>
 							</tr>
 						</thead>
 						<tbody>
-						{% for result in results %}
+						{% for result in gq_results %}
 							<tr>
-								<td>{{ result.test.category.cateogry }}</td>
+								<td>{{ result.test_title }}</td>
+								<td>{{ result.score }}</td>
 								<td>{{ result.percentage }}%</td>
-								<td>{{ result.percentile }}</td>
+								<td class="text-center">{{ result.average }}</td>
+								<td>{{ result.result }}</td>
+							</tr>
+						{% endfor %}
+
+						{% for result in xpr_results %}
+							<tr>
+								<td>{{ result.test }}</td>
+								<td>{{ result.percentile }}%</td>
+								<td>{{ result.percentage }}</td>
 								<td>{{ result.average_score }}</td>
 								<td>{{ result.test.result }}</td>
 							</tr>

@@ -21,12 +21,12 @@
 						<select name="country" class="form-control" required>
 							<option value="">-- Country --</option>
 							{% for country in countries %}
-								<option value="{{ country.geonameId }}">{{ country.countryName }}</option>
+								<option value="{{ country.country }}">{{ country.country }}</option>
 							{% endfor %}
 						</select>
 					</div>
 					<div class="col-md-6">
-						<input type="text" name="location" placeholder="City, State" class="form-control" />
+						<input type="text" name="location" placeholder="City, State" class="form-control" value="{{ job.location }}" />
 					</div>
 				</div>
 
@@ -76,7 +76,11 @@
 			</div>
 			<div class="col-md-4">
 				<label>Closing Date</label>
-				<input name="closing_date" id="closing_date" type="text"value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep"/>
+				{% if job.closing_date %}
+					<input name="closing_date" id="closing_date" type="text" value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep"/>
+				{% else %}
+					<input name="closing_date" id="closing_date" type="text" class="form-control datep"/>
+				{% endif %}
 			</div>
 		</div>
 	</div>

@@ -78,7 +78,7 @@
 
             <ul class="nav">
                 <li clas="active">
-                    <a href="/admin/dashboard">
+                    <a href="/company/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>

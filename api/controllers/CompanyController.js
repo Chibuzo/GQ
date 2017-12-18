@@ -10,7 +10,10 @@ os.tmpDir = os.tmpdir;
 
 module.exports = {
     dashboard: function(req, res) {
-        return res.view('company/dashboard');
+        Job.find().populate('applications').exec(function(err, jobs) {
+            if (err) return res.badRequest(err);
+            return res.view('company/dashboard', { jobs: jobs });
+        });
     },
 
 
@@ -88,7 +91,7 @@ module.exports = {
             if (err) {
                 return res.ok();
             }
-            if (!_.isEmpty(q('logo_name'))) filename = q('logo_name');
+            //if (!_.isEmpty(q('logo_name'))) filename = q('logo_name');
             Company.update({ id: req.session.coy_id }, { logo_name: filename }).exec(function() {});
         });
 

@@ -49,11 +49,14 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({test: test_id}).groupBy('test').average('score').exec(function(err, test_ave) {
                 if (err) return reject(err);
-                if(test_ave.length < 1) reject('No Result');
+                if (test_ave.length < 1) reject('No Result');
+                var percentage = ((parseInt(candidate_score) / parseInt(no_of_questions)) * 100).toFixed(1);
                 var result = {
                     score: candidate_score,
-                    percentage: (parseInt(candidate_score) / parseInt(no_of_questions)) * 100,
-                    average: test_ave[0].score
+                    percentage: percentage,
+                    average: test_ave[0].score,
+                    result: percentage > 69 ? 'Passed' : 'Failed',
+                    no_of_questions: no_of_questions
                 };
                 return resolve(result);
             });

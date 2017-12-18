@@ -7,8 +7,10 @@
 
 module.exports = {
 
-  attributes: {
-
-  }
+    attributes: {
+        country: {
+            type: 'string'
+        }
+    }
 };
 

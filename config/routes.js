@@ -25,7 +25,7 @@ module.exports.routes = {
 
     'GET /signout': 'UserController.signout',
 
-    'GET /applicant/resume-page': 'ResumeController.updateResume',
+    'GET /applicant/resume-page': 'ResumeController.viewResume',
 
     'POST /resume/update': 'ResumeController.save',
 
@@ -38,6 +38,8 @@ module.exports.routes = {
     'GET /applicant/video': 'ApplicantController.videoPage',
 
     'POST /applicant/add-video': 'ApplicantController.uploadVideo',
+
+    'POST /applicant/add-passport': 'ApplicantController.uploadPassport',
 
     'GET /admin/setup': 'AdminController.setup',
 
@@ -139,6 +141,8 @@ module.exports.routes = {
 
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
 
+    'POST /job/set-test-rating': 'JobTestController.setJobTestRating',
+
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
 
     'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
@@ -155,9 +159,13 @@ module.exports.routes = {
 
     'GET /assessments': 'CBTTestController.getTestResult',
 
+    'GET /get-schools': 'SchoolsController.getSchools',
+
     //'GET /loadschools': 'BatchController.loadSchools'
 
     //'GET /savetest': 'TestController.saveTest',
 
-    'GET /countries': 'BatchController.countries'
+    //'GET /countries': 'BatchController.countries'
+
+    '/states': 'BatchController.loadStates'
 };

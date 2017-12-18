@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Company Setup' %}
 {% block page_title %}
-  <i class="pe-7s-setting"></i> Update Company Details
+  <i class="pe-7s-setting"></i> Company Profile
 {% endblock %}
 {% block body %}
 <style>
@@ -52,7 +52,7 @@
             <div class="col-md-8">
                 <div class="card">
                     <div class="header">
-                        <h4 class="title">Company Profile</h4>
+                        <h4 class="title">Update Company Details</h4>
                         <small>Fields marked in asterisk are compulsary</small>
                     </div>
 
