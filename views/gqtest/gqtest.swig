@@ -33,7 +33,7 @@
 								<li class="list-group-item">Average: <span id="average">{{ result.average }}</span></li>
 							</ul>
 							<div class="panel-body">
-								<strong>Note: </strong>You can always retake the test to improve your score. It's not free though, lol...
+								<strong>Note: </strong>You can always pay and retake the test to improve your score.
 							</div>
 						</div>
 

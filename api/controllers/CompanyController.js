@@ -24,32 +24,46 @@ module.exports = {
         var expected_hash = crypto.createHash('md5').update(email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
         if (hash == expected_hash) {
             // lets see if this idiot is clicking a stale link
-            Company.find({ contact_email: email }).exec(function(err, com) {
+            Company.find({contact_email: email}).exec(function (err, com) {
                 if (err) return console.log(err);
-                if (com.length > 0) {
-                    // mofo detected! redirect...
-                    req.session.coy_id = com.id;
-                    Sector.find({ removed: 'false' }).exec(function(err, sectors) {
-                        return res.view('company/setup', { company: com[0], sectors: sectors, first_time: 'true' });
-                    });
-                } else {
-                    CompanyRequest.findOne({ contact_email: email }).exec(function (err, coy) {
-                        if (err) return console.log(err);
-                        var comp = {
-                            company_name: coy.company_name,
-                            contact_person: coy.contact_person,
-                            contact_phone: coy.contact_phone,
-                            contact_email: coy.contact_email
-                        };
-                        Company.create(comp).exec(function (err, cmpy) {
-                            if (err) return console.log(err);
-                            req.session.coy_id = cmpy.id;
-                            Sector.find({ removed: 'false' }).exec(function(err, sectors) {
-                                return res.view('company/setup', { company: cmpy, sectors: sectors, first_time: 'true' });
+                CountryStateService.getCountries().then(function (resp) {
+                    if (com.length > 0) {
+                        // mofo detected! redirect...
+                        req.session.coy_id = com.id;
+                        Sector.find({removed: 'false'}).exec(function (err, sectors) {
+                            return res.view('company/setup', {
+                                company: com[0],
+                                sectors: sectors,
+                                first_time: 'true',
+                                countries: resp.countries,
+                                states: resp.states
                             });
                         });
-                    });
-                }
+                    } else {
+                        CompanyRequest.findOne({contact_email: email}).exec(function (err, coy) {
+                            if (err) return console.log(err);
+                            var comp = {
+                                company_name: coy.company_name,
+                                contact_person: coy.contact_person,
+                                contact_phone: coy.contact_phone,
+                                contact_email: coy.contact_email
+                            };
+                            Company.create(comp).exec(function (err, cmpy) {
+                                if (err) return console.log(err);
+                                req.session.coy_id = cmpy.id;
+                                Sector.find({removed: 'false'}).exec(function (err, sectors) {
+                                    return res.view('company/setup', {
+                                        company: cmpy,
+                                        sectors: sectors,
+                                        first_time: 'true',
+                                        countries: resp.countries,
+                                        states: resp.states
+                                    });
+                                });
+                            });
+                        });
+                    }
+                });
             });
         }
     },

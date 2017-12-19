@@ -108,7 +108,8 @@ module.exports = {
     loadTestInstruction: function(req, res) {
         var test_id = req.param('test_id');
         GQTest.find({ id: test_id }).exec(function(err, test) {
-            if (err) return;
+            if (err) return console.log(err);
+            console.log(test);
             return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
         });
     },
@@ -184,6 +185,7 @@ module.exports = {
                     no_of_questions: no_of_questions,
                     result: 'Passed'
                 };
+                console.log(data)
                 GQTestResult.create(data).exec(function(err) {
                     GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
                         return res.json(200, { status: 'success', result: resp });
