@@ -38,20 +38,29 @@
 						</div>
 					</div>
 					<div class="form-group">
-
+						<div class="row">
+							<div class="col-md-6">
+								<label>Test Source</label>
+								<label class="radio">GQ Test<input name="test_source" type="radio" class="form-control" data-toggle="radio" value="gq" /></label>
+							</div>
+							<div class="col-md-6">
+								<label></label>
+								<label class="radio">Expertrating Test<input name="test_source" type="radio" class="form-control" data-toggle="radio" value="expertrating" checked /></label>
+							</div>
+						</div>
 					</div>
-					<div class="form-group">
+					<div class="form-group" id="exp-ctrl">
 						<label>Expertrating Test List</label>
-						<select name="test[]" class="form-control" required>
+						<select name="expertrating_test" class="form-control">
 							<option value=""></option>
-							{% for test in tests %}
+							{% for test in xpr_tests %}
 								<option value="{{ test.id }}">{{ test.test_name }}</option>
 							{% endfor %}
 						</select>
 					</div>
-					<div class="form-group hidden">
+					<div class="form-group hidden" id="gq-ctrl">
 						<label>GQ Test List</label>
-						<select name="test[]" class="form-control">
+						<select name="gq_test" class="form-control">
 							<option value=""></option>
 							{% for test in gq_tests %}
 								<option value="{{ test.id }}">{{ test.test_name }}</option>

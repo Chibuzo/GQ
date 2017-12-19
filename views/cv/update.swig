@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+<link href="/styles/gq-cbt.css" rel="stylesheet" />
 <link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
 	.plus-btn {
@@ -27,59 +28,6 @@
 	}
 
 	/* CBT Styles */
-	.question-num {
-		float: left;
-		width: 40px;
-		height: 40px;
-		margin: 5px;
-		border-radius: 50%;
-		padding-left: 14px;
-		padding-top: 9px;
-		font-size: 15px;
-		border: #ccc solid thin;
-		cursor: pointer;
-	}
-
-	.question-image img {
-		width: 450px;
-	}
-
-	.question-num:hover {
-		border-color: #999;
-	}
-
-	.active_q {
-		background-color: #A37F2D;
-		color:#fff;
-	}
-
-	.answered_q {
-		background-color: #99cc66;
-		color:#fff;
-	}
-
-	.skipped_q {
-		background-color: #c9302c;
-		color:#fff;
-	}
-
-	.result .row {
-		border-bottom: #ccc solid thin;
-		padding: 8px 3px;
-	}
-
-	ul.opts {
-		list-style-type: none;
-	}
-
-	.nav-btns {
-	margin-top: 15px;
-		overflow: auto;
-	}
-
-	#countdowntimer {
-		padding-right: 27px;
-	}
 
 	.empty-vid {
 		border: #ccc solid thin;
@@ -400,14 +348,6 @@ $(document).ready(function() {
 			}
 			$("#btn-submit").html("Update Profile").prop('disabled', false);
 		}, 'JSON');
-	});
-
-
-	// retake test
-	$("#retake-test").click(function() {
-		$("#result-div").fadeOut('fast', function() {
-			$("#test-div").hide().removeClass('hidden').fadeIn('fast');
-		});
 	});
 
 

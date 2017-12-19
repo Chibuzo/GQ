@@ -25,11 +25,11 @@ module.exports = {
         },
 
         country: {
-            model: 'country'
+            type: 'text'
         },
 
         r_state: {
-            model: 'countrystate'
+            type: 'state'
         },
 
         city: {

@@ -87,15 +87,49 @@ module.exports = {
         });
     },
 
-    loadDefaultInstruction: function(req, res) {
-        GQTest.find({ id: 7 }).exec(function(err, test) {
+    getTest: function(req, res) {
+        var test_id = req.param('test_id');
+
+        GQTestResult.find({
+            test: test_id,
+            candidate: req.session.userId
+        }).populate('test').exec(function (err, test_result) {
+            if (err) console.log(err)
+            if (test_result.length > 0) {
+                GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
+                    return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result });
+                });
+            } else {
+                return res.view('gqtest/gqtest', { test_id: test_id });
+            }
+        });
+    },
+
+    loadTestInstruction: function(req, res) {
+        var test_id = req.param('test_id');
+        GQTest.find({ id: test_id }).exec(function(err, test) {
             if (err) return;
             return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
         });
     },
 
-    loadGQDefaultTest: function(req, res) {
-        GQTest.find({ id: 7 }).populate('questions').exec(function(err, test) {
+    loadTest: function(req, res) {
+        var test_id = req.param('test_id');
+        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
+            if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
+            req.session.suppliedAnswers = [];
+            return res.json(200, {
+                status: 'success',
+                questions: test[0].questions,
+                test_id: test[0].id,
+                duration: test[0].duration
+            });
+        });
+    },
+
+    loadTest: function(req, res) {
+        var test_id = req.param('test_id');
+        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
             if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
             req.session.suppliedAnswers = [];
             return res.json(200, {
