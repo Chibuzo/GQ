@@ -8,7 +8,22 @@
 module.exports = {
 
   attributes: {
+      fullname: {
+        type: 'string'
+      },
 
+      email: {
+          type: 'string'
+      },
+
+      password: {
+          type: 'string'
+      },
+
+      status: {
+          type: 'string',
+          defaultsTo: 'Active'
+      }
   }
 };
 

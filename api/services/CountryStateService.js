@@ -12,6 +12,18 @@ module.exports = {
         });
     },
 
+    //getCountries: function () {
+    //    return new Promise(function(resolve, reject) {
+    //        geonames.countryInfo({}).then(function(countries){
+    //            console.log(countries);
+    //            return resolve({ countries: countries });
+    //        }).catch(function(err){
+    //            console.log(err);
+    //        });
+    //    });
+    //},
+
+
     getCountryStates: function(country_id) {
 
     }

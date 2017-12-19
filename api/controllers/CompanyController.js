@@ -71,7 +71,7 @@ module.exports = {
             sector: q('sector'),
         };
         Company.update({ id: req.session.coy_id }, data).exec(function (err, com) {
-            //if (err) return;
+            if (err) return console.log(err);
         });
 
         var allowedImgTypes = ['image/png', 'image/jpeg', 'image/gif'];
@@ -123,7 +123,9 @@ module.exports = {
         Company.findOne({ id: req.session.coy_id }).exec(function (err, com) {
             if (err) return console.log(err);
             Sector.find({ removed: 'false'}).exec(function(err, sectors) {
-                return res.view('company/setup', { company: com, sectors: sectors });
+                CountryStateService.getCountries().then(function(resp) {
+                    return res.view('company/setup', {company: com, sectors: sectors, countries: resp.countries, states: resp.states});
+                });
             });
         });
     },
@@ -158,7 +160,7 @@ module.exports = {
         var crypto = require('crypto');
         var expected_hash = crypto.createHash('md5').update(email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
         if (hash == expected_hash) {
-            CompanyUser.find({ email: email }).exec(function(err, coy_user) {
+            CompanyUser.update({ email: email }, { status: 'Active' }).exec(function(err, coy_user) {
                 if (err) return console.log(coy_user);
                 var data = {
                     fullname: coy_user[0].fullname,
@@ -176,7 +178,9 @@ module.exports = {
                     req.session.userId = newUser.id;
                     req.session.coy_id = coy_user[0].company;
                     req.session.user_type = 'company';
-                    return res.view('company/users/profile', { user: coy_user[0], me: me, first_time: true });
+                    CountryStateService.getCountries().then(function(resp) {
+                        return res.view('company/users/profile', {user: coy_user[0], me: me, countries: resp.countries, states: resp.states, first_time: true});
+                    });
                 });
             });
         } else {
@@ -220,6 +224,14 @@ module.exports = {
         CompanyUser.destroy({ id: req.param('id') }).exec(function(err, user) {
             User.destroy({ email: user.email }).exec(function() {});
             return res.json(200, { status: 'success' });
+        });
+    },
+
+
+    // admin view
+    viewCompanies: function(req, res) {
+        Company.find({ status: 'Active' }).exec(function(err, coys) {
+            return res.view('admin/list-companies', { companies: coys });
         });
     }
 };

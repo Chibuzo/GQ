@@ -53,7 +53,7 @@
                 <div class="card">
                     <div class="header">
                         <h4 class="title">Update Company Details</h4>
-                        <small>Fields marked in asterisk are compulsary</small>
+                        <small>Fields marked in asterisk are compulsory</small>
                     </div>
 
                     <div class="row">
@@ -76,7 +76,6 @@
                     <div class="content">
                         <div class="author">
                             <a href="#">
-                                <img src="" />
                                 <h4 class="title">{{ company.company_name }}<br />
                                     <small>{{ company.contact_email }}</small>
                                 </h4>
@@ -98,30 +97,9 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
-//    $("#logo-btn").click(function () {
-//        $("#logo").click();
-//    });
-
-
-//    $("#logo").on('change', function () {
-//        if (typeof (FileReader) != "undefined") {
-//            var image_holder = $("#thumbnail-holder");
-//            image_holder.empty();
-//
-//            var reader = new FileReader();
-//            reader.onload = function (e) {
-//                $("<img />", {
-//                    "src": e.target.result,
-//                    "class": "preview-image"
-//                }).appendTo(image_holder);
-//
-//            }
-//            image_holder.show();
-//            reader.readAsDataURL($(this)[0].files[0]);
-//        } else {
-//            alert("This browser does not support FileReader.");
-//        }
-//    });
+    $("select[name=country]").find('option').filter(function(i) {
+        return 'Nigeria' == $(this).val();
+    }).attr("selected", "selected");
 
 
     $("#form-company-setup").submit(function(e) {

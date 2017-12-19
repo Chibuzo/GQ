@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
       state_name: {
-        type: 'string'
+        type: 'string',
+          unique: true
       }
   }
 };

@@ -59,6 +59,8 @@ module.exports.routes = {
 
     'GET /admin/gq-test': 'GQTestController.manageTest',
 
+    'GET /admin/view-companies': 'CompanyController.viewCompanies',
+
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 
     'POST /gqtest/savetest': 'GQTestController.saveTest',
@@ -133,7 +135,7 @@ module.exports.routes = {
 
     'GET /job/apply/:id': 'JobController.apply',
 
-    'GET /job/view-candidates/:job_id': 'JobCandidateController.getJobCandidates',
+    'GET /job/view-candidate-results/:job_id': 'JobCandidateController.getJobCandidates',
 
     'GET /job/:id/:title': 'JobController.showJob',
 
@@ -142,6 +144,8 @@ module.exports.routes = {
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
 
     'POST /job/set-test-rating': 'JobTestController.setJobTestRating',
+
+    'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
 
@@ -161,11 +165,11 @@ module.exports.routes = {
 
     'GET /get-schools': 'SchoolsController.getSchools',
 
-    //'GET /loadschools': 'BatchController.loadSchools'
+    //'GET /loadschools': 'BatchController.loadSchools',
 
     //'GET /savetest': 'TestController.saveTest',
 
-    //'GET /countries': 'BatchController.countries'
+    //'GET /countries': 'BatchController.countries',
 
-    '/states': 'BatchController.loadStates'
+    //'/states': 'BatchController.loadStates'
 };

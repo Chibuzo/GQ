@@ -54,7 +54,9 @@ module.exports = {
                 job_category: req.param('category'),
                 job: req.param('job_category')
             };
-            JobTest.create(data).exec(function () {
+            console.log(data);
+            JobTest.create(data).exec(function (err) {
+                console.log(err);
                 return res.redirect('/admin/manage-test');
             });
         });

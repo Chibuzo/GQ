@@ -28,10 +28,10 @@ module.exports = {
         });
     },
 
-    // for company hiring
+    // for companies
 	viewJobs: function(req, res) {
         var coy_id = req.session.coy_id;
-        Job.find({ company: coy_id }).populate('category').populate('applications').exec(function(err, jobs) {
+        Job.find({ company: coy_id }).populate('category').populate('applications').populate('poster').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().exec(function (err, categories) {
                 return res.view('company/manage-jobs', { jobs: jobs, jobcategories: categories });
@@ -53,6 +53,7 @@ module.exports = {
             country: q('country'),
             location: q('location'),
             nice_to_have: q('nice_to_have'),
+            poster: req.session.userId,
             published: publish,
             date_published: publish_date,
             closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
@@ -143,6 +144,7 @@ module.exports = {
         });
     },
 
+    // for candidates
     listJobs: function(req, res) {
         var today = new Date().toISOString();
         //Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
@@ -181,6 +183,13 @@ module.exports = {
         } else {
             return res.json(200, { status: 'login' });
         }
+    },
+
+    viewApplicants: function(req, res) {
+        var job_id =  req.param('job_id');
+        Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
+            return res.view('company/applicants-view.swig', { applicants: applicants });
+        });
     },
 
     deleteJob: function (req, res) {

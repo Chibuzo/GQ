@@ -77,7 +77,7 @@
             </div>
 
             <ul class="nav">
-                <li clas="active">
+                <li class="hidden">
                     <a href="/admin/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
@@ -106,7 +106,7 @@
                     </a>
                 </li>
 
-                <li class="">
+                <li class="hidden">
                     <a href="/admin/users">
                         <i class="pe-7s-users"></i>
                         <p>Applicants</p>

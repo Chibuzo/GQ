@@ -75,6 +75,10 @@ module.exports = {
             defaultsTo: 50
         },
 
+        poster: {
+            model: 'user'
+        },
+
         published: {
             type: 'boolean',
             defaultsTo: false

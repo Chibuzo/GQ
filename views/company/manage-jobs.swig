@@ -28,6 +28,7 @@
 						<th class="hidden">Job Category</th>
 						<th>Contract Type</th>
 						<th style="width: 60px">Applications</th>
+						<th>Poster</th>
 						<th>Status</th>
 						<th><i class="fa fa-calendar"></i> Closes On</th>
 						<th class="text-center">Action</th>
@@ -44,7 +45,8 @@
 							<td class="hidden">{{ job.category.category }}</td>
 							<td>{{ job.job_level }}</td>
 							<td>{{ job.contract_type }}</td>
-							<td class="text-right"><a href="/job/view-candidates/{{ job.id }}">{{ applications }}</a></td>
+							<td class="text-right"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+							<td>{{ job.poster.fullname }}</td>
 							<td>{{ job.status }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
