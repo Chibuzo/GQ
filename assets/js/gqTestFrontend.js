@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var test_id, duration, questions = [];
+var TEST_ID, duration, questions = [];
 
 // retake test
 $("#retake-test").click(function() {
@@ -32,7 +32,7 @@ $("#start-test").click(function() {
             duration = d.duration;
 
             var total_quests = d.questions.length;
-            test_id = d.test_id;
+            TEST_ID = d.test_id;
             $("#total_questions").text(total_quests);
 
             $("#instructions").fadeOut('fast', function() {
@@ -156,7 +156,7 @@ function restoreQuestionState(quest_id) {
 
 
 function submitTest() {
-    $.get('/gqtest/marktest/' + test_id + '/' + questions.length, function(d) {
+    $.get('/gqtest/marktest/' + TEST_ID + '/' + questions.length, function(d) {
         if (d.status.trim() == 'success') {
             $("#score").text(d.result.score + '/' + questions.length);
             $("#percentage").text(d.result.percentage + '%');
