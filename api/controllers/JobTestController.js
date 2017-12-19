@@ -6,59 +6,52 @@
  */
 
 module.exports = {
-    //manageJobTests: function (req, res) {
-    //    CBTTest.find().exec(function(err, xpr_tests) { // Expertrating tests
-    //        if (err) return;
-    //        GQTest.find().exec(function(err, gqtests) {
-    //            JobCategory.find().exec(function(err, jobcategories) { // GQ tests
-    //                if (err) return;
-    //                JobTest.find().populate('job').exec(function (err, jobtests) {
-    //                    var job_tests = [];
-    //                    //jobtests.forEach(function(test) {
-    //                    //    if (test.test_source == 'gq') {
-    //                    //
-    //                    //    }
-    //                    //    job_tests.push({
-    //                    //        test_title: test.test_title,
-    //                    //        test_source: test.test_source,
-    //                    //        job_level: test.job_level,
-    //                    //        job_category: test.job_category,
-    //                    //    });
-    //                    //});
-    //                    return res.view('test/manage-test', { xpr_tests: tests, gq_tests: gqtests, jobtests: jobtests, job_categories: jobcategories });
-    //                });
-    //            });
-    //        });
-    //    });
-    //},
-
     manageJobTests: function (req, res) {
-        CBTTest.find().exec(function(err, tests) {
+        CBTTest.find().exec(function(err, xpr_tests) { // Expertrating tests
             if (err) return;
-            JobCategory.find().exec(function(err, jobcategories) {
-                if (err) return;
-                JobTest.find().populate('test').populate('job').exec(function (err, jobtests) {
-                    return res.view('test/manage-test', { tests: tests, jobtests: jobtests, job_categories: jobcategories });
+            GQTest.find().exec(function(err, gqtests) {
+                JobCategory.find().exec(function(err, jobcategories) { // GQ tests
+                    if (err) return;
+                    JobTest.find().populate('job').exec(function (err, jobtests) {
+                        var job_tests = [];
+                        jobtests.forEach(function(test) {
+                            //if (test.test_source == 'gq') {
+                            //    job_tests.push({
+                            //        test_title: test.test_title,
+                            //        test_source: test.test_source,
+                            //        job_level: test.difficulty,
+                            //        job_category: test.job_category,
+                            //    });
+                            //}
+                            //job_tests.push({
+                            //    test_title: test.test_title,
+                            //    test_source: test.test_source,
+                            //    job_level: test.job_level,
+                            //    job_category: test.job_category,
+                            //});
+                        });
+                        return res.view('test/manage-test', { xpr_tests: xpr_tests, gq_tests: gqtests, jobtests: jobtests, job_categories: jobcategories });
+                    });
                 });
             });
         });
     },
 
     assignTest: function (req, res) {
-        req.param('test').forEach(function(test) {
-            var data = {
-                test: test,
-                test_source: req.param('test_source'),
-                test_title: req.param('test_title'),
-                job_level: req.param('job_level'),
-                job_category: req.param('category'),
-                job: req.param('job_category')
-            };
-            console.log(data);
-            JobTest.create(data).exec(function (err) {
-                console.log(err);
-                return res.redirect('/admin/manage-test');
-            });
+        var data = {
+            test_source: req.param('test_source'),
+            test_title: req.param('test_title'),
+            job_level: req.param('job_level'),
+            job_category: req.param('category'),
+            job: req.param('job_category')
+        };
+        if (req.param('test_source') == 'gq') {
+            data.gq_test = req.param('gq_test');
+        } else {
+            data.test = req.param('expertrating_test');
+        }
+        JobTest.create(data).exec(function () {
+            return res.redirect('/admin/manage-test');
         });
     },
 

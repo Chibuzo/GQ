@@ -20,11 +20,12 @@
 					<tr>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						{#<th syle="width: 20%">Test Name</th>#}
+						<th>Source</th>
 						<th>Test Title</th>
 						<th>Job Cateogry</th>
 						<th>Job Level</th>
-						<th style="width: 120px">No of Questions</th>
-						<th style="with: 190px" class="text-right">Pass Mark</th>
+						<th style="width: 120px" class="hidden">No of Questions</th>
+						<th style="with: 190px" class="text-right hidden">Pass Mark</th>
 						<th></th>
 					</tr>
 					</thead>
@@ -33,11 +34,12 @@
 						<tr id="{{ test.id }}">
 							<td>{{ test.createdAt | date('d M, Y') }}</td>
 							{#<td>{{ test.test.test_name }}</td>#}
+							<td>{{ test.test_source | upper }}</td>
 							<td>{{ test.test_title }}</td>
 							<td>{{ test.job_category }}</td>
 							<td>{{ test.job_level }}</td>
-							<td class="text-right">{{ test.test.total_questions }}</td>
-							<td class="text-right">{{ test.test.pass_mark }}</td>
+							<td class="text-right hidden">{{ test.test.total_questions }}</td>
+							<td class="text-right hidden">{{ test.test.pass_mark }}</td>
 							<td class="opt-icons">
 								<a href="" class="remove-test" rel="tooltip" title="Remove Test"><i class="fa fa-times fa-lg"></i> </a>
 							</td>
@@ -61,6 +63,17 @@ $(document).ready(function() {
 		category = $("select[name=job_category] option:selected").text();
 		$("input[name=category]").val(category);
 	});
+
+	$("input[name=test_source]").change(function() {
+		if ($("input[name=test_source]:checked").val() == 'gq') {
+			$("#exp-ctrl").addClass('hidden');
+			$("#gq-ctrl").removeClass('hidden');
+		} else {
+			$("#exp-ctrl").removeClass('hidden');
+			$("#gq-ctrl").addClass('hidden');
+		}
+	});
+
 
 	$(".remove-test").click(function(e) {
 		e.preventDefault();

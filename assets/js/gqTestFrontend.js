@@ -1,9 +1,17 @@
 // globals, yes shoot me
 var test_id, duration, questions = [];
 
+// retake test
+$("#retake-test").click(function() {
+    $("#result-div").fadeOut('fast', function() {
+        $("#test-div").hide().removeClass('hidden').fadeIn('fast');
+    });
+});
+
 $(".load-test").click(function() {
+    var test_id = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);
-    $.get('/gqtest/load-default-test-instruction', function(d) {
+    $.get('/gqtest/load-test-instruction/' + test_id, function(d) {
         if (d.status.trim() == 'success') {
             $("#test-notice").fadeOut(function() {
                 $("#start-test").removeClass('hidden');
@@ -16,8 +24,9 @@ $(".load-test").click(function() {
 
 
 $("#start-test").click(function() {
+    var test_id = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);
-    $.get('/gqtest/load-default', function(d) {
+    $.get('/gqtest/load-test/' + test_id, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
             duration = d.duration;

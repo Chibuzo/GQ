@@ -71,9 +71,10 @@ module.exports.routes = {
 
     'GET /gqtest/getquestion/:question_id': 'GQTestController.getQuestion',
 
-    'GET /gqtest/load-default-test-instruction': 'GQTestController.loadDefaultInstruction',
+    'GET /gqtest/load-test-instruction/:test_id': 'GQTestController.loadTestInstruction',
 
-    'GET /gqtest/load-default': 'GQTestController.loadGQDefaultTest',
+    //'GET /gqtest/load-default': 'GQTestController.loadGQDefaultTest',
+    'GET /gqtest/load-test/:test_id': 'GQTestController.loadTest',
 
     'POST /gqtest/return-answer': 'GQTestController.returnAnswer',
 
@@ -82,6 +83,8 @@ module.exports.routes = {
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
     'GET /gqtest/remove': 'GQTestController.deleteTest',
+
+    'GET /gqtest/gettest/:test_id': 'GQTestController.getTest',
 
     'GET /courses': 'CourseController.listCourses',
 
