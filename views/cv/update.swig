@@ -102,7 +102,7 @@
 												<li class="list-group-item">Average: <span id="average">{{ result.average }}</span></li>
 											</ul>
 											<div class="panel-body">
-												<strong>Note: </strong>You can always retake the test to improve your score. It's not free though, lol...
+												<strong>Note: </strong>You can always pay and retake the test to improve your score...
 											</div>
 										</div>
 
@@ -118,9 +118,9 @@
 									<div class="text-center"><br>
 
 										<div id="test-notice">
-											<h5>Would it not make sense to leave a brief message to the applicant about the test why they should care?</h5>
+											<h5></h5>
 											<br>
-											<button class="btn btn-primary btn-lg load-test">Take test</button>
+											<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
 										</div>
 									</div>
 
@@ -129,7 +129,7 @@
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">
-												<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
+												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="1"><i class="fa fa-clock-o"></i> Start Test</button>
 											</div>
 										</div>
 

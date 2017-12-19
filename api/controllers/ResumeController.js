@@ -7,7 +7,7 @@
 
 module.exports = {
 	viewResume: function(req, res) {
-        var test_id = 7;
+        var test_id = 1;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -129,7 +129,7 @@ module.exports = {
         }
         return res.json(200, { status: 'success' });
 
-        if (sections.education && sections.qualification && sections.employment) {
+        if (sections.education) {
             status = 'Complete';
         } else {
             status = 'Incomplete';

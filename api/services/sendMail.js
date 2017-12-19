@@ -8,7 +8,7 @@ module.exports = {
     },
     
     sendVerificationEmail: function(coy) {
-        var base_url = 'http://144.217.245.35:1330/';
+        var base_url = 'http://18.217.134.186:1337/';
         var email_b64 = new Buffer(coy.contact_email).toString('base64');
         var crypto = require('crypto');
         var hash = crypto.createHash('md5').update(coy.contact_email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
@@ -51,7 +51,7 @@ module.exports = {
     },
     
     sendCompanyInviteEmail: function(user, coy) {
-        var base_url = 'http://144.217.245.35:1330/';
+        var base_url = 'http://18.217.134.186:1337/';
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
         var hash = crypto.createHash('md5').update(user.email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');

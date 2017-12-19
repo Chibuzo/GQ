@@ -33,7 +33,7 @@
 
 		$.post('/admin/login', $(this).serialize(), function(d) {
 			if (d.status.trim() == 'Ok') {
-					location.replace('/admin/dashboard');
+					location.replace('/company-request/view-requests');
 			} else {
 				$(".alert-danger").html("<strong>Error:</strong> " + d.msg).removeClass('hidden');
 			}

@@ -24,12 +24,15 @@ module.exports = {
             type: 'string'
         },
 
+        //country: {
+        //    model: 'country'
+        //},
         country: {
-            type: 'text'
+            type: 'string'
         },
 
         r_state: {
-            type: 'state'
+            type: 'string'
         },
 
         city: {

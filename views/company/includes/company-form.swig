@@ -24,9 +24,9 @@
 					<option value="">-- Choose Company Industry --</option>
 					{% for sector in sectors %}
 						{% if company.sector == sector.id %}
-							<option value="{{ sector.id }}" selected="selected">{{ sector.title }}</option>
+							<option value="{{ sector.title }}" selected="selected">{{ sector.title }}</option>
 						{% else %}
-							<option value="{{ sector.id }}">{{ sector.title }}</option>
+							<option value="{{ sector.title }}">{{ sector.title }}</option>
 						{% endif %}
 					{% endfor %}
 				</select>
@@ -44,15 +44,20 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label for="phone">Resident Country</label>
+				<label for="phone">Country</label>
 				<select name="country" class="form-control">
-					<option value="">Select Country</option>
+					{% for country in countries %}
+						<option value="{{ country.country }}">{{ country.country }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-md-4">
 				<label for="email">State</label>
 				<select name="state" class="form-control">
 					<option value="">Select State</option>
+					{% for state in states %}
+						<option value="{{ state.state_name }}">{{ state.state_name }}</option>
+					{% endfor %}
 				</select>
 			</div>
 			<div class="col-md-4">

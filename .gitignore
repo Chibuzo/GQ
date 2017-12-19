@@ -39,6 +39,7 @@
 # 
 ################################################
 
+config/connection.js
 config/local.js
 config/email.js
 assets/logos/*

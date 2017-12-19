@@ -9,7 +9,8 @@ module.exports = {
 
     attributes: {
         country: {
-            type: 'string'
+            type: 'string',
+            unique: true
         }
     }
 };

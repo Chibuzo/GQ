@@ -52,7 +52,7 @@
 		<div class="row">
 			<div class="col-md-4">
 				<label>Job Level</label>
-				<select name="job_level" id="job_level" class="form-control">
+				<select name="job_level" id="job_level" class="form-control" required>
 					<option value=""></option>
 					{#<option value="Entry">Entry Level</option>#}
 					{#<option value="Intermediate">Intermediate</option>#}
@@ -67,7 +67,7 @@
 			</div>
 			<div class="col-md-4">
 				<label>Contract Type</label>
-				<select name="contract_type" id="contract_type" class="form-control">
+				<select name="contract_type" id="contract_type" class="form-control" required>
 					<option value=""></option>
 					<option value="Entry">Full time</option>
 					<option value="Intermediate">Part time</option>
@@ -77,9 +77,9 @@
 			<div class="col-md-4">
 				<label>Closing Date</label>
 				{% if job.closing_date %}
-					<input name="closing_date" id="closing_date" type="text" value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep"/>
+					<input name="closing_date" id="closing_date" type="text" value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep" required />
 				{% else %}
-					<input name="closing_date" id="closing_date" type="text" class="form-control datep"/>
+					<input name="closing_date" id="closing_date" type="text" class="form-control datep" required />
 				{% endif %}
 			</div>
 		</div>

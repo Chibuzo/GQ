@@ -29,14 +29,14 @@
                     </thead>
                     <tbody>
                     {% set n = 0 %}
-                    {% for result in results %}
+                    {% for applicant in applicants %}
                         {% set n = n + 1 %}
                         {#{% set applications = job.applications.length %}#}
-                        <tr id="{{ result.applicant.id }}">
+                        <tr id="{{ applicant.applicant.id }}">
                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-                            <td>{{ result.createdAt | date('d M, Y') }}</td>
-                            <td>Candidate {{ n }}</td>
-                            <td>{{ result.percentage }}%</td>
+                            <td>{{ applicant.createdAt | date('d M, Y') }}</td>
+                            <td>{{ applicant.applicant.fullname }}</td>
+                            <td>{{ applicant.applicant }}%</td>
                             <td class="textright">{{ result.percentile }}</td>
                             <td class="">{{ result.average_score }}</td>
                             <td>{{ result.test_result }}</td>
@@ -48,7 +48,7 @@
                     {% endfor %}
                     </tbody>
                 </table>
-                {% if results.length < 1 %}
+                {% if applicants.length < 1 %}
                     <div class="row">
                         <div class="col-md-12" style="padding: 0 45px"><div class="alert alert-warning"><i class="fa fa-info-circle fa-lg"></i> No candidate has taken a test for this job.</div></div>
                     </div>

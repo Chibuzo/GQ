@@ -66,15 +66,15 @@ module.exports = {
                 passwordAttempt: req.param('password'),
                 encryptedPassword: foundUser.password
             }).exec({
-                error: function (err) {
-                    return res.json(200, { status: 'Err', msg: err });
+                error: function (p_err) {
+                    return res.json(200, { status: 'Err', msg: p_err });
                 },
                 incorrect: function () {
                     return res.json(200, { status: 'Err', msg : 'User not found' });
                 },
                 success: function () {
                     if (foundUser.deleted) {
-                        return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://kentzville.com/restore to restore your account.'" });
+                        return res.json(200, { status: 'Err', msg: "'Your account has been deleted. Please visit http://gq.com/restore to restore your account.'" });
                     }
 
                     if (foundUser.banned) {

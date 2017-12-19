@@ -30,6 +30,7 @@
 					<tbody>
 					{% set n = 0 %}
 					{% for result in results %}
+						{% set n = n + 1 %}
 						{#{% set applications = job.applications.length %}#}
 						<tr id="{{ candidate.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
@@ -47,6 +48,9 @@
 					{% endfor %}
 					</tbody>
 				</table>
+				{% if n == 0 %}
+					<div class="alert alert-info">No candidate has take any test yet.</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

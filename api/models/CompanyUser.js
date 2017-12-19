@@ -8,8 +8,15 @@
 module.exports = {
 
     attributes: {
-        user: {
-            model: 'user'
+        //user: {
+        //    model: 'user'
+        //},
+        fullname: {
+            type: 'string'
+        },
+
+        email: {
+            type: 'string'
         },
 
         company: {

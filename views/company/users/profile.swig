@@ -44,13 +44,18 @@
                                                 <div class="col-md-4">
                                                     <label for="phone">Resident Country</label>
                                                     <select name="country" class="form-control">
-                                                        <option value="">Select Country</option>
+                                                        {% for country in countries %}
+                                                            <option value="{{ country.country }}">{{ country.country }}</option>
+                                                        {% endfor %}
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="state">State</label>
                                                     <select name="state" class="form-control">
                                                         <option value="">Select State</option>
+                                                        {% for state in states %}
+                                                            <option value="{{ state.state_name }}">{{ state.state_name }}</option>
+                                                        {% endfor %}
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
@@ -124,6 +129,11 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+    $("select[name=country]").find('option').filter(function(i) {
+        return 'Nigeria' == $(this).val();
+    }).attr("selected", "selected");
+
+
     $("#form-profile").submit(function(e) {
         e.preventDefault();
 
