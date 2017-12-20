@@ -12,7 +12,7 @@ module.exports = {
             GQTest.find().exec(function(err, gqtests) {
                 JobCategory.find().exec(function(err, jobcategories) { // GQ tests
                     if (err) return;
-                    JobTest.find().populate('job').exec(function (err, jobtests) {
+                    JobTest.find().exec(function (err, jobtests) {
                         var job_tests = [];
                         jobtests.forEach(function(test) {
                             //if (test.test_source == 'gq') {
@@ -43,7 +43,7 @@ module.exports = {
             test_title: req.param('test_title'),
             job_level: req.param('job_level'),
             job_category: req.param('category'),
-            job: req.param('job_category')
+            job_category_id: req.param('job_category')
         };
         if (req.param('test_source') == 'gq') {
             data.gq_test = req.param('gq_test');

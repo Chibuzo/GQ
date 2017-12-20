@@ -12,7 +12,7 @@ module.exports = {
             // we need to fetch the tests for each application
             var _applications = [];
             async.eachSeries(applications, function (app, cb) {
-                JobTest.find({ job: app.job.id }).populate('test').populate('gq_test').exec(function(err, tests) {
+                JobTest.find({ job_category_id: app.job.category, job_level: app.job.job_level }).populate('test').populate('gq_test').exec(function(err, tests) {
                     app.tests = tests;
                     _applications.push(app);
                     cb();

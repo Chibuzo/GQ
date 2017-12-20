@@ -62,7 +62,26 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="header">
-						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Complete Your GQ Profile</h4>
+						<div class="row">
+							<div class="col-md-9">
+								<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Complete Your GQ Profile</h4>
+							</div>
+							<div class="col-md-3 text-right">
+								{% set status = 0 %}
+								{% if resume.status == 'Complete' %}
+									{% set status = status + 1 %}
+								{% endif %}
+								{% if result %}
+									{% set status = status + 1 %}
+									{% set test_status = 1 %}
+								{% endif %}
+								{% if resume.video_file.length > 0 %}
+									{% set status = status + 1 %}
+									{% set video_status = 1 %}
+								{% endif %}
+								<strong>{{ status }}/3</strong> - Resume completion
+							</div>
+						</div>
 					</div><br>
 
 					<div class="content">
@@ -120,7 +139,7 @@
 										<div id="test-notice">
 											<h5></h5>
 											<br>
-											<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
+											<button class="btn btn-primary btn-lg load-test" data-test_id="7">Take test</button>
 										</div>
 									</div>
 
@@ -129,7 +148,7 @@
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">
-												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="1"><i class="fa fa-clock-o"></i> Start Test</button>
+												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="7"><i class="fa fa-clock-o"></i> Start Test</button>
 											</div>
 										</div>
 

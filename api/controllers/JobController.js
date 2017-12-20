@@ -158,6 +158,7 @@ module.exports = {
         var job_id = req.param('id');
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
+            console.log('Job: ' + job);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
             return res.view('job', { job: job });
@@ -169,8 +170,8 @@ module.exports = {
         if (req.session.userId && req.session.user_type == 'Applicant') {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                if (resume.status === undefined || resume.status == 'Incomplete') {
-                    return res.json(200, { status: 'error', msg: 'Incomplete Resume' });
+                if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
+                    return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {
@@ -187,6 +188,7 @@ module.exports = {
 
     viewApplicants: function(req, res) {
         var job_id =  req.param('job_id');
+        console.log(job_id)
         Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
             return res.view('company/applicants-view.swig', { applicants: applicants });
         });

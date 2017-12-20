@@ -27,6 +27,18 @@ module.exports = {
             unique: 'true'
         },
 
+        country: {
+            type: 'string'
+        },
+
+        r_state: {
+            type: 'string'
+        },
+
+        city: {
+            type: 'string'
+        },
+
         address: {
             type: 'string'
         },

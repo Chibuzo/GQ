@@ -16,7 +16,10 @@ module.exports = {
                     result.test_title = test.test.test_name;
                     gq_results.push(result);
                     cb();
-                });
+                }).catch(function(err) {
+                    console.log(err);
+                    cb(err);
+                })
             },
             function() {
                 // check for expertrating test result

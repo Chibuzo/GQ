@@ -32,8 +32,8 @@ module.exports = {
           type: 'string'
       },
 
-      job: {
-          model: 'job'
+      job_category_id: {
+          type: 'integer'
       }
   }
 };

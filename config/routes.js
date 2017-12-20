@@ -140,8 +140,6 @@ module.exports.routes = {
 
     'GET /job/view-candidate-results/:job_id': 'JobCandidateController.getJobCandidates',
 
-    'GET /job/:id/:title': 'JobController.showJob',
-
     'POST /job/add-test': 'JobTestController.assignTest',
 
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
@@ -149,6 +147,8 @@ module.exports.routes = {
     'POST /job/set-test-rating': 'JobTestController.setJobTestRating',
 
     'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
+
+    'GET /job/:id/:title': 'JobController.showJob',
 
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
 

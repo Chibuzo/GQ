@@ -20,10 +20,10 @@
                         <th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
                         <th>Test Date</th>
                         <th><i class="fa fa-user"></i> Candidate</th>
-                        <th>Percentage</th>
-                        <th>Percentile</th>
-                        <th>Average Score</th>
-                        <th>Result</th>
+                        <th>Profile Status</th>
+                        {#<th>Percentile</th>#}
+                        {#<th>Average Score</th>#}
+                        {#<th>Result</th>#}
                         <th class="text-center">Action</th>
                     </tr>
                     </thead>
@@ -36,10 +36,10 @@
                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                             <td>{{ applicant.createdAt | date('d M, Y') }}</td>
                             <td>{{ applicant.applicant.fullname }}</td>
-                            <td>{{ applicant.applicant }}%</td>
-                            <td class="textright">{{ result.percentile }}</td>
-                            <td class="">{{ result.average_score }}</td>
-                            <td>{{ result.test_result }}</td>
+                            <td>{{ applicant.applicant.status }}</td>
+                            {#<td class="textright">{{ result.percentile }}</td>#}
+                            {#<td class="">{{ result.average_score }}</td>#}
+                            {#<td>{{ result.test_result }}</td>#}
                             <td class="opt-icons text-center">
                                 <a href="" rel="tooltip" title="View Resume"><i class="fa fa-list-alt fa-lg"></i> </a>
                                 <a href="#videoModal" data-toggle="modal" class="watch-video" rel="tooltip" title="Watch Video"><i class="fa fa-video-camera fa-lg"></i></a>

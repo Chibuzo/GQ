@@ -73,7 +73,7 @@
 			</div>
 			<div class="col-md-4">
 				<label for="email">City</label>
-				<input type="text" name="city" class="form-control" required />
+				<input type="text" name="city" class="form-control" value="{{ resume.city }}" required />
 			</div>
 		</div>
 	</div>
@@ -107,8 +107,8 @@
 				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
 			</div>
 			<div class="col-md-4">
-				<label>Expected Salary</label>
-				<input type="text" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
+				<label>Expected Annual Salary</label>
+				<input type="number" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
 			</div>
 		</div>
 	</div>
@@ -124,6 +124,7 @@
 					</div>
 					<div class="col-md-1">
 						<label>Honour</label>
+						{% set selected = 'selected' %}
 						<select name="honour[]" class="form-control">
 							<option value=""></option>
 							<option value="BSc">Bachelors</option>
@@ -547,6 +548,8 @@
 
 	<input type="hidden" name="resume_id" value="{{ resume.id }}" />
 	<input type="hidden" name="status" value="{{ resume.status }}" />
+	<input type="hidden" name="video_status" value="{{ video_status }}" />
+	<input type="hidden" name="test_status" value="{{ test_status }}" />
 	<button type="submit" class="btn btn-info btn-fill pull-right btn-lg" id="btn-submit">Update Profile</button>
 </form>
 

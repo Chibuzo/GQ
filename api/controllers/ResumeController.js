@@ -7,7 +7,7 @@
 
 module.exports = {
 	viewResume: function(req, res) {
-        var test_id = 1;
+        var test_id = 7;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -62,6 +62,7 @@ module.exports = {
 
             if (q('inst_id')[i] && q('inst_id')[i] > 0) {
                 Education.update({ id: q('inst_id')[i] }, education).exec(function() {});
+                sections.education = true;
             } else {
                 Education.create(education).exec(function() {});
                 sections.education = true;
@@ -82,7 +83,7 @@ module.exports = {
                 Qualification.update({ id: q('qualification_id')[i] }, qualification).exec(function() {});
             } else {
                 Qualification.create(qualification).exec(function() {});
-                sections.qualification = true;
+                //sections.qualification = true;
             }
         }
 
@@ -127,9 +128,7 @@ module.exports = {
                 ReferenceContact.create(reference).exec(function() {});
             }
         }
-        return res.json(200, { status: 'success' });
-
-        if (sections.education) {
+        if (sections.education && (q('video_status') == 1) && (q('test_status') == 1)) {
             status = 'Complete';
         } else {
             status = 'Incomplete';
@@ -137,6 +136,9 @@ module.exports = {
         var data = {
             gender: q('gender'),
             phone: q('phone'),
+            country: q('country'),
+            r_state: q('state'),
+            city: q('city'),
             address: q('address'),
             introduction: q('introduction'),
             employment_status: q('employment_status'),
@@ -148,6 +150,7 @@ module.exports = {
             if (err) {
                 return res.json(200, { status: 'error', msg: err });
             }
+            return res.json(200, { status: 'success' });
         });
     },
 
