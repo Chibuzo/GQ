@@ -28,8 +28,9 @@
 						<th class="hidden">Job Category</th>
 						<th>Contract Type</th>
 						<th style="width: 60px">Applications</th>
+						{#<th>Candidates</th>#}
 						<th>Poster</th>
-						<th>Status</th>
+						{#<th>Status</th>#}
 						<th><i class="fa fa-calendar"></i> Closes On</th>
 						<th class="text-center">Action</th>
 					</tr>
@@ -46,13 +47,15 @@
 							<td>{{ job.job_level }}</td>
 							<td>{{ job.contract_type }}</td>
 							<td class="text-right"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+							{#<td><a href=""></a></td>#}
 							<td>{{ job.poster.fullname }}</td>
-							<td>{{ job.status }}</td>
+							{#<td>{{ job.status }}</td>#}
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
 								<a href="/job/editjob/{{ job.id }}" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
-								<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>
+								{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
 								<a href="" class="upload-csv" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
+								<a href="/job/candidates/{{ job.id }}" class="" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
 								<a href="" class="del-job" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
 							</td>
 						</tr>

@@ -19,5 +19,42 @@ module.exports = {
                 });
             });
         });
+    },
+
+    getJobTestResults: function(candidates, jobtest) {
+        return new Promise(function(resolve, reject) {
+            if (jobtest.test_source == 'gq') {
+                GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').exec(function(err, results) {
+                    var gq_results = [];
+                    if (results.length > 0) {
+                        async.eachSeries(results, function(result, cb) {
+                            GQTestService.prepareCandidateResult(jobtest.gq_test, result.score, result.no_of_questions).then(function (rsult) {
+                                //rsult.test_title = test.test.test_name;
+                                gq_results.push({
+                                    applicant: result.candidate,
+                                    percentage: rsult.percentage,
+                                    percentile: '-',
+                                    average_score: rsult.average,
+                                    test_result: rsult.result,
+                                    createdAt: result.createdAt
+                                });
+                                cb();
+                            }).catch(function (err) {
+                                console.log(err);
+                                cb(err);
+                            });
+                            console.log(gq_results)
+                            return resolve(gq_results);
+                        });
+                    } else {
+                        return resolve([]);
+                    }
+                });
+            } else {
+                TestResult.find({ test_id: jobtest.test.test_id, applicant: candidates }).populate('applicant').exec(function(err, results) {
+                    return resolve(results);
+                });
+            }
+        });
     }
 }

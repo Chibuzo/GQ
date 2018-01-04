@@ -134,7 +134,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="hidden">
                     <a href="/user/profile">
                         <i class="pe-7s-user"></i>
                         <p>User Profile</p>

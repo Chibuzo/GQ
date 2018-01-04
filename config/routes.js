@@ -148,6 +148,8 @@ module.exports.routes = {
 
     'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 
+    'GET /job/candidates/:job_id': 'JobController.getApplicantsResults',
+
     'GET /job/:id/:title': 'JobController.showJob',
 
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',

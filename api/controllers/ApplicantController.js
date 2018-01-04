@@ -24,15 +24,19 @@ module.exports = {
             function() {
                 // check for expertrating test result
                 TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
-                    var test_results = [];
+                    var xpr_results = [];
                     if (results.length > 0) {
-                        results.forEach(function(result) {
+                        //results.forEach(function(result) {
+                        async.eachSeries(results, function(result, cb) {
                             CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
                                 result.test_title = test[0].test_name;
-                                test_results.push(result);
+                                xpr_results.push(result);
+                                cb();
                             });
+                        },
+                        function() {
+                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results});
                         });
-                        return res.view('applicant/dashboard', { xpr_results: xpr_result, gq_results: gq_results });
                     } else {
                         return res.view('applicant/dashboard', { gq_results: gq_results });
                     }

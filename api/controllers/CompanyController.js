@@ -10,7 +10,7 @@ os.tmpDir = os.tmpdir;
 
 module.exports = {
     dashboard: function(req, res) {
-        Job.find().populate('applications').exec(function(err, jobs) {
+        Job.find({ company: req.session.coy_id }).populate('applications').exec(function(err, jobs) {
             if (err) return res.badRequest(err);
             return res.view('company/dashboard', { jobs: jobs });
         });

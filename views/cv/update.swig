@@ -27,6 +27,10 @@
 		min-height: 500px;
 	}
 
+	#test-notice {
+		padding: 10px 120px;
+	}
+
 	/* CBT Styles */
 
 	.empty-vid {
@@ -54,6 +58,16 @@
 	.quest-instruction {
 		display: none;
 		padding-left: 20px;
+	}
+
+	@media screen and (min-width: 200px) and (max-width: 600px) {
+		#test-notice {
+			padding: 10px 5px;
+		}
+
+		.question-image img {
+			width: 100%;
+		}
 	}
 </style>
 <div class="content">
@@ -137,9 +151,20 @@
 									<div class="text-center"><br>
 
 										<div id="test-notice">
-											<h5></h5>
+											<h3>Test Instruction</h3>
+											<p> The following test is in one part and will take 25 minutes. It is simply a test of your aptitude and it is standardized.
+											Please read each question carefully and choose your best answer.</p>
+											<p class="text-left"><br>
+												<ol class="text-left">
+													<li>This test is accompanied by anti-cheating technology and it requires you take this test in a well-lit and quiet room with no assistance. Taking test otherwise might reflect in your result and your standing</li>
+													<li>It is advised you take this test with a computer.</li>
+													<li>You will not be penalized for guessing.</li>
+													<li>The test auto-submits when your test time is up.</li>
+												</ol>
+											</p><br>
+											<p>Proceed to take the test. Good luck!</p>
 											<br>
-											<button class="btn btn-primary btn-lg load-test" data-test_id="7">Take test</button>
+											<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
 										</div>
 									</div>
 
@@ -148,7 +173,7 @@
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">
-												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="7"><i class="fa fa-clock-o"></i> Start Test</button>
+												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="1"><i class="fa fa-clock-o"></i> Start Test</button>
 											</div>
 										</div>
 
