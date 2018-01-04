@@ -5,7 +5,7 @@ module.exports.routes = {
         view: 'index'
     },
 
-    '/employee': 'ApplicantController.showLanding',
+    '/candidates': 'ApplicantController.showLanding',
 
     '/signup': { view: 'signup' },
 

@@ -257,7 +257,7 @@ header h1, header h4 {
 			<div class="col-md-12 courses">
 				<div class="row">
 					{% for course in courses %}
-						{#{% set path = job.job_title.split(' ') %}#}
+						{% set path = course.course_title.split(' ') %}
 						<div class="col-md-3">
 							<div class="course" id="{{ course.id }}">
 								<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>

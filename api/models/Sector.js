@@ -18,6 +18,11 @@ module.exports = {
           via: 'sector'
       },
 
+      jobs: {
+          collection: 'job',
+          via:
+      }
+
       removed: {
           type: 'boolean',
           defaultsTo: 'false'

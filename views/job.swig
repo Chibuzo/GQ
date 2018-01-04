@@ -13,10 +13,32 @@
 		}
 	}
 
+#home {
+	height: 34vh;
+}
+
+#home .home-wrapper {
+	top: 82%
+}
+
+.job {
+	padding: 20px 40px;
+}
+
+.job-desc {
+	color: #474747;
+}
+
+.job-desc h3 {
+	margin-top: 30px;
+	margin-bottom: 15px;
+}
+
 .info-thumb {
 	padding-bottom: 13px;
 	font-size: 14px;
-	margin-bottom: 15px;
+	margin-bottom: 35px;
+	margin-left: 9px;
 }
 
 .info-thumb-ls {
@@ -33,41 +55,73 @@
 	float: left;
 	margin-right: 15px;
 }
+
+input[type="text"] {
+	height: 46px;
+	background: #fff;
+	opacity: 1;
+}
+
+@media screen and (min-width: 200px) and (max-width: 600px) {
+	#home {
+		height: 50vh;
+	}
+
+	#home .home-wrapper {
+		top: 60%
+	}
+
+	.job {
+		padding: 20px 10px;
+	}
+}
 </style>
 
-<header>
-	<nav class="navbar navbardefault main-nav">
-		<div class="gq-container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbarbrand" href="#"><img src="/images/logo.png" id="logo"/></a>
-			</div>
-
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right">
-					<li class="active"><a href="/">Home <span class="sr-only">Home</span></a></li>
-					<li><a href="/courses">Courses</a></li>
-					<li><a href="/jobs">Jobs</a></li>
-					<li><a href="/login">Login</a></li>
-					<li><a href class="btn btn-default">Sign Up</a> </li>
-				</ul>
+{% block backgroud %}
+	<div class="bg-img" style="background-image: url('/images/jobs.jpg');">
+		<div class="overlay"></div>
+	</div>
+{% endblock %}
+<div class="home-wrapper">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+				<form action="" method="get">
+					<div class="col-md-5">
+						<div class="form-group">
+							<input type="text" class="form-control input-lg" placeholder="Use a keyword, company or skill" />
+						</div>
+					</div>
+					<div class="col-md-3">
+						<div class="form-group">
+							<input type="text" class="form-control input-lg" placeholder="Sector" />
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-group">
+							<select class="form-control input-lg" name="job_level">
+								<option value="">Job Level</option>
+								<option value="Entry">Entry Level</option>
+								<option value="Intermediate">Intermediate</option>
+								<option value="Professional">Professional</option>
+							</select>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<button class="btn btn-info btn-block btn-lg"><i class="fa fa-search"></i> Search</button>
+					</div>
+				</form>
 			</div>
 		</div>
-	</nav>
+	</div>
+</div>
 </header>
 
-	<div class="clearfix container" style="margin-top: 60px">
+	<div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
 	<div class="row">
 		<div class="col-md-9">
 			<div class="job">
-				<h3>{{ job.job_title }}</h3>
+				<h2>{{ job.job_title }}</h2>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
 						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} </li>
@@ -75,9 +129,17 @@
 						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
 					</ul>
 				</div>
-				<div class="job-desc">{{ job.job_description }}</div>
+				<div class="job-desc">
+					{{ job.job_description }}
+
+					<h3>Requirements</h3>
+					{{ job.job_requirements | safe }}
+					<h3>Nice to Have</h3>
+					{{ job.nice_to_have | safe }}
+				</div>
+				<br><br>
+				<button class="btn btn-info btn-lg apply" id="{{ job.id }}">Apply for this job</button>
 			</div>
-			<button class="btn btn-danger btn-lg apply" id="{{ job.id }}">Apply for this job</button>
 		</div>
 
 		<div class="col-md-3">

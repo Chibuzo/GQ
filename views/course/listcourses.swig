@@ -2,27 +2,27 @@
 {% set title = 'Available Courses' %}
 {% block body %}
 <style>
-	@media screen and (min-width: 1200px) and (max-width: 2000px) {
-		.gq-container {
-			width: 1320px;
-			margin: auto;
-		}
+	/*@media screen and (min-width: 1200px) and (max-width: 2000px) {*/
+		/*.gq-container {*/
+			/*width: 1320px;*/
+			/*margin: auto;*/
+		/*}*/
 
-		.feature-row {
-			margin-top: 250px;
-		}
-	}
+		/*.feature-row {*/
+			/*margin-top: 250px;*/
+		/*}*/
+	/*}*/
 
-	header {
-		background: url('/images/course-feat.jpg') no-repeat;
-		/*background-position: center center;*/
-		background-size: cover;
-		min-height: 600px;
-	}
+	/*header {*/
+		/*background: url('/images/course-feat.jpg') no-repeat;*/
+		/*!*background-position: center center;*!*/
+		/*background-size: cover;*/
+		/*min-height: 600px;*/
+	/*}*/
 
-	header h1, header h4 {
-		color: #fff;
-	}
+	/*header h1, header h4 {*/
+		/*color: #fff;*/
+	/*}*/
 
 
 .courses {
@@ -40,7 +40,7 @@
 
 .course h3 {
 	margin-top: 5px;
-	margin-bottom: 10px;
+	marginbottom: 10px;
 	color: #A37F2D;
 }
 
@@ -53,7 +53,7 @@
 }
 
 .info-thumb {
-	padding-bottom: 13px;
+	/*padding-bottom: 13px;*/
 	font-size: 14px;
 	margin-bottom: 15px;
 }
@@ -76,56 +76,50 @@
 #courses {
 	padding: 50px;
 }
+
+.course-menu {
+	margin-top: 30px;
+	padding-top: 10px;
+	padding-bottom: 3px;
+	border-top: #f0f0f0 solid thin;
+}
 </style>
+{% block backgroud %}
+	<div class="bg-img" style="background-image: url('/images/course-feat.jpg');">
+		<div class="overlay"></div>
+	</div>
+{% endblock %}
 
-<header>
-	<nav class="navbar navbardefault main-nav">
-		<div class="gq-container">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-				<a class="navbarbrand" href="#"><img src="/images/logo.png" id="logo"/></a>
-			</div>
+<div class="home-wrapper">
+	<div class="container">
+		<div class="row">
 
-			<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right">
-					<li class="active"><a href="/">Home <span class="sr-only">Home</span></a></li>
-					<li><a href="#">About</a></li>
-					<li><a href="/courses">Courses</a></li>
-					<li><a href="/login">Login</a></li>
-					<li><a href class="btn btn-default">Sign Up</a> </li>
-				</ul>
-			</div>
-		</div>
-	</nav>
-	<div class="feature-row">
-		<div class="container-fluid">
-			<div class="row">
-				<div class="col-md-12 text-center">
-					<h1>There's always room for improvement</h1>
-					<h4>Make yourself standout by taking some courses</h4>
-					<a href="#requestModal" data-toggle="modal" class="btn btn-lg btn-default">Get Started</a>
+			<!-- home content -->
+			<div class="col-md-10 col-md-offset-1">
+				<div class="home-content">
+					<h2 class="white-text">There's always room for improvement</h2>
+					<p class="white-text">All of our courses are online and self-paced. Explore our wide range of courses, designed for the modern workplace to you get an 'edge' in getting a job and excelling at it.</p>
+					<a href="#courses" class="white-btn">Get Started</a>
 				</div>
 			</div>
+
 		</div>
 	</div>
+</div>
+
 </header>
+<!-- /Header -->
 
 <section id="courses">
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row" style="margin-top: 30px">
+			<h2 class="text-center">Explore some of our courses</h2>
 			<div class="col-md-12 courses">
 				<div class="row">
 					{% for course in courses %}
-						{#{% set path = job.job_title.split(' ') %}#}
+						{% set path = course.course_title.split(' ') %}
 						<div class="col-md-4">
-							<div class="course" id="{{ course.id }}">
+							<div class="about" id="{{ course.id }}">
 								<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>
 								<div class="info-thumb">
 									<ul class="info-thumb-ls hidden">
@@ -177,6 +171,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".navbar-right li:contains('Courses')").addClass('active');
+
 	$(".joinCourse").click(function() {
 		var course_id = $(this).parents('.course').attr('id');
 		var course_title = $(this).parents('.course').find('.course-title').text();
