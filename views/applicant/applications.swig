@@ -40,7 +40,7 @@
 							<td>{{ job.status }}</td>
 							<td>{{ job.job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center dropdown">
-								<a href="" class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Write Test</a>
+								<a href="" class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
 								<ul class='dropdown-menu pull-left'>
 									<li class='dropdown-header'>Required Online Tests for the Job</li>
 									{% for test in job.tests %}

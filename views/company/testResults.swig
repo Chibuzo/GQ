@@ -1,4 +1,4 @@
-{% extends '../admin/layout.swig' %}
+{% extends 'layout.swig' %}
 {% set title = 'Assessment Results' %}
 {% block page_title %}
 	<i class="pe-7s-timer"></i> Candidates' Results
@@ -71,7 +71,7 @@
 				<div class="modal-body">
 					<div>
 						<video style="margin-top: 15px" width="550" height="350" controls=controls id="video-pane">
-							<source src="/assets/applicants-video/" type="video/mp4"></source>
+
 						</video>
 					</div>
 				</div>

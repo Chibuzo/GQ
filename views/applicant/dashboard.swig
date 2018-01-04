@@ -36,11 +36,12 @@
 
 						{% for result in xpr_results %}
 							<tr>
-								<td>{{ result.test }}</td>
-								<td>{{ result.percentile }}%</td>
-								<td>{{ result.percentage }}</td>
+								<td>{{ result.test_title }}</td>
+								{#<td>{{ result.percentile }}</td>#}
+								<td></td>
+								<td>{{ result.percentage }}%</td>
 								<td>{{ result.average_score }}</td>
-								<td>{{ result.test.result }}</td>
+								<td>{{ result.test_result }}</td>
 							</tr>
 						{% endfor %}
 						</tbody>

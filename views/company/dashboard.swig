@@ -35,10 +35,14 @@
 			</div>
 			<div class="col-md-6 text-center">
 				{% set active_jobs = 0 %}
+				{% set applicants = 0 %}
+				{% set views = 0 %}
 				{% for job in jobs %}
 					{% if job.status == 'Active' %}
 						{% set active_jobs = active_jobs + 1 %}
 					{% endif %}
+					{% set applicants += job.applications.length %}
+					{% set views += job.view_count %}
 				{% endfor %}
 				<h3>{{ active_jobs }}</h3>
 				<p>Active Jobs</p>
@@ -64,7 +68,7 @@
 				<i class="pe-7s-users"></i>
 			</div>
 			<div class="col-md-6 text-center">
-				<h3>{{ v_count }}6</h3>
+				<h3>{{ applicants }}</h3>
 				<p>Applicants</p>
 			</div>
 		</div>
@@ -76,7 +80,7 @@
 				<i class="pe-7s-graph3"></i>
 			</div>
 			<div class="col-md-6 text-center">
-				<h3>{{ u_count }}0</h3>
+				<h3>{{ (applicants / views) | toFixed(3) }}</h3>
 				<p>Engagements</p>
 			</div>
 		</div>
@@ -110,7 +114,7 @@
 								<td>{{ job.job_title }}</td>
 								<td class="text-center">{{ job.applications.length }}</td>
 								<td class="text-center">{{ job.view_count }}</td>
-								<td class="text-center">{{ app_percent }}%</td>
+								<td class="text-center">{{ (app_percent * 100) | toFixed(3) }}%</td>
 								<td>Don't know</td>
 								<td></td>
 							</tr>

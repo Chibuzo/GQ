@@ -73,7 +73,7 @@
                 <div class="modal-body">
                     <div>
                         <video style="margin-top: 15px" width="550" height="350" controls=controls id="video-pane">
-                            <source src="/assets/applicants-video/" type="video/mp4"></source>
+
                         </video>
                     </div>
                 </div>

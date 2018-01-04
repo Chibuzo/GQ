@@ -119,7 +119,7 @@ module.exports = {
                                                 sendMail.sendAppliedJobNotice(job, old_user);
                                             }
                                             JobService.apply(job_id, old_user.id).then(function (resp) {
-                                                console.log(resp);
+                                                //console.log(resp);
                                             }).catch(function (err) {
                                                 console.log(err);
                                             });
@@ -188,9 +188,27 @@ module.exports = {
 
     viewApplicants: function(req, res) {
         var job_id =  req.param('job_id');
-        console.log(job_id)
         Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
             return res.view('company/applicants-view.swig', { applicants: applicants });
+        });
+    },
+
+    getApplicantsResults: function(req, res) {
+        var job_id =  req.param('job_id');
+        Job.find({ id: job_id }).populate('applications').exec(function(err, job) {
+            JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
+                var candidates = [];
+                Application.find({ job: job_id }).exec(function(err, applicants) {
+                    applicants.forEach(function(candidate) {
+                        candidates.push(candidate.applicant);
+                    });
+                    CBTService.getJobTestResults(candidates, test[0]).then(function(resp) {
+                        return res.view('company/testResults', { results: resp });
+                    }).catch(function(err) {
+                        console.log(err);
+                    });
+                });
+            });
         });
     },
 

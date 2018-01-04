@@ -180,7 +180,7 @@ module.exports = {
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
-            returnURL: 'http://144.217.245.35:1330/test/show-result/' + req.param('test_id'),
+            returnURL: 'http://18.217.134.186:1337/test/show-result/' + req.param('test_id'),
             dev: false,
             debug: false,
             //secure_mode: 1,
