@@ -51,4 +51,9 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script>
+$(document).ready(function() {
+	$('.companies').addClass('active');
+});
+</script>
 {% endblock %}

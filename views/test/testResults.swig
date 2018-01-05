@@ -88,6 +88,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 	$(document).ready(function() {
+		$(".assessment").addClass('active');
+
 		$(".watch-video").click(function(e) {
 			e.preventDefault();
 			var user_id = $(this).parents('tr').attr('id');

@@ -55,7 +55,7 @@
                             <input type="text" name="sector" class="form-control" placeholder="Enter sector or industry..." />
                         </div>
                         <div class="col-md-3">
-                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add Industry</button>
+                            <button type="submit" class="btn btn-info btn-block btnfill"><i class="fa fa-plus"></i> Add New</button>
                         </div>
                     </form>
                 </div>
@@ -87,5 +87,9 @@
 {% endblock %}
 
 {% block scriptTag %}
-
+<script>
+$(document).ready(function() {
+    $('.setting').addClass('active');
+});
+</script>
 {% endblock %}

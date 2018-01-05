@@ -49,6 +49,26 @@
 				</div>
 			</div>
 		</div>
+
+		<div class="col-md-6">
+			<div class="card">
+				<div class="header">
+					<h4 class="title">Recent Jobs</h4>
+					<p class="category">Recent Jobs you might be interested in</p>
+				</div>
+				<hr>
+				<div class="content table-responsive table-full-width">
+
+				</div>
+			</div>
+		</div>
 	</div>
 
 {% endblock %}
+
+{% block scriptTag %}
+<script>
+$(document).ready(function() {
+	$(".dashboard").addClass('active');
+});
+</script>

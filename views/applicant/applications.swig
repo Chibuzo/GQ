@@ -66,6 +66,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".jobs").addClass('active');
+
 	$(".get-test").click(function (e) {
 		e.preventDefault();
 		var test_id = $(this).data('test_id');

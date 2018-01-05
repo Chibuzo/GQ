@@ -9,10 +9,11 @@
 	.widget-box {
 		padding: 11px;
 		border: #e0e0e0 solid thin;
-		margin: 10px;
+		/*margin: 10px;*/
 		margin-top: 0;
 		overflow: auto;
 		background: #fff;
+		margin-bottom: 25px;
 	}
 
 	.widget-box i {
@@ -26,10 +27,9 @@
 </style>
 
 
-<div class="col-md-12">
-	<div class="row">
+<div class="row">
 	<div class="col-md-3">
-		<div class="widget-box">
+		<div class="widget-box bg-green">
 			<div class="col-md-6">
 				<i class="pe-7s-portfolio"></i>
 			</div>
@@ -127,3 +127,9 @@
 	</div>
 </div>
 {% endblock %}
+
+{% block scriptTag %}
+<script>
+$(document).ready(function() {
+	$('.dashboard').addClass('active');
+})

@@ -122,6 +122,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+    $(".setting").addClass('active');
+
     $("#form-profile").submit(function(e) {
         e.preventDefault();
 

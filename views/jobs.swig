@@ -73,6 +73,10 @@ input[type="text"] {
 	opacity: 1;
 }
 
+.job-categories li {
+	padding: 4px 8px;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;
@@ -124,7 +128,7 @@ input[type="text"] {
 </header>
 
 <div class="clearfix container" style="margin-top: 50px">
-	<div class="row" style="margin-top: 30px">
+	<div class="row" style="margin-top: 30px; margin-bottom: 70px">
 		<div class="col-md-9 jobs">
 			{% for job in jobs %}
 				{% set path = job.job_title.split(' ') %}
@@ -133,7 +137,7 @@ input[type="text"] {
 					<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>
 					<div class="info-thumb">
 						<ul class="info-thumb-ls">
-							<li><i class="fa fa-institution"></i> {{ job.company.company_name }} UBA</li>
+							<li><i class="fa fa-briefcase"></i> {{ job.company.company_name }} UBA</li>
 							<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
 							<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level </li>
 						</ul>
@@ -144,7 +148,13 @@ input[type="text"] {
 		</div>
 
 		<div class="col-md-3">
-			<h4 style="color: #666">Sectors</h4>
+			<h3 style="color: #666;">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
+			<ul class="job-categories">
+			{% for cat in job_categories %}
+				{% set cat_path = cat.category.split(' ') %}
+				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs.length }} ]</a></li>
+			{% endfor %}
+			</ul>
 		</div>
 	</div>
 </div>

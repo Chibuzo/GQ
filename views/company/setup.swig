@@ -97,6 +97,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+    $(".profile").addClass('active');
+
     $("select[name=country]").find('option').filter(function(i) {
         return 'Nigeria' == $(this).val();
     }).attr("selected", "selected");

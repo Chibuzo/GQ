@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/job/addjob" class="btn btn-danger btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
+		<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
 	</div>
 
 	<div class="col-md-12">
@@ -52,11 +52,13 @@
 							{#<td>{{ job.status }}</td>#}
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
-								<a href="/job/editjob/{{ job.id }}" class="edit-job" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
-								{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-								<a href="" class="upload-csv" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
-								<a href="/job/candidates/{{ job.id }}" class="" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
-								<a href="" class="del-job" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
+								<div class="button-group" role="group">
+									<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+									{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
+									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
+									<a href="/job/candidates/{{ job.id }}" class="btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
+									<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
+								</div>
 							</td>
 						</tr>
 					{% endfor %}
@@ -80,6 +82,7 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".job-page").addClass('active');
 	$(".upload-csv").click(function(e) {
 		e.preventDefault();
 		var job_id = $(this).parents('tr').attr('id');

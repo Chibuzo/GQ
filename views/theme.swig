@@ -65,7 +65,7 @@
 			<div class="navbar-header">
 				<!-- Logo -->
 				<div class="navbar-brand">
-					<a href="index.html">
+					<a href="/">
 						<img class="logo" src="/images/logo.png" alt="logo">
 						<img class="logo-alt" src="/images/gq-logo-alt.png" alt="logo">
 					</a>

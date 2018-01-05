@@ -62,6 +62,7 @@
 <script src="/js/plugins/datatables.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".courses").addClass('active');
 
 	$(".del-course").click(function (e) {
 		e.preventDefault();

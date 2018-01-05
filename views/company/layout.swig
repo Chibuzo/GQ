@@ -72,19 +72,24 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <img src="/images/logo.png" class="hidden" />Get Qualified
+                    <img src="/images/gq-logo-emb.png" class="logo-img" />Get Qualified
                 </a>
             </div>
 
+            <div class="user-pane">
+                <i class="pe-7s-user"></i>
+                {{ req.session.fname }}
+            </div>
+
             <ul class="nav">
-                <li clas="active">
+                <li class="dashboard">
                     <a href="/company/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
-                <li class="">
+                <li class="job-page">
                     <a href="/job/manage">
                         <i class="pe-7s-timer"></i>
                         <p>Job Board</p>
@@ -92,14 +97,14 @@
                 </li>
 
 
-                <li class="">
+                <li class="users">
                     <a href="/company/users">
                         <i class="pe-7s-users"></i>
                         <p>Manage Users</p>
                     </a>
                 </li>
 
-                <li>
+                <li class="profile">
                     <a href="/company/profile">
                         <i class="pe-7s-user"></i>
                         <p>Company Profile</p>

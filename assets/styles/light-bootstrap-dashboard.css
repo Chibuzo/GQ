@@ -174,6 +174,30 @@ input[type="file"] > input[type="button"]::-moz-focus-inner {
   outline: 0;
 }
 
+.logo-img {
+  width: 50px;
+  margin-left: -25px;
+  margin-right: 10px;
+}
+
+.user-pane {
+  border-bottom: #87CB16 2px solid;
+  height: 60px;
+  background: #2f404B;
+  font-size: 16px;
+  padding-left: 21px;
+  padding-top: 19px;
+  font-family: "Roboto","Helvetica Neue",Arial,sans-serif;
+  font-weight: 400;
+}
+
+.user-pane .pe-7s-user {
+  font-size: 42px;
+  float: left;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
 .ui-slider-handle:focus,
 .navbar-toggle,
 input:focus {
@@ -328,7 +352,7 @@ input:focus {
 
 .sidebar .logo,
 body > .navbar-collapse .logo {
-  padding: 10px 15px;
+  padding: 7px 15px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
 }
 .sidebar .logo p,

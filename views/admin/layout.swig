@@ -72,8 +72,13 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <img src="/images/logo.png" class="hidden" />Get Qualified
+                    <img src="/images/gq-logo-emb.png" class="logo-img" />Get Qualified
                 </a>
+            </div>
+
+            <div class="user-pane">
+                <i class="pe-7s-user"></i>
+                {{ req.session.fname }}
             </div>
 
             <ul class="nav">
@@ -84,14 +89,14 @@
                     </a>
                 </li>
 
-                <li class="">
+                <li class="request">
                     <a href="/company-request/view-requests">
                         <i class="pe-7s-timer"></i>
                         <p>Pending Request</p>
                     </a>
                 </li>
 
-                <li class="">
+                <li class="assessment">
                     <a href="/assessments">
                         <i class="pe-7s-news-paper"></i>
                         <p>Assessments</p>
@@ -99,7 +104,7 @@
                 </li>
 
 
-                <li class="">
+                <li class="companies">
                     <a href="/admin/view-companies">
                         <i class="pe-7s-network"></i>
                         <p>Companies</p>
@@ -113,21 +118,21 @@
                     </a>
                 </li>
 
-                <li class="">
+                <li class="courses">
                     <a href="/admin/manage-courses">
                         <i class="pe-7s-notebook"></i>
                         <p>Manage Courses</p>
                     </a>
                 </li>
 
-                <li class="">
+                <li class="tests">
                     <a href="/admin/manage-test">
                         <i class="pe-7s-display2"></i>
                         <p>Manage Tests</p>
                     </a>
                 </li>
 
-                <li class="">
+                <li class="gq-test">
                     <a href="/admin/gq-test">
                         <i class="pe-7s-edit"></i>
                         <p>GQ Tests</p>
@@ -141,7 +146,7 @@
                     </a>
                 </li>
 
-                <li>
+                <li class="setting">
                     <a href="/admin/setup">
                         <i class="pe-7s-tools"></i>
                         <p>Settings</p>

@@ -275,6 +275,8 @@
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".resume").addClass('active');
+
 	$("select[name=country]").find('option').filter(function(i) {
 		return 'Nigeria' == $(this).val();
 	}).attr("selected", "selected");

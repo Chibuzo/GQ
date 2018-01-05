@@ -17,8 +17,8 @@
 						<div class="home-content">
 							<h2 class="white-text">Recruiting should be simple, quick and data driven</h2>
 							<p class="white-text">Hire the best candidates quickly</p>
-							<button class="white-btn">Get Started!</button>
-							<button class="main-btn">Learn more</button>
+							<button data-target="#requestModal" data-toggle="modal" class="white-btn">Get Started!</button>
+							<a href="#about" class="main-btn">Learn more</a>
 						</div>
 					</div>
 					<!-- /home content -->
@@ -31,7 +31,7 @@
 	</header>
 	<!-- /Header -->
 
-	<section id="about" class="bg-grey">
+	<div id="about" class="section bg-grey md-padding">
 		<div class="container">
 			<div class="row">
 				<div class="col-md-8  col-md-offset-2">
@@ -39,7 +39,7 @@
 				</div>
 			</div>
 		</div>
-	</section>
+	</div>
 
 	<!-- About -->
 	<div id="features" class="section md-padding">
@@ -113,7 +113,9 @@
 					<div class="section-header">
 						<h2 class="title">Why Choose Us</h2>
 						Our products work together so you attract and hire the best candidates very easily, from posting to interviewing. How do you currently hire? We would like to learn about and help you to refine your process.
-						Talk to us. E: getstarted@getqualified.com T: 0803-987-9898.
+						<br>Talk to us. <br><br>
+						<i class="fa fa-phone fa-fw"></i> &nbsp;<strong>Call:</strong> 0803-987-9898<br>
+						<i class="fa fa-envelope fa-fw"></i> &nbsp;<strong>Email:</strong> getstarted@getqualified.com
 					</div>
 
 				</div>
@@ -144,7 +146,7 @@
 					<div class="section-header">
 						<h2 class="title">Get in touch</h2>
 						We care deeply about improving the recruitment process for businesses everywhere. It is currently difficult to ensure employee quality, expensive and takes too much time. It doesn’t have to be this way.
-						We are here to work with you to help you hire the best talent.
+						<br>We are here to work with you to help you hire the best talent.
 					</div>
 
 				</div>
@@ -261,7 +263,7 @@
 					<div class="contact">
 						<i class="fa fa-map-marker"></i>
 						<h3>Address</h3>
-						<p>109 Awolowo Way, Ikoyi</p>
+						<p>109 Awolowo road, Ikoyi</p>
 					</div>
 				</div>
 				<!-- /contact -->
@@ -286,6 +288,8 @@
 
 	</div>
 
+{% include 'company/includes/request-form.swig' %}
+
 {% endblock %}
 
 {% block scriptTag %}
@@ -295,6 +299,13 @@
 
 		$("#form-request-access").submit(function(e) {
 			e.preventDefault();
+
+			if (!$.isNumeric($('[name=phone]').val()) || $('[name=phone]').val().length < 7) {
+				$(".modal-body .alert-danger").text("Invalid phone number. Must be numbers and upto 7 digits").removeClass('hidden').fadeOut(12000, function() {
+					$(this).addClass('hidden').fadeIn();
+				});
+				return false;
+			}
 
 			$.post('/company-request/send-request', $(this).serialize(), function(d) {
 				if (d.status.trim() == 'success') {

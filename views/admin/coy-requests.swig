@@ -14,7 +14,7 @@
 						<h4 class="title">Pending Single</h4>
 						<p class="category">Awaiting Review/Verification</p>
 					</div>
-					<div class="col-md-5 pull-right"><br>
+					<div class="col-md-5 pull-right hidden"><br>
 						<a href="/company/" class="btn btn-danger btn-fill pull-right btn-sm">Approved</a>
 					</div>
 				{% else %}
@@ -23,7 +23,7 @@
 						<h4 class="title">Unverified Companies</h4>
 						<p class="category">Can not be edited</p>
 					</div>
-					<div class="col-md-5 pull-right"><br>
+					<div class="col-md-5 pull-right hidden"><br>
 						<a href="/company-request/view-requests" class="btn btn-danger btn-fill pull-right btn-sm">Pending</a>
 					</div>
 				{% endif %}
@@ -64,6 +64,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".request").addClass('active');
+
 	$(".approve-company").click(function(e) {
 		e.preventDefault();
 

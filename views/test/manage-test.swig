@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<button class="btn btn-danger btn-fill pull-right" data-toggle="modal" data-target="#testModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Assign Test</button>
+		<button class="btn btn-success btn-fill pull-right" data-toggle="modal" data-target="#testModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Assign Test</button>
 	</div>
 
 	<div class="col-md-12">
@@ -41,7 +41,7 @@
 							<td class="text-right hidden">{{ test.test.total_questions }}</td>
 							<td class="text-right hidden">{{ test.test.pass_mark }}</td>
 							<td class="opt-icons">
-								<a href="" class="remove-test" rel="tooltip" title="Remove Test"><i class="fa fa-times fa-lg"></i> </a>
+								<a href="" class="remove-test btn btn-danger btn-xs btn-fill" rel="tooltip" title="Remove Test"><i class="fa fa-times fa-lg"></i> </a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -59,6 +59,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$(".tests").addClass('active');
+
 	$("select[name=job_category]").change(function() {
 		category = $("select[name=job_category] option:selected").text();
 		$("input[name=category]").val(category);

@@ -152,6 +152,8 @@ module.exports.routes = {
 
     'GET /job/:id/:title': 'JobController.showJob',
 
+    'GET /jobcategory/:id/*': 'JobController.findJobsByCategory',
+
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
 
     'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',

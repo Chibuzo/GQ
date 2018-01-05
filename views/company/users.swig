@@ -5,7 +5,11 @@
 {% endblock %}
 
 {% block body %}
-	
+
+	<div class="col-md-5 pull-right">
+		<button class="btn btn-success btn-fill pull-right btnsm" data-toggle="modal" data-target="#userModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add New User</button>
+	</div>
+
 <div class="col-md-12">
     <div class="card">
         <div class="header row">
@@ -13,9 +17,7 @@
             <h4 class="title">All Users</h4>
             <p class="category"></p>
           </div>
-          <div class="col-md-5 pull-right">
-            <button class="btn btn-danger btn-fill pull-right btn-sm" data-toggle="modal" data-target="#userModal"><i class="fa fa-plus"></i> Add New User</button>
-          </div> 
+
         </div>
         <div class="content table-responsive table-full-width">
           <table class="table table-striped">
@@ -41,8 +43,10 @@
                   <td>{{ user.r_state }}</td>
 					<td>{{ user.status }}</td>
                   <td class="opt-icons text-center">
-                    <a href="/user/view-profile/{{ user.id }}" class="view-activities" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>
-                  	<A href="" class="remove-user" rel="tooltip" title="Remove User"><i class="fa fa-trash-o fa-lg"></i> </A>
+                    <div class="button-group" role="group">
+						<a href="/user/view-profile/{{ user.id }}" class="view-activities btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>
+						<a href="" class="remove-user btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Remove User"><i class="fa fa-trash-o fa-lg"></i> </a>
+					</div>
 				  </td>
                 </tr>
               {% endfor %}
@@ -60,6 +64,8 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+  $(".users").addClass('active');
+
   $("#form-user").submit(function (e) {
     e.preventDefault();
     var $this = $(this);

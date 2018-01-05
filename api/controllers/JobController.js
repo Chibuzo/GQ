@@ -147,10 +147,25 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date().toISOString();
-        //Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
-        Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
+        Job.find({ closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
+        //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
-            return res.view('jobs', { jobs: jobs });
+            JobCategory.find().populate('jobs').exec(function(err, job_categories) {
+                return res.view('jobs', { jobs: jobs, job_categories: job_categories });
+            });
+        });
+    },
+
+    findJobsByCategory: function(req, res) {
+        var category_id = req.param('id');
+        var today = new Date().toISOString();
+
+        Job.find({ category: category_id, closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
+            //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
+            if (err) return;
+            JobCategory.find().populate('jobs').exec(function(err, job_categories) {
+                return res.view('jobs', { jobs: jobs, job_categories: job_categories });
+            });
         });
     },
 

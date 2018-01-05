@@ -215,10 +215,14 @@ module.exports = {
             transcript_id: result.transcript_id,
             //jobtest: jobtest[0].id
         };
-        TestResult.create(test_result).exec(function (err) {
-            if (err) console.log(err);
-            // update application status
-            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Awaiting Review' }).exec(function() {});
+        TestResult.find({ test_id: result.test_id, applicant: result.user_id }).exec(function(err, result) {
+            if (result.length > 0) {
+                TestResult.update({ test_id: result.test_id, applicant: result.user_id }, test_result).exec(function() {});
+            } else {
+                TestResult.create(test_result).exec(function (err) {
+                    if (err) console.log(err);
+                });
+            }
         });
     }
 };

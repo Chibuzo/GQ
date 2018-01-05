@@ -57,19 +57,24 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <img src="/images/logo.png" class="hidden" />Get Qualified
+                    <img src="/images/gq-logo-emb.png" class="logo-img" />Get Qualified
                 </a>
             </div>
 
+            <div class="user-pane">
+                <i class="pe-7s-user"></i>
+                {{ req.session.fname }}
+            </div>
+
             <ul class="nav">
-                <li clas="active">
+                <li class="dashboard">
                     <a href="/applicant/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
                     </a>
                 </li>
 
-                <li class="">
+                <li class="jobs">
                     <a href="/applicant/view-applications">
                         <i class="pe-7s-timer"></i>
                         <p>Manage Applications</p>
@@ -77,14 +82,14 @@
                 </li>
 
 
-                <li class="">
+                <li class="resume">
                     <a href="/applicant/resume-page">
                         <i class="pe-7s-id"></i>
                         <p>My Resume</p>
                     </a>
                 </li>
 
-                <li>
+                <li class="setting">
                     <a href="/applicant/profile">
                         <i class="pe-7s-tools"></i>
                         <p>Settings</p>

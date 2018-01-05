@@ -16,6 +16,10 @@ module.exports = {
     showCandidateResult: function(req, res) {
         var test_id = req.param('test_id');
         TestResult.find({ applicant: req.session.userId, test_id: test_id }).populate('applicant').exec(function(err, result) {
+            if (req.session.job_id) {
+                // update application status
+                Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Awaiting Review' }).exec(function() {});
+            }
             CBTTest.find({ test_id: test_id }).populate('category').exec(function(err, test) {
                 return res.view('applicant/testresult', { result: result[0], test: test[0] });
             });

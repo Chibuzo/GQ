@@ -121,16 +121,16 @@ module.exports = {
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
                     if (req.param('return_url').length > 3) {
-                        return res.redirect(req.param('return_url'));
-                    } else if (foundUser.user_type == 'company-admin') {
+                        return res.json(200, { status: 'success', url: req.param('return_url') });
+                        //return res.redirect(req.param('return_url'));
+                    } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
                         req.session.coy_id = foundUser.company;
-                        return res.redirect('/company/dashboard');
+                        return res.json(200, { status: 'success', url: '/company/dashboard' });
+                        //return res.redirect('/company/dashboard');
                     } else if (foundUser.user_type == 'Applicant') {
-                        return res.redirect('/applicant/dashboard');
+                        return res.json(200, { status: 'success', url: '/applicant/dashboard' });
+                        //return res.redirect('/applicant/dashboard');
                         //return res.json(200, { status: 'success', user_type: foundUser.user_type });
-                    } else if (foundUser.user_type == 'company') {
-                        req.session.coy_id = foundUser.company;
-                        return res.redirect('/company/dashboard');
                     }
                 }
             });

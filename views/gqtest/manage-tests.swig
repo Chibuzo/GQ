@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/gqtest/createnew" class="btn btn-danger btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Create New Test</a>
+		<a href="/gqtest/createnew" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Create New Test</a>
 	</div>
 
 	<div class="col-md-12">
@@ -44,9 +44,11 @@
 							<td>{{ no_of_quests }}</td>
 							<td>{{ test.status }}</td>
 							<td class="opt-icons text-center">
-								<a href="/gqtest/edittest/{{ test.id }}" class="edit-test" rel="tooltip" title="Edit Test"><i class="fa fa-pencil fa-lg"></i></a>
-								<a href="/gqtest/viewresults/{{ test.id }}" rel="tooltip" title="View Test Results"><i class="fa fa-eye fa-lg"></i></a>
-								<a href="" class="del-test" rel="tooltip" title="Delete test"><i class="fa fa-trash-o fa-lg"></i></a>
+								<div class="btn-group" role="group">
+									<a href="/gqtest/edittest/{{ test.id }}" class="edit-test btn btn-secondary btn-xs btnfill btn-default" rel="tooltip" title="Edit Test"><i class="fa fa-pencil fa-lg"></i></a>
+									<a href="/gqtest/viewresults/{{ test.id }}" rel="tooltip" class="btn btn-secondary btn-xs btn-fill btn-success" title="View Test Results"><i class="fa fa-eye fa-lg"></i></a>
+									<a href="" class="del-test btn btn-secondary btn-xs btn-danger btn-fill" rel="tooltip" title="Delete test"><i class="fa fa-trash-o fa-lg"></i></a>
+								</div>
 							</td>
 						</tr>
 					{% endfor %}
@@ -70,6 +72,7 @@
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
+	$('.gq-test').addClass('active');
 
 	$(".del-test").click(function (e) {
 		e.preventDefault();
