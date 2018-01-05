@@ -39,8 +39,13 @@
 	</div>
 
 	<div class="form-group">
-		<label>Job Requirements</label>
+		<label>Main Responsibilities</label>
 		<textarea name="requirements" class="form-control editor">{{ job.job_requirements }}</textarea>
+	</div>
+
+	<div class="form-group">
+		<label>Qualifications</label>
+		<textarea name="qualifications" class="form-control editor">{{ job.qualifications }}</textarea>
 	</div>
 
 	<div class="form-group">

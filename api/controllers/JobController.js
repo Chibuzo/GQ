@@ -47,6 +47,7 @@ module.exports = {
             job_title: q('title'),
             job_description: q('description'),
             job_requirements: q('requirements'),
+            qualifications: q('qualifications'),
             job_level: q('job_level'),
             contract_type: q('contract_type'),
             category: q('category'),
@@ -60,7 +61,8 @@ module.exports = {
             company: req.session.coy_id
         };
         if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
-            Job.update({ id: q('job_id') }, data).exec(function() {
+            Job.update({ id: q('job_id') }, data).exec(function(err) {
+                if (err) console.log(err);
                 return res.redirect('/job/manage');
             });
         } else {

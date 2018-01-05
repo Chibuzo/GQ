@@ -12,11 +12,15 @@ module.exports = {
         },
 
         job_description: {
-            type: 'string'
+            type: 'text'
         },
 
         job_requirements: {
-            type: 'string'
+            type: 'text'
+        },
+
+        qualifications: {
+            type: 'text'
         },
 
         job_level: {
