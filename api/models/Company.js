@@ -51,6 +51,10 @@ module.exports = {
           type: 'string'
         },
 
+        logo_name: {
+            type: 'string'
+        },
+
         status: {
           type: 'string',
           defaultsTo: 'Active'
