@@ -22,6 +22,7 @@
 						<th style="width: 20%">Company/Organisation</th>
 						<th>Sector</th>
 						<th>Location</th>
+						<th>Active Jobs</th>
 						<th>Contact Person</th>
 						<th>Contact email</th>
 						<th>Contact Phone</th>
@@ -35,6 +36,7 @@
 							<td>{{ coy.company_name }}</td>
 							<td>{{ coy.sector }}</td>
 							<td>{{ coy.country }}, {{ coy.r_state }} {{ coy.city }}</td>
+							<td><a href="/admin/coy-jobs/{{ coy.id }}">{{ coy.jobs }}</a></td>
 							<td>{{ coy.contact_person }}</td>
 							<td>{{ coy.contact_email }}</td>
 							<td>{{ coy.contact_phone }}</td>

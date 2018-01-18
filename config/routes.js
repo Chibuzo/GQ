@@ -61,6 +61,8 @@ module.exports.routes = {
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
 
+    'GET /admin/coy-jobs/:coy_id': 'JobController.getCompanyJobs',
+
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 
     'POST /gqtest/savetest': 'GQTestController.saveTest',
@@ -145,6 +147,10 @@ module.exports.routes = {
     'POST /jobtest/remove-job': 'JobTestController.removeTest',
 
     'POST /job/set-test-rating': 'JobTestController.setJobTestRating',
+
+    'POST /job/select-candidate': 'SelectedCandidateController.selectCandidate',
+
+    'GET /job/remove-candidate': 'SelectedCandidateController.removeCandidate',
 
     'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 

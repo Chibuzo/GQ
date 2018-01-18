@@ -244,8 +244,19 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-        Company.find({ status: 'Active' }).exec(function(err, coys) {
-            return res.view('admin/list-companies', { companies: coys });
+        var today = new Date().toISOString();
+        Company.find({ status: 'Active' }).exec(function(err, _coys) {
+            var coys = [];
+            async.eachSeries(_coys, function(coy, cb) {
+                Job.find({ company: coy.id, closing_date: { '>': today }}).exec(function(err, active_jobs) {
+                    coy.jobs = active_jobs.length;
+                    coys.push(coy);
+                    cb();
+                });
+            },
+            function(err) {
+                return res.view('admin/list-companies', {companies: coys});
+            });
         });
     }
 };

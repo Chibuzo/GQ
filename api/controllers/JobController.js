@@ -206,26 +206,31 @@ module.exports = {
     viewApplicants: function(req, res) {
         var job_id =  req.param('job_id');
         Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
-            return res.view('company/applicants-view.swig', { applicants: applicants });
+            AssessmentResultService.getJobAssessments(job_id).then(function(result) {
+                SelectedCandidate.find({ job_id: job_id }).populate('candidate').exec(function(err, selected_candidates) {
+                    return res.view('company/applicants-view.swig', { applicants: applicants, results: result, job_id: job_id, selected_candidates: selected_candidates });
+                });
+            }).catch(function(err) {
+                console.log(err);   // return this error and use it to...
+            });
         });
     },
 
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');
-        Job.find({ id: job_id }).populate('applications').exec(function(err, job) {
-            JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
-                var candidates = [];
-                Application.find({ job: job_id }).exec(function(err, applicants) {
-                    applicants.forEach(function(candidate) {
-                        candidates.push(candidate.applicant);
-                    });
-                    CBTService.getJobTestResults(candidates, test[0]).then(function(resp) {
-                        return res.view('company/testResults', { results: resp });
-                    }).catch(function(err) {
-                        console.log(err);
-                    });
-                });
-            });
+        AssessmentResultService.getJobAssessments(job_id).then(function(result) {
+            return res.view('company/testResults', { results: result });
+        }).catch(function(err) {
+            console.log(err);
+        });
+    },
+
+    // admin view
+    getCompanyJobs: function(req, res) {
+        var coy_id = req.param('coy_id');
+        Job.find({ company: coy_id }).populate('applications').exec(function(err, jobs) {
+            if (err) return;
+            return res.view('admin/coy-jobs', {jobs: jobs});
         });
     },
 
