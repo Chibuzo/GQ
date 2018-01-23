@@ -111,6 +111,14 @@ module.exports = {
             if (err) return res.badRequest();
             return res.view('candidate-page', { courses: courses });
         });
+    },
+
+
+    fetchApplicants: function(req, res) {
+        Resume.find({ }).populate('user').exec(function(err, candidates) {
+            if (err) return console.log(err);
+            return res.view('admin/candidates', { candidates: candidates });
+        });
     }
 };
 

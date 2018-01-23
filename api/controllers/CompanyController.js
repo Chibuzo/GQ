@@ -244,19 +244,27 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-        var today = new Date().toISOString();
-        Company.find({ status: 'Active' }).exec(function(err, _coys) {
-            var coys = [];
-            async.eachSeries(_coys, function(coy, cb) {
-                Job.find({ company: coy.id, closing_date: { '>': today }}).exec(function(err, active_jobs) {
-                    coy.jobs = active_jobs.length;
-                    coys.push(coy);
+        Company.find({ status: 'Active' }).exec(function(err, coys) {
+            var companies = [];
+            async.eachSeries(coys, function(coy, cb) {
+                Job.find({company: coy.id}).exec(function (err, jobs) {
+                    coy.jobs = jobs.length < 1 ? 0 : jobs.length
+                    companies.push(coy);
                     cb();
                 });
-            },
-            function(err) {
-                return res.view('admin/list-companies', {companies: coys});
+            }, function(err) {
+                return res.view('admin/list-companies', { companies: coys });
             });
+        });
+    },
+
+
+    // admin view
+    viewCompanyJobs: function(req, res) {
+        var coy_id = req.param('coy_id');
+        Job.find({ company: coy_id }).populate('applications').populate('poster').exec(function(err, jobs) {
+            if (err) return;
+            return res.view('admin/coy-jobs', { jobs: jobs});
         });
     }
 };

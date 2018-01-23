@@ -23,8 +23,8 @@
 
 	<div class="form-group">
 		<div class="row">
-			<div class="col-md-6">
-				<label>Gender</label>
+			<div class="col-md-4">
+				<label><i class="fa fa-male"></i> &nbsp;Gender</label>
 				{% if resume.gender == 'Female' %}
 					{% set female = 'selected=selected' %}
 				{% elseif resume.gender == 'Male' %}
@@ -36,8 +36,16 @@
 					<option value="Male" {{ male }}>Male</option>
 				</select>
 			</div>
-			<div class="col-md-6">
-				<label>Phone Number</label>
+			<div class="col-md-4">
+				<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label>
+				{% if resume.dob %}
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('d-m-Y') }}" required>
+				{% else %}
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="" required>
+				{% endif %}
+			</div>
+			<div class="col-md-4">
+				<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label>
 				<input type="text" name="phone" class="form-control" placeholder="Your Phone Number" value="{{ resume.phone }}" required>
 			</div>
 		</div>
@@ -46,7 +54,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label>Address</label>
+				<label><i class="fa fa-map-marker"></i>&nbsp;Address</label>
 				<input type="text" name="address" class="form-control" placeholder="Your residencial Address" value="{{ resume.address }}" required>
 			</div>
 		</div>
@@ -55,7 +63,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label for="phone">Resident Country</label>
+				<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label>
 				<select name="country" class="form-control" required>
 					{% for country in countries %}
 						<option value="{{ country.country }}">{{ country.country }}</option>
@@ -63,7 +71,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="email">State</label>
+				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;State</label>
 				<select name="state" class="form-control">
 					<option value="">Select State</option>
 					{% for state in states %}
@@ -72,7 +80,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="email">City</label>
+				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label>
 				<input type="text" name="city" class="form-control" value="{{ resume.city }}" required />
 			</div>
 		</div>
@@ -127,11 +135,13 @@
 						{% set selected = 'selected' %}
 						<select name="honour[]" class="form-control">
 							<option value=""></option>
-							<option value="BSc">Bachelors</option>
-							<option value="Msc">Masters</option>
-							<option value="PhD">PhD</option>
-							<option value="HND">HND</option>
-							<option value="OND">OND</option>
+							{% for honor in honours %}
+								{% if honor.honour == edu.honour %}
+									<option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
+								{% else %}
+									<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+								{% endif %}
+							{% endfor %}
 						</select>
 					</div>
 					<div class="col-md-3">
@@ -163,11 +173,9 @@
 					<label>Honour</label>
 					<select name="honour[]" class="form-control">
 						<option value=""></option>
-						<option value="BSc">Bachelors</option>
-						<option value="Msc">Masters</option>
-						<option value="PhD">PhD</option>
-						<option value="HND">HND</option>
-						<option value="OND">OND</option>
+						{% for honor in honours %}
+							<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+						{% endfor %}
 					</select>
 				</div>
 				<div class="col-md-3">
@@ -198,11 +206,9 @@
 					<label>Honour</label>
 					<select name="honour[]" class="form-control">
 						<option value=""></option>
-						<option value="BSc">Bachelors</option>
-						<option value="Msc">Masters</option>
-						<option value="PhD">PhD</option>
-						<option value="HND">HND</option>
-						<option value="OND">OND</option>
+						{% for honor in honours %}
+							<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+						{% endfor %}
 					</select>
 				</div>
 				<div class="col-md-3">
@@ -299,14 +305,14 @@
 
 						<div class="col-md-4">
 							<label>Location</label>
-							<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
+							<input type="text" name="location" class="form-control" value="{{ emp.location }}" placeholder="City, State where you did this job">
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-md-12">
 							<label>Job functions</label>
-							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job">{{ emp.duties }}</textarea>
 						</div>
 					</div>
 

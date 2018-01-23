@@ -23,7 +23,6 @@ module.exports = {
 
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
-            if (!jobtest) return reject('No Assessment has been assigned to this job');
             if (jobtest.test_source == 'gq') {
                 GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').exec(function(err, results) {
                     var gq_results = [];
@@ -44,6 +43,7 @@ module.exports = {
                                 console.log(err);
                                 cb(err);
                             });
+                            console.log(gq_results)
                             return resolve(gq_results);
                         });
                     } else {

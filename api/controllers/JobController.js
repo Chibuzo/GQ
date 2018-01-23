@@ -175,7 +175,6 @@ module.exports = {
         var job_id = req.param('id');
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
-            console.log('Job: ' + job);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
             return res.view('job', { job: job });
@@ -206,31 +205,26 @@ module.exports = {
     viewApplicants: function(req, res) {
         var job_id =  req.param('job_id');
         Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
-            AssessmentResultService.getJobAssessments(job_id).then(function(result) {
-                SelectedCandidate.find({ job_id: job_id }).populate('candidate').exec(function(err, selected_candidates) {
-                    return res.view('company/applicants-view.swig', { applicants: applicants, results: result, job_id: job_id, selected_candidates: selected_candidates });
-                });
-            }).catch(function(err) {
-                console.log(err);   // return this error and use it to...
-            });
+            return res.view('company/applicants-view.swig', { applicants: applicants });
         });
     },
 
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');
-        AssessmentResultService.getJobAssessments(job_id).then(function(result) {
-            return res.view('company/testResults', { results: result });
-        }).catch(function(err) {
-            console.log(err);
-        });
-    },
-
-    // admin view
-    getCompanyJobs: function(req, res) {
-        var coy_id = req.param('coy_id');
-        Job.find({ company: coy_id }).populate('applications').exec(function(err, jobs) {
-            if (err) return;
-            return res.view('admin/coy-jobs', {jobs: jobs});
+        Job.find({ id: job_id }).populate('applications').exec(function(err, job) {
+            JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
+                var candidates = [];
+                Application.find({ job: job_id }).exec(function(err, applicants) {
+                    applicants.forEach(function(candidate) {
+                        candidates.push(candidate.applicant);
+                    });
+                    CBTService.getJobTestResults(candidates, test[0]).then(function(resp) {
+                        return res.view('company/testResults', { results: resp });
+                    }).catch(function(err) {
+                        console.log(err);
+                    });
+                });
+            });
         });
     },
 

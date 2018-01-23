@@ -6,7 +6,7 @@
  */
 
 module.exports = {
-	viewResume: function(req, res) {
+	editView: function(req, res) {
         var test_id = 1;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
@@ -17,28 +17,37 @@ module.exports = {
                     lname: resume.user.fullname.split(' ')[1]
                 };
                 CountryStateService.getCountries().then(function(resp) {
-                    // check for test result
-                    GQTestResult.find({
-                        test: test_id,
-                        candidate: req.session.userId
-                    }).populate('test').exec(function (err, test_result) {
-                        if (err) console.log(err)
-                        if (test_result.length > 0) {
-                            GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
+                    Honour.find().exec(function(err, honours) {
+                        // check for test result
+                        GQTestResult.find({
+                            test: test_id,
+                            candidate: req.session.userId
+                        }).populate('test').exec(function (err, test_result) {
+                            if (err) console.log(err)
+                            if (test_result.length > 0) {
+                                GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
+                                    return res.view('cv/update', {
+                                        resume: resume,
+                                        me: me,
+                                        honours: honours,
+                                        countries: resp.countries,
+                                        states: resp.states,
+                                        result: result,
+                                        test_title: test_result[0].test.test_name
+                                    });
+                                });
+                            } else {
                                 return res.view('cv/update', {
                                     resume: resume,
                                     me: me,
+                                    honours: honours,
                                     countries: resp.countries,
-                                    states: resp.states,
-                                    result: result,
-                                    test_title: test_result[0].test.test_name
+                                    states: resp.states
                                 });
-                            });
-                        } else {
-                            return res.view('cv/update', {resume: resume, me: me, countries: resp.countries, states: resp.states});
-                        }
-                    });
-                })
+                            }
+                        });
+                    })
+                });
             });
     },
 
@@ -94,14 +103,14 @@ module.exports = {
             var employment = {
                 company: q('company')[i],
                 role: q('job_title')[i],
-                location: q('loction')[i],
+                location: q('location')[i],
                 duties: q('duty')[i],
                 start_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
                 end_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
                 resume: q('resume_id')
             };
 
-            if (q('employment_id')[i] && q('employment_id')[i] > 0) {
+            if (q('employment_id') && !_.isUndefined(q('employment_id')[i]) && q('employment_id')[i] > 0) {
                 Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
             } else {
                 Employment.create(employment).exec(function() {});
@@ -135,6 +144,7 @@ module.exports = {
         }
         var data = {
             gender: q('gender'),
+            dob: q('dob'),
             phone: q('phone'),
             country: q('country'),
             r_state: q('state'),
@@ -160,6 +170,34 @@ module.exports = {
             if (err) return res.json(200, { status: 'error' });
             return res.json(200, { status: 'success', resume: resume[0] });
         });
+    },
+
+    viewResume: function(req, res) {
+        var test_id = 1;
+        var resume_id = req.param('resume_id');
+        Resume.findOne({ id: resume_id })
+            .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
+            .exec(function(err, resume) {
+                if (err) return;
+                // check for test result
+                GQTestResult.find({
+                    test: test_id,
+                    candidate: resume.user.id
+                }).populate('test').exec(function (err, test_result) {
+                    if (err) console.log(err)
+                    if (test_result.length > 0) {
+                        GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
+                            return res.view('applicant/viewresume', {
+                                resume: resume,
+                                result: result,
+                                test_title: test_result[0].test.test_name
+                            });
+                        });
+                    } else {
+                        return res.view('applicant/viewresume', { resume: resume });
+                    }
+                });
+            });
     }
 };
 

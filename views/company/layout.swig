@@ -72,7 +72,7 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    <img src="/images/gq-logo-emb.png" class="logo-img hidden" />Get Qualified
+                    <img src="/images/gq-logo-emb.png" class="logo-img" />Get Qualified
                 </a>
             </div>
 
