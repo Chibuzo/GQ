@@ -30,7 +30,7 @@
 						<th>Poster</th>
 						{#<th>Status</th>#}
 						<th><i class="fa fa-calendar"></i> Closes On</th>
-						<th class="text-center">Action</th>
+						<th class="text-center hidden">Action</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -46,7 +46,7 @@
 							<td class="text-right"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
 							<td>{{ job.poster.fullname }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
-							<td class="opt-icons text-center">
+							<td class="opt-icons text-center hidden">
 								<div class="button-group" role="group">
 									<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
 									{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}

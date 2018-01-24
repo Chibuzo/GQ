@@ -58,7 +58,7 @@ module.exports = {
         // lets handle associative data
         // Education
         for (var i = 0; i < q('institution').length; i++) {
-            if (q('institution')[i].length < 1) continue;
+            if (q('institution')[i].length < 1) continue;   // cus we don't add no school name
 
             var education = {
                 institution: q('institution')[i],
@@ -173,31 +173,30 @@ module.exports = {
     },
 
     viewResume: function(req, res) {
-        var test_id = 1;
         var resume_id = req.param('resume_id');
-        Resume.findOne({ id: resume_id })
-            .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
-            .exec(function(err, resume) {
-                if (err) return;
-                // check for test result
-                GQTestResult.find({
-                    test: test_id,
-                    candidate: resume.user.id
-                }).populate('test').exec(function (err, test_result) {
-                    if (err) console.log(err)
-                    if (test_result.length > 0) {
-                        GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
-                            return res.view('applicant/viewresume', {
-                                resume: resume,
-                                result: result,
-                                test_title: test_result[0].test.test_name
-                            });
-                        });
-                    } else {
-                        return res.view('applicant/viewresume', { resume: resume });
-                    }
-                });
+        ResumeService.viewResume(resume_id).then(function(response) {
+            return res.view('applicant/viewresume', {
+                resume: response.resume,
+                result: response.result ? response.result : null,
+                test_title: response.test_title ? response.test_title : null
             });
+        }).catch(function(err) {
+            console.log(err);
+        });
+    },
+
+    viewResumeByUser: function(req, res) {
+        Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
+            ResumeService.viewResume(resume[0].id).then(function(response) {
+                return res.view('applicant/viewresume', {
+                    resume: response.resume,
+                    result: response.result ? response.result : null,
+                    test_title: response.test_title ? response.test_title : null
+                });
+            }).catch(function(err) {
+                console.log(err);
+            });
+        });
     }
 };
 

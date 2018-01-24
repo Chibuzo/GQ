@@ -26,6 +26,7 @@ module.exports = {
             if (jobtest.test_source == 'gq') {
                 GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').exec(function(err, results) {
                     var gq_results = [];
+                    //console.log(results);
                     if (results.length > 0) {
                         async.eachSeries(results, function(result, cb) {
                             GQTestService.prepareCandidateResult(jobtest.gq_test, result.score, result.no_of_questions).then(function (rsult) {
@@ -43,7 +44,6 @@ module.exports = {
                                 console.log(err);
                                 cb(err);
                             });
-                            console.log(gq_results)
                             return resolve(gq_results);
                         });
                     } else {
