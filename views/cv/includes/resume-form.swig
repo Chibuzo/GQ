@@ -47,7 +47,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<label>Address</label>
-				<input type="text" name="address" class="form-control" placeholder="Your residencial Address" value="{{ resume.address }}" required>
+				<input type="text" name="address" class="form-control" placeholder="Your Residential Address" value="{{ resume.address }}" required>
 			</div>
 		</div>
 	</div>
@@ -107,8 +107,8 @@
 				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
 			</div>
 			<div class="col-md-4">
-				<label>Expected Annual Salary</label>
-				<input type="number" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
+				<label>Expected Annual Salary ( &#8358; )</label>
+				<input type="number" name="expected_salary" class="form-control" placeholder="Enter the least salary you can take" value="{{ resume.expected_salary }}">
 			</div>
 		</div>
 	</div>
@@ -306,7 +306,7 @@
 					<div class="row">
 						<div class="col-md-12">
 							<label>Job functions</label>
-							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+							<textarea name="duty" class="form-control" placeholder="List some duties you did at this job"></textarea>
 						</div>
 					</div>
 

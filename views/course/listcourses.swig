@@ -29,33 +29,38 @@
 	padding: 10px 50px;
 }
 
-.course {
-	padding: 15px;
-	line-height: 1.3;
-	margin: 10px;
-	border: #ccc solid thin;
-	overflow: auto;
-	height: 400px;
+/*.course {*/
+	/*padding: 15px;*/
+	/*line-height: 1.3;*/
+	/*margin: 10px;*/
+	/*border: #ccc solid thin;*/
+	/*overflow: auto;*/
+	/*height: 400px;*/
+/*}*/
+.about {
+	max-height: 450px;
 }
 
-.course h3 {
-	margin-top: 5px;
-	marginbottom: 10px;
-	color: #A37F2D;
+.head-title {
+	height: 53px;
 }
 
-.course h3 a:link {
-	color: #A37F2D;
+.course-title:link {
+	color: #333;
+	font-size: 23px;
 }
 
 .course-desc {
 	clear: both;
+	height: 230px;
+	overflow: hidden;
+	text-overflow: ellipsis;
 }
 
 .info-thumb {
 	/*padding-bottom: 13px;*/
-	font-size: 14px;
-	margin-bottom: 15px;
+	/*font-size: 14px;*/
+	/*margin-bottom: 15px;*/
 }
 
 .info-thumb-ls {
@@ -120,7 +125,9 @@
 						{% set path = course.course_title.split(' ') %}
 						<div class="col-md-4">
 							<div class="about" id="{{ course.id }}">
-								<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>
+								<div class="head-title">
+									<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>
+								</div>
 								<div class="info-thumb">
 									<ul class="info-thumb-ls hidden">
 										<li><i class="fa fa-info-circle"></i> {{ course.category.category }} Category</li>
@@ -129,7 +136,7 @@
 								</div>
 								<div class="course-desc">{{ course.abstract }}</div>
 								<div class="course-menu">
-									<button class="btn btn-default pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>
+									<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>
 								</div>
 							</div>
 						</div>
@@ -147,7 +154,7 @@
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 						×
 					</button>
-					<h4 class="modal-title" id="myModalLabel">;l;l;l;l;ll</h4>
+					<h4 class="modal-title" id="myModalLabel"></h4>
 				</div>
 
 				<div class="modal-body">

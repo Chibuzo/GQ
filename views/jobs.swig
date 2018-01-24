@@ -132,8 +132,13 @@ input[type="text"] {
 		<div class="col-md-9 jobs">
 			{% for job in jobs %}
 				{% set path = job.job_title.split(' ') %}
+				{% if job.company.logo_name.length > 3 %}
+					{% set logo_name = job.company.logo_name %}
+				{% else %}
+					{% set logo_name = 'company.png' %}
+				{% endif %}
 				<div class="job">
-					<img src="/logos/{{ job.company.logo_name }}" />
+					<img src="/logos/{{ logo_name }}" />
 					<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>
 					<div class="info-thumb">
 						<ul class="info-thumb-ls">

@@ -1,6 +1,13 @@
 <p>Hi, {{ contact_person }}</p>
-<p>Thank you for for your interest on getQualified</p>
-<p>yada yada yada....</p>
-Click on the link below to proceed with your sign up.<br>
+<p>Thank you for your interest in using GetQualified to refine your recruitment process.<br>
+	We have reviewed your profile and you can now proceed to setting up your account.
+</p>
 
-<a href="{{ url }}">Activate account</a>
+<a href="{{ url }}">Click here to continue</a>
+
+<p>Best,<br>
+	Team GQ.<br>
+	team@getqualified.work<br>
+<br>
+	P.S.: You can follow our updates on [GQ-Twitter] and our story here: [Blog hyperlink]. And also do not hesitate to reach out to us for any support you may need along the way.
+</p>

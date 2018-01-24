@@ -118,6 +118,8 @@ module.exports.routes = {
 
     'GET /company/activate-user/:hash/:email': 'CompanyController.activateUser',
 
+    'GET /company/user-profile': 'CompanyController.userProfile',
+
     'POST /company/update-user': 'CompanyController.updateUser',
 
     'POST /company/remove-user': 'CompanyController.removeUser',

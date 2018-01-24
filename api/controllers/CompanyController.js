@@ -90,6 +90,7 @@ module.exports = {
 
         var allowedImgTypes = ['image/png', 'image/jpeg', 'image/gif'];
         var filename;
+
         req.file('logo').upload({
             dirname: require('path').resolve(sails.config.appPath, 'assets/logos/'),
             saveAs: function(file, cb) {
@@ -101,12 +102,14 @@ module.exports = {
                 return cb(null, filename);
             }
         },
-        function(err) {
+        function(err, logo) {
             if (err) {
                 return res.ok();
             }
             //if (!_.isEmpty(q('logo_name'))) filename = q('logo_name');
-            Company.update({ id: req.session.coy_id }, { logo_name: filename }).exec(function() {});
+            if (logo) {
+                Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
+            }
         });
 
         if (q('first_check') == 'true') {
@@ -200,6 +203,27 @@ module.exports = {
         } else {
             console.log('Wrong hash')
         }
+    },
+
+    userProfile: function(req, res) {
+        User.findOne(req.session.userId, function(err, _user) {
+            if (err) return res.negotiate(err);
+            var me = {
+                fname: _user.fullname.split(' ')[0],
+                lname: _user.fullname.split(' ')[1]
+            };
+            CompanyUser.find({ email: _user.email }).exec(function(err, coy) {
+                CountryStateService.getCountries().then(function (resp) {
+                    return res.view('company/users/profile', {
+                        user: _user,
+                        me: me,
+                        coy_details: coy[0],
+                        countries: resp.countries,
+                        states: resp.states
+                    });
+                });
+            });
+        });
     },
 
     updateUser: function(req, res) {

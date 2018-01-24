@@ -96,20 +96,30 @@
                     </a>
                 </li>
 
+                {% if req.session.user_type == 'company' %}
+                    <li>
+                        <a href="/company/user-profile">
+                            <i class="pe-7s-user"></i>
+                            <p>My Profile</p>
+                        </a>
+                    </li>
+                {% endif %}
 
-                <li class="users">
-                    <a href="/company/users">
-                        <i class="pe-7s-users"></i>
-                        <p>Manage Users</p>
-                    </a>
-                </li>
+                {% if req.session.user_type == 'company-admin' %}
+                    <li class="users">
+                        <a href="/company/users">
+                            <i class="pe-7s-users"></i>
+                            <p>Manage Users</p>
+                        </a>
+                    </li>
 
-                <li class="profile">
-                    <a href="/company/profile">
-                        <i class="pe-7s-user"></i>
-                        <p>Company Profile</p>
-                    </a>
-                </li>
+                    <li class="profile">
+                        <a href="/company/profile">
+                            <i class="pe-7s-user"></i>
+                            <p>Company Profile</p>
+                        </a>
+                    </li>
+                {% endif %}
             </ul>
         </div>
     </div>
