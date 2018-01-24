@@ -28,10 +28,6 @@ module.exports = {
           type: 'date'
       },
 
-      qualification: {
-          type: 'string'
-      },
-
       resume: {
           model: 'resume'
       }

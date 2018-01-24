@@ -23,8 +23,8 @@
 
 	<div class="form-group">
 		<div class="row">
-			<div class="col-md-6">
-				<label>Gender</label>
+			<div class="col-md-4">
+				<label><i class="fa fa-male"></i> &nbsp;Gender</label>
 				{% if resume.gender == 'Female' %}
 					{% set female = 'selected=selected' %}
 				{% elseif resume.gender == 'Male' %}
@@ -36,8 +36,16 @@
 					<option value="Male" {{ male }}>Male</option>
 				</select>
 			</div>
-			<div class="col-md-6">
-				<label>Phone Number</label>
+			<div class="col-md-4">
+				<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label>
+				{% if resume.dob %}
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('d-m-Y') }}" required>
+				{% else %}
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="" required>
+				{% endif %}
+			</div>
+			<div class="col-md-4">
+				<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label>
 				<input type="text" name="phone" class="form-control" placeholder="Your Phone Number" value="{{ resume.phone }}" required>
 			</div>
 		</div>
@@ -46,8 +54,8 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label>Address</label>
-				<input type="text" name="address" class="form-control" placeholder="Your Residential Address" value="{{ resume.address }}" required>
+				<label><i class="fa fa-map-marker"></i>&nbsp;Address</label>
+				<input type="text" name="address" class="form-control" placeholder="Your residencial Address" value="{{ resume.address }}" required>
 			</div>
 		</div>
 	</div>
@@ -55,7 +63,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label for="phone">Resident Country</label>
+				<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label>
 				<select name="country" class="form-control" required>
 					{% for country in countries %}
 						<option value="{{ country.country }}">{{ country.country }}</option>
@@ -63,7 +71,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="email">State</label>
+				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;State</label>
 				<select name="state" class="form-control">
 					<option value="">Select State</option>
 					{% for state in states %}
@@ -72,7 +80,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="email">City</label>
+				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label>
 				<input type="text" name="city" class="form-control" value="{{ resume.city }}" required />
 			</div>
 		</div>
@@ -107,8 +115,8 @@
 				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
 			</div>
 			<div class="col-md-4">
-				<label>Expected Annual Salary ( &#8358; )</label>
-				<input type="number" name="expected_salary" class="form-control" placeholder="Enter the least salary you can take" value="{{ resume.expected_salary }}">
+				<label>Expected Annual Salary</label>
+				<input type="number" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
 			</div>
 		</div>
 	</div>
@@ -127,11 +135,13 @@
 						{% set selected = 'selected' %}
 						<select name="honour[]" class="form-control">
 							<option value=""></option>
-							<option value="BSc">Bachelors</option>
-							<option value="Msc">Masters</option>
-							<option value="PhD">PhD</option>
-							<option value="HND">HND</option>
-							<option value="OND">OND</option>
+							{% for honor in honours %}
+								{% if honor.honour == edu.honour %}
+									<option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
+								{% else %}
+									<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+								{% endif %}
+							{% endfor %}
 						</select>
 					</div>
 					<div class="col-md-3">
@@ -154,39 +164,37 @@
 			{% endfor %}
 
 			{% if resume.educations.length < 1 %}
-			<div class="row inst-row">
-				<div class="col-md-3">
-					<label>Institution</label>
-					<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
+				<div class="row inst-row">
+					<div class="col-md-3">
+						<label>Institution</label>
+						<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
+					</div>
+					<div class="col-md-1">
+						<label>Honour</label>
+						<select name="honour[]" class="form-control">
+							<option value=""></option>
+							{% for honor in honours %}
+								<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+							{% endfor %}
+						</select>
+					</div>
+					<div class="col-md-3">
+						<label>Programme</label>
+						<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
+					</div>
+					<div class="col-md-2">
+						<label>start Date</label>
+						<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" required>
+					</div>
+					<div class="col-md-2">
+						<label>End Date</label>
+						<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" required>
+					</div>
+					<input type="hidden" name="inst_id[]" />
+					<div class="col-md-1">
+						<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
+					</div>
 				</div>
-				<div class="col-md-1">
-					<label>Honour</label>
-					<select name="honour[]" class="form-control">
-						<option value=""></option>
-						<option value="BSc">Bachelors</option>
-						<option value="Msc">Masters</option>
-						<option value="PhD">PhD</option>
-						<option value="HND">HND</option>
-						<option value="OND">OND</option>
-					</select>
-				</div>
-				<div class="col-md-3">
-					<label>Programme</label>
-					<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
-				</div>
-				<div class="col-md-2">
-					<label>start Date</label>
-					<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" required>
-				</div>
-				<div class="col-md-2">
-					<label>End Date</label>
-					<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" required>
-				</div>
-				<input type="hidden" name="inst_id[]" />
-				<div class="col-md-1">
-					<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
-				</div>
-			</div>
 			{% endif %}
 
 			<div class="row inst-row addable" id="another-inst">
@@ -198,11 +206,9 @@
 					<label>Honour</label>
 					<select name="honour[]" class="form-control">
 						<option value=""></option>
-						<option value="BSc">Bachelors</option>
-						<option value="Msc">Masters</option>
-						<option value="PhD">PhD</option>
-						<option value="HND">HND</option>
-						<option value="OND">OND</option>
+						{% for honor in honours %}
+							<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+						{% endfor %}
 					</select>
 				</div>
 				<div class="col-md-3">
@@ -299,14 +305,14 @@
 
 						<div class="col-md-4">
 							<label>Location</label>
-							<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
+							<input type="text" name="location" class="form-control" value="{{ emp.location }}" placeholder="City, State where you did this job">
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-md-12">
 							<label>Job functions</label>
-							<textarea name="duty" class="form-control" placeholder="List some duties you did at this job"></textarea>
+							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job">{{ emp.duties }}</textarea>
 						</div>
 					</div>
 
@@ -415,8 +421,8 @@
 		<legend>Reference Contacts</legend>
 		<div class="form-group">
 			{% for ref in resume.referencecontacts %}
-			{% set fname = ref.name.split(' ')[0] %}
-			{% set lname = ref.name.split(' ')[1] %}
+				{% set fname = ref.name.split(' ')[0] %}
+				{% set lname = ref.name.split(' ')[1] %}
 				<div class="reference-row">
 					<div class="row">
 						<div class="col-md-6">
@@ -459,45 +465,45 @@
 			{% endfor %}
 
 			{% if resume.referencecontacts.length < 1 %}
-			<div class="reference-row">
-				<div class="row">
-					<div class="col-md-6">
-						<label>First name</label>
-						<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}">
-					</div>
+				<div class="reference-row">
+					<div class="row">
+						<div class="col-md-6">
+							<label>First name</label>
+							<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}">
+						</div>
 
-					<div class="col-md-6">
-						<label>Last name</label>
-						<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="">
+						<div class="col-md-6">
+							<label>Last name</label>
+							<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label>Company/Organisation</label>
+							<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}">
+						</div>
+
+						<div class="col-md-6">
+							<label>Job Title</label>
+							<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<label>Email</label>
+							<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}">
+						</div>
+
+						<div class="col-md-5">
+							<label>Phone</label>
+							<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" >
+						</div>
+						<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
+						<div class="col-md-1">
+							<a href="" class="plus-btn add-reference"><i class="fa fa-plus fa-lg"></i></a>
+						</div>
 					</div>
 				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<label>Company/Organisation</label>
-						<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}">
-					</div>
-
-					<div class="col-md-6">
-						<label>Job Title</label>
-						<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}">
-					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-6">
-						<label>Email</label>
-						<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}">
-					</div>
-
-					<div class="col-md-5">
-						<label>Phone</label>
-						<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" >
-					</div>
-					<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
-					<div class="col-md-1">
-						<a href="" class="plus-btn add-reference"><i class="fa fa-plus fa-lg"></i></a>
-					</div>
-				</div>
-			</div>
 			{% endif %}
 
 			<div class="reference-row addable" id="another-reference">

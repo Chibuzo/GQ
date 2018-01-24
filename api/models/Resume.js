@@ -22,6 +22,10 @@ module.exports = {
             type: 'string'
         },
 
+        dob: {
+            type: 'date'
+        },
+
         phone: {
             type: 'string',
             unique: 'true'

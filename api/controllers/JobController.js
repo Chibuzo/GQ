@@ -175,7 +175,6 @@ module.exports = {
         var job_id = req.param('id');
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
-            console.log('Job: ' + job);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
             JobCategory.find().populate('jobs').exec(function(err, job_categories) {
@@ -207,8 +206,45 @@ module.exports = {
 
     viewApplicants: function(req, res) {
         var job_id =  req.param('job_id');
-        Application.find({ job: job_id }).populate('applicant').exec(function(err, applicants) {
-            return res.view('company/applicants-view.swig', { applicants: applicants });
+        Job.find({ id: job_id }).exec(function(err, job) {
+            JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
+                Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
+                    // fetch candidate ids for use in finding/computing their test result
+                    var candidates = [];
+                    applications.forEach(function (application) {
+                        candidates.push(application.applicant.id);
+                    });
+                    CBTService.getJobTestResults(candidates, test[0]).then(function (all_text_result) {
+                        SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
+                            console.log(selected_candidates)
+                            if (selected_candidates.length > 0) {
+                                var candidates = [];    // redeclared, haha!
+                                selected_candidates.forEach(function (candidate) {
+                                    candidates.push(candidate.candidate.id);
+                                });
+                                CBTService.getJobTestResults(candidates, test[0]).then(function (selected_candidates_test_result) {
+                                    console.log(selected_candidates_test_result)
+                                    return res.view('company/applicants-view.swig', {
+                                        applicants: applications,
+                                        results: all_text_result,
+                                        selected_candidates: selected_candidates_test_result,
+                                        job_id: job_id
+                                    });
+                                }).catch(function (err) {
+                                    console.log(err);
+                                });
+                            } else {
+                                return res.view('company/applicants-view.swig', {
+                                    applicants: applications,
+                                    results: all_text_result,
+                                });
+                            }
+                        });
+                    }).catch(function (err) {
+                        console.log(err);
+                    });
+                });
+            });
         });
     },
 
@@ -217,15 +253,13 @@ module.exports = {
         Job.find({ id: job_id }).populate('applications').exec(function(err, job) {
             JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
                 var candidates = [];
-                Application.find({ job: job_id }).exec(function(err, applicants) {
-                    applicants.forEach(function(candidate) {
-                        candidates.push(candidate.applicant);
-                    });
-                    CBTService.getJobTestResults(candidates, test[0]).then(function(resp) {
-                        return res.view('company/testResults', { results: resp });
-                    }).catch(function(err) {
-                        console.log(err);
-                    });
+                job[0].applications.forEach(function(candidate) {
+                    candidates.push(candidate.applicant);
+                });
+                CBTService.getJobTestResults(candidates, test[0]).then(function(resp) {
+                    return res.view('company/testResults', { results: resp });
+                }).catch(function(err) {
+                    console.log(err);
                 });
             });
         });

@@ -25,6 +25,7 @@
 						<th>Contact Person</th>
 						<th>Contact email</th>
 						<th>Contact Phone</th>
+						<th>Jobs</th>
 						<th class="hidden"></th>
 					</tr>
 					</thead>
@@ -38,6 +39,7 @@
 							<td>{{ coy.contact_person }}</td>
 							<td>{{ coy.contact_email }}</td>
 							<td>{{ coy.contact_phone }}</td>
+							<td><a href="/admin/coy-jobs/{{ coy.id }}">{{ coy.jobs }}</a></td>
 							<td class="hidden">
 								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
 							</td>

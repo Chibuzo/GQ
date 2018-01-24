@@ -21,7 +21,6 @@
 				<table class="table table-striped dataTable">
 					<thead>
 					<tr>
-						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
 						<th style="width: 120px">Date Added</th>
 						<th>Course Title</th>
 						<th>Course Abstract</th>
@@ -35,7 +34,6 @@
 					{% for course in courses %}
 						{% set subs = course.subscriptions.length %}
 						<tr id="{{ course.id }}">
-							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ course.createdAt | date('d M, Y') }}</td>
 							<td>{{ course.course_title }}</td>
 							<td>{{ course.abstract }}</td>

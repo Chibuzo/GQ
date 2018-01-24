@@ -21,15 +21,15 @@ module.exports.routes = {
 
     'POST /user/signup': 'UserController.signup',
 
+    'POST /user/update': 'UserController.updateProfile',
+
     'GET /applicant/profile': 'UserController.profile',
 
     'GET /signout': 'UserController.signout',
 
-    'GET /applicant/resume-page': 'ResumeController.viewResume',
+    'GET /applicant/resume-page': 'ResumeController.editView',
 
     'POST /resume/update': 'ResumeController.save',
-
-    'POST /user/update': 'UserController.updateProfile',
 
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
@@ -40,6 +40,14 @@ module.exports.routes = {
     'POST /applicant/add-video': 'ApplicantController.uploadVideo',
 
     'POST /applicant/add-passport': 'ApplicantController.uploadPassport',
+
+    'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
+
+    'GET /applicant/resume-user/:user_id': 'ResumeController.viewResumeByUser',
+
+    'POST /applicant/select-candidate': 'SelectedCandidateController.selectCandidate',
+
+    'POST /applicant/unselect-candidate': 'SelectedCandidateController.unSelectCandidate',
 
     'GET /admin/setup': 'AdminController.setup',
 
@@ -57,9 +65,13 @@ module.exports.routes = {
 
     'GET /admin/manage-courses': 'CourseController.getCourses',
 
+    'GET /admin/applicants': 'ApplicantController.fetchApplicants',
+
     'GET /admin/gq-test': 'GQTestController.manageTest',
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
+
+    'GET /admin/coy-jobs/:coy_id': 'CompanyController.viewCompanyJobs',
 
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 

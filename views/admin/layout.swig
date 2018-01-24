@@ -111,13 +111,6 @@
                     </a>
                 </li>
 
-                <li class="hidden">
-                    <a href="/admin/users">
-                        <i class="pe-7s-users"></i>
-                        <p>Applicants</p>
-                    </a>
-                </li>
-
                 <li class="courses">
                     <a href="/admin/manage-courses">
                         <i class="pe-7s-notebook"></i>
@@ -143,6 +136,13 @@
                     <a href="/user/profile">
                         <i class="pe-7s-user"></i>
                         <p>User Profile</p>
+                    </a>
+                </li>
+
+                <li class="applicants">
+                    <a href="/admin/applicants">
+                        <i class="pe-7s-users"></i>
+                        <p>Applicants</p>
                     </a>
                 </li>
 
