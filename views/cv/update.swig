@@ -121,6 +121,21 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
+								<div class="cell">
+									<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
+										<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+										<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
+									</div>
+								</div>
+
+								<div class="cell">
+									<div id="vol-meter"></div>
+
+									<div class="stats">
+
+									</div>
+								</div>
+
 								<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 									<div class="result">
 										<h3 class="test-title"></h3><br>
@@ -273,6 +288,23 @@
 {% block scriptTag %}
 <script type="text/javascript" src="/js/gqTestFrontend.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+	<!-- Defaults: resumable not necessary depending on how uploading goes -->
+	{#<script src="/js/proctor/jquery-3.2.1.slim.min.js"></script>#}
+
+	<!-- Facial tracking -->
+	<script src="/js/proctor/tracking-min.js"></script>
+	<script src="/js/proctor/face-min.js"></script>
+	<script src="/js/proctor/eye-min.js"></script>
+	<script src="/js/proctor/mouth-min.js"></script>
+
+	<!-- Audio Volume metering -->
+	<script src="/js/proctor/volume-meter.js"></script>
+
+	<!-- Audio tracking -->
+	<script src="/js/proctor/recorder.min.js"></script>
+
+	<!-- Main Setup -->
+	<script src="/js/proctor/setup.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');

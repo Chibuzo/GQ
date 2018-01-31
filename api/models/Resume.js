@@ -91,6 +91,16 @@ module.exports = {
             type: 'string'
         },
 
+        video_status: {
+            type: 'boolean',
+            defaultsTo: 'false'
+        },
+
+        test_status: {
+            type: 'boolean',
+            defaultsTo: 'false'
+        },
+
         user: {
             model: 'user'
         },
