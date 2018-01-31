@@ -130,6 +130,8 @@ module.exports.routes = {
 
     'GET /company/activate-user/:hash/:email': 'CompanyController.activateUser',
 
+    'GET /company/user-profile': 'CompanyController.userProfile',
+
     'POST /company/update-user': 'CompanyController.updateUser',
 
     'POST /company/remove-user': 'CompanyController.removeUser',
@@ -185,10 +187,10 @@ module.exports.routes = {
     'GET /get-schools': 'SchoolsController.getSchools',
 
     //'GET /loadschools': 'BatchController.loadSchools',
-
+    //
     //'GET /savetest': 'TestController.saveTest',
-
+    //
     //'GET /countries': 'BatchController.countries',
-
+    //
     //'/states': 'BatchController.loadStates'
 };

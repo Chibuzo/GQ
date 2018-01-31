@@ -56,6 +56,9 @@
 					{% endfor %}
 					</tbody>
 				</table>
+				{% if n == 0 %}
+					<div class="alert alert-info">You have not applied for any job recently.</div>
+				{% endif %}
 			</div>
 		</div>
 	</div>

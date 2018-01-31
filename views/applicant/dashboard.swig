@@ -24,7 +24,9 @@
 							</tr>
 						</thead>
 						<tbody>
+						{% set n = 0 %}
 						{% for result in gq_results %}
+							{% set n = n + 1 %}
 							<tr>
 								<td>{{ result.test_title }}</td>
 								<td>{{ result.score }}</td>
@@ -35,6 +37,7 @@
 						{% endfor %}
 
 						{% for result in xpr_results %}
+							{% set n = n + 1 %}
 							<tr>
 								<td>{{ result.test_title }}</td>
 								{#<td>{{ result.percentile }}</td>#}
@@ -46,6 +49,9 @@
 						{% endfor %}
 						</tbody>
 					</table>
+					{% if n == 0 %}
+						<div class="alert alert-info">You've not taken any test yet</div>
+					{% endif %}
 				</div>
 			</div>
 		</div>

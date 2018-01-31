@@ -62,6 +62,10 @@ input[type="text"] {
 	opacity: 1;
 }
 
+.job-categories li {
+	padding: 4px 8px;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;
@@ -134,6 +138,8 @@ input[type="text"] {
 
 					<h3>Requirements</h3>
 					{{ job.job_requirements | safe }}
+					<h3>Qualifications</h3>
+					{{ job.qualifications | safe }}
 					<h3>Nice to Have</h3>
 					{{ job.nice_to_have | safe }}
 				</div>
@@ -143,7 +149,13 @@ input[type="text"] {
 		</div>
 
 		<div class="col-md-3">
-
+			<h3 style="color: #666; margin-top:20px">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
+			<ul class="job-categories">
+			{% for cat in job_categories %}
+				{% set cat_path = cat.category.split(' ') %}
+				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs.length }} ]</a></li>
+			{% endfor %}
+			</ul>
 		</div>
 	</div>
 </div>

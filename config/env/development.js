@@ -18,7 +18,9 @@ module.exports = {
    ***************************************************************************/
 
    models: {
-     connection: 'localDiskDb'
-   }
+     connection: 'MysqlServer'
+   },
+
+    //port: 80
 
 };

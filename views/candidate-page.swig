@@ -2,12 +2,32 @@
 {% set title = 'GQ - Candidates' %}
 {% block body %}
 <style>
-	.course-menu {
-		margin-top: 30px;
-		padding-top: 10px;
-		padding-bottom: 3px;
-		border-top: #f0f0f0 solid thin;
-	}
+.course-menu {
+	margin-top: 30px;
+	padding-top: 10px;
+	padding-bottom: 3px;
+	border-top: #f0f0f0 solid thin;
+}
+
+.about {
+	max-height: 450px;
+}
+
+.head-title {
+	height: 53px;
+}
+
+.course-title:link {
+	color: #333;
+	font-size: 23px;
+}
+
+.course-desc {
+	clear: both;
+	height: 230px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
 </style>
 
 {% block backgroud %}
@@ -149,11 +169,13 @@
 			{% for course in courses %}
 				{% set path = course.course_title.split(' ') %}
 				<div class="col-md-4 col-sm-6">
-					<div class="about">
-						<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>
-						<p>{{ course.abstract }}</p>
+					<div class="about" id="{{ course.id }}">
+						<div class="head-title">
+							<h3><a href="/course/{{ course.id }}/{{ path | join('-') }}" class="course-title">{{ course.course_title }}</a></h3>
+						</div>
+						<div class="course-desc">{{ course.abstract }}</div>
 						<div class="course-menu">
-							<button class="btn btn-default pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>
+							<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>
 						</div>
 					</div>
 				</div>

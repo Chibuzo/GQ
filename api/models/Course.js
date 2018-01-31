@@ -13,7 +13,7 @@ module.exports = {
       },
 
       abstract: {
-          type: 'string'
+          type: 'text'
       },
 
       category: {

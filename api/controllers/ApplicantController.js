@@ -29,6 +29,7 @@ module.exports = {
                         //results.forEach(function(result) {
                         async.eachSeries(results, function(result, cb) {
                             CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
+                                if (test.length < 1) return cb();
                                 result.test_title = test[0].test_name;
                                 xpr_results.push(result);
                                 cb();
@@ -72,7 +73,8 @@ module.exports = {
             if (err) {
                 return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' });
             }
-            Resume.update({id: req.param('resume_id')}, {video_file: filename}).exec(function (err) {
+            console.log(req.param('resume_id'));
+            Resume.update({id: req.param('resume_id')}, { video_file: filename, video_status: 'true' }).exec(function (err) {
                 if (err) {
                     return res.badRequest(err);
                 }

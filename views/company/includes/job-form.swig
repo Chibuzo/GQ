@@ -74,9 +74,9 @@
 				<label>Contract Type</label>
 				<select name="contract_type" id="contract_type" class="form-control" required>
 					<option value=""></option>
-					<option value="Entry">Full time</option>
-					<option value="Intermediate">Part time</option>
-					<option value="Professional">Internship</option>
+					<option value="Full time">Full time</option>
+					<option value="Part time">Part time</option>
+					<option value="Internship">Internship</option>
 				</select>
 			</div>
 			<div class="col-md-4">

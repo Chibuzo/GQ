@@ -103,6 +103,10 @@ $(document).ready(function() {
         return 'Nigeria' == $(this).val();
     }).attr("selected", "selected");
 
+    $("select[name=sector]").find('option').filter(function(i) {
+        return {{ company.sector | json | safe }} == $(this).val();
+    }).attr("selected", "selected");
+
 
     $("#form-company-setup").submit(function(e) {
         e.preventDefault();

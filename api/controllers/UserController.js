@@ -120,8 +120,8 @@ module.exports = {
                     req.session.userId = foundUser.id;
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
-                    if (req.param('return_url').length > 3) {
-                        return res.json(200, { status: 'success', url: req.param('return_url') });
+                    if (req.param('return_url').length > 1) {
+                        return res.json(200, { status: 'success', url: '/' + req.param('return_url') });
                         //return res.redirect(req.param('return_url'));
                     } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
                         req.session.coy_id = foundUser.company;

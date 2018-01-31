@@ -54,13 +54,17 @@
                                                     <select name="state" class="form-control">
                                                         <option value="">Select State</option>
                                                         {% for state in states %}
-                                                            <option value="{{ state.state_name }}">{{ state.state_name }}</option>
+                                                            {% if state.state_name == coy_details.r_state %}
+                                                                <option value="{{ state.state_name }}" selected="selected">{{ state.state_name }}</option>
+                                                            {% else %}
+                                                                <option value="{{ state.state_name }}">{{ state.state_name }}</option>
+                                                            {% endif %}
                                                         {% endfor %}
                                                     </select>
                                                 </div>
                                                 <div class="col-md-4">
                                                     <label for="city">City</label>
-                                                    <input type="text" name="city" class="form-control" value="{{ user.city }}" />
+                                                    <input type="text" name="city" class="form-control" value="{{ coy_details.city }}" />
                                                 </div>
                                             </div>
                                         </div>
