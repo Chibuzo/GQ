@@ -55,7 +55,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<label><i class="fa fa-map-marker"></i>&nbsp;Address</label>
-				<input type="text" name="address" class="form-control" placeholder="Your residencial Address" value="{{ resume.address }}" required>
+				<input type="text" name="address" class="form-control" placeholder="Your residential address" value="{{ resume.address }}" required>
 			</div>
 		</div>
 	</div>

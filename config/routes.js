@@ -187,10 +187,10 @@ module.exports.routes = {
     'GET /get-schools': 'SchoolsController.getSchools',
 
     //'GET /loadschools': 'BatchController.loadSchools',
-
+    //
     //'GET /savetest': 'TestController.saveTest',
-
+    //
     //'GET /countries': 'BatchController.countries',
-
+    //
     //'/states': 'BatchController.loadStates'
 };

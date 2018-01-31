@@ -128,19 +128,19 @@ module.exports = {
         });
     },
 
-    loadTest: function(req, res) {
-        var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
-            if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
-            req.session.suppliedAnswers = [];
-            return res.json(200, {
-                status: 'success',
-                questions: test[0].questions,
-                test_id: test[0].id,
-                duration: test[0].duration
-            });
-        });
-    },
+    //loadTest: function(req, res) {
+    //    var test_id = req.param('test_id');
+    //    GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
+    //        if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
+    //        req.session.suppliedAnswers = [];
+    //        return res.json(200, {
+    //            status: 'success',
+    //            questions: test[0].questions,
+    //            test_id: test[0].id,
+    //            duration: test[0].duration
+    //        });
+    //    });
+    //},
 
     returnAnswer: function(req, res) {
         GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
@@ -168,6 +168,9 @@ module.exports = {
                 score++;
             }
         });
+        // update resume if it's GQ General aptitude test
+        Resume.update({ user: req.session.userId }, { test_status: 'true' }).exec(function() {});
+        
         // save or update candidate's test score
         GQTestResult.find({ candidate: req.session.userId, test: test_id }).exec(function(err, test_result) {
             if (err) return console.log(err);
@@ -185,7 +188,6 @@ module.exports = {
                     no_of_questions: no_of_questions,
                     result: 'Passed'
                 };
-                console.log(data)
                 GQTestResult.create(data).exec(function(err) {
                     GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
                         return res.json(200, { status: 'success', result: resp });

@@ -8,6 +8,7 @@
 module.exports = {
 	editView: function(req, res) {
         var test_id = 1;
+        console.log(req.session.userId)
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -137,7 +138,7 @@ module.exports = {
                 ReferenceContact.create(reference).exec(function() {});
             }
         }
-        if (sections.education && (q('video_status') == 1) && (q('test_status') == 1)) {
+        if (sections.education && (q('video_status') == true) && (q('test_status') == true)) {
             status = 'Complete';
         } else {
             status = 'Incomplete';
