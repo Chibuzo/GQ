@@ -50,7 +50,7 @@
 						</tbody>
 					</table>
 					{% if n == 0 %}
-						<div class="alert alert-info">You've not taken any test yet</div>
+						<div class="alert alert-info">You have not taken any test(s)</div>
 					{% endif %}
 				</div>
 			</div>

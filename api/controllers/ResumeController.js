@@ -7,8 +7,7 @@
 
 module.exports = {
 	editView: function(req, res) {
-        var test_id = 1;
-        console.log(req.session.userId)
+        var test_id = 4;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -145,7 +144,7 @@ module.exports = {
         }
         var data = {
             gender: q('gender'),
-            dob: q('dob'),
+            dob: new Date(Date.parse(q('dob'))).toISOString(),
             phone: q('phone'),
             country: q('country'),
             r_state: q('state'),
@@ -153,8 +152,9 @@ module.exports = {
             address: q('address'),
             introduction: q('introduction'),
             employment_status: q('employment_status'),
-            available_date: q('available_date'),
+            available_date: new Date(Date.parse(q('available_date'))).toISOString(),
             expected_salary: q('expected_salary'),
+            profile_status: sections.education,
             status: status
         };
         Resume.update({ id: q('resume_id') }, data).exec(function(err, resume) {

@@ -18,7 +18,7 @@
 							<h2 class="text-center" style="color: #fff">Candidate Sign Up</h2><br><br>
 							<form action="/user/signup" method="post" class="form-vertical" id="signup">
 								<div class="form-group text-left">
-									<label>Fullname</label>
+									<label>Full name</label>
 									<div class="row">
 										<div class="col-md-6">
 											<input type="text" name="fname" class="form-control input-lg" placeholder="First name" required />
@@ -36,6 +36,9 @@
 								<div class="alert alert-danger hidden"></div>
 								<button type="submit" class="btn btn-info input-lg btn-block">&nbsp; Sign Up </button>
 							</form>
+							<div class="signup-msg hidden">
+								<div class="alert alert-info"><div class="text-center"><i class="fa fa-check-circle fa-4x"></i></div> <br>Thank you for signing up with Getqualified. A mail has been sent to you to verify your email address.</div>
+							</div>
 						</div>
 					</div>
 					<!-- /home content -->
@@ -62,7 +65,9 @@
 
 			$.post('/user/signup', $(this).serialize() + '&user_type=Applicant', function(d) {
 				if (d.status.trim() == 'success') {
-					location.replace('/login');
+					$("#signup").fadeOut('fast', function() {
+						$(".signup-msg").hide().removeClass('hidden').fadeIn('fast');
+					});
 				} else {
 					$(".alert-danger").html("<strong>Error:</strong> " + d.msg).removeClass('hidden');
 				}

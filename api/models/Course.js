@@ -16,6 +16,10 @@ module.exports = {
           type: 'text'
       },
 
+      body: {
+          type: 'text'
+      },
+
       category: {
           model: 'coursecategory'
       },

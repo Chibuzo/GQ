@@ -29,10 +29,10 @@
 						<th>Contract Type</th>
 						<th style="width: 60px">Applications</th>
 						{#<th>Candidates</th>#}
-						<th>Poster</th>
+						<th>Posted By</th>
 						{#<th>Status</th>#}
-						<th><i class="fa fa-calendar"></i> Closes On</th>
-						<th class="text-center">Action</th>
+						<th><i class="fa fa-calendar"></i> Closing Date</th>
+						<th class="text-center" = style="width: 150px">Action</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -41,7 +41,7 @@
 						{% set applications = job.applications.length %}
 						<tr id="{{ job.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-							<td>{{ job.createdAt | date('d M, Y') }}</td>
+							<td>{{ job.createdAt | date('d-m-Y') }}</td>
 							<td>{{ job.job_title }}</td>
 							<td class="hidden">{{ job.category.category }}</td>
 							<td>{{ job.job_level }}</td>
@@ -50,12 +50,12 @@
 							{#<td><a href=""></a></td>#}
 							<td>{{ job.poster.fullname }}</td>
 							{#<td>{{ job.status }}</td>#}
-							<td>{{ job.closing_date | date('d M, Y') }}</td>
+							<td>{{ job.closing_date | date('d-m-Y') }}</td>
 							<td class="opt-icons text-center">
 								<div class="button-group" role="group">
 									<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
 									{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
+									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
 									<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
 									<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
 								</div>

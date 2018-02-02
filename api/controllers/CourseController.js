@@ -11,6 +11,7 @@ module.exports = {
         var data = {
             course_title: q('course_title'),
             abstract: q('abstract'),
+            body: q('body')
         };
         Course.create(data).exec(function(err, course) {
             if (err) console.log(err);

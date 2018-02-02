@@ -17,6 +17,11 @@
 		<textarea name="abstract" rows="7" class="form-control" required>{{ course.abstract }}</textarea>
 	</div>
 
+	<div class="form-group">
+		<label>Course Body</label>
+		<textarea name="body" rows="7" class="form-control editor" required>{{ course.body }}</textarea>
+	</div>
+
 	<input type="hidden" name="course_id" id="course-id" value="{{ course.id }}"/>
 
 	<div class="form-group text-right">

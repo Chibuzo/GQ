@@ -2,11 +2,11 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-6">
-				<label>First Name</label>
+				<label>First Name</label> [ <span class="red">*</span> ]
 				<input type="text" name="fname" class="form-control" placeholder="Enter your first name" value="{{ me.fname }}" required>
 			</div>
 			<div class="col-md-6">
-				<label>Last Name</label>
+				<label>Last Name</label> [ <span class="red">*</span> ]
 				<input type="text" name="lname" class="form-control" placeholder="Enter your last name" value="{{ me.lname }}" required>
 			</div>
 		</div>
@@ -24,7 +24,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label><i class="fa fa-male"></i> &nbsp;Gender</label>
+				<label><i class="fa fa-male"></i> &nbsp;Gender</label> [ <span class="red">*</span> ]
 				{% if resume.gender == 'Female' %}
 					{% set female = 'selected=selected' %}
 				{% elseif resume.gender == 'Male' %}
@@ -37,15 +37,15 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label>
+				<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label> [ <span class="red">*</span> ]
 				{% if resume.dob %}
-					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('d-m-Y') }}" required>
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('Y-m-d') }}" required>
 				{% else %}
 					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="" required>
 				{% endif %}
 			</div>
 			<div class="col-md-4">
-				<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label>
+				<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label> [ <span class="red">*</span> ]
 				<input type="text" name="phone" class="form-control" placeholder="Your Phone Number" value="{{ resume.phone }}" required>
 			</div>
 		</div>
@@ -54,7 +54,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label><i class="fa fa-map-marker"></i>&nbsp;Address</label>
+				<label><i class="fa fa-map-marker"></i>&nbsp;Address</label> [ <span class="red">*</span> ]
 				<input type="text" name="address" class="form-control" placeholder="Your residential address" value="{{ resume.address }}" required>
 			</div>
 		</div>
@@ -63,7 +63,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label>
+				<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label> [ <span class="red">*</span> ]
 				<select name="country" class="form-control" required>
 					{% for country in countries %}
 						<option value="{{ country.country }}">{{ country.country }}</option>
@@ -80,7 +80,7 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label>
+				<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label> [ <span class="red">*</span> ]
 				<input type="text" name="city" class="form-control" value="{{ resume.city }}" required />
 			</div>
 		</div>
@@ -89,8 +89,8 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label>Introduction</label>
-				<textarea name="introduction" class="form-control" placeholder="Short profile introduction, not more than 150 words" required>{{ resume.introduction }}</textarea>
+				<label>Personal Statement</label> [ <span class="red">*</span> ]
+				<textarea name="introduction" class="form-control" placeholder="Not more than 70 words" required>{{ resume.introduction }}</textarea>
 			</div>
 		</div>
 	</div>
@@ -98,7 +98,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-4">
-				<label>Employment Status</label>
+				<label>Employment Status</label> [ <span class="red">*</span> ]
 				{% if resume.employment_status == 'Employed' %}
 					{% set employed = 'selected=selected' %}
 				{% elseif resume.employment_status == 'Unemployed' %}
@@ -111,18 +111,18 @@
 				</select>
 			</div>
 			<div class="col-md-4">
-				<label>Available Date</label>
+				<label>Available Date</label> [ <span class="red">*</span> ]
 				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
 			</div>
 			<div class="col-md-4">
 				<label>Expected Annual Salary</label>
-				<input type="number" name="expected_salary" class="form-control" placeholder="The least salary you can take?" value="{{ resume.expected_salary }}">
+				<input type="number" name="expected_salary" class="form-control" placeholder="Expected Annual Salary?" value="{{ resume.expected_salary }}">
 			</div>
 		</div>
 	</div>
 
 	<fieldset id="institutions">
-		<legend>Institutions Attended</legend>
+		<legend>Education</legend>
 		<div class="form-group">
 			{% for edu in resume.educations %}
 				<div class="row inst-row">
@@ -166,11 +166,11 @@
 			{% if resume.educations.length < 1 %}
 				<div class="row inst-row">
 					<div class="col-md-3">
-						<label>Institution</label>
+						<label>Institution</label> [ <span class="red">*</span> ]
 						<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
 					</div>
 					<div class="col-md-1">
-						<label>Honour</label>
+						<label>Honour</label> [ <span class="red">*</span> ]
 						<select name="honour[]" class="form-control">
 							<option value=""></option>
 							{% for honor in honours %}
@@ -179,15 +179,15 @@
 						</select>
 					</div>
 					<div class="col-md-3">
-						<label>Programme</label>
+						<label>Programme</label> [ <span class="red">*</span> ]
 						<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
 					</div>
 					<div class="col-md-2">
-						<label>start Date</label>
+						<label>start Date</label> [ <span class="red">*</span> ]
 						<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" required>
 					</div>
 					<div class="col-md-2">
-						<label>End Date</label>
+						<label>End Date</label> [ <span class="red">*</span> ]
 						<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" required>
 					</div>
 					<input type="hidden" name="inst_id[]" />
@@ -231,7 +231,7 @@
 	</fieldset>
 
 	<fieldset id="qualifications">
-		<legend>Qualifications/Professional Certifications Obtained</legend>
+		<legend>Qualification</legend>
 		<div class="form-group">
 			{% for qual in resume.qualifications %}
 				<div class="row qual-row">
@@ -348,14 +348,14 @@
 
 						<div class="col-md-4">
 							<label>Location</label>
-							<input type="text" name="location" class="form-control" placeholder="City, State where you did this job">
+							<input type="text" name="location" class="form-control" placeholder="City, State">
 						</div>
 					</div>
 
 					<div class="row">
 						<div class="col-md-12">
 							<label>Job functions</label>
-							<textarea name="duty" class="form-control" placeholder="List some duties you did at the job"></textarea>
+							<textarea name="duty" class="form-control" placeholder="List your key responsibilities"></textarea>
 						</div>
 					</div>
 
@@ -418,7 +418,7 @@
 	</fieldset>
 
 	<fieldset id="referenceContacts">
-		<legend>Reference Contacts</legend>
+		<legend>Referee Contacts</legend>
 		<div class="form-group">
 			{% for ref in resume.referencecontacts %}
 				{% set fname = ref.name.split(' ')[0] %}
