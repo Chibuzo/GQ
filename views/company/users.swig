@@ -44,7 +44,7 @@
 					<td>{{ user.status }}</td>
                   <td class="opt-icons text-center">
                     <div class="button-group" role="group">
-						<a href="/user/view-profile/{{ user.id }}" class="view-activities btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>
+						{#<a href="/user/view-profile/{{ user.id }}" class="view-activities btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>#}
 						<a href="" class="remove-user btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Remove User"><i class="fa fa-trash-o fa-lg"></i> </a>
 					</div>
 				  </td>

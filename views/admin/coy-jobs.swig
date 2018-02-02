@@ -29,8 +29,8 @@
 						<th style="width: 60px">Applications</th>
 						<th>Poster</th>
 						{#<th>Status</th>#}
-						<th><i class="fa fa-calendar"></i> Closes On</th>
-						<th class="text-center hidden">Action</th>
+						<th><i class="fa fa-calendar"></i> Closing Date</th>
+						<th class="text-center">Action</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -46,12 +46,12 @@
 							<td class="text-right"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
 							<td>{{ job.poster.fullname }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
-							<td class="opt-icons text-center hidden">
+							<td class="opt-icons text-center">
 								<div class="button-group" role="group">
-									<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+									{#<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>#}
 									{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Upload CSV"><i class="fa fa-file-text-o fa-lg"></i></a>
-									<a href="/job/candidates/{{ job.id }}" class="btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
+									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
+									{#<a href="/job/candidates/{{ job.id }}" class="btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>#}
 									<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
 								</div>
 							</td>
@@ -77,31 +77,31 @@
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".job-page").addClass('active');
-//	$(".upload-csv").click(function(e) {
-//		e.preventDefault();
-//		var job_id = $(this).parents('tr').attr('id');
-//		$("#job_id").val(job_id);
-//		$("#csv").click();
-//	});
-//
-//	$("#csv").change(function() {
-//		$("#form-csv").submit();
-//	});
+	$(".upload-csv").click(function(e) {
+		e.preventDefault();
+		var job_id = $(this).parents('tr').attr('id');
+		$("#job_id").val(job_id);
+		$("#csv").click();
+	});
+
+	$("#csv").change(function() {
+		$("#form-csv").submit();
+	});
 
 
-//	$(".del-job").click(function (e) {
-//		e.preventDefault();
-//		var $this = $(this);
-//		if (confirm("Are you sure you want to delete this job?")) {
-//			var id = $(this).parents('tr').attr('id');
-//			$.get('/job/remove', { id: id }, function(d) {
-//				if (d.status.trim() == 'success') {
-//					$this.parents('tr').fadeOut();
-//				}
-//			}, 'JSON');
-//		}
-//	});
-//
+	$(".del-job").click(function (e) {
+		e.preventDefault();
+		var $this = $(this);
+		if (confirm("Are you sure you want to delete this job?")) {
+			var id = $(this).parents('tr').attr('id');
+			$.get('/job/remove', { id: id }, function(d) {
+				if (d.status.trim() == 'success') {
+					$this.parents('tr').fadeOut();
+				}
+			}, 'JSON');
+		}
+	});
+
 //
 //	$('#save-rating').click(function() {
 //		var gq_rating = parseInt($("#gq_assessment").val());

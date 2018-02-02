@@ -28,7 +28,7 @@
 
 
 <div class="row">
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="widget-box bg-green">
 			<div class="col-md-6">
 				<i class="pe-7s-portfolio"></i>
@@ -50,7 +50,7 @@
 		</div>
 	</div>
 
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="widget-box">
 			<div class="col-md-6">
 				<i class="pe-7s-portfolio"></i>
@@ -62,7 +62,7 @@
 		</div>
 	</div>
 
-	<div class="col-md-3">
+	<div class="col-md-4">
 		<div class="widget-box">
 			<div class="col-md-6">
 				<i class="pe-7s-users"></i>
@@ -74,7 +74,7 @@
 		</div>
 	</div>
 
-	<div class="col-md-3">
+	<div class="col-md-3 hidden">
 		<div class="widget-box">
 			<div class="col-md-6">
 				<i class="pe-7s-graph3"></i>
@@ -101,8 +101,7 @@
 							<th>Job Role</th>
 							<th class="text-center">Applicants</th>
 							<th class="text-center">Views</th>
-							<th class="text-center">Application %</th>
-							<th>Accessed %</th>
+							<th>Closing Date</th>
 							<th></th>
 						</tr>
 					</thead>
@@ -114,8 +113,7 @@
 								<td>{{ job.job_title }}</td>
 								<td class="text-center">{{ job.applications.length }}</td>
 								<td class="text-center">{{ job.view_count }}</td>
-								<td class="text-center">{{ (app_percent * 100) | toFixed(3) }}%</td>
-								<td>Don't know</td>
+								<td>{{ job.closing_date | date('d-m-Y') }}</td>
 								<td></td>
 							</tr>
 						{% endif %}

@@ -82,14 +82,14 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-6">
-				<label for="phone">Contact Phone</label>
+				<label for="phone">Contact Phone</label> [ <span class="red">*</span> ]
 				<input type="text" name="contact_phone" class="form-control" id="phone"
 					   value="{{ company.contact_phone }}" required/>
 			</div>
 			<div class="col-md-6">
 				<label for="email">Contact Email</label>
 				<input type="text" name="contact_email" class="form-control" id="email"
-					   value="{{ company.contact_email }}" />
+					   value="{{ company.contact_email }}" readonly />
 			</div>
 		</div>
 	</div>
@@ -131,7 +131,7 @@
 			{#</div>#}
 		{#</div>#}
 		<label for="logo">Company Logo Image</label>
-		<input type="file" name="logo" class="form-control-file"  id="logo"/>
+		<input type="file" name="logo" class="form-control-file"  id="logo" />
 	</div>
 	<!--<input type="file" name="video_files" class="hidden" id="video-file" />-->
 	<button type="submit" class="clearfix btn btn-warning btn-fill pull-right" id=""><i class="fa fa-save"></i> Update Details</button>

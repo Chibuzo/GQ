@@ -108,6 +108,7 @@
 						  	<div class="tab-pane fade active in" id="resume">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
+									<small>Fields marked in asterisk are compulsory</small>
 										{% include 'includes/resume-form.swig' %}
 									</div>
 								</div>
@@ -150,13 +151,13 @@
 												<li class="list-group-item">Average: <span id="average">{{ result.average }}</span></li>
 											</ul>
 											<div class="panel-body">
-												<strong>Note: </strong>You can always pay and retake the test to improve your score...
+												{#<strong>Note: </strong>You can always pay and retake the test to improve your score...#}
 											</div>
 										</div>
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info" id="retake-test">Retake Test</button>
+												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>
@@ -289,10 +290,10 @@
 <script type="text/javascript" src="/js/gqTestFrontend.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
-	{#<script src="/js/proctor/jquery-3.2.1.slim.min.js"></script>#}
+	<script src="/js/jquery-3.2.1.slim.min.js"></script>
 
 	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-min.js"></script>
+	<script src="/js/tracking-min.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
 	<script src="/js/proctor/mouth-min.js"></script>

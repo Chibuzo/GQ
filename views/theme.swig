@@ -85,7 +85,11 @@
 				<li><a href="/candidates">Candidates</a></li>
 				<li><a href="/jobs">Jobs</a></li>
 				<li><a href="/courses">Courses</a></li>
-				<li><a href="/login"><i class="fa fa-user"></i> Sign In</a></li>
+				{% if req.session.fname %}
+					<li><a href="/user/dashboard"><i class="fa fa-home"></i> {{ req.session.fname }}</a></li>
+				{% else %}
+					<li><a href="/login"><i class="fa fa-user"></i> Sign In</a></li>
+				{% endif %}
 				{#<li><a href="#contact">Contact</a></li>#}
 			</ul>
 			<!-- /Main navigation -->

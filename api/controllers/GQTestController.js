@@ -169,7 +169,14 @@ module.exports = {
             }
         });
         // update resume if it's GQ General aptitude test
-        Resume.update({ user: req.session.userId }, { test_status: 'true' }).exec(function() {});
+        if (test_id == 4) {
+            Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
+                    });
+                }
+            });
+        }
         
         // save or update candidate's test score
         GQTestResult.find({ candidate: req.session.userId, test: test_id }).exec(function(err, test_result) {

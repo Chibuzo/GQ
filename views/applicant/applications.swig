@@ -23,24 +23,31 @@
 						<th><i class="fa fa-map-marker"></i> Location</th>
 						<th>Job Level</th>
 						<th>Status</th>
-						<th><i class="fa fa-calendar"></i> Closes On</th>
+						<th><i class="fa fa-calendar"></i> Closing Date</th>
 						<th class="text-center">Action</th>
 					</tr>
 					</thead>
 					<tbody>
 					{% set n = 0 %}
 					{% for job in jobs %}
-						{#{% set applications = job.applications.length %}#}
+						{% set n = n + 1 %}
+						{% if job.tests.length < 1 %}
+							{% set status = 'Under Review' %}
+							{% set btn_state = "disabled" %}
+						{% else %}
+							{% set status = job.status %}
+							{% set btn_state = "" %}
+						{% endif %}
 						<tr id="{{ job.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-							<td>{{ job.createdAt | date('d M, Y') }}</td>
+							<td>{{ job.createdAt | date('d-m-Y') }}</td>
 							<td>{{ job.job.job_title }}</td>
 							<td>{{ job.job.location }}</td>
 							<td>{{ job.job.job_level }}</td>
-							<td>{{ job.status }}</td>
-							<td>{{ job.job.closing_date | date('d M, Y') }}</td>
+							<td>{{ status }}</td>
+							<td>{{ job.job.closing_date | date('d-m-Y') }}</td>
 							<td class="opt-icons text-center dropdown">
-								<a href="" class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
+								<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
 								<ul class='dropdown-menu pull-left'>
 									<li class='dropdown-header'>Required Online Tests for the Job</li>
 									{% for test in job.tests %}
@@ -57,7 +64,7 @@
 					</tbody>
 				</table>
 				{% if n == 0 %}
-					<div class="alert alert-info">You have not applied for any job recently.</div>
+					<div class="alert alert-info">You have not applied for any jobs.</div>
 				{% endif %}
 			</div>
 		</div>

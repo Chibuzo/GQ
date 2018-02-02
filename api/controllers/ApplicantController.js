@@ -17,7 +17,7 @@ module.exports = {
                     gq_results.push(result);
                     cb();
                 }).catch(function(err) {
-                    console.log(err);
+                    console.log('Catch:' + err);
                     cb(err);
                 })
             },
@@ -74,9 +74,13 @@ module.exports = {
                 return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' });
             }
             console.log(req.param('resume_id'));
-            Resume.update({id: req.param('resume_id')}, { video_file: filename, video_status: 'true' }).exec(function (err) {
+            Resume.update({id: req.param('resume_id')}, { video_file: filename, video_status: 'true' }).exec(function (err, resume) {
                 if (err) {
                     return res.badRequest(err);
+                }
+                if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
+                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
+                    });
                 }
                 return res.redirect('/applicant/resume-page');
             });
