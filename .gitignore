@@ -41,6 +41,7 @@
 
 config/connection.js
 config/env/development.js
+config/env/production.js
 config/local.js
 config/email.js
 assets/logos/*

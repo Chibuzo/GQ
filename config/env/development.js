@@ -21,6 +21,6 @@ module.exports = {
      connection: 'MysqlServer'
    },
 
-    //port: 80
+    port: 80
 
 };
