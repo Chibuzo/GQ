@@ -40,7 +40,7 @@ module.exports = {
 
     uploadQuestions: function(req, res) {
         GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
-
+        return res.ok();
     },
 
     saveQuestion: function(req, res) {
@@ -61,6 +61,8 @@ module.exports = {
                     if (err) return res.json(200, {status: 'error', msg: err});
                     return res.json(200, {status: 'success'});
                 });
+            }).catch(function(err) {
+                if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
@@ -68,7 +70,9 @@ module.exports = {
                 GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
                     GQTestQuestions.update({ id: quest.id }, { image_file: resp }).exec(function() {});
                     return res.json(200, {status: 'success'});
-                });
+                }).catch(function(err) {
+                    if (err) return res.json(200, { status: 'error', 'msg': err });
+                });;
             });
         }
     },
@@ -171,7 +175,7 @@ module.exports = {
             }
         });
         // update resume if it's GQ General aptitude test
-        if (test_id == 4) {
+        if (test_id == 1) {
             Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                 if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                     Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {

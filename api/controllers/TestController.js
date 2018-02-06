@@ -180,7 +180,7 @@ module.exports = {
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
-            returnURL: 'http://18.217.134.186:1337/test/show-result/' + req.param('test_id'),
+            returnURL: 'https://getqualified.work/test/show-result/' + req.param('test_id'),
             dev: false,
             debug: false,
             //secure_mode: 1,
@@ -190,11 +190,13 @@ module.exports = {
             reuse: true,
             er_internal: '1296451'
         };
+        //console.log(data)
         request.post('https://assessments.getqualified.work/webservices/generateticket.aspx', { form: qs.stringify(data) }, function(err, response, body) {
             var result = JSON.parse(body);
             if (err || result.response.info.success != 1) {
                 // show error page
             }
+            console.log(result);
             return res.redirect(result.response.info.ticket);
         });
     },

@@ -39,29 +39,29 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             if (image) {
                 var filename, hr = process.hrtime();
-                var allowedImgTypes = ['image/jpg', 'image/jpeg'];
+                var allowedImgTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
                 image.upload({
-                        dirname: require('path').resolve(sails.config.appPath, 'assets/cbt-images/'),
-                        saveAs: function(file, cb) {
-                            if (allowedImgTypes.indexOf(file.headers['content-type']) === -1) {
-                                return cb('Unsupported picture format.');
-                            }
-                            if (current_img_name) {
-                                filename = current_img_name;
-                            } else {
-                                var ext = file.filename.split('.').pop();
-                                filename = hr[1] + '.' + ext;
-                            }
-                            return cb(null, filename);
-                        },
-                        maxBytes: 100 * 1024 * 1024
+                    dirname: require('path').resolve(sails.config.appPath, 'assets/cbt-images/'),
+                    saveAs: function(file, cb) {
+                        if (allowedImgTypes.indexOf(file.headers['content-type']) === -1) {
+                            return cb('Unsupported picture format.');
+                        }
+                        if (current_img_name) {
+                            filename = current_img_name;
+                        } else {
+                            var ext = file.filename.split('.').pop();
+                            filename = hr[1] + '.' + ext;
+                        }
+                        return cb(null, filename);
                     },
-                    function(err) {
-                        if (err) return err;
-                        return resolve(filename);
-                    });
+                    maxBytes: 100 * 1024 * 1024
+                },
+                function(err) {
+                    if (err) return err;
+                    return resolve(filename);
+                });
             } else {
-                return resolve('');
+                return resolve('This is not supposed to happen');
             }
         });
     },

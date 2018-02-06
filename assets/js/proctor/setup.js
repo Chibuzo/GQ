@@ -316,7 +316,7 @@
                 }, 5000);
             }
 
-            console.log('Proctor: Pitch -> ' + pitch);
+            //console.log('Proctor: Pitch -> ' + pitch);
 
             // set up the next visual callback
             pc.rafID = window.requestAnimationFrame(drawLoop);
@@ -483,8 +483,6 @@ $(document).ready(function() {
 
         proctorReady: function() {
             console.log('Proctor is ready.');
-
-
         }
     })
 })

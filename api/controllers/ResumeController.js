@@ -7,7 +7,7 @@
 
 module.exports = {
 	editView: function(req, res) {
-        var test_id = 4;
+        var test_id = 1;
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {

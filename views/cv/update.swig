@@ -296,6 +296,7 @@
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
+	<!-- Facial tracking -->
 	<script src="/js/proctor/tracking-min.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
