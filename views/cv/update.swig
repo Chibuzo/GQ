@@ -157,7 +157,7 @@
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+												<button class="btn btn-info" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>
@@ -293,7 +293,7 @@
 	<script src="/js/jquery-3.2.1.slim.min.js"></script>
 
 	<!-- Facial tracking -->
-	<script src="/js/tracking-min.js"></script>
+	<script src="/js/proctor/tracking-min.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
 	<script src="/js/proctor/mouth-min.js"></script>

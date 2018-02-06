@@ -27,18 +27,19 @@ module.exports = {
         };
         if (req.param('test_id') && _.isNumber(parseInt(req.param('test_id')))) {
             GQTest.update({ id: req.param('test_id') }, data).exec(function() {
-                GQTestService.extractTestQuestionsFromExcel(req.file('excelsheet'), req.param('test_id'));
                 return res.json(200, { status: 'success' });
             });
         } else {
             GQTest.create(data).exec(function(err, test) {
                 if (err) return res.json(200, { status: 'error', msg: err });
 
-                // check for questions in excelsheet
-                GQTestService.extractTestQuestionsFromExcel(req.file('excelsheet'), test.id);
                 return res.json(200, { status: 'success' });
             });
         }
+    },
+
+    uploadQuestions: function(req, res) {
+        GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
     },
 
     saveQuestion: function(req, res) {
@@ -59,6 +60,8 @@ module.exports = {
                     if (err) return res.json(200, {status: 'error', msg: err});
                     return res.json(200, {status: 'success'});
                 });
+            }).catch(function(err) {
+                if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
@@ -66,7 +69,9 @@ module.exports = {
                 GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
                     GQTestQuestions.update({ id: quest.id }, { image_file: resp }).exec(function() {});
                     return res.json(200, {status: 'success'});
-                });
+                }).catch(function(err) {
+                    if (err) return res.json(200, { status: 'error', 'msg': err });
+                });;
             });
         }
     },
@@ -169,7 +174,7 @@ module.exports = {
             }
         });
         // update resume if it's GQ General aptitude test
-        if (test_id == 4) {
+        if (test_id == 1) {
             Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                 if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                     Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {

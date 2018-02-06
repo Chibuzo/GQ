@@ -30,16 +30,12 @@
          * Perform a function on face tracked
          * @type function
          */
-        onFaceTracked: function() {
-            console.log('Face tracked');
-        },
+        onFaceTracked: function() {},
         /**
          * Perform a function on multi face tracked
          * @type function
          */
-        onMultiFaceTracked: function() {
-            console.log('Multiple face detected');
-        },
+        onMultiFaceTracked: function() {},
         /**
          * Take snaphot on proctor intialization and face tracked
          * @type boolean
@@ -50,14 +46,12 @@
          * @type function
          * @param data64 {Object} Image file in base64
          */
-        handleSnapshot: function(data64) {
-            console.log('snapshot taken');
-        },
+        handleSnapshot: function(data64) {},
         /**
          * Ambient noise detection
          */
         onAmbientNoiseDetection: function() {
-            console.log('Nosie here')
+
         },
         /**
          * @summary This plugin is on the bleeding edge of tech. Gracefully handle exceptions
@@ -75,7 +69,7 @@
          * Proctor ready
          */
         proctorReady: function() {
-            console.log('AHAHAHAH')
+
         }
     };
 
@@ -322,7 +316,7 @@
                 }, 5000);
             }
 
-            //console.log('Proctor: Pitch -> ' + pitch);
+            console.log('Proctor: Pitch -> ' + pitch);
         
             // set up the next visual callback
             pc.rafID = window.requestAnimationFrame(drawLoop);
@@ -469,17 +463,14 @@
 
         onFaceTracked: function() {
             // on face detected
-            console.log('Face tracked!');
         },
         // Integrity scoring can be applied here
         onMultiFaceTracked: function() {
             // on multi face detected
-            console.log('Faces detected')
             integrityScore = integrityScore - 15;
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
-            console.log('Noise...')
             integrityScore = integrityScore - 5;
         },
 
@@ -492,6 +483,8 @@
 
         proctorReady: function() {
             console.log('Proctor is ready.');
+
+            
         }
     })
 })()

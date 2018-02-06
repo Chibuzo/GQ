@@ -15,7 +15,7 @@
 					<!-- home content -->
 					<div class="col-md-10 col-md-offset-1">
 						<div class="home-content">
-							<h2 class="white-text">Recruiting should be simple, quick and data driven</h2>
+							<h1 class="white-text">Recruiting should be simple and quick</h1>
 							<p class="white-text">Hire the best candidates quickly</p>
 							<button data-target="#requestModal" data-toggle="modal" class="white-btn">Get Started!</button>
 							<a href="#about" class="main-btn">Learn more</a>

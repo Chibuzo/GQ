@@ -181,7 +181,7 @@ ul, ol {
 }
 
 .section-header .title {
-    text-transform: capitalize;
+    /*text-transform: capitalize;*/
 }
 
 .title:after {
@@ -603,7 +603,7 @@ header {
 }
 
 .home-content h1 {
-  text-transform: uppercase;
+  /*text-transform: uppercase;*/
 }
 .home-content button {
   margin-top: 20px;

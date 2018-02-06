@@ -13,7 +13,7 @@ module.exports = {
       },
 
       question: {
-          type: 'string'
+          type: 'text'
       },
 
       image_file: {
