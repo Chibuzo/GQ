@@ -1,10 +1,10 @@
-;(function($, win, doc) {
+(function($, win, doc) {
     'use strict';
 
     if(!$) console.warn('Proctor: No library found. Use jQuery or MLIB');
 
     var defaults, proctor;
-    
+
     defaults = {
         /**
          * @summary Proctor INtegrity score per instance
@@ -30,16 +30,12 @@
          * Perform a function on face tracked
          * @type function
          */
-        onFaceTracked: function() {
-            console.log('Face tracked');
-        },
+        onFaceTracked: function() {},
         /**
          * Perform a function on multi face tracked
          * @type function
          */
-        onMultiFaceTracked: function() {
-            console.log('Multiple face detected');
-        },
+        onMultiFaceTracked: function() {},
         /**
          * Take snaphot on proctor intialization and face tracked
          * @type boolean
@@ -50,14 +46,12 @@
          * @type function
          * @param data64 {Object} Image file in base64
          */
-        handleSnapshot: function(data64) {
-            console.log('snapshot taken');
-        },
+        handleSnapshot: function(data64) {},
         /**
          * Ambient noise detection
          */
         onAmbientNoiseDetection: function() {
-            console.log('Nosie here')
+
         },
         /**
          * @summary This plugin is on the bleeding edge of tech. Gracefully handle exceptions
@@ -75,7 +69,7 @@
          * Proctor ready
          */
         proctorReady: function() {
-            console.log('AHAHAHAH')
+
         }
     };
 
@@ -84,38 +78,38 @@
             navigator.mediaDevices.enumerateDevices().then(callback);
         };
     }
-    
+
     var MediaDevices = [], isHTTPs = location.protocol === 'https:', canEnumerate = false;
-    
+
     if (typeof MediaStreamTrack !== 'undefined' && 'getSources' in MediaStreamTrack) {
         canEnumerate = true;
     } else if (navigator.mediaDevices && !!navigator.mediaDevices.enumerateDevices) {
         canEnumerate = true;
     }
-    
+
     var hasMicrophone = false, hasSpeakers = false, hasWebcam = false;
     var isMicrophoneAlreadyCaptured = false, isWebcamAlreadyCaptured = false;
-    
+
     function checkDeviceSupport(callback) {
         if(!canEnumerate) {
             return;
         }
-    
+
         if(!navigator.enumerateDevices && window.MediaStreamTrack && window.MediaStreamTrack.getSources) {
             navigator.enumerateDevices = window.MediaStreamTrack.getSources.bind(window.MediaStreamTrack);
         }
-    
+
         if(!navigator.enumerateDevices && navigator.enumerateDevices) {
             navigator.enumerateDevices = navigator.enumerateDevices.bind(navigator);
         }
-    
+
         if(!navigator.enumerateDevices) {
             if (callback) {
                 callback();
             }
             return;
         }
-    
+
         MediaDevices = [];
         navigator.enumerateDevices(function(devices) {
             devices.forEach(function(_device) {
@@ -123,34 +117,34 @@
                 for (var d in _device) {
                     device[d] = _device[d];
                 }
-    
+
                 if (device.kind === 'audio') {
                     device.kind = 'audioinput';
                 }
-    
+
                 if (device.kind === 'video') {
                     device.kind = 'videoinput';
                 }
-    
+
                 var skip;
                 MediaDevices.forEach(function(d) {
                     if (d.id === device.id && d.kind === device.kind) {
                         skip = true;
                     }
                 });
-    
+
                 if(skip) {
                     return;
                 }
-    
+
                 if(!device.deviceId) {
                     device.deviceId = device.id;
                 }
-    
+
                 if(!device.id) {
                     device.id = device.deviceId;
                 }
-    
+
                 if(!device.label) {
                     device.label = 'Please invoke getUserMedia once.';
                     if (!isHTTPs) {
@@ -165,23 +159,23 @@
                         isMicrophoneAlreadyCaptured = true;
                     }
                 }
-    
+
                 if(device.kind === 'audioinput') {
                     hasMicrophone = true;
                 }
-    
+
                 if(device.kind === 'audiooutput') {
                     hasSpeakers = true;
                 }
-    
+
                 if(device.kind === 'videoinput') {
                     hasWebcam = true;
                 }
-    
+
                 // there is no 'videoouput' in the spec.
                 MediaDevices.push(device);
             });
-    
+
             if(callback) {
                 callback();
             }
@@ -194,7 +188,7 @@
 
         this.opts.takeInitialSnapshot && (this.initialSnap = false);
 
-        this.$video = $(this.opts.video), this.video = this.$video[0]
+        this.$video = $(this.opts.video), this.video = this.$video[0];
         this.$canvas = $(this.opts.canvas), this.canvas = this.$canvas[0];
 
         if((!this.video || !this.canvas) && !this.opts.ignoreTrack)
@@ -219,7 +213,7 @@
             if((!pc.opts.ignoreRecording && !navigator.getUserMedia) || (!pc.opts.ignoreRecording && !Recorder.isRecordingSupported())) {
                 return pc.opts.handleOutdatedBrowser();
             };
-            
+
             // log cam persmission not granted
             !isWebcamAlreadyCaptured && !pc.opts.ignoreTrack && console.warn('Proctor: Webcam needed to work'),
             // log mic permission not granted
@@ -252,7 +246,7 @@
             context.clearRect(0, 0, pc.canvas.width, pc.canvas.height);
 
             !pc.trackerReady && (pc.trackerReady = true, pc.setProctorReady());
-            
+
             if(event.data.length === 0) {
                 // nothing was tracked
             } else {
@@ -291,7 +285,7 @@
         this.mediaStreamSource;
 
         this.$meter = $("#vol-meter");
-        
+
         // monkeypatch Web Audio
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
 
@@ -304,17 +298,17 @@
                     width: pc.meterWidth + 'px',
                     height: pc.meterHeight + 'px'
                 })
-    
+
                 if (pc.meter.checkClipping())
                     pc.$meter.css({ background: 'red' })
                 else
                     pc.$meter.css({ background: 'green' })
-    
+
                 pc.$meter.css({ width: pc.meter.volume * pc.meterWidth * 1.4 + 'px' });
             }
 
             var pitch = pc.meter.volume * 100;
-            
+
             if(pitch >= 5) {
                 pc.opts.onAmbientNoiseDetection(),
                 pc.recorder.start(), setTimeout(function() {
@@ -322,8 +316,8 @@
                 }, 5000);
             }
 
-            //console.log('Proctor: Pitch -> ' + pitch);
-        
+            console.log('Proctor: Pitch -> ' + pitch);
+
             // set up the next visual callback
             pc.rafID = window.requestAnimationFrame(drawLoop);
         }
@@ -344,11 +338,11 @@
                 console.log('Proctor: Listening');
                 // Create an AudioNode from the stream.
                 pc.mediaStreamSource = pc.audioContext.createMediaStreamSource(stream);
-                
+
                 // Create a new volume meter and connect it.
                 pc.meter = createAudioMeter(pc.audioContext);
                 pc.mediaStreamSource.connect(pc.meter);
-            
+
                 // kick off the visual updating
                 drawLoop();
             }, function(e) {});
@@ -366,7 +360,7 @@
             monitorGain: parseInt(0, 10),
             numberOfChannels: parseInt(1, 10),
             wavBitDepth: parseInt(16, 10),
-            encoderPath: "js/waveWorker.min.js"
+            encoderPath: "/js/proctor/waveWorker.min.js"
         });
 
         this.recorder.addEventListener("start", function(e){
@@ -391,16 +385,16 @@
         this.recorder.addEventListener("dataAvailable", function(e){
             var dataBlob = new Blob( [e.detail], { type: 'audio/wav' } );
             var reader = new window.FileReader();
-            reader.readAsDataURL(dataBlob); 
+            reader.readAsDataURL(dataBlob);
             reader.onloadend = function() {
                 var base64data = reader.result;
                 pc.opts.handleAudio(base64data);
             }
         });
-        
+
         this.recorder.initStream()
     };
-    
+
     proctor.prototype.setProctorReady = function() {
         var proctor = false;
 
@@ -408,7 +402,7 @@
         proctor = !this.opts.ignoreRecording && this.recorderReady ? true : false;
         // check if camera/tracker is not ignored and ready
         proctor = !this.opts.ignoreTrack && this.trackerReady ? true : false;
-        
+
         // Default on proctor ready state
         proctor && this.opts.proctorReady();
     };
@@ -416,7 +410,7 @@
     win.Proctor = proctor;
 })('undefined' != typeof jQuery && jQuery, window, document)
 
-;(function() {
+$(document).ready(function() {
     /**
      * integrity score measurement
      * You can use the (onMultiFaceTracked) option for the (-15) deduction on track
@@ -440,7 +434,7 @@
             $.ajax({
                 type: "POST",
                 url: "upload_snapshot.php",
-                data: { 
+                data: {
                     imgBase64: data64
                 }, success: function(data){
                     // Some success ish blah blah
@@ -455,7 +449,7 @@
             $.ajax({
                 type: "POST",
                 url: "upload_audio.php",
-                data: { 
+                data: {
                     data: data64
                 }, success: function(data){
                     // Some success ish blah blah
@@ -469,17 +463,14 @@
 
         onFaceTracked: function() {
             // on face detected
-            console.log('Face tracked!');
         },
         // Integrity scoring can be applied here
         onMultiFaceTracked: function() {
             // on multi face detected
-            console.log('Faces detected')
             integrityScore = integrityScore - 15;
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
-            console.log('Noise...')
             integrityScore = integrityScore - 5;
         },
 
@@ -492,6 +483,8 @@
 
         proctorReady: function() {
             console.log('Proctor is ready.');
+
+
         }
     })
-})()
+})

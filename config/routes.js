@@ -23,6 +23,12 @@ module.exports.routes = {
 
     'POST /user/update': 'UserController.updateProfile',
 
+    'POST /user/sendPswdResetEmail': 'UserController.sendPswdResetEmail',
+
+    'POST /user/resetpassword': 'UserController.resetPassword',
+
+    'GET /user/resetpassword': 'UserController.showResetPasswordPage',
+
     'GET /applicant/profile': 'UserController.profile',
 
     'GET /signout': 'UserController.signout',
@@ -81,6 +87,8 @@ module.exports.routes = {
 
     'GET /gqtest/edittest/:test_id': 'GQTestController.editTest',
 
+    'POST /gqtest/upload-questions': 'GQTestController.uploadQuestions',
+
     'GET /gqtest/getquestion/:question_id': 'GQTestController.getQuestion',
 
     'GET /gqtest/load-test-instruction/:test_id': 'GQTestController.loadTestInstruction',
@@ -94,7 +102,9 @@ module.exports.routes = {
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
-    'GET /gqtest/remove': 'GQTestController.deleteTest',
+    //'GET /gqtest/remove': 'GQTestController.deleteTest',
+
+    'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 
     'GET /gqtest/gettest/:test_id': 'GQTestController.getTest',
 

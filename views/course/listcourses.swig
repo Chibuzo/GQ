@@ -135,8 +135,10 @@
 									</ul>
 								</div>
 								<div class="course-desc">{{ course.abstract }}</div>
+								<div class="course-body hidden">{{ course.body }}</div>
 								<div class="course-menu">
-									<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>
+									<button class="btn btn-info pull-right more-course" data-toggle="modal" data-target="#moreCourseModal">More...</button>
+									{#<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>#}
 								</div>
 							</div>
 						</div>
@@ -147,7 +149,34 @@
 	</div>
 </section>
 
-	<div class="modal fade in" id="joinCourseModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+	{#<div class="modal fade in" id="joinCourseModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">#}
+		{#<div class="modal-dialog">#}
+			{#<div class="modal-content">#}
+				{#<div class="modal-header">#}
+					{#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">#}
+						{#×#}
+					{#</button>#}
+					{#<h4 class="modal-title" id="myModalLabel"></h4>#}
+				{#</div>#}
+
+				{#<div class="modal-body">#}
+					{#<div class="alert alert-info hidden"></div>#}
+					{#<p>This course hasn't yet started. However, you can subscribe so we keep you posted...</p>#}
+				{#</div>#}
+				{#<span id="course_id" class="hidden"></span>#}
+				{#<div class="modal-footer">#}
+					{#<button type="button" class="btn btn-default" data-dismiss="modal">#}
+						{#<i class="fa fa-times"></i> Close#}
+					{#</button>#}
+					{#<button type="submit" class="btn btn-info" id="subscribe">#}
+						{#<i class="fa fa-check-circle-o"></i> Subscribe#}
+					{#</button>#}
+				{#</div>#}
+			{#</div>#}
+		{#</div>#}
+	{#</div>#}
+
+	<div class="modal fade in" id="moreCourseModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -158,8 +187,7 @@
 				</div>
 
 				<div class="modal-body">
-					<div class="alert alert-info hidden"></div>
-					<p>This course hasn't yet started. However, you can subscribe so we keep you posted...</p>
+
 				</div>
 				<span id="course_id" class="hidden"></span>
 				<div class="modal-footer">
@@ -167,8 +195,9 @@
 						<i class="fa fa-times"></i> Close
 					</button>
 					<button type="submit" class="btn btn-info" id="subscribe">
-						<i class="fa fa-check-circle-o"></i> Subscribe
+						<i class="fa fa-check-circle-o"></i> Take Course
 					</button>
+					{#<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>#}
 				</div>
 			</div>
 		</div>
@@ -180,19 +209,30 @@
 $(document).ready(function() {
 	$(".navbar-right li:contains('Courses')").addClass('active');
 
-	$(".joinCourse").click(function() {
-		var course_id = $(this).parents('.course').attr('id');
-		var course_title = $(this).parents('.course').find('.course-title').text();
-		$(".modal-title").text(course_title);
-		$("#course_id").text(course_id);
-	});
+//	$(".joinCourse").click(function() {
+//		var course_id = $(this).parents('.course').attr('id');
+//		var course_title = $(this).parents('.course').find('.course-title').text();
+//		$(".modal-title").text(course_title);
+//		$("#course_id").text(course_id);
+//	});
 
 
 	$("#subscribe").click(function() {
 		//var $this = $(this);
 		var course_id = $("#course_id").text();
 		$.post('/course/subscribe', { 'course_id': course_id });
-		$(".alert-info").text("We'll let you know when the course begins").removeClass('hidden');
+		var msg = "<div class='alert alert-info'> <p>This course hasn't started yet. Well let you know when the course begins.</p></div>";
+		$("#moreCourseModal").find('.modal-body').html(msg);
+	});
+
+	$(".more-course").click(function() {
+		var $parent = $(this).parents('.about');
+		var course_id = $parent.attr('id');
+		var title = $parent.find('.course-title').text();
+		var body = $parent.find('.course-body').text();
+		$("#moreCourseModal").find('#course_id').text(course_id);
+		$("#moreCourseModal").find('.modal-title').html(title);
+		$("#moreCourseModal").find('.modal-body').html(body);
 	});
 });
 </script>

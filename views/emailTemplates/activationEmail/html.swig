@@ -3,4 +3,4 @@
 Click on the link below to confirm your email address<br>
 and complete your profile.</p>
 
-<a href="http://18.217.134.186:1337/user/activate/{{ email }}/{{ hash }}">Activate account</a>
+<a href="{{ url }}">Activate account</a>

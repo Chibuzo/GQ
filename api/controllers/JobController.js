@@ -148,11 +148,17 @@ module.exports = {
 
     // for candidates
     listJobs: function(req, res) {
-        var today = new Date().toISOString();
+        var today = new Date(); //.toISOString();
         Job.find({ closing_date: { '>': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').exec(function(err, job_categories) {
+                var jobCategories = [];
+                job_categories.forEach(function(jobcat) {
+                    if (Date.parse(today) > Date.parse(jobcat.jobs.closing_date)) {
+                        jobCategories.push(job);
+                    }
+                });
                 return res.view('jobs', { jobs: jobs, job_categories: job_categories });
             });
         });

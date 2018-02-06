@@ -1,3 +1,5 @@
+var Excel = require('exceljs');
+
 module.exports = {
     extractTestQuestionsFromExcel: function(file_input, test_id) {
         var filename, testexcel = 'assets/testexcel/';
@@ -5,12 +7,31 @@ module.exports = {
             dirname: require('path').resolve(sails.config.appPath, testexcel),
             saveAs: function(file, cb) {
                 var ext = file.filename.split('.').pop();
-                filename = 'test_' + test.id + '.' + ext;
+                filename = 'test_' + test_id + '.' + ext;
                 return cb(null, filename);
             }
         },
         function(err, uploadedFile) {
-
+            var workbook = new Excel.Workbook();
+            workbook.xlsx.readFile(testexcel + filename)
+                .then(function() {
+                    // use workbook
+                    var sheet = workbook.getWorksheet(1);
+                    for (i = 4; i < 14; i++) {
+                        var row = sheet.getRow(i);
+                        var data = {
+                            test: test_id,
+                            question: row.getCell('B').value,
+                            opt_a: row.getCell('C').value,
+                            opt_b: row.getCell('D').value,
+                            opt_c: row.getCell('E').value,
+                            opt_d: row.getCell('F').value,
+                            opt_e: row.getCell('G').value,
+                            answer: row.getCell('H').value
+                        };
+                        GQTestQuestions.create(data).exec(function (err, quest) {});
+                    }
+                });
         });
     },
 

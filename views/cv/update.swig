@@ -31,6 +31,11 @@
 		padding: 10px 120px;
 	}
 
+	.cell {
+		opacity: 0;
+		position: absolute !important;
+	}
+
 	/* CBT Styles */
 
 	.empty-vid {
@@ -98,6 +103,21 @@
 						</div>
 					</div><br>
 
+					<div class="cell">
+						<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
+							<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+							<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
+						</div>
+					</div>
+
+					<div class="cell">
+						<div id="vol-meter"></div>
+
+						<div class="stats">
+
+						</div>
+					</div>
+
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume" data-toggle="tab"> &nbsp;Resume</a></li>
@@ -122,21 +142,6 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								<div class="cell">
-									<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
-										<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-										<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
-									</div>
-								</div>
-
-								<div class="cell">
-									<div id="vol-meter"></div>
-
-									<div class="stats">
-
-									</div>
-								</div>
-
 								<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 									<div class="result">
 										<h3 class="test-title"></h3><br>
@@ -157,7 +162,7 @@
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+												<button class="btn btn-info" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>
@@ -290,10 +295,8 @@
 <script type="text/javascript" src="/js/gqTestFrontend.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
-	<script src="/js/jquery-3.2.1.slim.min.js"></script>
 
-	<!-- Facial tracking -->
-	<script src="/js/tracking-min.js"></script>
+	<script src="/js/proctor/tracking-min.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
 	<script src="/js/proctor/mouth-min.js"></script>
@@ -303,12 +306,14 @@
 
 	<!-- Audio tracking -->
 	<script src="/js/proctor/recorder.min.js"></script>
-
 	<!-- Main Setup -->
 	<script src="/js/proctor/setup.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
+
+	$.getScript('/js/proctor/tracking-min.js');
+
 
 	$("select[name=country]").find('option').filter(function(i) {
 		return 'Nigeria' == $(this).val();

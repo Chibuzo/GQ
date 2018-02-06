@@ -156,7 +156,7 @@ module.exports = {
                 sails.log.verbose('Session refers to a user who no longer exists.');
                 return res.redirect('/');
             }
-            req.session.userId = null;
+            req.session = null;
             return res.redirect('/');
         });
     },
@@ -235,6 +235,53 @@ module.exports = {
                 return res.json(200, { status: 'success' });
             }
             //return res.redirect('/user/profile');
+        });
+    },
+
+    sendPswdResetEmail: function(req, res) {
+        User.find({ email: req.param('email')}).exec(function(err, user) {
+            if (user.length > 0) {
+                sendMail.sendPswdResetLink(user[0]);
+                return res.json(200, { status: 'success' });
+            }
+        });
+    },
+
+    showResetPasswordPage: function(req, res) {
+        var email = new Buffer(req.param('email'), 'base64').toString('ascii');
+        var hash = req.param('hash');
+
+        User.findOne({ email : email }).exec(function(err, user) {
+            if (err) {
+                return res.badRequest("We don't even know what happened");
+            }
+            if (user.status == 'Inactive') {
+                sendMail.sendConfirmationEmail(newUser);
+                return res.view('login', {msg: "You haven\'t verified your email address. Kindly check your email and verify your account"});
+            }
+            if (user) {
+                var crypto = require('crypto');
+                var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
+                if (hash == confirm_hash) {
+                    // put the email in session to avoid someone changing
+                    return res.view('reset-password');
+                }
+            }
+        });
+    },
+
+    resetPassword: function(req, res) {
+        Passwords.encryptPassword({
+            password: req.param('new_password'),
+        }).exec({
+            error: function (err) {
+                console.log(err);
+            },
+            success: function (newPassword) {
+                User.update({ id: req.session.userId }, { password: newPassword }).exec(function() {
+
+                });
+            }
         });
     },
 

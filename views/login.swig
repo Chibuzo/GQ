@@ -25,9 +25,24 @@
 									<label>Password</label>
 									<input type="password" name="password" class="form-control input-lg" required />
 								</div>
+								<p class="text-left">Forgot your passowrd? <a href="" class="show-forgot-pswd">Click here</a></p>
 								<input type="hidden" name="return_url" value="{{ return_url }}" />
 								<div class="alert alert-danger hidden"></div>
 								<button type="submit" class="btn btn-info input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Sign In </button>
+							</form><br>
+							<p>Not yet a member? <a href="/signup">Sign Up</a></p>
+						</div>
+
+						<div id="reset-password" class="hidden">
+							<h2 class="text-center" style="color: #fff">Reset Password</h2><br>
+							<form action="/user/sendPswdResetEmail" method="post" class="form-vertical" id="reset-pswd">
+								<div class="form-group text-left">
+									<label>Email</label>
+									<input type="email" name="email" class="form-control input-lg" placeholder="Enter the email you signed up with" required />
+								</div>
+
+								<div class="alert hidden" id="pswd-alert"></div>
+								<button type="submit" class="btn btn-info input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Continue </button>
 							</form><br>
 							<p>Not yet a member? <a href="/signup">Sign Up</a></p>
 						</div>
@@ -63,6 +78,26 @@ $(document).ready(function() {
 			}
 			$this.find('button').html("<i class='fa fa-sign-in fa-lg'></i>&nbsp; Sign").prop('disabled', false);
 		}, 'JSON');
+	});
+
+	$(".show-forgot-pswd").click(function(e) {
+		e.preventDefault();
+
+		$(".home-content").fadeOut('fast', function() {
+			$("#reset-password").hide().removeClass('hidden').fadeIn('fast');
+		});
+	});
+
+
+	$("#reset-pswd").submit(function(e) {
+		e.preventDefault();
+		$.post('/user/sendPswdResetEmail', $(this).serialize(), function(d) {
+			if (d.status.trim() == 'success') {
+				$("#pswd-alert").addClass('alert-success').text('A passowrd reset link has been sent to your email.');
+			} else {
+				$("#pswd-alert").addClass('alert-danger').text(d.msg);
+			}
+		});
 	});
 });
 </script>

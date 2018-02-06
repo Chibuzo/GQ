@@ -34,7 +34,7 @@
 		<textarea name="instructions" rows="7" class="form-control editor">{{ test.instructions }}</textarea>
 	</div>
 
-	<div class="form-group hidable">
+	<div class="form-group hidable hidden">
 		<div class="row">
 			<div class="col-md-6">
 				<label></label>

@@ -27,18 +27,20 @@ module.exports = {
         };
         if (req.param('test_id') && _.isNumber(parseInt(req.param('test_id')))) {
             GQTest.update({ id: req.param('test_id') }, data).exec(function() {
-                GQTestService.extractTestQuestionsFromExcel(req.file('excelsheet'), req.param('test_id'));
                 return res.json(200, { status: 'success' });
             });
         } else {
             GQTest.create(data).exec(function(err, test) {
                 if (err) return res.json(200, { status: 'error', msg: err });
 
-                // check for questions in excelsheet
-                GQTestService.extractTestQuestionsFromExcel(req.file('excelsheet'), test.id);
                 return res.json(200, { status: 'success' });
             });
         }
+    },
+
+    uploadQuestions: function(req, res) {
+        GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
+
     },
 
     saveQuestion: function(req, res) {
@@ -235,7 +237,18 @@ module.exports = {
     },
 
     deleteTest: function(req, res) {
-        GQTestQuestions.destroy({ id: req.param('quest_id') }).exec(function() {});
+        if (req.session.admin === true) {
+            GQTest.destroy({ id: req.param('quest_id') }).exec(function() {
+                // handle questions
+            });
+        }
+    },
+
+    deleteQuestion: function(req, res) {
+        if (req.session.admin === true) {
+            GQTestQuestions.destroy({id: req.param('quest_id')}).exec(function () {});
+            return res.ok();
+        }
     }
 };
 

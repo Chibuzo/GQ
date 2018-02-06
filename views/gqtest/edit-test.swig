@@ -92,7 +92,21 @@
 
 							<div class="tab-pane fade in" id="new-question">
 								<div class="row">
-									<div class="col-md-12" style="padding: 50px">
+									<div class="col-md-12" style="padding: 50px; padding-top: 20px">
+										<div class="row">
+											<form action="/gqtest/upload-questions" method="post" enctype="multipart/form-data">
+												<input type="hidden" name="test_id" id="test-id" value="{{ test.id }}"/>
+
+												<div class="form-group">
+													<div class="col-md-5">
+														<label>Upload Test Questions via Spreadsheet</label>
+														<input type="file" name="xslx_questions" /><br>
+														<button type="submit" class="btn btn-info btn-fill"><i class="fa fa-upload"></i> Upload Questions</button>
+														<br><br>
+													</div>
+												</div>
+											</form>
+										</div>
 										{% include 'includes/test-question.swig' %}
 									</div>
 								</div>

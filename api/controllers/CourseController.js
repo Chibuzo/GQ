@@ -40,8 +40,11 @@ module.exports = {
     },
 
     subscribe: function(req, res) {
-        var course_id = req.param('course_id');
-        CourseSub.findOrCreate({ course: course_id, candidate: req.session.userId }, { course: course_id, candidate: req.session.userId }).exec(function() {});
+        if (req.session.userId) {
+            var course_id = req.param('course_id');
+            CourseSub.findOrCreate({ course: course_id, candidate: req.session.userId }, { course: course_id, candidate: req.session.userId }).exec(function() {});
+            return res.ok();
+        }
         return res.ok();
     }
 };

@@ -143,8 +143,7 @@ $("#done").click(function() {
 $("#delete-question").click(function() {
     if (confirm("Are you sure you want to delete this question?")) {
         var quest_id = $("#_question_id").val();
-        alert(quest_id)
-        $.get('/gqtest/remove', { quest_id: quest_id });
+        $.get('/gqtest/delete-question', { quest_id: quest_id });
         location.reload();
     }
 });
