@@ -11,7 +11,7 @@ module.exports.routes = {
 
     '/login': { view: 'login' },
 
-    '/login/:return_url': 'UserController.specialLoginPage',
+    '/login/:return_url/:more-info': 'UserController.specialLoginPage',
 
     '/admin': { view: 'admin/login' },
 
@@ -195,6 +195,8 @@ module.exports.routes = {
     'GET /assessments': 'CBTTestController.getTestResult',
 
     'GET /get-schools': 'SchoolsController.getSchools',
+
+    'GET /email': { view: 'email' }
 
     //'GET /loadschools': 'BatchController.loadSchools',
     //
