@@ -23,7 +23,7 @@ $(".load-test").click(function() {
 });
 
 
-$("#start-test").click(function() {
+$("#start-test").click(function() { alert('start')
     var test_id = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);
     $.get('/gqtest/load-test/' + test_id, function(d) {
@@ -79,6 +79,15 @@ $("#submit-test").click(function(e) {
     e.preventDefault();
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
         saveAnswer();
+        if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
+            submitAndLoadNext();
+            return;
+        } else if (parseInt(TEST_ID) == 3) {  // gather result, lol - I don't mean it
+            $.get('/gqtest/markGQAptitude', function(d) {
+
+            });
+            return;
+        }
         submitTest();
     }
 });
@@ -167,6 +176,21 @@ function submitTest() {
             });
         }
     });
+}
+
+// NOTE! This function is a very dirty hack!
+// strictly for GQ Aptitude test page.
+// It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
+function submitAndLoadNext(next) {
+    var next = parseInt(TEST_ID) + 1;
+    $('.load-test').data('test_id', next);
+    $.get('/gqtest/marktest/' + TEST_ID + '/' + questions.length, function(d) {
+        $(".load-test").click();
+    });
+    //var cur_test = parseInt(TEST_ID);
+    //if (cur_test < 3) {
+    //    var next = cur_test + 1;
+    //}
 }
 
 

@@ -11,7 +11,7 @@ module.exports.routes = {
 
     '/login': { view: 'login' },
 
-    '/login/:return_url': 'UserController.specialLoginPage',
+    '/login/:base64_url': 'UserController.specialLoginPage',
 
     '/admin': { view: 'admin/login' },
 
@@ -99,6 +99,8 @@ module.exports.routes = {
     'POST /gqtest/return-answer': 'GQTestController.returnAnswer',
 
     'GET /gqtest/marktest/:test_id/:no_of_questions': 'GQTestController.markTest',
+
+    'GET /gqtest/markGQAptitude': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 

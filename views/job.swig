@@ -22,7 +22,7 @@
 }
 
 .job {
-	padding: 20px 40px;
+	padding: 0px 40px;
 }
 
 .job-desc {
@@ -64,6 +64,10 @@ input[type="text"] {
 
 .job-categories li {
 	padding: 4px 8px;
+}
+
+.job-categories li a {
+	font-size: 14px;
 }
 
 @media screen and (min-width: 200px) and (max-width: 600px) {
@@ -123,14 +127,15 @@ input[type="text"] {
 
 	<div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
 	<div class="row">
-		<div class="col-md-9">
+		<div class="col-md-8">
 			<div class="job">
-				<h2>{{ job.job_title }}</h2>
+				<h2 id="job-title">{{ job.job_title }}</h2>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
 						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} </li>
 						<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
 						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
+						<li><i class="fa fa-calendar"></i> Closes On: {{ job.closing_date | date('d.m.Y') }} </li>
 					</ul>
 				</div>
 				<div class="job-desc">
@@ -138,22 +143,26 @@ input[type="text"] {
 
 					<h3>Requirements</h3>
 					{{ job.job_requirements | safe }}
-					<h3>Qualifications</h3>
-					{{ job.qualifications | safe }}
-					<h3>Nice to Have</h3>
-					{{ job.nice_to_have | safe }}
+					{% if job.qualifications.length > 3 %}
+						<h3>Qualifications</h3>
+						{{ job.qualifications | safe }}
+					{% endif %}
+					{% if job.nice_to_have.length > 3 %}
+						<h3>Nice to Have</h3>
+						{{ job.nice_to_have | safe }}
+					{% endif %}
 				</div>
 				<br><br>
 				<button class="btn btn-info btn-lg apply" id="{{ job.id }}">Apply for this job</button>
 			</div>
 		</div>
 
-		<div class="col-md-3">
+		<div class="col-md-4">
 			<h3 style="color: #666; margin-top:20px">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
 			<ul class="job-categories">
 			{% for cat in job_categories %}
 				{% set cat_path = cat.category.split(' ') %}
-				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs.length }} ]</a></li>
+				<li><i class="fa fa-hand-o-right hidden"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
 			{% endfor %}
 			</ul>
 		</div>
@@ -192,11 +201,13 @@ input[type="text"] {
 $(document).ready(function() {
 	$(".apply").click(function() {
 		var job_id = $(this).attr('id');
+		var job_title = $("#job-title").text().split(' ').join('-');
+		var path = btoa('job/' + job_id + '/' + job_title); // convert to base64
 		$.get('/job/apply/' + job_id, function(d) {
 			if (d.status.trim() == 'success') {
 				location.replace('/applicant/view-applications');
 			} else if (d.status.trim() == 'login') {
-				location.replace('/login/jobs');
+				location.replace('/login/' + path);
 			} else if (d.status.trim() == 'error') {
 				if (d.msg.trim() == 'IncompleteResume') {
 					$("#resumeModal").modal();

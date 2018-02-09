@@ -123,8 +123,12 @@ module.exports = {
                 sails.log.verbose('Session refers to a user who no longer exists.');
                 return res.redirect('/');
             }
-            req.session.admin_id = null;
-            return res.redirect('/');
+            req.session.fname = false;
+            req.session.destroy(function(err) {
+                setTimeout(function(){
+                    return res.redirect('/admin');
+                }, 2500); // redirect wait time 2.5 seconds
+            });
         });
     },
 
@@ -152,7 +156,7 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
-            Sector.find({ removed: 'false' }).exec(function(err, sectors) {
+            Sector.find({ removed: 'false' }).sort('title asc').exec(function(err, sectors) {
                 if (err) {
                     return res.badRequest(err);
                 }

@@ -16,6 +16,7 @@ module.exports = {
         };
         CompanyRequest.create(data).exec(function(err, coy) {
             if (err) return console.log(err);
+            sendMail.companySignUpRequest(coy);
             return res.json(200, { status: 'success' });
         });
     },
@@ -31,7 +32,7 @@ module.exports = {
         var id = req.param('id');
         CompanyRequest.update({ id: id }, { status: 'Approved' }).exec(function(err, coy) {
             if (err) return;
-            sendMail.sendVerificationEmail(coy[0]);
+            sendMail.companyVerification(coy[0]);
             return res.json(200, { status: 'success' });
         });
     }

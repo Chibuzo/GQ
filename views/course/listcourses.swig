@@ -135,7 +135,7 @@
 									</ul>
 								</div>
 								<div class="course-desc">{{ course.abstract }}</div>
-								<div class="course-body hidden">{{ course.body }}</div>
+								<div class="course-body hidden">{{ course.body | safe }}</div>
 								<div class="course-menu">
 									<button class="btn btn-info pull-right more-course" data-toggle="modal" data-target="#moreCourseModal">More...</button>
 									{#<button class="btn btn-info pull-right joinCourse" data-toggle="modal" data-target="#joinCourseModal">Take Course</button>#}
@@ -229,9 +229,9 @@ $(document).ready(function() {
 		var $parent = $(this).parents('.about');
 		var course_id = $parent.attr('id');
 		var title = $parent.find('.course-title').text();
-		var body = $parent.find('.course-body').text();
+		var body = $parent.find('.course-body').html();
 		$("#moreCourseModal").find('#course_id').text(course_id);
-		$("#moreCourseModal").find('.modal-title').html(title);
+		$("#moreCourseModal").find('.modal-title').text(title);
 		$("#moreCourseModal").find('.modal-body').html(body);
 	});
 });

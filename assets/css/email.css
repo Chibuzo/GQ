@@ -1,0 +1,27 @@
+body {
+    margin: 20px;
+    border: #ccc solid thin;
+    padding: 10px;
+}
+
+header {
+    /*background: #f0f0f0;*/
+    margin-bottom: 15px;
+}
+
+.logo {
+    margin: auto;
+    padding: 30px;
+    width: 200px;
+}
+
+.signature {
+    margin-top: 40px;
+    margin-bottom: 15px;
+}
+
+footer {
+    padding: 20px 0;
+    background: #e0e0e0;
+    font-size: 13px;
+}

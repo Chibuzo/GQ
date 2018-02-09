@@ -77,9 +77,10 @@ $(".question").click(function() {
             $("#opt-c").val(d.question.opt_c);
             $("#opt-d").val(d.question.opt_d);
             $("#opt-e").val(d.question.opt_e);
+            $("#_answer:selected").prop("selected", false);
             $("#_answer").find('option').filter(function(i) {
                 return d.question.answer == $(this).val();
-            }).attr("selected", "selected");
+            }).prop("selected", true);
             $("#_question_id").val(d.question.id);
             $("#_test_id").val(d.question.test);
             $("input[name=question_image]").val(null);
@@ -113,6 +114,7 @@ $("#form-update-question, #form-question").submit(function(e) {
             if (d.status.trim() == 'success') {
                 if (form_id == "form-update-question") {
                     $("#form-update-question").find('button[type=submit]').text("Update Question").prop('disabled', false);
+                    showNotification('bottom', 'center', 'success', 'Question Updated', 'pe-7s-bell');
                 } else {
                     showNotification('bottom', 'center', 'success', 'Question Saved', 'pe-7s-bell');
                     tinymce.get('question').setContent('');

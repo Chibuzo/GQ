@@ -121,7 +121,7 @@ module.exports = {
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
                     if (req.param('return_url').length > 1) {
-                        return res.json(200, { status: 'success', url: '/' + req.param('return_url') });
+                        return res.json(200, { status: 'success', url: '/' + new Buffer(req.param('return_url'), 'base64').toString() });
                         //return res.redirect(req.param('return_url'));
                     } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
                         req.session.coy_id = foundUser.company;
@@ -156,8 +156,12 @@ module.exports = {
                 sails.log.verbose('Session refers to a user who no longer exists.');
                 return res.redirect('/');
             }
-            req.session = null;
-            return res.redirect('/');
+            req.session.fname = false;
+            req.session.destroy(function(err) {
+                setTimeout(function(){
+                    return res.redirect('/login');
+                }, 2500); // redirect wait time 2.5 seconds
+            });
         });
     },
 
@@ -286,8 +290,9 @@ module.exports = {
     },
 
     specialLoginPage: function(req, res) {
-        //var path = req.param('return_url');
-        var return_url = req.param('return_url');
+        var return_url = req.param('base64_url');
+        //var id = req.param('id').length > 0 ? '/' + req.param('id') : '';
+        //var path = (return_url + id).trim();
         return res.view('login', { return_url: return_url });
     }
 };
