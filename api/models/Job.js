@@ -44,7 +44,7 @@ module.exports = {
         },
 
         nice_to_have: {
-            type: 'string'
+            type: 'text'
         },
 
         num_of_hires: {

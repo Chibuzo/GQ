@@ -29,7 +29,9 @@ module.exports = {
                 CountryStateService.getCountries().then(function (resp) {
                     if (com.length > 0) {
                         // mofo detected! redirect...
-                        req.session.coy_id = com.id;
+                        req.session.coy_id = com[0].id;
+                        req.session.fname = com[0].contact_person;
+                        req.session.user_type = 'company-admin';
                         Sector.find({removed: 'false'}).exec(function (err, sectors) {
                             return res.view('company/setup', {
                                 company: com[0],
@@ -50,7 +52,12 @@ module.exports = {
                             };
                             Company.create(comp).exec(function (err, cmpy) {
                                 if (err) return console.log(err);
+                                // activate the account
+                                User.update({ email: email }, { status: 'Active' }).exec(function() {});
+                                console.log(cmpy);
                                 req.session.coy_id = cmpy.id;
+                                req.session.fname = cmpy.contact_person;
+                                req.session.user_type = 'company-admin';
                                 Sector.find({removed: 'false'}).exec(function (err, sectors) {
                                     return res.view('company/setup', {
                                         company: cmpy,
@@ -86,6 +93,7 @@ module.exports = {
         };
         Company.update({ id: req.session.coy_id }, data).exec(function (err, com) {
             if (err) return console.log(err);
+            //console.log(com);
         });
 
         var allowedImgTypes = ['image/png', 'image/jpeg', 'image/gif'];
@@ -111,7 +119,6 @@ module.exports = {
                 Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
             }
         });
-
         if (q('first_check') == 'true') {
             Passwords.encryptPassword({
                 password: q('password'),
@@ -129,7 +136,9 @@ module.exports = {
                         user_type: 'company-admin',
                         status: 'Active'
                     };
-                    User.create(user).exec(function () {});
+                    User.create(user).exec(function (err) { console.log(err); });
+                    sendMail.companyIntroduction(q('contact_person'));
+                    sendMail.GQNewActiveCompany(q('company_name'));
                 }
             });
         }
@@ -166,6 +175,7 @@ module.exports = {
             }
             Company.find({ id: req.session.coy_id }).exec(function(err, comp) {
                 sendMail.sendCompanyInviteEmail(comp_user, comp[0]);
+                sendMail.GQCompanyNewUserAlert(comp_user.fullname);
             });
             return res.json(200, { status: 'success' });
         });

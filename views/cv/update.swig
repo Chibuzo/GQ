@@ -34,6 +34,7 @@
 	.cell {
 		opacity: 0;
 		position: absolute !important;
+		right: -1500px;
 	}
 
 	/* CBT Styles */
@@ -268,6 +269,7 @@
 													<li>Video file type MUST be in .mp4 format</li>
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 15 minutes</li>
+													<li>It is recommended you use a WIFI network to upload your profile video or compress video size before upload.</li>
 												</ul>
 											</div>
 										</div>
@@ -296,24 +298,24 @@
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
-	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-min.js"></script>
-	<script src="/js/proctor/face-min.js"></script>
-	<script src="/js/proctor/eye-min.js"></script>
-	<script src="/js/proctor/mouth-min.js"></script>
+	{#<!-- Facial tracking -->#}
+	{#<script src="/js/proctor/tracking-min.js"></script>#}
+	{#<script src="/js/proctor/face-min.js"></script>#}
+	{#<script src="/js/proctor/eye-min.js"></script>#}
+	{#<script src="/js/proctor/mouth-min.js"></script>#}
 
-	<!-- Audio Volume metering -->
-	<script src="/js/proctor/volume-meter.js"></script>
+	{#<!-- Audio Volume metering -->#}
+	{#<script src="/js/proctor/volume-meter.js"></script>#}
 
-	<!-- Audio tracking -->
-	<script src="/js/proctor/recorder.min.js"></script>
-	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js"></script>
+	{#<!-- Audio tracking -->#}
+	{#<script src="/js/proctor/recorder.min.js"></script>#}
+	{#<!-- Main Setup -->#}
+	{#<script src="/js/proctor/setup.js"></script>#}
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
 
-	$.getScript('/js/proctor/tracking-min.js');
+	//$.getScript('/js/proctor/tracking-min.js');
 
 
 	$("select[name=country]").find('option').filter(function(i) {

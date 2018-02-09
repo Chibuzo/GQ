@@ -26,7 +26,7 @@ select.input-lg {
 }
 
 .jobs {
-	padding: 10px 50px;
+	padding: 0px 50px;
 }
 
 .job {
@@ -75,6 +75,10 @@ input[type="text"] {
 
 .job-categories li {
 	padding: 4px 8px;
+}
+
+.job-categories li a {
+	font-size: 14px;
 }
 
 @media screen and (min-width: 200px) and (max-width: 600px) {
@@ -128,8 +132,9 @@ input[type="text"] {
 </header>
 
 <div class="clearfix container" style="margin-top: 50px">
-	<div class="row" style="margin-top: 30px; margin-bottom: 70px">
-		<div class="col-md-9 jobs">
+	<div class="row" style="margin-top: 0px; margin-bottom: 70px">
+		<div class="col-md-8 jobs">
+			<h2>Active Jobs</h2>
 			{% for job in jobs %}
 				{% set path = job.job_title.split(' ') %}
 				{% if job.company.logo_name.length > 3 %}
@@ -137,14 +142,28 @@ input[type="text"] {
 				{% else %}
 					{% set logo_name = 'company.png' %}
 				{% endif %}
+				{#<div class="job">#}
+					{#<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>#}
+					{#<div class="info-thumb">#}
+						{#<div class="row">#}
+							{#<div class="col-md-2"><img src="/logos/{{ logo_name }}" /></div>#}
+							{#<div class="col-md-3"><i class="fa fa-briefcase"></i> {{ job.company.company_name }}</div>#}
+							{#<div class="col-md-2"><i class="fa fa-map-marker"></i> {{ job.location }} </div>#}
+							{#<div class="col-md-2"><i class="fa fa-asterisk"></i> {{ job.job_level }} </div>#}
+							{#<div class="col-md-3"><i class="fa fa-calendar"></i> Closing date: {{ job.closing_date | date('d.m.Y') }}</div>#}
+						{#</div>#}
+					{#</div>#}
+					{#&#123;&#35;<div class="job-desc">{{ job.job_description }}</div>&#35;&#125;#}
+				{#</div>#}
 				<div class="job">
 					<img src="/logos/{{ logo_name }}" />
 					<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>
 					<div class="info-thumb">
 						<ul class="info-thumb-ls">
-							<li><i class="fa fa-briefcase"></i> {{ job.company.company_name }} UBA</li>
+							<li><i class="fa fa-briefcase"></i> {{ job.company.company_name }}</li>
 							<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
-							<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level </li>
+							<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
+							<li><i class="fa fa-calendar"></i> Closes On: {{ job.closing_date | date('d.m.Y') }} </li>
 						</ul>
 					</div>
 					{#<div class="job-desc">{{ job.job_description }}</div>#}
@@ -152,12 +171,12 @@ input[type="text"] {
 			{% endfor %}
 		</div>
 
-		<div class="col-md-3">
+		<div class="col-md-4"><br>
 			<h3 style="color: #666;">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
 			<ul class="job-categories">
-			{% for job in jobs %}
-				{% set cat_path = job.category.split(' ') %}
-				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ job.category }} [ {{ cat.jobs.length }} ]</a></li>
+			{% for cat in job_categories %}
+				{% set cat_path = cat.category.split(' ') %}
+				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
 			{% endfor %}
 			</ul>
 		</div>

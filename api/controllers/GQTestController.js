@@ -65,6 +65,7 @@ module.exports = {
                 if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
+            console.log(data)
             GQTestQuestions.create(data).exec(function (err, quest) {
                 if (err) return res.json(200, {status: 'error', msg: err});
                 GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
@@ -115,7 +116,7 @@ module.exports = {
         var test_id = req.param('test_id');
         GQTest.find({ id: test_id }).exec(function(err, test) {
             if (err) return console.log(err);
-            console.log(test);
+            //console.log(test);
             return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
         });
     },
@@ -133,20 +134,6 @@ module.exports = {
             });
         });
     },
-
-    //loadTest: function(req, res) {
-    //    var test_id = req.param('test_id');
-    //    GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
-    //        if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
-    //        req.session.suppliedAnswers = [];
-    //        return res.json(200, {
-    //            status: 'success',
-    //            questions: test[0].questions,
-    //            test_id: test[0].id,
-    //            duration: test[0].duration
-    //        });
-    //    });
-    //},
 
     returnAnswer: function(req, res) {
         GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
@@ -175,14 +162,14 @@ module.exports = {
             }
         });
         // update resume if it's GQ General aptitude test
-        if (test_id == 1) {
-            Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
-                    });
-                }
-            });
-        }
+        //if (test_id == 1) {
+        //    Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+        //        if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+        //            Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
+        //            });
+        //        }
+        //    });
+        //}
         
         // save or update candidate's test score
         GQTestResult.find({ candidate: req.session.userId, test: test_id }).exec(function(err, test_result) {
@@ -207,6 +194,21 @@ module.exports = {
                     });
                 });
             }
+        });
+    },
+
+    markGQTest: function(req, res) {
+        async.eachSeries([1,2,3], function(test, cb) {
+            var rank, total_score = 0, results = [];
+            CBT.candidateTestResult(req.session.userId, test).then(function(result) {
+                console.log(result);
+                total_score += result.score;
+                results.push(result);
+                cb();
+            });
+        },
+        function(err) {
+
         });
     },
 

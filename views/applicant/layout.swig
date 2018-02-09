@@ -43,6 +43,19 @@
         }
     </style>
 </head>
+<!--Start of Tawk.to Script-->
+<script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+        var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+        s1.async=true;
+        s1.src='https://embed.tawk.to/5a79e0cf4b401e45400cb9b6/default';
+        s1.charset='UTF-8';
+        s1.setAttribute('crossorigin','*');
+        s0.parentNode.insertBefore(s1,s0);
+    })();
+</script>
+<!--End of Tawk.to Script-->
 <body>
 
 <div class="wrapper">
@@ -57,7 +70,7 @@
         <div class="sidebar-wrapper">
             <div class="logo">
                 <a href="" class="simple-text">
-                    Get Qualified <small>Admin</small>
+                    Get Qualified <small class="hidden">Admin</small>
                 </a>
             </div>
 
@@ -187,6 +200,13 @@
 <script src="/js/light-bootstrap-dashboard.js"></script>
 <script src="/js/datepicker.min.js"></script>
 <script src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
+
+<script>
+    !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t){var e=document.createElement("script");e.type="text/javascript";e.async=!0;e.src=("https:"===document.location.protocol?"https://":"http://")+"cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(e,n)};analytics.SNIPPET_VERSION="4.0.0";
+        analytics.load("iLqyt3EWQouph8sRkjBgCz7XL09rmv4p");
+        analytics.page();
+    }}();
+</script>
 
 {% block scriptTag %} {% endblock %}
 <script>

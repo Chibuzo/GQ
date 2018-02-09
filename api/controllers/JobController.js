@@ -68,6 +68,10 @@ module.exports = {
         } else {
             Job.create(data).exec(function (err, job) {
                 if (err) return console.log(err);
+                User.find({ id: req.session.userId }).populate('company').exec(function(err, user) {
+                    sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
+                    sendMail.GQnewJobAlert(user[0].company.company_name);
+                });
                 return res.redirect('/job/manage');
             });
         }
@@ -149,17 +153,27 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date(); //.toISOString();
-        Job.find({ closing_date: { '>': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ closing_date: { '>=': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
-            JobCategory.find().populate('jobs').exec(function(err, job_categories) {
+            JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
                 var jobCategories = [];
                 job_categories.forEach(function(jobcat) {
-                    if (Date.parse(today) > Date.parse(jobcat.jobs.closing_date)) {
-                        jobCategories.push(job);
+                    if (jobcat.jobs.length > 0) {
+                        var active_jobs = 0;
+                        jobcat.jobs.forEach(function(job) {
+                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                active_jobs++
+                            }
+                        });
+                        jobCategories.push({
+                            category: jobcat.category,
+                            jobs: active_jobs,
+                            id: jobcat.id
+                        });
                     }
                 });
-                return res.view('jobs', { jobs: jobs, job_categories: job_categories });
+                return res.view('jobs', { jobs: jobs, job_categories: jobCategories });
             });
         });
     },
@@ -168,23 +182,57 @@ module.exports = {
         var category_id = req.param('id');
         var today = new Date().toISOString();
 
-        Job.find({ category: category_id, closing_date: { '>': today } }).populate('category').populate('company').exec(function(err, jobs) {
+        Job.find({ category: category_id, closing_date: { '>=': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
             //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
-            JobCategory.find().populate('jobs').exec(function(err, job_categories) {
-                return res.view('jobs', { jobs: jobs, job_categories: job_categories });
+            JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
+                var jobCategories = [];
+                job_categories.forEach(function(jobcat) {
+                    if (jobcat.jobs.length > 0) {
+                        var active_jobs = 0;
+                        jobcat.jobs.forEach(function(job) {
+                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                active_jobs++
+                            }
+                        });
+                        jobCategories.push({
+                            category: jobcat.category,
+                            jobs: active_jobs,
+                            id: jobcat.id
+                        });
+                    }
+                });
+                return res.view('jobs', { jobs: jobs, job_categories: jobCategories });
             });
         });
     },
 
     showJob: function(req, res) {
         var job_id = req.param('id');
+        var today = new Date().toISOString();
+
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
-            JobCategory.find().populate('jobs').exec(function(err, job_categories) {
-                return res.view('job', { job: job, job_categories: job_categories });
+            JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
+                var jobCategories = [];
+                job_categories.forEach(function(jobcat) {
+                    if (jobcat.jobs.length > 0) {
+                        var active_jobs = 0;
+                        jobcat.jobs.forEach(function(job) {
+                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                active_jobs++
+                            }
+                        });
+                        jobCategories.push({
+                            category: jobcat.category,
+                            jobs: active_jobs,
+                            id: jobcat.id
+                        });
+                    }
+                });
+                return res.view('job', { job: job, job_categories: jobCategories });
             });
         });
     },
@@ -206,6 +254,7 @@ module.exports = {
                 });
             });
         } else {
+            req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
     },

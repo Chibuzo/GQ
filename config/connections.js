@@ -45,7 +45,10 @@ module.exports.connections = {
      host: 'localhost',
      user: 'gq_user', //optional
      password: 'gq+Nobody+wouldCare', //optional
-     database: 'gq' //optional
+     database: 'gq', //optional
+
+    charset   : 'utf8',
+    collation : 'utf8_swedish_ci'
    },
 
   /***************************************************************************

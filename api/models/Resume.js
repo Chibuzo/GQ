@@ -48,7 +48,7 @@ module.exports = {
         },
 
         introduction: {
-            type: 'string'
+            type: 'text'
         },
 
         educations: {

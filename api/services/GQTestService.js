@@ -17,7 +17,7 @@ module.exports = {
                 .then(function() {
                     // use workbook
                     var sheet = workbook.getWorksheet(1);
-                    for (i = 4; i < 14; i++) {
+                    for (i = 14; i < 34; i++) {
                         var row = sheet.getRow(i);
                         var data = {
                             test: test_id,
