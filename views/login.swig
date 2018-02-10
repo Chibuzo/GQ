@@ -93,9 +93,9 @@ $(document).ready(function() {
 		e.preventDefault();
 		$.post('/user/sendPswdResetEmail', $(this).serialize(), function(d) {
 			if (d.status.trim() == 'success') {
-				$("#pswd-alert").addClass('alert-success').text('A passowrd reset link has been sent to your email.');
+				$("#pswd-alert").addClass('alert-success').text('A passowrd reset link has been sent to your email.').removeClass('hidden');
 			} else {
-				$("#pswd-alert").addClass('alert-danger').text(d.msg);
+				$("#pswd-alert").addClass('alert-danger').text(d.msg).removeClass('hidden');
 			}
 		});
 	});

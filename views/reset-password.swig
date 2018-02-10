@@ -27,7 +27,7 @@
 									<input type="password" name="v_password" id="v_password" class="form-control input-lg" required />
 								</div>
 								<div class="alert alert-danger hidden"></div>
-								<button type="submit" class="btn btn-info input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Sign In </button>
+								<button type="submit" class="btn btn-info input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Change Password </button>
 							</form><br>
 							<p>Not yet a member? <a href="/signup">Sign Up</a></p>
 						</div>

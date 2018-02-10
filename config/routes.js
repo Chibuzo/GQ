@@ -27,7 +27,7 @@ module.exports.routes = {
 
     'POST /user/resetpassword': 'UserController.resetPassword',
 
-    'GET /user/resetpassword': 'UserController.showResetPasswordPage',
+    'GET /user/resetpassword/:email/:hash': 'UserController.showResetPasswordPage',
 
     'GET /applicant/profile': 'UserController.profile',
 
@@ -197,6 +197,8 @@ module.exports.routes = {
     'GET /assessments': 'CBTTestController.getTestResult',
 
     'GET /get-schools': 'SchoolsController.getSchools',
+
+    'GET /email': { view: 'email' }
 
     //'GET /loadschools': 'BatchController.loadSchools',
     //

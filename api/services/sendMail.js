@@ -91,7 +91,7 @@ module.exports = {
         module.exports.sendMail(user.email, subject, template, data);
     },
 
-    // sent after account activation
+    // sent after company account activation
     companyIntroduction: function(email, contact_person) {
         var data = {
             contact_person: contact_person
@@ -133,19 +133,17 @@ module.exports = {
         module.exports.sendMail(email, subject, template, data);
     },
 
-    passwordRecoveryLink: function(user) {
+    sendPswdResetLink: function(user) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
         var hash = crypto.createHash('md5').update(user.email + 'okirikwenEE129Okpkenakai').digest('hex');
 
         var data = {
             user: user.fullname,
-            job_title: job.job_title,
-            company: job.company.company_name,
-            url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
+            url: BASE_URL + 'user/resetpassword/' + email_b64 + '/' + hash
         };
         var subject = "Your GetQualified Password Reset Link";
-        var template = 'companySignUp';
+        var template = 'passwordReset';
         module.exports.sendMail(user.email, subject, template, data);
     },
 
