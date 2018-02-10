@@ -61,9 +61,9 @@ module.exports = {
     candidateTestResult: function(candidate_id, test) {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({ test: test.id, candidate: candidate_id }).populate('candidate').exec(function(err, candidate_result) {
-                GQTestResult.find({ test: test.id }).sort({'score desc'}).groupBy('score').exec(function(err, result) {
+                GQTestResult.find({ test: test.id }).sort('score desc').groupBy('score').exec(function(err, result) {
                     var result = candidate_result[0];
-                    var result.rank = result.indexOf(candidate_result[0].score);
+                    result.rank = result.indexOf(candidate_result[0].score);
                     return resolve(result);
                 });
             });

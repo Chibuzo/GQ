@@ -245,8 +245,10 @@ module.exports = {
     sendPswdResetEmail: function(req, res) {
         User.find({ email: req.param('email')}).exec(function(err, user) {
             if (user.length > 0) {
-                sendMail.sendPswdResetLink(user[0]);
+                //sendMail.sendPswdResetLink(user[0]);
                 return res.json(200, { status: 'success' });
+            } else {
+                return res.json(200, { status: 'error', msg: 'This email is not associated with any account.' });
             }
         });
     },
@@ -279,11 +281,14 @@ module.exports = {
             password: req.param('new_password'),
         }).exec({
             error: function (err) {
-                console.log(err);
+                return res.json(200, { status: 'error', msg: err });
             },
             success: function (newPassword) {
-                User.update({ id: req.session.userId }, { password: newPassword }).exec(function() {
-
+                User.update({ id: req.session.userId }, { password: newPassword }).exec(function(err) {
+                    if (err) {
+                        return res.json(200, { status: 'error', msg: err });
+                    }
+                    return res.json(200, { status: 'success' });
                 });
             }
         });

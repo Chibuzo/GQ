@@ -27,7 +27,7 @@ module.exports.routes = {
 
     'POST /user/resetpassword': 'UserController.resetPassword',
 
-    'GET /user/resetpassword': 'UserController.showResetPasswordPage',
+    'GET /user/resetpassword/:email/:hash': 'UserController.showResetPasswordPage',
 
     'GET /applicant/profile': 'UserController.profile',
 
