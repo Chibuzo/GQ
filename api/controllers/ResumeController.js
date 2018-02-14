@@ -19,22 +19,22 @@ module.exports = {
                 CountryStateService.getCountries().then(function(resp) {
                     Honour.find().exec(function(err, honours) {
                         // check for test result
-                        GQTestResult.find({
-                            test: test_id,
-                            candidate: req.session.userId
-                        }).populate('test').exec(function (err, test_result) {
-                            if (err) console.log(err)
-                            if (test_result.length > 0) {
-                                GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
-                                    return res.view('cv/update', {
-                                        resume: resume,
-                                        me: me,
-                                        honours: honours,
-                                        countries: resp.countries,
-                                        states: resp.states,
-                                        result: result,
-                                        test_title: test_result[0].test.test_name
-                                    });
+                        CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+
+                            //    test: test_id,
+                        //    candidate: req.session.userId
+                        //}).populate('test').exec(function (err, test_result) {
+                        //    if (err) console.log(err)
+                            if (result) {
+                        //        GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
+                                return res.view('cv/update', {
+                                    resume: resume,
+                                    me: me,
+                                    honours: honours,
+                                    countries: resp.countries,
+                                    states: resp.states,
+                                    result: result,
+                                    test_title: 'General Aptitude Test'
                                 });
                             } else {
                                 return res.view('cv/update', {
@@ -45,8 +45,10 @@ module.exports = {
                                     states: resp.states
                                 });
                             }
+                        }).catch(function(err) {
+                            console.log(err);
                         });
-                    })
+                    });
                 });
             });
     },
@@ -153,7 +155,7 @@ module.exports = {
             introduction: q('introduction'),
             employment_status: q('employment_status'),
             available_date: new Date(Date.parse(q('available_date'))).toISOString(),
-            expected_salary: q('expected_salary'),
+            expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
             profile_status: sections.education,
             status: status
         };

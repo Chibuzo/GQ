@@ -58,13 +58,70 @@ module.exports = {
         });
     },
 
-    candidateTestResult: function(candidate_id, test) {
+    saveTestScore: function(test_id, score, no_of_questions, candidate_id) {
         return new Promise(function(resolve, reject) {
-            GQTestResult.find({ test: test.id, candidate: candidate_id }).populate('candidate').exec(function(err, candidate_result) {
-                GQTestResult.find({ test: test.id }).sort('score desc').groupBy('score').exec(function(err, result) {
-                    var result = candidate_result[0];
-                    result.rank = result.indexOf(candidate_result[0].score);
-                    return resolve(result);
+            GQTestResult.find({ candidate: candidate_id, test: test_id }).exec(function(err, test_result) {
+                if (err) return console.log(err);
+                if (test_result.length > 0) {
+                    GQTestResult.update({ id: test_result[0].id }, { score: score }).exec(function() {
+                        return resolve(true);
+                    });
+                } else {
+                    var data = {
+                        test: test_id,
+                        candidate: candidate_id,
+                        score: score,
+                        no_of_questions: no_of_questions,
+                        result: 'Passed' // requires some logic
+                    };
+                    GQTestResult.create(data).exec(function(err) {
+                        return resolve(true);
+                    });
+                }
+            });
+        });
+    },
+
+    saveGeneralTestScore: function(candidate, score) {
+        return new Promise(function(resolve, reject) {
+            GQTestResult.find({
+                candidate: candidate,
+                test: [1, 2, 3]
+            }).sum('score').groupBy('candidate').exec(function (err, scores) {
+                var data = {
+                    score: scores[0].score,
+                    user: candidate
+                };
+                GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
+                    //console.log(result)
+                    if (result.length > 0) {
+                        GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function () {
+                            // hand errors if you like
+                            return resolve(true); // 13/02/2018
+                        });
+                    } else {
+                        GQAptitudeTestResult.create({user: candidate}, data).exec(function (e) {
+                            return resolve(true); //
+                        });
+                    }
+                });
+            });
+        });
+    },
+
+    candidateGeneralTestResult: function(candidate_id) {
+        return new Promise(function(resolve, reject) {
+        GQAptitudeTestResult.find({ user: candidate_id }).populate('user').exec(function(err, candidate_score) {
+                if (candidate_score.length < 1) {
+                    //return reject("Candidate doesn't have result"); // I'm not sure why this may ever happen
+                    return resolve(false);
+                }
+                GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
+                    var c_score = candidate_score[0];
+                    c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
+                    c_score.rank = result.map(function(e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                    c_score.candidates = result.length;
+                    return resolve(c_score);
                 });
             });
         });

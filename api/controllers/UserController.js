@@ -70,6 +70,7 @@ module.exports = {
                             fname: user[0].fullname.split(' ')[0],
                             lname: user[0].fullname.split(' ')[1]
                         };
+                        req.session.fname = user[0].fullname;
                         if (user[0].user_type == 'Applicant') {
                             return res.view('applicant/profile', {user: user[0], me: me, first_time: true});
                         } else if (user[0].user_type == 'company') {
@@ -107,7 +108,7 @@ module.exports = {
                     return res.json(200, { status: 'Err', msg: err });
                 },
                 incorrect: function () {
-                    return res.json(200, { status: 'Err', msg : 'User not found' });
+                    return res.json(200, { status: 'Err', msg : 'Incorrect login details' });
                 },
                 success: function () {
                     if (foundUser.deleted) {
@@ -245,7 +246,7 @@ module.exports = {
     sendPswdResetEmail: function(req, res) {
         User.find({ email: req.param('email')}).exec(function(err, user) {
             if (user.length > 0) {
-                //sendMail.sendPswdResetLink(user[0]);
+                sendMail.sendPswdResetLink(user[0]);
                 return res.json(200, { status: 'success' });
             } else {
                 return res.json(200, { status: 'error', msg: 'This email is not associated with any account.' });
@@ -269,7 +270,7 @@ module.exports = {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
                 if (hash == confirm_hash) {
-                    // put the email in session to avoid someone changing
+                    req.session.user_id = user.id;
                     return res.view('reset-password');
                 }
             }
@@ -284,10 +285,11 @@ module.exports = {
                 return res.json(200, { status: 'error', msg: err });
             },
             success: function (newPassword) {
-                User.update({ id: req.session.userId }, { password: newPassword }).exec(function(err) {
+                User.update({ id: req.session.user_id }, { password: newPassword }).exec(function(err) {
                     if (err) {
                         return res.json(200, { status: 'error', msg: err });
                     }
+                    req.session.user_id = null;
                     return res.json(200, { status: 'success' });
                 });
             }

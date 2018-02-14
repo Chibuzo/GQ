@@ -41,7 +41,7 @@
 				{% if resume.dob %}
 					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('Y-m-d') }}" required>
 				{% else %}
-					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="" required>
+					<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" required>
 				{% endif %}
 			</div>
 			<div class="col-md-4">
@@ -112,7 +112,11 @@
 			</div>
 			<div class="col-md-4">
 				<label>Available Date</label> [ <span class="red">*</span> ]
-				<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
+				{% if resume.available_date %}
+					<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
+				{% else %}
+					<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" required>
+				{% endif %}
 			</div>
 			<div class="col-md-4">
 				<label>Expected Annual Salary</label>
@@ -150,11 +154,19 @@
 					</div>
 					<div class="col-md-2">
 						<label>start Date</label>
-						<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" value="{{ edu.start_date | date('Y-m-d') }}" required>
+						{% if edu.start_date %}
+							<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" value="{{ edu.start_date | date('Y-m-d') }}" required>
+						{% else %}
+							<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" required>
+						{% endif %}
 					</div>
 					<div class="col-md-2">
 						<label>End Date</label>
-						<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ edu.end_date | date('Y-m-d') }}" required>
+						{% if edu.end_date %}
+							<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ edu.end_date | date('Y-m-d') }}" required>
+						{% else %}
+							<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended">
+						{% endif %}
 					</div>
 					<input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
 					<div class="col-md-1">
@@ -242,7 +254,11 @@
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
-						<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained" value="{{ qual.date_obtained | date('Y-m-d') }}">
+						{% if qual.date_obtained %}
+							<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained" value="{{ qual.date_obtained | date('Y-m-d') }}">
+						{% else %}
+							<input type="text" name="qualification_date[]" class="form-control datep" placeholder="Date Obtained">
+						{% endif %}
 					</div>
 					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
 					<div class="col-md-1">
@@ -319,11 +335,19 @@
 					<div class="row">
 						<div class="col-md-4">
 							<label>start Date</label>
-							<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}">
+							{% if emp.start_date %}
+								<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started" value="{{ emp.start_date | date('Y-m-d') }}">
+							{% else %}
+								<input type="text" name="employment_start_date[]" class="form-control datep" placeholder="Date started">
+							{% endif %}
 						</div>
 						<div class="col-md-4">
 							<label>End Date</label>
-							<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}">
+							{% if emp.end_date %}
+								<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended" value="{{ emp.end_date | date('Y-m-d') }}">
+							{% else %}
+								<input type="text" name="employment_end_date[]" class="form-control datep" placeholder="Date ended">
+							{% endif %}
 						</div>
 						<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
 						<div class="col-md-1">

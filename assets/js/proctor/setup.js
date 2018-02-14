@@ -410,7 +410,8 @@
     win.Proctor = proctor;
 })('undefined' != typeof jQuery && jQuery, window, document)
 
-$(document).ready(function() {
+//$(document).ready(function() {
+function startProctor() {
     /**
      * integrity score measurement
      * You can use the (onMultiFaceTracked) option for the (-15) deduction on track
@@ -426,63 +427,64 @@ $(document).ready(function() {
 
         takeInitialSnapshot: true,
 
-        handleOutdatedBrowser: function() {
+        handleOutdatedBrowser: function () {
             alert('Update your browser ma niggah');
         },
 
-        handleSnapshot: function(data64) {
+        handleSnapshot: function (data64) {
             $.ajax({
                 type: "POST",
-                url: "upload_snapshot.php",
+                url: "/gqtest/uploadProctorPicture",
                 data: {
                     imgBase64: data64
-                }, success: function(data){
+                }, success: function (data) {
                     // Some success ish blah blah
-                }, error: function() {
+                }, error: function () {
                     // some error handling blah nlah
                 }
-            }).done(function(msg) {
+            }).done(function (msg) {
                 // Some message blah blah
             });
         },
-        handleAudio: function(data64) {
+        handleAudio: function (data64) {
             $.ajax({
                 type: "POST",
-                url: "upload_audio.php",
+                url: "/gqtest/uploadProctorAudio",
                 data: {
                     data: data64
-                }, success: function(data){
+                }, success: function (data) {
                     // Some success ish blah blah
-                }, error: function() {
+                }, error: function () {
                     // some error handling blah nlah
                 }
-            }).done(function(msg) {
+            }).done(function (msg) {
                 // Some message blah blah
             });
         },
 
-        onFaceTracked: function() {
+        onFaceTracked: function () {
             // on face detected
         },
         // Integrity scoring can be applied here
-        onMultiFaceTracked: function() {
+        onMultiFaceTracked: function () {
             // on multi face detected
             integrityScore = integrityScore - 15;
         },
         // Integrity score deduction can be applied here
-        onAmbientNoiseDetection: function() {
+        onAmbientNoiseDetection: function () {
             integrityScore = integrityScore - 5;
         },
 
-        onMicPermissionDenied: function() {
+        onMicPermissionDenied: function () {
             console.log('Proctor: Microphone needed for this test');
         },
-        onCamPermissionDenied: function() {
+        onCamPermissionDenied: function () {
             console.log('Proctor: Webcam needed for this test');
         },
 
-        proctorReady: function() {
+        proctorReady: function () {
             console.log('Proctor is ready.');
         }
     })
-})
+}
+//})

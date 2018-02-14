@@ -152,9 +152,9 @@
 											</div>
 
 											<ul class="list-group">
-												<li class="list-group-item">Score: <span id="score">{{ result.score }}/{{ result.no_of_questions }}</span></li>
+												<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>
 												<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>
-												<li class="list-group-item">Average: <span id="average">{{ result.average }}</span></li>
+												<li class="list-group-item">Rank: <span id="average">{{ result.rank }} of {{ result.candidates }} candidates</span></li>
 											</ul>
 											<div class="panel-body">
 												{#<strong>Note: </strong>You can always pay and retake the test to improve your score...#}
@@ -195,11 +195,11 @@
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">
-												<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="1"><i class="fa fa-clock-o"></i> Start Test</button>
+												<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
 											</div>
 										</div>
 
-										<div class="test" style="display: none;">
+										<div class="inner-test-div" style="display: none;">
 											<div id="countdowntimer" class="text-right"><span id="hms_timer"><span>00:00</div>
 											<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
 											<div class="row">
@@ -298,19 +298,19 @@
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
-	{#<!-- Facial tracking -->#}
-	{#<script src="/js/proctor/tracking-min.js"></script>#}
-	{#<script src="/js/proctor/face-min.js"></script>#}
-	{#<script src="/js/proctor/eye-min.js"></script>#}
-	{#<script src="/js/proctor/mouth-min.js"></script>#}
+	<!-- Facial tracking -->
+	<script src="/js/proctor/tracking-min.js"></script>
+	<script src="/js/proctor/face-min.js"></script>
+	<script src="/js/proctor/eye-min.js"></script>
+	<script src="/js/proctor/mouth-min.js"></script>
 
-	{#<!-- Audio Volume metering -->#}
-	{#<script src="/js/proctor/volume-meter.js"></script>#}
+	<!-- Audio Volume metering -->
+	<script src="/js/proctor/volume-meter.js"></script>
 
-	{#<!-- Audio tracking -->#}
-	{#<script src="/js/proctor/recorder.min.js"></script>#}
-	{#<!-- Main Setup -->#}
-	{#<script src="/js/proctor/setup.js"></script>#}
+	<!-- Audio tracking -->
+	<script src="/js/proctor/recorder.min.js"></script>
+	<!-- Main Setup -->
+	<script src="/js/proctor/setup.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
