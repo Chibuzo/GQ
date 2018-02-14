@@ -114,8 +114,8 @@
 						<h2 class="title">Why Choose Us</h2>
 						Our products work together so you attract and hire the best candidates very easily, from posting to interviewing. How do you currently hire? We would like to learn about and help you to refine your process.
 						<br>Talk to us. <br><br>
-						<i class="fa fa-phone fa-fw"></i> &nbsp;<strong>Call:</strong> 0803-987-9898<br>
-						<i class="fa fa-envelope fa-fw"></i> &nbsp;<strong>Email:</strong> getstarted@getqualified.com
+						{#<i class="fa fa-phone fa-fw"></i> &nbsp;<strong>Call:</strong> 0803-987-9898<br>#}
+						<i class="fa fa-envelope fa-fw"></i> &nbsp;<strong>Email:</strong> getstarted@getqualified.work
 					</div>
 
 				</div>

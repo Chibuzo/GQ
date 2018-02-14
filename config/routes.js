@@ -100,7 +100,7 @@ module.exports.routes = {
 
     'GET /gqtest/marktest/:test_id/:no_of_questions': 'GQTestController.markTest',
 
-    'GET /gqtest/markGQAptitude': 'GQTestController.markGQTest',
+    'GET /gqtest/markGQAptitude/:test_id/:no_of_questions': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
@@ -109,6 +109,10 @@ module.exports.routes = {
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 
     'GET /gqtest/gettest/:test_id': 'GQTestController.getTest',
+
+    'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
+
+    'POST /gqtest/uploadProctorPicture': 'GQTestController.uploadProctorPicture',
 
     'GET /courses': 'CourseController.listCourses',
 

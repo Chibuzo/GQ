@@ -9,34 +9,41 @@ $("#retake-test").click(function() {
 });
 
 $(".load-test").click(function() {
-    var test_id = $(this).data('test_id');
+    TEST_ID = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);
-    $.get('/gqtest/load-test-instruction/' + test_id, function(d) {
+    $.get('/gqtest/load-test-instruction/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             $("#test-notice").fadeOut(function() {
                 $("#start-test").removeClass('hidden');
             });
-            $(".test-title").text(d.test_name);
-            $(".instruction").html(d.instructions);
+            // test div should be hidden at this time
+            $(".inner-test-div").fadeOut('fast');
+            $("#instructions").fadeIn('fast', function() {
+                $(".test-title").text(d.test_name);
+                $(".instruction").html(d.instructions);
+            });
         }
     }, 'JSON');
 });
 
 
-$("#start-test").click(function() { alert('start')
-    var test_id = $(this).data('test_id');
+$("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
-    $.get('/gqtest/load-test/' + test_id, function(d) {
+
+    // start test proctoring
+    startProctor();
+
+    $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
             duration = d.duration;
 
             var total_quests = d.questions.length;
-            TEST_ID = d.test_id;
+            //TEST_ID = d.test_id;
             $("#total_questions").text(total_quests);
 
             $("#instructions").fadeOut('fast', function() {
-                $(".test").fadeIn('fast');
+                $(".inner-test-div").fadeIn('fast');
             });
 
             // display question numbers
@@ -47,10 +54,11 @@ $("#start-test").click(function() { alert('start')
             });
             $(".question-nums").html(quests);
 
-            // clear localstorage
-            localStorage.clear();
             fetchNextQuestion(questions);
             startTimer();
+
+            // reset controls (start text button for now, haaa
+            $("#start-test").text('Start Test').prop('disabled', false);
         }
     }, 'JSON');
 });
@@ -83,7 +91,7 @@ $("#submit-test").click(function(e) {
             submitAndLoadNext();
             return;
         } else if (parseInt(TEST_ID) == 3) {  // gather result, lol - I don't mean it
-            $.get('/gqtest/markGQAptitude', function(d) {
+            $.get('/gqtest/markGQAptitude/' + TEST_ID + '/' + questions.length, function(d) {
 
             });
             return;
@@ -117,18 +125,33 @@ function fetchNextQuestion(questions, next_quest) {
 
     // save the state of the current question
     saveAnswer();
+    // clear previous question image, if any
+    $(".question-image").html('');
 
     $("input[name=opt]").prop('checked', false).parents('label').removeClass('checked');
 
     $(".question-num").removeClass('active_q');
     $("#quest-" + cur_question).removeClass('skipped_q answered_q').addClass('active_q');
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
-    $(".question-image").html("<img src='/cbt-images/" + questions[next_question].image_file + "' />");
+    if (questions[next_question].image_file) {
+        $(".question-image").html("<img src='/cbt-images/" + questions[next_question].image_file + "' />");
+    }
     $(".question").html(questions[next_question].question);
     $("#span-opt-a").text(questions[next_question].opt_a);
     $("#span-opt-b").text(questions[next_question].opt_b);
-    $("#span-opt-c").text(questions[next_question].opt_c);
-    $("#span-opt-d").text(questions[next_question].opt_d);
+    // display only options with a value
+    if (questions[next_question].opt_c) {
+        $("#span-opt-c").parents('li').show();
+        $("#span-opt-c").text(questions[next_question].opt_c);
+    } else {
+        $("#span-opt-c").parents('li').hide();
+    }
+    if (questions[next_question].opt_d) {
+        $("#span-opt-d").parents('li').show();
+        $("#span-opt-d").text(questions[next_question].opt_d);
+    } else {
+        $("#span-opt-d").parents('li').hide();
+    }
     if (questions[next_question].opt_e) {
         $("#span-opt-e").parents('li').show();
         $("#span-opt-e").text(questions[next_question].opt_e);
@@ -182,10 +205,15 @@ function submitTest() {
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
 function submitAndLoadNext(next) {
+    // clear localstorage
+    localStorage.clear();
+    $(".question-nums").empty();
+    $("#current_quest").empty();
+
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
     $.get('/gqtest/marktest/' + TEST_ID + '/' + questions.length, function(d) {
-        $(".load-test").click();
+        if (next <= 3) $(".load-test").click();
     });
     //var cur_test = parseInt(TEST_ID);
     //if (cur_test < 3) {

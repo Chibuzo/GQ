@@ -122,17 +122,18 @@ module.exports = {
     },
 
     loadTest: function(req, res) {
-        var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
-            if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
-            req.session.suppliedAnswers = [];
-            return res.json(200, {
-                status: 'success',
-                questions: test[0].questions,
-                test_id: test[0].id,
-                duration: test[0].duration
-            });
-        });
+        //var test_id = req.param('test_id');
+        //GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
+        //    if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
+        //    req.session.suppliedAnswers = [];
+        //    return res.json(200, {
+        //        status: 'success',
+        //        questions: test[0].questions,
+        //        test_id: test[0].id,
+        //        duration: test[0].duration
+        //    });
+        //});
+        return res.ok();
     },
 
     returnAnswer: function(req, res) {
@@ -161,54 +162,47 @@ module.exports = {
                 score++;
             }
         });
-        // update resume if it's GQ General aptitude test
-        //if (test_id == 1) {
-        //    Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-        //        if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-        //            Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
-        //            });
-        //        }
-        //    });
-        //}
         
         // save or update candidate's test score
-        GQTestResult.find({ candidate: req.session.userId, test: test_id }).exec(function(err, test_result) {
-            if (err) return console.log(err);
-            if (test_result.length > 0) {
-                GQTestResult.update({ id: test_result[0].id }, { score: score }).exec(function() {
-                    GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
-                        return res.json(200, { status: 'success', result: resp });
-                    });
-                });
-            } else {
-                var data = {
-                    test: test_id,
-                    candidate: req.session.userId,
-                    score: score,
-                    no_of_questions: no_of_questions,
-                    result: 'Passed'
-                };
-                GQTestResult.create(data).exec(function(err) {
-                    GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
-                        return res.json(200, { status: 'success', result: resp });
-                    });
-                });
-            }
+        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId).then(function() {
+            // destroy stored test answers
+            req.session.suppliedAnswers = [];
+            GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
+                return res.json(200, { status: 'success', result: resp });
+            }).catch(function(err) {
+                console.log(err)
+            });
         });
     },
 
     markGQTest: function(req, res) {
-        async.eachSeries([1,2,3], function(test, cb) {
-            var rank, total_score = 0, results = [];
-            CBT.candidateTestResult(req.session.userId, test).then(function(result) {
-                console.log(result);
-                total_score += result.score;
-                results.push(result);
-                cb();
-            });
-        },
-        function(err) {
+        var test_id = req.param('test_id');
+        var no_of_questions = req.param('no_of_questions');
+        var score = 0;
 
+        req.session.suppliedAnswers.forEach(function(quest) {
+            if (quest.supplied_ans === quest.correct_ans) {
+                score++;
+            }
+        });
+        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId).then(function() {
+            CBTService.saveGeneralTestScore(req.session.userId, score).then(function(resp) {
+                // update candidate's resume
+                Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                    if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                        Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
+                    }
+                });
+                CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                    return res.json(200, { status: 'success', result: result });
+                }).catch(function(err) {
+                    console.log(err)
+                });
+            }).catch(function(err) {
+                console.log(err)
+            });
+        }).catch(function(err) {
+            console.log(err)
         });
     },
 
@@ -255,6 +249,34 @@ module.exports = {
             GQTestQuestions.destroy({id: req.param('quest_id')}).exec(function () {});
             return res.ok();
         }
+    },
+
+    uploadProctorAudio: function(req, res) {
+        req.file('data').upload({
+            dirname: require('path').resolve(sails.config.appPath, 'assets/proctorFiles/'),
+            //saveAs: function (file, cb) {
+            //    console.log(file.filename)
+            //    return cb(null, file.filename);
+            //}
+        }, function(err, file) {
+            if (err) return console.log(err)
+            console.log('Aye ' + file.filename);
+        });
+        return res.ok()
+    },
+
+    uploadProctorPicture: function(req, res) {
+        req.file('imgBase64').upload({
+            dirname: require('path').resolve(sails.config.appPath, 'assets/proctorFiles/'),
+            //saveAs: function (file, cb) {
+            //    console.log(file.filename)
+            //    return cb(null, file.filename);
+            //}
+        }, function(err, file) {
+            if (err) return console.log(err)
+            console.log('Aye ' + file.filename);
+        });
+        return res.ok();
     }
 };
 

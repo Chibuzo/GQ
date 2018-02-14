@@ -240,6 +240,10 @@ input[type="text"]:focus, input[type="email"]:focus, input[type="password"]:focu
     color: #FFF;
 }
 
+.main-btn:hover {
+    color: #fff !important;
+}
+
 .white-btn {
     background: #FFF;
     color: #10161A !important;
@@ -670,7 +674,7 @@ header {
 }
 
 .about:hover h3 {
-    color: #fff;
+    /*color: #fff;*/
 }
 
 

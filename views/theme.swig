@@ -162,14 +162,14 @@
 	<!-- /Back to top -->
 
 	<!-- Preloader -->
-	<div id="preloader">
-		<div class="preloader">
-			<span></span>
-			<span></span>
-			<span></span>
-			<span></span>
-		</div>
-	</div>
+	{#<div id="preloader">#}
+		{#<div class="preloader">#}
+			{#<span></span>#}
+			{#<span></span>#}
+			{#<span></span>#}
+			{#<span></span>#}
+		{#</div>#}
+	{#</div>#}
 	<!-- /Preloader -->
 
 	<!-- jQuery Plugins -->

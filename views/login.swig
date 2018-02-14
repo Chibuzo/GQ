@@ -25,7 +25,7 @@
 									<label>Password</label>
 									<input type="password" name="password" class="form-control input-lg" required />
 								</div>
-								<p class="text-left">Forgot your passowrd? <a href="" class="show-forgot-pswd">Click here</a></p>
+								<p class="text-left">Forgot your password? <a href="" class="show-forgot-pswd">Click here</a></p>
 								<input type="hidden" name="return_url" value="{{ return_url }}" />
 								<div class="alert alert-danger hidden"></div>
 								<button type="submit" class="btn btn-info input-lg btn-block"><i class="fa fa-sign-in fa-lg"></i>&nbsp; Sign In </button>

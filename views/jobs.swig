@@ -175,8 +175,10 @@ input[type="text"] {
 			<h3 style="color: #666;">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
 			<ul class="job-categories">
 			{% for cat in job_categories %}
-				{% set cat_path = cat.category.split(' ') %}
-				<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
+				{% if cat.jobs > 0 %}
+					{% set cat_path = cat.category.split(' ') %}
+					<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
+				{% endif %}
 			{% endfor %}
 			</ul>
 		</div>

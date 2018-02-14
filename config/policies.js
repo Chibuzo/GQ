@@ -34,4 +34,8 @@ module.exports.policies = {
       'saveJob': 'isLoggedIn',
       'deleteJob': 'isLoggedIn'
   },
+
+    ResumeController: {
+        '*': 'isLoggedIn'
+    }
 };
