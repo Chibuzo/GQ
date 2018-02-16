@@ -259,10 +259,26 @@ module.exports = {
         }
     },
 
+    // fetches all apllicants
+    // fetches the test results
+    // fetches shortlisted candidates
+    // This is for both companies and GQ admin - and i'm not sure that's a good idea, but then, fuck it!
     viewApplicants: function(req, res) {
+        // hold on, let's knows who's viewing this
+        var folder;
+        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
+            folder = 'company';
+        } else if (req.session.user_type == 'admin') {
+            folder = 'admin';
+        } else {
+            // get the fuck out
+            return res.badRequest('Gerrout!');
+        }
+
         var job_id =  req.param('job_id');
         Job.find({ id: job_id }).exec(function(err, job) {
             JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
+                // find those who applied for this job
                 Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
                     // fetch candidate ids for use in finding/computing their test result
                     var candidates = [];
@@ -271,15 +287,15 @@ module.exports = {
                     });
                     CBTService.getJobTestResults(candidates, test[0]).then(function (all_text_result) {
                         SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
-                            console.log(selected_candidates)
+                            //console.log(selected_candidates)
                             if (selected_candidates.length > 0) {
                                 var candidates = [];    // redeclared, haha!
                                 selected_candidates.forEach(function (candidate) {
                                     candidates.push(candidate.candidate.id);
                                 });
                                 CBTService.getJobTestResults(candidates, test[0]).then(function (selected_candidates_test_result) {
-                                    console.log(selected_candidates_test_result)
-                                    return res.view('company/applicants-view.swig', {
+                                    //console.log(selected_candidates_test_result)
+                                    return res.view(folder + '/applicants-view.swig', {
                                         applicants: applications,
                                         results: all_text_result,
                                         selected_candidates: selected_candidates_test_result,
@@ -289,7 +305,7 @@ module.exports = {
                                     console.log(err);
                                 });
                             } else {
-                                return res.view('company/applicants-view.swig', {
+                                return res.view(folder + '/applicants-view.swig', {
                                     applicants: applications,
                                     results: all_text_result,
                                 });

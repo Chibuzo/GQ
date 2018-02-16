@@ -14,6 +14,11 @@
 		margin-left: 10px;
 	}
 
+	.progress-bar {
+		-webkit-transition: all .25s ease;
+		transition: all .25s ease;
+	}
+
 	.addable {
 		display: none;
 	}
@@ -34,7 +39,8 @@
 	.cell {
 		opacity: 0;
 		position: absolute !important;
-		right: -1500px;
+		/*right: -1500px;*/
+		z-index: -2;
 	}
 
 	/* CBT Styles */
@@ -154,7 +160,7 @@
 											<ul class="list-group">
 												<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>
 												<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>
-												<li class="list-group-item">Rank: <span id="average">{{ result.rank }} of {{ result.candidates }} candidates</span></li>
+												<li class="list-group-item">Rank: <span id="rank">{{ result.rank }} of {{ result.candidates }} candidates</span></li>
 											</ul>
 											<div class="panel-body">
 												{#<strong>Note: </strong>You can always pay and retake the test to improve your score...#}
@@ -192,6 +198,16 @@
 
 									<div class="test">
 										<h3 class="test-title text-center"></h3>
+										<div class="row">
+											<div class="col-md-4 pull-right">
+												<div class="progress">
+												  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+													<span class="sr-only">100% Complete (danger)</span>Integrity Score
+												  </div>
+												</div>
+											</div>
+										</div>
+
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">

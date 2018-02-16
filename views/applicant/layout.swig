@@ -186,7 +186,7 @@
 
 <!--   Core JS Files   -->
 {#<script src="/js/jquery-1.10.2.js" type="text/javascript"></script>#}
-{#<script src="/js/jquery-3.min.js" type="text/javascript"></script>#}
+<script src="/js/jquery-3.min.js" type="text/javascript"></script>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

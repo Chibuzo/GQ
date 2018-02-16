@@ -83,6 +83,7 @@ module.exports = {
                     req.session.admin_id = foundUser.id;
                     req.session.admin = true;
                     req.session.fname = foundUser.fullname;
+                    req.session.user_type = 'admin';
                     return res.json(200, { status: 'Ok' });
                 }
             });

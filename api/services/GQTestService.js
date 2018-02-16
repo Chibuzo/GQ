@@ -73,7 +73,7 @@ module.exports = {
                 if (test_ave.length < 1) reject('No Result');
                 var percentage = ((parseInt(candidate_score) / parseInt(no_of_questions)) * 100).toFixed(1);
                 var result = {
-                    score: candidate_score,
+                    score: candidate_score, // really don't need this
                     percentage: percentage,
                     average: test_ave[0].score,
                     result: percentage > 69 ? 'Passed' : 'Failed',

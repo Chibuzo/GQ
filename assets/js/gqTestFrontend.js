@@ -33,6 +33,9 @@ $("#start-test").click(function() {
     // start test proctoring
     startProctor();
 
+    // register proctor session
+    createProctorSession();
+
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
@@ -92,7 +95,13 @@ $("#submit-test").click(function(e) {
             return;
         } else if (parseInt(TEST_ID) == 3) {  // gather result, lol - I don't mean it
             $.get('/gqtest/markGQAptitude/' + TEST_ID + '/' + questions.length, function(d) {
+                $("#score").text(d.result.score + '/60');
+                $("#percentage").text(d.result.percentage + '%');
+                $("#rank").text(d.result.rank + ' of ' + d.result.candidates);
 
+                $("#test-div").fadeOut('fast', function() {
+                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
+                });
             });
             return;
         }
@@ -237,4 +246,9 @@ function startTimer() {
         size : "md",
         timeUp: submitTest
     });
+}
+
+
+function createProctorSession() {
+    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }); // that'a all
 }

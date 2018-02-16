@@ -65,7 +65,6 @@ module.exports = {
                 if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
-            console.log(data)
             GQTestQuestions.create(data).exec(function (err, quest) {
                 if (err) return res.json(200, {status: 'error', msg: err});
                 GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
@@ -122,18 +121,17 @@ module.exports = {
     },
 
     loadTest: function(req, res) {
-        //var test_id = req.param('test_id');
-        //GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
-        //    if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
-        //    req.session.suppliedAnswers = [];
-        //    return res.json(200, {
-        //        status: 'success',
-        //        questions: test[0].questions,
-        //        test_id: test[0].id,
-        //        duration: test[0].duration
-        //    });
-        //});
-        return res.ok();
+        var test_id = req.param('test_id');
+        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
+            if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
+            req.session.suppliedAnswers = [];
+            return res.json(200, {
+                status: 'success',
+                questions: test[0].questions,
+                test_id: test[0].id,
+                duration: test[0].duration
+            });
+        });
     },
 
     returnAnswer: function(req, res) {
@@ -164,7 +162,7 @@ module.exports = {
         });
         
         // save or update candidate's test score
-        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId).then(function() {
+        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             // destroy stored test answers
             req.session.suppliedAnswers = [];
             GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
@@ -173,6 +171,11 @@ module.exports = {
                 console.log(err)
             });
         });
+
+        // end protor session for all tests except the three aptitude tests with ids (1,2,3)
+        if ([1,2,3].indexOf(test_id) == -1) {
+            req.session.proctor = false;
+        }
     },
 
     markGQTest: function(req, res) {
@@ -185,7 +188,7 @@ module.exports = {
                 score++;
             }
         });
-        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId).then(function() {
+        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             CBTService.saveGeneralTestScore(req.session.userId, score).then(function(resp) {
                 // update candidate's resume
                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
@@ -204,6 +207,9 @@ module.exports = {
         }).catch(function(err) {
             console.log(err)
         });
+
+        // end protor session
+        req.session.proctor = false;
     },
 
     viewResults: function(req, res) {
@@ -252,30 +258,44 @@ module.exports = {
     },
 
     uploadProctorAudio: function(req, res) {
-        req.file('data').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/proctorFiles/'),
-            //saveAs: function (file, cb) {
-            //    console.log(file.filename)
-            //    return cb(null, file.filename);
-            //}
-        }, function(err, file) {
-            if (err) return console.log(err)
-            console.log('Aye ' + file.filename);
-        });
+        var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
+        var hr = process.hrtime();
+        var filename = '/aud_' + hr[1] + '.wav';
+        path += filename;
+        var audio = req.param('data').split(';base64,').pop();
+
+        var buff = new Buffer(audio, 'base64');
+        const fs = require('fs');
+        fs.writeFileSync(path, buff);
+console.log(req.session.proctor)
+        // save audio filename
+        var data = {
+            filename: filename,
+            file_type: 'audio',
+            proctor: req.session.proctor
+        };
+        ProctorRecord.create(data).exec(function() {});
         return res.ok()
     },
 
     uploadProctorPicture: function(req, res) {
-        req.file('imgBase64').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/proctorFiles/'),
-            //saveAs: function (file, cb) {
-            //    console.log(file.filename)
-            //    return cb(null, file.filename);
-            //}
-        }, function(err, file) {
-            if (err) return console.log(err)
-            console.log('Aye ' + file.filename);
-        });
+        var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
+        var hr = process.hrtime();
+        var filename = '/pic_' + hr[1] + '.png';
+        path += filename;
+        var photo = req.param('imgBase64').split(';base64,').pop();
+        var buff = new Buffer(photo, 'base64');
+        const fs = require('fs');
+        fs.writeFileSync(path, buff);
+        console.log(req.session.proctor)
+
+        // save photo filename
+        var data = {
+            filename: filename,
+            file_type: 'photo',
+            proctor: req.session.proctor
+        };
+        ProctorRecord.create(data).exec(function() {});
         return res.ok();
     }
 };

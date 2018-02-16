@@ -5,6 +5,20 @@
 {% endblock %}
 
 {% block body %}
+<style>
+	.modal-dialog {
+		width: 700px;
+	}
+
+	#audios, #photos, #profile-pic {
+		margin-top: 20px;
+	}
+
+	#photos .col-md-6 img {
+		width: 100%;
+	}
+</style>
+
     <div class="col-md-12">
         <div class="card">
             <div class="header row">
@@ -64,7 +78,7 @@
                     </div>
 
                     <div class="tab-pane in fade" id="assessed">
-                        <div class="">
+                        <div class="hidden">
                             <form method="post" id="form-filter">
                                 <div class="form-group">
                                     <div class="col-md-4">
@@ -94,10 +108,9 @@
                                         <th>Test Date</th>
                                         <th><i class="fa fa-user"></i> Candidate</th>
                                         <th>Percentage</th>
-                                        <th>Percentile</th>
-                                        <th>Average Score</th>
+                                        {#<th>Average Score</th>#}
                                         <th>Result</th>
-                                        <th class="text-center">Action</th>
+                                        {#<th class="text-center">Action</th>#}
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -105,17 +118,15 @@
                                     {% for result in results %}
                                         {% set n = n + 1 %}
                                         {#{% set applications = job.applications.length %}#}
-                                        <tr id="{{ result.applicant.id }}">
+                                        <tr id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
                                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                                             <td>{{ result.createdAt | date('d M, Y') }}</td>
                                             <td class="name">{{ result.applicant.fullname }}</td>
                                             <td>{{ result.percentage }}%</td>
-                                            <td class="textright">{{ result.percentile }}</td>
-                                            <td class="">{{ result.average_score }}</td>
+                                            {#<td class="">{{ result.average_score }}</td>#}
                                             <td>{{ result.test_result }}</td>
-                                            <td class="opt-icons text-center">
+											<td class="opt-icons text-center">
                                                 <a href="/applicant/resume-user/{{ result.applicant.id }}" class="btn btn-success btn-fill btn-xs" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
-                                                <a href="" class="short-list btn btn-warning btn-fill btn-xs" rel="tooltip" title="Shortlist Candidate"><i class="fa fa-check-circle-o fa-lg"></i> </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
@@ -160,60 +171,77 @@
 
 {% block modals %}
 
-    <div class="modal fade in" id="resumeModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
+    <div class="modal fade in" id="proctorModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         ×
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Candidate's Profile</h4>
+                    <h4 class="modal-title" id="myModalLabel">Proctor Details</h4>
                 </div>
 
                 <div class="modal-body">
+					<span id="proctor-id" class="hidden"></span>
+					<span id="candidate-id" class="hidden"></span>
 
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#profile-photo" data-toggle="tab">Profile Photo</a></li>
+						<li><a href="#photo" data-toggle="tab">Photos</a></li>
+                        <li><a href="#audio" data-toggle="tab">Audios</a></li>
+                    </ul>
+                    <div class="tab-content">
+						<div class="tab-pane fade active in" id="profile-photo">
+							<div class="row" id="profile-pic">
+								<div class="col-md-6" id="profilePhoto"></div>
+							</div>
+						</div>
+                        <div class="tab-pane fade in" id="photo">
+							<div class="row" id="photos"></div>
+                        </div>
+
+                        <div class="tab-pane fade in" id="audio">
+							<div class="row" id="audios"></div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
                         <i class="fa fa-times"></i> Close
                     </button>
+					<button class="btn btn-danger btn-fill" id="reject-test"><i class="fa fa-times fa-lg"></i> Reject</button>
+					<button class="btn btn-success btn-fill" id="accept-test"><i class="fa fa-check-circle-o fa-lg"></i> Accept</button>
                 </div>
             </div>
         </div>
     </div>
+
+    {#<div class="modal fade in" id="resumeModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">#}
+        {#<div class="modal-dialog">#}
+            {#<div class="modal-content">#}
+                {#<div class="modal-header">#}
+                    {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">#}
+                        {#×#}
+                    {#</button>#}
+                    {#<h4 class="modal-title" id="myModalLabel">Candidate's Profile</h4>#}
+                {#</div>#}
+
+                {#<div class="modal-body">#}
+
+                {#</div>#}
+                {#<div class="modal-footer">#}
+                    {#<button type="button" class="btn btn-default" data-dismiss="modal">#}
+                        {#<i class="fa fa-times"></i> Close#}
+                    {#</button>#}
+                {#</div>#}
+            {#</div>#}
+        {#</div>#}
+    {#</div>#}
 {% endblock %}
 
 {% block scriptTag %}
 <script type="text/javascript">
 $(document).ready(function() {
 
-    $(".short-list").click(function(e) {
-        e.preventDefault();
-        if (confirm("Are you sure you want to shortlist this candidate?")) {
-            var fullname = $(this).parents('tr').find('.name').text();
-            var job_id = {{ job_id | json | safe }};
-            var candidate_id = $(this).parents('tr').attr('id');
-            $.post('/applicant/select-candidate', { job_id: job_id, candidate_id: candidate_id });
-            var tr = "<tr>" +
-                 "<td style='width: 30px'><label class='checkbox'><input type='checkbox' class='form-control' data-toggle='checkbox' /></label></td>" +
-                 "<td>" + fullname + "</td>" +
-                 "<td><a href='' class='btn btn-danger btn-xs btn-fill unselect-candidate' rel='tooltip' title='Remove Candidate'><i class='fa fa-times fa-lg'></i></a></td>" +
-            "</tr>";
-            $("#tb-selected").html(tr);
-            showNotification('top', 'center', 'success', 'The candidate has been short-listed', 'pe-7s-bell');
-        }
-    });
-
-
-    $("#tb-selected").on('click', '.unselect-candidate', function(e) {
-        e.preventDefault();
-        if (confirm("Are you sure you want to remove this candidate?")) {
-            var job_id = {{ job_id | json | safe }};
-            var candidate_id = $(this).parents('tr').attr('id');
-            $.post('/applicant/unselect-candidate', { job_id: job_id, candidate_id: candidate_id });
-            $(this).parents('tr').fadeOut();
-            showNotification('top', 'center', 'success', 'The candidate has been removed', 'pe-7s-bell');
-        }
-    });
 });
 </script>

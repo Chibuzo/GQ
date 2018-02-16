@@ -26,6 +26,10 @@ module.exports = {
 
       result: {
           type: 'string'
+      },
+
+      proctor: {
+          model: 'proctorsession'
       }
   }
 };

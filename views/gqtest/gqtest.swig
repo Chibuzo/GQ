@@ -4,6 +4,14 @@
 	<i class="pe-7s-test"></i> &nbsp;GQ Assessment
 {% endblock %}
 {% block body %}
+<style>
+	.cell {
+		opacity: 0;
+		position: absolute !important;
+		/*right: -1500px;*/
+		z-index: -2;
+	}
+</style>
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
 
 <div class="row">
@@ -64,7 +72,7 @@
 							</div>
 						</div>
 
-						<div class="test" style="display: none;">
+						<div class="inner-test-div" style="display: none;">
 							<div id="countdowntimer" class="text-right"><span id="hms_timer"><span>00:00</div>
 							<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
 							<div class="row">
@@ -101,9 +109,29 @@
 		</div>
 	</div>
 </div>
+
+	<div class="cell">
+		<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
+			<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+			<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
+		</div>
+	</div>
 {% endblock %}
 
 {% block scriptTag %}
 <script type="text/javascript" src="/js/gqTestFrontend.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+<!-- Facial tracking -->
+<script src="/js/proctor/tracking-min.js"></script>
+<script src="/js/proctor/face-min.js"></script>
+<script src="/js/proctor/eye-min.js"></script>
+<script src="/js/proctor/mouth-min.js"></script>
+
+<!-- Audio Volume metering -->
+<script src="/js/proctor/volume-meter.js"></script>
+
+<!-- Audio tracking -->
+<script src="/js/proctor/recorder.min.js"></script>
+<!-- Main Setup -->
+<script src="/js/proctor/setup.js"></script>
 {% endblock %}

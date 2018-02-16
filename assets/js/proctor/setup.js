@@ -462,17 +462,20 @@ function startProctor() {
             });
         },
 
-        onFaceTracked: function () {
+        onFaceTracked: function (e) {
             // on face detected
         },
         // Integrity scoring can be applied here
         onMultiFaceTracked: function () {
             // on multi face detected
-            integrityScore = integrityScore - 15;
+            integrityScore -= integrityScore > 0 ? 5 : 0;
+            $('.progress-bar').css('width', integrityScore + "%");
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function () {
-            integrityScore = integrityScore - 5;
+            integrityScore -= integrityScore > 0 ? 1 : 0;
+            console.log(integrityScore);
+            $('.progress-bar').css('width', integrityScore + "%");
         },
 
         onMicPermissionDenied: function () {

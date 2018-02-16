@@ -24,22 +24,30 @@ module.exports = {
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
             if (jobtest.test_source == 'gq') {
-                GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').exec(function(err, results) {
+                GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
                     var gq_results = [];
-                    //console.log(results);
                     if (results.length > 0) {
                         async.eachSeries(results, function(result, cb) {
                             GQTestService.prepareCandidateResult(jobtest.gq_test, result.score, result.no_of_questions).then(function (rsult) {
-                                //rsult.test_title = test.test.test_name;
-                                gq_results.push({
-                                    applicant: result.candidate,
-                                    percentage: rsult.percentage,
-                                    percentile: '-',
-                                    average_score: rsult.average,
-                                    test_result: rsult.result,
-                                    createdAt: result.createdAt
+                                // get their BEST aptitude test score
+                                GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(0).exec(function(err, apt_score) {
+                                    //rsult.test_title = test.test.test_name;
+                                    gq_results.push({
+                                        test_id: result.id,
+                                        applicant: result.candidate,
+                                        score: result.score,
+                                        percentage: rsult.percentage,
+                                        percentile: '-',
+                                        //average_score: rsult.average,
+                                        test_result: rsult.result,
+                                        aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                                        integrity_score: result.proctor.integrity_score,
+                                        proctor_status: result.proctor.status,
+                                        proctor_id: result.proctor.id,
+                                        createdAt: result.createdAt
+                                    });
+                                    cb();
                                 });
-                                cb();
                             }).catch(function (err) {
                                 console.log(err);
                                 cb(err);
@@ -58,12 +66,12 @@ module.exports = {
         });
     },
 
-    saveTestScore: function(test_id, score, no_of_questions, candidate_id) {
+    saveTestScore: function(test_id, score, no_of_questions, candidate_id, proctor_session) {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({ candidate: candidate_id, test: test_id }).exec(function(err, test_result) {
                 if (err) return console.log(err);
                 if (test_result.length > 0) {
-                    GQTestResult.update({ id: test_result[0].id }, { score: score }).exec(function() {
+                    GQTestResult.update({ id: test_result[0].id }, { score: score, proctor: proctor_session }).exec(function() {
                         return resolve(true);
                     });
                 } else {
@@ -72,7 +80,8 @@ module.exports = {
                         candidate: candidate_id,
                         score: score,
                         no_of_questions: no_of_questions,
-                        result: 'Passed' // requires some logic
+                        result: 'Passed', // requires some logic
+                        proctor: proctor_session
                     };
                     GQTestResult.create(data).exec(function(err) {
                         return resolve(true);

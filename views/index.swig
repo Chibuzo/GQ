@@ -239,7 +239,7 @@
 				<!-- /Section-header -->
 
 				<!-- contact -->
-				<div class="col-sm-4">
+				<div class="col-sm-4 hidden">
 					<div class="contact">
 						<i class="fa fa-phone"></i>
 						<h3>Phone</h3>
@@ -249,21 +249,21 @@
 				<!-- /contact -->
 
 				<!-- contact -->
-				<div class="col-sm-4">
+				<div class="col-sm-6">
 					<div class="contact">
 						<i class="fa fa-envelope"></i>
 						<h3>Email</h3>
-						<p>getstarted@getqualified.com</p>
+						<p>support@getqualified.work</p>
 					</div>
 				</div>
 				<!-- /contact -->
 
 				<!-- contact -->
-				<div class="col-sm-4">
+				<div class="col-sm-6">
 					<div class="contact">
 						<i class="fa fa-map-marker"></i>
 						<h3>Address</h3>
-						<p>109 Awolowo road, Ikoyi</p>
+						<p>109 Awolowo Road, Ikoyi</p>
 					</div>
 				</div>
 				<!-- /contact -->
