@@ -42,7 +42,13 @@ module.exports = {
     },
 
     rejectTest: function(req, res) {
-        ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Rejected' }).exec(function() {});
+        ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Rejected' }).exec(function(err, proc) {
+            User.find({ id: req.param('candidate_id') }).exec(function(err, user) {
+                GQTest.find({ id: proc[0].test_id }).exec(function(err, test) {
+                    sendMail.notifyOnTestCheat(user[0], test[0].test_name);
+                });
+            });
+        });
         return res.ok();
     },
 

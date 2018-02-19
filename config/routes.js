@@ -128,7 +128,11 @@ module.exports.routes = {
 
     'GET /course/addnew': 'CourseController.addNew',
 
+    'GET /course/editcourse/:id': 'CourseController.editCourse',
+
     'POST /course/save': 'CourseController.saveCourse',
+
+    'GET /course/delete/:id': 'CourseController.deleteCourse',
 
     'POST /course/subscribe': 'CourseController.subscribe',
 

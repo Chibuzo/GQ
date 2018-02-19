@@ -14,6 +14,7 @@
 				</div>
 			</div>
 			<div class="content table-responsive table-full-width">
+			{% if jobs.length > 0 %}
 				<table class="table table-striped">
 					<thead>
 					<tr>
@@ -28,9 +29,7 @@
 					</tr>
 					</thead>
 					<tbody>
-					{% set n = 0 %}
 					{% for job in jobs %}
-						{% set n = n + 1 %}
 						{% if job.tests.length < 1 %}
 							{% set status = 'Under Review' %}
 							{% set btn_state = "disabled" %}
@@ -63,9 +62,9 @@
 					{% endfor %}
 					</tbody>
 				</table>
-				{% if n == 0 %}
-					<div class="alert alert-info">You have not applied for any jobs.</div>
-				{% endif %}
+			{% else %}
+				<div class="alert alert-info">You don't have any application. Begin application <a href="/jobs">here</a></div>
+			{% endif %}
 			</div>
 		</div>
 	</div>

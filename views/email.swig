@@ -15,11 +15,11 @@
 	</style>
 </head>
 
-<body style="margin: 20px;
+<body stle="margin: 20px;
         border: #ccc solid thin;
         padding: 10px;
         font: normal 13px Tahoma, sans-serif;">
-<table>
+<table style="border-collapse: collapse; border: #ccc solid thin; width: 400px; margin: auto; font: normal 14px 'Helvetica Neue', sans-serif" cellpadding="17">
 	<tr>
 		<td style="text-align: center; padding-bottom: 15px;">
 			<img src="https://getqualified.work/images/logo.png" style="padding: 30px; width: 160px;" alt="Get Qualified Logo" />

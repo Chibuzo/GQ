@@ -163,6 +163,29 @@ module.exports = {
     },
 
 
+    // when candidate cheats during test
+    notifyOnTestCheat: (user, test_name) => {
+        var data = {
+            user: user.fullname,
+            test: test_name
+        };
+        var subject = "GetQualified has cancelled your test result";
+        var template = 'testCancellationNotice';
+        module.exports.sendMail(user.email, subject, template, data);
+    },
+
+
+    // after candidate activates their account
+    welcomeNewCandidate: function(user) {
+        var data = {
+            user: user.fullname
+        };
+        var subject = "Welcome to GetQualified";
+        var template = 'welcomeNewCandidate';
+        module.exports.sendMail(user.email, subject, template, data);
+    },
+
+
     sendMail: function(to, subject, template, data) {
         let mailOptions = {
             from: '"Get Qualified" <noreply@getqualified.work>',

@@ -180,17 +180,17 @@
 
 										<div id="test-notice">
 											<h3>Test Instruction</h3>
-											<p> The following test is in one part and will take 25 minutes. It is simply a test of your aptitude and it is standardized.
+											<p> The following test is in one part and will take [25] minutes. It is simply a test of your aptitude and it is standardized.
 											Please read each question carefully and choose your best answer.</p>
 											<p class="text-left"><br>
 												<ol class="text-left">
-													<li>This test is accompanied by anti-cheating technology and it requires you take this test in a well-lit and quiet room with no assistance. Taking test otherwise might reflect in your result and your standing</li>
+													<li>This test is accompanied by anti-cheating technology and it requires you take this test in a well-lit and quiet room with no assistance.</li>
+													<li>Taking test otherwise might reflect in your result and your standing</li>
 													<li>It is advised you take this test with a computer.</li>
-													<li>You will not be penalized for guessing.</li>
 													<li>The test auto-submits when your test time is up.</li>
 												</ol>
 											</p><br>
-											<p>Proceed to take the test. Good luck!</p>
+											<p>Proceed to take the test and Good luck!</p>
 											<br>
 											<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
 										</div>
@@ -198,16 +198,6 @@
 
 									<div class="test">
 										<h3 class="test-title text-center"></h3>
-										<div class="row">
-											<div class="col-md-4 pull-right">
-												<div class="progress">
-												  <div class="progress-bar progress-bar-danger" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-													<span class="sr-only">100% Complete (danger)</span>Integrity Score
-												  </div>
-												</div>
-											</div>
-										</div>
-
 										<div id="instructions">
 											<div class="instruction"></div>
 											<div class="text-center">
@@ -216,6 +206,16 @@
 										</div>
 
 										<div class="inner-test-div" style="display: none;">
+											<div class="row">
+												<div class="col-md-4 pull-right">
+													<small>Invigilation Score</small>
+													<div class="progress">
+													  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+														{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
+													  </div>
+													</div>
+												</div>
+											</div>
 											<div id="countdowntimer" class="text-right"><span id="hms_timer"><span>00:00</div>
 											<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
 											<div class="row">
@@ -244,6 +244,14 @@
 												<button class="btn btn-info btn-fill hidden">Pev <i class="fa fa-caret-left"></i> </button>
 												<button class="btn btn-primary btn-fill" id="submit-test">Submit Test</button>
 												<button class="btn btn-info btn-fill pull-right" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+											</div>
+										</div>
+										<div class="test-blocked-screen hidden">
+											<div class="alert alert-danger">
+												<div class="text-center">
+													<br><i class="fa fa-ban fa-4x"></i>
+													<br><br><h4>Hi, your microphone and webcam MUST be turned on before you can proceed with this test.</h4>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -444,7 +452,7 @@ $(document).ready(function() {
 		$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
 		$.post('/resume/update', $(this).serialize(), function(d) {
 			if (d.status.trim() == 'success') {
-				var msg = "Your corporate profile has been successfully updated!";
+				var msg = "Your GetQualified profile has been successfully updated!";
 				showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
 			} else {
 				showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');

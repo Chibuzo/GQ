@@ -18,6 +18,7 @@
 				</div>
 			</div>
 			<div class="content table-responsive table-full-width">
+			{% if jobs.length > 0 %}
 				<table class="table table-striped tablebordered">
 					<thead>
 					<tr>
@@ -32,11 +33,10 @@
 						<th>Posted By</th>
 						{#<th>Status</th>#}
 						<th><i class="fa fa-calendar"></i> Closing Date</th>
-						<th class="text-center" = style="width: 150px">Action</th>
+						<th class="text-center" style="width: 160px">Action</th>
 					</tr>
 					</thead>
 					<tbody>
-					{% set n = 0 %}
 					{% for job in jobs %}
 						{% set applications = job.applications.length %}
 						<tr id="{{ job.id }}">
@@ -46,7 +46,7 @@
 							<td class="hidden">{{ job.category.category }}</td>
 							<td>{{ job.job_level }}</td>
 							<td>{{ job.contract_type }}</td>
-							<td class="text-right"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+							<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
 							{#<td><a href=""></a></td>#}
 							<td>{{ job.poster.fullname }}</td>
 							{#<td>{{ job.status }}</td>#}
@@ -64,6 +64,7 @@
 					{% endfor %}
 					</tbody>
 				</table>
+			{% endif %}
 			</div>
 		</div>
 	</div>

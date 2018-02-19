@@ -89,7 +89,7 @@
 	<div class="form-group">
 		<div class="row">
 			<div class="col-md-12">
-				<label>Personal Statement</label> [ <span class="red">*</span> ]
+				<label>Professional Summary</label> [ <span class="red">*</span> ]
 				<textarea name="introduction" class="form-control" placeholder="Not more than 70 words" required>{{ resume.introduction }}</textarea>
 			</div>
 		</div>

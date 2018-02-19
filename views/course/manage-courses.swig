@@ -67,11 +67,8 @@ $(document).ready(function() {
 		var $this = $(this);
 		if (confirm("Are you sure you want to delete this job?")) {
 			var id = $(this).parents('tr').attr('id');
-			$.get('/course/remove', { id: id }, function(d) {
-				if (d.status.trim() == 'success') {
-					$this.parents('tr').fadeOut();
-				}
-			}, 'JSON');
+			$.get('/course/delete/' + id, function(d) {}, 'JSON');
+			$this.parents('tr').fadeOut();
 		}
 	});
 

@@ -37,6 +37,7 @@ module.exports.policies = {
 
     ResumeController: {
         '*': 'isLoggedIn',
-        'viewResumeByUser': 'isAdmin'
+        'viewResumeByUser': 'isAdmin',
+        'viewResumeByUser': 'isCompany'
     }
 };

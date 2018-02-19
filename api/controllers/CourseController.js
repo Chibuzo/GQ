@@ -13,10 +13,16 @@ module.exports = {
             abstract: q('abstract'),
             body: q('body')
         };
-        Course.create(data).exec(function(err, course) {
-            if (err) console.log(err);
-            return res.redirect('/courses/list');
-        });
+        if (q('course_id')) {
+            Course.update({ id: q('course_id') }, data).exec(function() {
+                return res.redirect('/courses/list');
+            });
+        } else {
+            Course.create(data).exec(function(err, course) {
+                if (err) console.log(err);
+                return res.redirect('/courses/list');
+            });
+        }
     },
 
     listCourses: function(req, res) {
@@ -39,12 +45,23 @@ module.exports = {
         //})
     },
 
+    editCourse: function(req, res) {
+        Course.find({ id: req.param('id') }).exec(function(err, course) {
+            return res.view('course/addcourse', { course: course[0] });
+        });
+    },
+
     subscribe: function(req, res) {
         if (req.session.userId) {
             var course_id = req.param('course_id');
             CourseSub.findOrCreate({ course: course_id, candidate: req.session.userId }, { course: course_id, candidate: req.session.userId }).exec(function() {});
             return res.ok();
         }
+        return res.ok();
+    },
+
+    deleteCourse: function(req, res) {
+        Course.destroy({ id: req.param('id') }).exec(function() {});
         return res.ok();
     }
 };

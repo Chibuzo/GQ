@@ -1,8 +1,4 @@
-/**
- * Created by Uzo on 3/3/2017.
- */
-
-module.exports = function isLoggedIn(req, res, next) {
+module.exports = function isAdmin(req, res, next) {
     if (req.session.admin) {
         return next();
     }

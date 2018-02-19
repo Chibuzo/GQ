@@ -344,7 +344,7 @@
                 pc.mediaStreamSource.connect(pc.meter);
 
                 // kick off the visual updating
-                drawLoop();
+                //drawLoop();
             }, function(e) {});
         } catch(e) {
             console.log('Proctor: getUserMedia threw exception :' + e);
@@ -469,25 +469,47 @@ function startProctor() {
         onMultiFaceTracked: function () {
             // on multi face detected
             integrityScore -= integrityScore > 0 ? 5 : 0;
+            console.log(integrityScore);
+            if (integrityScore < 70 && integrityScore > 55) {
+                $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+            }
+            else if (integrityScore < 55) {
+                $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+            }
             $('.progress-bar').css('width', integrityScore + "%");
+            //$('.progress-bar').animate({ width: integrityScore + '%' });
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function () {
             integrityScore -= integrityScore > 0 ? 1 : 0;
-            console.log(integrityScore);
+            console.log(integrityScore)
+            //if (integrityScore < 70 && integrityScore > 55) { alert('ORange')
+            //    $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+            //}
+            //else if (integrityScore < 55) { alert('red')
+            //    $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+            //}
             $('.progress-bar').css('width', integrityScore + "%");
         },
 
         onMicPermissionDenied: function () {
-            console.log('Proctor: Microphone needed for this test');
+            //console.log('Proctor: Microphone needed for this test');
+            blockTest();
         },
         onCamPermissionDenied: function () {
-            console.log('Proctor: Webcam needed for this test');
+            //console.log('Proctor: Webcam needed for this test');
+            blockTest();
         },
 
         proctorReady: function () {
-            console.log('Proctor is ready.');
+            console.log('Proctor is ready to r.');
         }
     })
 }
 //})
+
+function blockTest() {
+    $("#inner-test-div").fadeOut('fast', function() {
+        $(".test-blocked-screen").removeClass('hidden');
+    });
+}
