@@ -209,7 +209,7 @@
 											<div class="row">
 												<div class="col-md-4 pull-right">
 													<small>Invigilation Score</small>
-													<div class="progress">
+													<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room.">
 													  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
 														{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
 													  </div>

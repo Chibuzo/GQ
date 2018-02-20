@@ -178,7 +178,7 @@ module.exports = {
     viewResume: function(req, res) {
         var resume_id = req.param('resume_id');
         ResumeService.viewResume(resume_id).then(function(response) {
-            return res.view('applicant/viewresume', {
+            return res.view('cv/viewresume', {
                 resume: response.resume,
                 result: response.result ? response.result : null,
                 test_title: response.test_title ? response.test_title : null
@@ -191,7 +191,7 @@ module.exports = {
     viewResumeByUser: function(req, res) {
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
-                return res.view('applicant/viewresume', {
+                return res.view('cv/viewresume', {
                     resume: response.resume,
                     result: response.result ? response.result : null,
                     test_title: response.test_title ? response.test_title : null

@@ -249,7 +249,7 @@ function shuffleArray(array) {
 function startTimer() {
     var hrs = mins = 0;
     if (duration > 60) {
-        hrs = math.floor(duration / 60);
+        hrs = Math.floor(duration / 60);
         mins = duration % 60;
     } else {
         hrs = 0;
@@ -274,7 +274,9 @@ function mobileCheck() {
 
 
 function createProctorSession() {
-    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }); // that'a all
+    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(d) {
+        console.log(d)
+    }); // that'a all
 }
 
 

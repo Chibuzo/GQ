@@ -226,7 +226,7 @@ module.exports = {
                             score: result.score,
                             percentage: percentage,
                             average_score: test_ave[0].score,
-                            result: percentage > 69 ? 'Passed' : 'Failed',
+                            result: percentage > 59 ? 'Passed' : 'Failed',
                             test_date: result.updatedAt
                         });
                     });
@@ -267,7 +267,7 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-console.log(req.session.proctor)
+        //console.log('Audio ' + req.session.proctor)
         // save audio filename
         var data = {
             filename: filename,
@@ -287,7 +287,7 @@ console.log(req.session.proctor)
         var buff = new Buffer(photo, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-        console.log(req.session.proctor)
+        //console.log('Video ' + req.session.proctor)
 
         // save photo filename
         var data = {

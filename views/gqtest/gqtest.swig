@@ -73,6 +73,16 @@
 						</div>
 
 						<div class="inner-test-div" style="display: none;">
+							<div class="row">
+								<div class="col-md-4 pull-right">
+									<small>Invigilation Score</small>
+									<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room.">
+										<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+											{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
+										</div>
+									</div>
+								</div>
+							</div>
 							<div id="countdowntimer" class="text-right"><span id="hms_timer"><span>00:00</div>
 							<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
 							<div class="row">
@@ -99,8 +109,8 @@
 
 							<div class="nav-btns">
 								<button class="btn btn-info btn-fill hidden">Pev <i class="fa fa-caret-left"></i> </button>
-								<button class="btn btn-primary btn-fill" id="submit-test">Submit Test</button>
-								<button class="btn btn-info btn-fill pull-right" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+								<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+								<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Test </button>
 							</div>
 						</div>
 					</div>

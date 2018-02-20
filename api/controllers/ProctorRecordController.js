@@ -17,8 +17,8 @@ module.exports = {
             ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
                 req.session.proctor = sess.id;
                 req.session.save();
-                console.log(req.session.proctor)
-                return res.ok();
+                //console.log('Started Proctor Session ' + req.session.proctor);
+                return res.json(200, { status: 'success', proctor_id: sess.id });
             });
         }
     },

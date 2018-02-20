@@ -47,7 +47,7 @@ module.exports = {
                                     score: result.score ? result.score : 'NA',
                                     percentage: percentage,
                                     percentile: '-',
-                                    test_result: percentage > 69 ? 'Passed' : 'Failed',
+                                    test_result: percentage > 59 ? 'Passed' : 'Failed',
                                     composite_score: composite_score,
                                     //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
                                     integrity_score: result.proctor.integrity_score,

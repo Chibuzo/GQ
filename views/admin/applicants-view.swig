@@ -52,7 +52,7 @@
                                     {% for applicant in applicants %}
                                         {% set n = n + 1 %}
                                         {#{% set applications = job.applications.length %}#}
-                                        <tr id="{{ applicant.applicant.id }}">
+                                        <tr>
                                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                                             <td>{{ applicant.createdAt | date('d M, Y') }}</td>
                                             <td>{{ applicant.applicant.fullname }}</td>
@@ -159,7 +159,7 @@
                                     </thead>
                                     <tbody id="tb-selected">
                                     {% for sel in selected_candidates %}
-                                        <tr id="{{ sel.applicant.id }}">
+                                        <tr data-candidate_id="{{ sel.applicant.id }}">
                                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                                             <td>{{ sel.applicant.fullname }}</td>
                                             <td><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
@@ -272,7 +272,7 @@ $(document).ready(function() {
         e.preventDefault();
         if (confirm("Are you sure you want to remove this candidate?")) {
             var job_id = {{ job_id | json | safe }};
-            var candidate_id = $(this).parents('tr').attr('id');
+            var candidate_id = $(this).parents('tr').data('candidate_id');
             $.post('/applicant/unselect-candidate', { job_id: job_id, candidate_id: candidate_id });
             $(this).parents('tr').fadeOut();
             showNotification('top', 'center', 'success', 'The candidate has been removed', 'pe-7s-bell');
@@ -316,17 +316,19 @@ $(document).ready(function() {
 			$.post('/proctor/accept-test',  { proctor_id: proctor_id }, function(d) {
 
 			}, 'JSON');
-			$("#" + $("#candidate-id").text()).find("td:nth-child(8)").text('Accekjoioippted');
+			$("#" + $("#candidate-id").text()).find("td:nth-child(8)").text('Accepted');
 		}
 	});
 
 	$("#reject-test").click(function() {
 		if (confirm("Are you sure you want to reject this test score?")) {
 			var proctor_id = $("#proctor-id").text();
+            var candidate_id = $("#candidate-id").text();
 
-			$.post('/proctor/reject-test',  { proctor_id: proctor_id }, function() {
-				$("#" + $("#candidate-id").text()).find("td:nth-child(8)").text('Rejected');
+			$.post('/proctor/reject-test',  { proctor_id: proctor_id, candidate_id: candidate_id }, function() {
+
 			}, 'JSON');
+            $("tr#" + candidate_id).find("td:nth-child(8)").html('Rejected');
 		}
 	});
 });
