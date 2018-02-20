@@ -645,12 +645,6 @@ header {
     margin: 15px 0px;
 }
 
-.about i {
-    font-size: 36px;
-    color: #6195FF;
-    margin-bottom: 20px;
-}
-
 .about:after {
     content: "";
     /*background-color: #1C1D21;*/
@@ -677,6 +671,15 @@ header {
     /*color: #fff;*/
 }
 
+/*------------------------------------*\
+	Landing Page Icons
+\*------------------------------------*/
+
+.landing-page-icon {
+    font-size: 36px;
+    color: #6195FF;
+    margin-bottom: 20px;
+}
 
 /*------------------------------------*\
 	Portfolio

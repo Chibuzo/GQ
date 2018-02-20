@@ -279,7 +279,7 @@ module.exports = {
         Job.find({ id: job_id }).exec(function(err, job) {
             // let's prevent companies from viewing this data while the job is still active
             var today = new Date().toISOString();
-            if (Date.parse(job[0].closing_date) >= Date.parse(today)) {
+            if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
                 return res.view('company/applicants-view.swig', { job_active: true });
             }
             JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
@@ -348,4 +348,3 @@ module.exports = {
         });
     }
 };
-
