@@ -55,7 +55,7 @@
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume" data-toggle="tab"><i class="fa fa-newspaper-o"></i> &nbsp;Resume</a></li>
-							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
+							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Assessment Score</a></li>
 							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;Video</a></li>
 						</ul>
 						<div class="tab-content">
@@ -150,6 +150,7 @@
 								<div class="row" style="margin-top: 40px">
 									{% if resume.video_file.length > 3 %}
 										<div class="col-md-5 col-md-offset-3">
+											<h4>Video Profile</h4>
 											<video style="margin-top: 50px;" width="450" height="300" controls=controls>
 												<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>
 											</video>

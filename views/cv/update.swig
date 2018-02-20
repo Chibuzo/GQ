@@ -242,8 +242,8 @@
 
 											<div class="nav-btns">
 												<button class="btn btn-info btn-fill hidden">Pev <i class="fa fa-caret-left"></i> </button>
-												<button class="btn btn-primary btn-fill" id="submit-test">Submit Test</button>
-												<button class="btn btn-info btn-fill pull-right" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+												<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+												<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Test </button>
 											</div>
 										</div>
 										<div class="test-blocked-screen hidden">

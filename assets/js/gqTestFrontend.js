@@ -276,3 +276,8 @@ function mobileCheck() {
 function createProctorSession() {
     $.post('/gqtest/createProctorSession', { test_id: TEST_ID }); // that'a all
 }
+
+
+window.onbeforeunload = function() {
+    alert('Ewu!')
+};

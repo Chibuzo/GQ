@@ -64,6 +64,8 @@
 					{% endfor %}
 					</tbody>
 				</table>
+			{% else %}
+				<div class="alert alert-info">You've not posted any job yet. Click on the add job button at the top right to begin.</div>
 			{% endif %}
 			</div>
 		</div>

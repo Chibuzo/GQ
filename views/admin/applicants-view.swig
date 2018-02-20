@@ -107,9 +107,9 @@
                                         <th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
                                         <th>Test Date</th>
                                         <th><i class="fa fa-user"></i> Candidate</th>
-                                        <th>Percentage</th>
-                                        <th class="text-center">Aptitude Test</th>
-                                        {#<th>Average Score</th>#}
+                                        <th>Competency Score</th>
+                                        {#<th class="text-center">Aptitude Test</th>#}
+                                        <th>Overall Ranking</th>
                                         <th>Result</th>
                                         <th class="text-center">Integrity</th>
 										<th>Status</th>
@@ -126,8 +126,8 @@
                                             <td>{{ result.createdAt | date('d M, Y') }}</td>
                                             <td class="name">{{ result.applicant.fullname }}</td>
                                             <td>{{ result.percentage }}%</td>
-                                            <td class="text-center">{{ result.aptitude_test }}</td>
-                                            {#<td class="">{{ result.average_score }}</td>#}
+                                            {#<td class="text-center">{{ result.aptitude_test }}</td>#}
+                                            <td class="text-center">{{ result.aptitude_scores.indexOf(result.composite_score) + 1 }}</td>
                                             <td>{{ result.test_result }}</td>
                                             <td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ result.proctor_id }}">{{ result.integrity_score }}</a></td>
                                             <td>{{ result.proctor_status }}</td>
@@ -185,7 +185,7 @@
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                         ×
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Proctor Details</h4>
+                    <h4 class="modal-title" id="myModalLabel">Invigilation Details</h4>
                 </div>
 
                 <div class="modal-body">

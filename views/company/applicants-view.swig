@@ -28,11 +28,14 @@
                 </div>
             </div>
             <div class="content">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
-                    <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
-                </ul>
-                <div class="tab-content">
+                {% if job_active === true %}
+                    <div class="alert alert-info">Your job hasn’t been fully processed by GetQualified. Please kindly contact your Account Manager or simply email: account@getqualified.work</div>
+                {% else %}
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
+                        <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
+                    </ul>
+                    <div class="tab-content">
                     <div class="tab-pane active in fade" id="assessed">
                         <div class="hidden">
                             <form method="post" id="form-filter">
@@ -57,7 +60,6 @@
                         </div>
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px;">
-                            {#{% if  %}#}
                                 <table class="table table-striped tablebordered">
                                     <thead>
                                     <tr>
@@ -121,6 +123,7 @@
                         </div>
                     </div>
                 </div>
+                {% endif %}
             </div>
         </div>
     </div>
