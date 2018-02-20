@@ -131,18 +131,18 @@
 					</div>
 					<!-- /footer logo -->
 
-					<!-- footer follow -->
+					<!-- footer follow
 					<ul class="footer-follow">
 						<li><a href="#"><i class="fa fa-facebook"></i></a></li>
 						<li><a href="#"><i class="fa fa-twitter"></i></a></li>
 						<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
 						<li><a href="#"><i class="fa fa-youtube"></i></a></li>
 					</ul>
-					<!-- /footer follow -->
+					/footer follow -->
 
 					<!-- footer copyright -->
 					<div class="footer-copyright">
-						<p>Copyright © 2017. All Rights Reserved.</p>
+						<p>Copyright © 2018. All Rights Reserved.</p>
 					</div>
 					<!-- /footer copyright -->
 
