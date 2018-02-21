@@ -4,7 +4,16 @@
 	<i class="pe-7s-graph"></i> Dashboard
 {% endblock %}
 
+
+
 {% block body %}
+	<style>
+		.tests-alert {
+			width: 90%;
+			margin: 0 auto;
+			text-align: center;
+		}
+	</style>
 	<div class="row">
 		<div class="col-md-6">
 			<div class="card">
@@ -50,7 +59,9 @@
 						</tbody>
 					</table>
 					{% if n == 0 %}
-						<div class="alert alert-info">You have not taken any test(s)</div>
+						<div class="alert alert-warning tests-alert" role="alert">
+							You have not taken any test(s)
+						</div>
 					{% endif %}
 				</div>
 			</div>
