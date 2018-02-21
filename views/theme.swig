@@ -46,7 +46,7 @@
 		}
 
 		.section img {
-			width: 496px;
+			width: 100%;
 		}
 	</style>
 </head>
