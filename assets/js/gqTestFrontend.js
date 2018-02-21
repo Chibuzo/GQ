@@ -40,6 +40,9 @@ $("#start-test").click(function() {
     // register proctor session
     createProctorSession();
 
+    // register event to warn candidate about leaving the test page
+    //addWindowsCloseEvent();
+
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
@@ -213,6 +216,8 @@ function submitTest() {
             });
         }
     });
+    // remove windows close event
+    //removeWindowsCloseEvent();
 }
 
 // NOTE! This function is a very dirty hack!
@@ -280,6 +285,20 @@ function createProctorSession() {
 }
 
 
-window.onbeforeunload = function() {
-    alert('Ewu!')
-};
+//function addWindowsCloseEvent() {
+//    window.addEventListener("beforeunload", warnCandidate(e));
+//}
+//
+//function warnCandidate(e) {
+//    var confirmationMessage = "\o/";
+//
+//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//	return confirmationMessage;
+//    //$.post('/pushajax', { msg: 'Window Closed'});
+//}
+//
+//
+//function removeWindowsCloseEvent() {
+//    window.removeEventListener("beforeunload", warnCandidate());
+//    $.post('/pushajax', { msg: 'Window freed'});
+//}

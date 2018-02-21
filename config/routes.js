@@ -216,7 +216,9 @@ module.exports.routes = {
 
     'GET /get-schools': 'SchoolsController.getSchools',
 
-    'GET /email': { view: 'email' }
+    'GET /email': { view: 'email' },
+
+    'POST /pushajax': 'TestController.ajaxTest'
 
     //'GET /loadschools': 'BatchController.loadSchools',
     //

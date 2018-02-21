@@ -20,13 +20,7 @@ module.exports = {
                     Honour.find().exec(function(err, honours) {
                         // check for test result
                         CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-
-                            //    test: test_id,
-                        //    candidate: req.session.userId
-                        //}).populate('test').exec(function (err, test_result) {
-                        //    if (err) console.log(err)
                             if (result) {
-                        //        GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
                                 return res.view('cv/update', {
                                     resume: resume,
                                     me: me,
@@ -55,7 +49,7 @@ module.exports = {
 
     save: function(req, res) {
         var q = req.param;  // trying to make life easier
-        var sections = [], status;
+        var sections = [], status; // for profile complete status
 
         // lets handle associative data
         // Education
@@ -116,7 +110,7 @@ module.exports = {
                 Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
             } else {
                 Employment.create(employment).exec(function() {});
-                sections.employment = true;
+                //sections.employment = true;
             }
         }
 

@@ -23,43 +23,16 @@ module.exports = {
 
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
+            if (!jobtest) {
+                return resolve([]);
+            }
             if (jobtest.test_source == 'gq') {
                 GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
-                    var gq_results = [];
                     if (results.length > 0) {
-                        var aptitude_test_results = [];
-                        async.eachSeries(results, function(result, cb) {
-                            // get their BEST aptitude test score
-                            GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(0).exec(function(err, apt_score) {
-                                var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
-                                // if the job has a competency test, compute the two, else use only aptitude test score
-                                var composite_score;
-                                if (result.score) {
-                                    composite_score = ((apt_score[0].score / 2) + (result.score / 2)).toFixed(1);
-                                    aptitude_test_results.push(composite_score);
-                                } else {
-                                    composite_score = apt_score[0].score;
-                                    aptitude_test_results.push(apt_score[0].score);
-                                }
-                                gq_results.push({
-                                    test_id: result.id,
-                                    applicant: result.candidate,
-                                    score: result.score ? result.score : 'NA',
-                                    percentage: percentage,
-                                    percentile: '-',
-                                    test_result: percentage > 59 ? 'Passed' : 'Failed',
-                                    composite_score: composite_score,
-                                    //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                                    integrity_score: result.proctor.integrity_score,
-                                    proctor_status: result.proctor.status,
-                                    proctor_id: result.proctor.id,
-                                    createdAt: result.createdAt
-                                });
-                                cb();
-                            });
-                        }, function() {
-                            gq_results.aptitude_scores = aptitude_test_results;
-                            return resolve(gq_results);
+                        module.exports.processJobResult(results).then(function(_results) {
+                            resolve(results);
+                        }).catch(function(err) {
+                            return reject('Something went wrong. Please try again');
                         });
                     } else {
                         return resolve([]);
@@ -67,9 +40,57 @@ module.exports = {
                 });
             } else {
                 TestResult.find({ test_id: jobtest.test.test_id, applicant: candidates }).populate('applicant').exec(function(err, results) {
-                    return resolve(results);
+                    if (results.length > 0) {
+                        module.exports.processJobResult(results).then(function(_results) {
+                            resolve(results);
+                        }).catch(function(err) {
+                            return reject('Something went wrong. Please try again');
+                        });
+                    } else {
+                        return resolve([]);
+                    }
                 });
             }
+        });
+    },
+
+    processJobResult: function(results) {
+        return new Promise(function(resolve, reject) {
+            var gq_results = [];
+            var aptitude_test_results = []; // for computing aptitude test ranking
+            async.eachSeries(results, function(result, cb) {
+                // get their BEST aptitude test score
+                GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
+                    var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+                    // if the job has a competency test, compute the two, else use only aptitude test score
+                    var composite_score;
+                    if (result.score) {
+                        composite_score = ((apt_score[0].score / 2) + (result.score / 2)).toFixed(1);
+                        aptitude_test_results.push(composite_score);
+                    } else {
+                        composite_score = apt_score[0].score;
+                        aptitude_test_results.push(apt_score[0].score);
+                    }
+                    gq_results.push({
+                        test_id: result.id,
+                        applicant: result.candidate,
+                        score: result.score ? result.score : 'NA',
+                        percentage: percentage,
+                        percentile: '-',
+                        test_result: percentage > 59 ? 'Passed' : 'Failed',
+                        composite_score: composite_score,
+                        //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                        integrity_score: result.proctor.integrity_score,
+                        proctor_status: result.proctor.status,
+                        proctor_id: result.proctor.id,
+                        createdAt: result.createdAt
+                    });
+                    cb();
+                });
+            }, function() {
+                gq_results.aptitude_scores = aptitude_test_results;
+                return resolve(gq_results);
+            });
         });
     },
 
@@ -130,7 +151,6 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             GQAptitudeTestResult.find({ user: candidate_id }).populate('user').exec(function(err, candidate_score) {
                 if (candidate_score.length < 1) {
-                    //return reject("Candidate doesn't have result"); // I'm not sure why this may ever happen
                     return resolve(false);
                 }
                 GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {

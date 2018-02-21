@@ -113,11 +113,28 @@ module.exports = {
 
     loadTestInstruction: function(req, res) {
         var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).exec(function(err, test) {
-            if (err) return console.log(err);
-            //console.log(test);
-            return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
-        });
+        // dirty hack for resuming test that has sections. Currently, only applicable to GQ general test
+        if (test_id == 1) {
+            GQTestService.determineTestId(req.session.userId).then(function (next_test) {
+                GQTest.find({id: next_test}).exec(function (err, test) {
+                    if (err) return console.log(err);
+                    return res.json(200, {
+                        status: 'success',
+                        test_name: test[0].test_name,
+                        instructions: test[0].instructions
+                    });
+                });
+            });
+        } else {
+            GQTest.find({id: test_id}).exec(function (err, test) {
+                if (err) return console.log(err);
+                return res.json(200, {
+                    status: 'success',
+                    test_name: test[0].test_name,
+                    instructions: test[0].instructions
+                });
+            });
+        }
     },
 
     loadTest: function(req, res) {
@@ -193,7 +210,7 @@ module.exports = {
                 // update candidate's resume
                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                     if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                        Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
+                        Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                     }
                 });
                 CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
