@@ -676,9 +676,18 @@ header {
 \*------------------------------------*/
 
 .landing-page-icon {
-    font-size: 36px;
-    color: #6195FF;
-    margin-bottom: 20px;
+	font-size: 36px;
+	color: #6195FF;
+	margin-bottom: 20px;
+}
+
+
+/*------------------------------------*\
+	Landing Page Lists
+\*------------------------------------*/
+
+.landing-page-list {
+	list-style: initial;
 }
 
 /*------------------------------------*\

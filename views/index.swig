@@ -66,7 +66,7 @@
 				<div class="col-md-6">
 					<div class="section-header">
 						<h2 class="title">What is Get Qualified</h2>
-						<ul class="list-styled">
+						<ul class="landing-page-list">
 							<li>A recruitment tool for employers and recruitment companies</li>
 							<li>Objectively assess candidate’s cognitive abilities, job related knowledge and fit via a low cost and scalable testing platform</li>
 							<li>Identify the best candidates from a large applicant pool</li>

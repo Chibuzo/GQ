@@ -43,8 +43,8 @@
 			<!-- home content -->
 			<div class="col-md-10 col-md-offset-1">
 				<div class="home-content">
-					<h1 class="white-text">Getting hired can be very straightforward</h1>
-					<p class="white-text">Get Qualified first</p>
+					<h1 class="white-text">Getting a job can be quick and easy</h1>
+					<p class="white-text">GetQualified first</p>
 					<a href="/signup" class="white-btn">Sign Up</a>
 				</div>
 			</div>
@@ -60,8 +60,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-8  col-md-offset-2">
-				Getting hired is not a random process. Skip the line, get qualified for top jobs that fit your personality and qualification in a very systematic and defined way.			</div>
-		</div>
+			Getting a job used to be difficult. Not any more. No more searching endlessly in newspapers and online for potential jobs. No more wasting money and time going from interview to interview. GetQualified makes getting a job as simple as possible.</div>
 	</div>
 </section>
 
@@ -75,18 +74,17 @@
 		<div class="row">
 
 			<!-- Section header -->
-			<div class="section-header text-center hidden">
-				<h2 class="title">Features</h2>
+			<div class="section-header text-center">
+				<h2 class="title">How will it help me as a candidate?</h2>
 			</div>
 			<!-- /Section header -->
 
 			<!-- about -->
 			<div class="col-md-4">
 				<div class="about">
-					<i class="fa fa-certificate"></i>
+					<i class="fa fa-certificate landing-page-icon"></i>
 					<h3>Personalised Career Guidance</h3>
-					<p>Create a digital CV and video profile. Complete our standard tests and find out where you rank vs other candidates. Receive personalised advice on career options to optimise your chances of getting hired
-					</p>
+					<p>Get matched with a job that suits your knowledge and your strengths. Receive a fair and unbiased comparison of your abilities vs other applicants and personalised advice on career options to optimise your chances of getting hired</p>
 				</div>
 			</div>
 			<!-- /about -->
@@ -94,10 +92,9 @@
 			<!-- about -->
 			<div class="col-md-4">
 				<div class="about">
-					<i class="fa fa-briefcase"></i>
+					<i class="fa fa-check-square-o landing-page-icon"></i>
 					<h3>Professional Development</h3>
-					<p>Companies are looking for pre-vetted candidates. Enhance your profile and work readiness by undergoing additional work related and soft skills training on our platform. Get certified for
-						each course you successfully complete</p>
+					<p>Companies are looking for pre-vetted candidates. Enhance your profile and work readiness by undergoing additional work related and soft skills training on our platform. Get certified for each course you successfully complete</p>
 				</div>
 			</div>
 			<!-- /about -->
@@ -105,9 +102,9 @@
 			<!-- about -->
 			<div class="col-md-4">
 				<div class="about">
-					<i class="fa fa-thumbs-up"></i>
+					<i class="fa fa-briefcase landing-page-icon"></i>
 					<h3>Discover new job opportunities </h3>
-					<p>Let jobs find you. Get notified of relevant job opportunities and apply directly or get approached by companies who have seen your video profile and ranking.</p>
+					<p>Let jobs find you. GetQualified searches 24/7 for all available jobs on your behalf . Get notified of relevant job opportunities and apply directly or receive job offers directly from employers who have seen your video profile and ranking</p>
 				</div>
 			</div>
 			<!-- /about -->
@@ -121,10 +118,7 @@
 </div>
 <!-- /About -->
 
-
-
-
-<div id="features" class="section md-padding bg-grey">
+<div id="getStarted" class="section md-padding bg-grey">
 
 	<!-- Container -->
 	<div class="container">
@@ -134,14 +128,27 @@
 			<div class="col-md-6">
 				<img src="/images/why-gq.jpg" />
 			</div>
-
 			<div class="col-md-6">
-				<div class="section-header">
-					<h2 class="title">Why Get Qualified?</h2>
-					We seek to help you all the way. Find the right opportunities and get the jobs that best match your profile. We’ve designed our system with you at
-					the centre so that you get multiple chances and be appropriately matched.
+				<div class="row">
+					<div class="section-header">
+						<h2 class="title">How do I get started?</h2>
+					</div>
+					<div>
+						<p>Registering for GetQualified is easy and free.</p>
+					</div>
 				</div>
-
+				<div class="row">
+					<div class="col-md-12">
+						<ul class="landing-page-list">
+							<li>Create a searchable digital CV</li>
+							<li>Record and upload a great video profile</li>
+							<li>Complete the GetQualified aptitude test</li>
+							<li>Start receiving job notifications from our platform (Work-In-Progress)</li>
+							<li>Start receiving job offers from employers (Work-In-Progress)</li>
+							<li>Get an awesome new job</li>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 		<!-- /Row -->
@@ -248,70 +255,6 @@
 </div>
 <!-- /Numbers -->
 
-<!-- Contact -->
-<div id="contact" class="section md-padding">
-
-	<!-- Container -->
-	<div class="container">
-
-		<!-- Row -->
-		<div class="row">
-
-			<!-- Section-header -->
-			<div class="section-header text-center">
-				<h2 class="title">Get in touch</h2>
-			</div>
-			<!-- /Section-header -->
-
-			<!-- contact -->
-			<div class="col-sm-4">
-				<div class="contact">
-					<i class="fa fa-phone"></i>
-					<h3>Phone</h3>
-					<p>0803-987-9898</p>
-				</div>
-			</div>
-			<!-- /contact -->
-
-			<!-- contact -->
-			<div class="col-sm-4">
-				<div class="contact">
-					<i class="fa fa-envelope"></i>
-					<h3>Email</h3>
-					<p>getstarted@getqualified.com</p>
-				</div>
-			</div>
-			<!-- /contact -->
-
-			<!-- contact -->
-			<div class="col-sm-4">
-				<div class="contact">
-					<i class="fa fa-map-marker"></i>
-					<h3>Address</h3>
-					<p>109 Awolowo Way, Ikoyi</p>
-				</div>
-			</div>
-			<!-- /contact -->
-
-			<!-- contact form -->
-			<div class="col-md-8 col-md-offset-2">
-				<form class="contact-form">
-					<input type="text" class="input" placeholder="Name">
-					<input type="email" class="input" placeholder="Email">
-					<input type="text" class="input" placeholder="Subject">
-					<textarea class="input" placeholder="Message"></textarea>
-					<button class="main-btn">Send message</button>
-				</form>
-			</div>
-			<!-- /contact form -->
-
-		</div>
-		<!-- /Row -->
-
-	</div>
-	<!-- /Container -->
-
-</div>
 {% endblock %}
 
 {% block scriptTag %}
