@@ -158,7 +158,7 @@
 										<h3 class="test-title"></h3><br>
 										<div class="panel panel-default">
 											<div class="panel-heading">
-												{{ test_title }}
+												{{ test_title }} Result
 											</div>
 
 											<ul class="list-group">

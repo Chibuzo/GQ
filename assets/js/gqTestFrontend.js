@@ -107,6 +107,7 @@ $("#submit-test").click(function(e) {
             return;
         } else if (parseInt(TEST_ID) == 3) {  // gather result, lol - I don't mean it
             $.get('/gqtest/markGQAptitude/' + TEST_ID + '/' + questions.length, function(d) {
+                $(".panel-heading").text('General Aptitude Test Result');
                 $("#score").text(d.result.score + '/60');
                 $("#percentage").text(d.result.percentage + '%');
                 $("#rank").text(d.result.rank + ' of ' + d.result.candidates);
