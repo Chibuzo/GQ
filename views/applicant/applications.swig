@@ -13,7 +13,7 @@
 					<p class="category"></p>
 				</div>
 			</div>
-			<div class="content table-responsive table-full-width">
+			<div class="content table-responsive table-full-width row">
 			{% if jobs.length > 0 %}
 				<table class="table table-striped">
 					<thead>
@@ -63,7 +63,17 @@
 					</tbody>
 				</table>
 			{% else %}
-				<div class="alert alert-info">You don't have any application. Begin application <a href="/jobs">here</a></div>
+				<div class="col-md-12">
+					<hr>
+					<div class="row">
+						<p class="col-md-12">You don't have any applications</p>
+					</div>
+					<div class="row">
+						<div class="col-md-2">
+							<a class="btn btn-info btn-fill no-active-btn" href="/jobs">Start Application</a>
+						</div>
+					</div>
+				</div>
 			{% endif %}
 			</div>
 		</div>
