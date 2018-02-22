@@ -55,6 +55,7 @@ module.exports = {
             user: user.fullname,
             url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
         };
+        console.log(data.url)
         var subject = "Confirm your email address";
         var template = 'verifyAccount';
         module.exports.sendMail(user.email, subject, template, data);

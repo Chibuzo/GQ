@@ -216,13 +216,15 @@ module.exports.routes = {
 
     'GET /get-schools': 'SchoolsController.getSchools',
 
-    'GET /email': { view: 'email' }
+    'GET /email': { view: 'email' },
 
-    //'GET /loadschools': 'BatchController.loadSchools',
-    //
-    //'GET /savetest': 'TestController.saveTest',
-    //
-    //'GET /countries': 'BatchController.countries',
-    //
-    //'/states': 'BatchController.loadStates'
+    'POST /pushajax': 'TestController.ajaxTest',
+
+    'GET /loadschools': 'BatchController.loadSchools',
+
+    'GET /savetest': 'TestController.saveTest',
+
+    'GET /countries': 'BatchController.countries',
+
+    '/states': 'BatchController.loadStates'
 };

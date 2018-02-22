@@ -66,6 +66,25 @@ module.exports = {
         });
     },
 
+    // for GQ aptitude test
+    // if a candidate has taken part of the test, continue from where the candidate stopped
+    determineTestId: function(candidate_id) {
+        return new Promise(function(resolve, reject) {
+            // look for test result
+            var tests_taken = []
+            GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).sort('id desc').limit(1).exec(function(err, tests) {
+                if (tests.length > 0) {
+                    if (tests[0].test < 3)
+                        return resolve(tests[0].test + 1);
+                    else // its 3 return 1
+                        return resolve(1);
+                } else {
+                    return resolve(1);
+                }
+            });
+        });
+    },
+
     prepareCandidateResult: function(test_id, candidate_score, no_of_questions) {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({test: test_id}).groupBy('test').average('score').exec(function(err, test_ave) {

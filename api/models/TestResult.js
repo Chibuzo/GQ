@@ -20,6 +20,11 @@ module.exports = {
           type: 'integer'
       },
 
+      // not originally in expert rating
+      score: {
+          type: 'integer'
+      },
+
       percentile: {
           type: 'integer'
       },

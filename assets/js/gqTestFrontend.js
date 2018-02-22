@@ -26,6 +26,9 @@ $(".load-test").click(function() {
                 $(".test-title").text(d.test_name);
                 $(".instruction").html(d.instructions);
             });
+            // update test_id for the resuming section test (GQ aptitude test)
+            TEST_ID = d.test_id;
+            $(".load-test").data('test_id', d.test_id)
         }
     }, 'JSON');
 });
@@ -39,6 +42,9 @@ $("#start-test").click(function() {
 
     // register proctor session
     createProctorSession();
+
+    // register event to warn candidate about leaving the test page
+    //addWindowsCloseEvent();
 
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
@@ -65,7 +71,8 @@ $("#start-test").click(function() {
             fetchNextQuestion(questions);
             startTimer();
 
-            // reset controls (start text button for now, haaa
+            // set/reset controls
+            $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
             $("#start-test").text('Start Test').prop('disabled', false);
         }
     }, 'JSON');
@@ -134,6 +141,7 @@ function fetchNextQuestion(questions, next_quest) {
     }
     if (parseInt(cur_question) > parseInt(question_num)) {
         //submitTest();
+        $("#next-question").html('End')
         return;
     }
 
@@ -213,6 +221,8 @@ function submitTest() {
             });
         }
     });
+    // remove windows close event
+    //removeWindowsCloseEvent();
 }
 
 // NOTE! This function is a very dirty hack!
@@ -259,7 +269,8 @@ function startTimer() {
         hours : hrs,
         minutes : mins,
         size : "md",
-        timeUp: submitTest
+        timeUp: submitTest,
+        stopButton: "stopTestTimer"
     });
 }
 
@@ -280,6 +291,39 @@ function createProctorSession() {
 }
 
 
-window.onbeforeunload = function() {
-    alert('Ewu!')
-};
+function blockTest() {
+    $(".inner-test-div").fadeOut('fast', function() {
+        $(".test-blocked-screen").removeClass('hidden');
+    });
+    $("#stopTestTimer").click(); // prevent loaded test from submitting
+}
+
+
+function controlIntegrityBar(integrityScore) {
+    if (integrityScore < 70 && integrityScore > 55) {
+        $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+    }
+    else if (integrityScore < 55) {
+        $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+    }
+    $('.progress-bar').css('width', integrityScore + "%");
+}
+
+
+//function addWindowsCloseEvent() {
+//    window.addEventListener("beforeunload", warnCandidate(e));
+//}
+//
+//function warnCandidate(e) {
+//    var confirmationMessage = "\o/";
+//
+//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//	return confirmationMessage;
+//    //$.post('/pushajax', { msg: 'Window Closed'});
+//}
+//
+//
+//function removeWindowsCloseEvent() {
+//    window.removeEventListener("beforeunload", warnCandidate());
+//    $.post('/pushajax', { msg: 'Window freed'});
+//}

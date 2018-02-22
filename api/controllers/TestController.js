@@ -207,25 +207,33 @@ module.exports = {
         var data = JSON.parse(temp);
         var result = data.request.method;
 
-        var test_result = {
-            test_id: result.test_id,
-            applicant: result.user_id,
-            percentage: result.percentage,
-            percentile: result.percentile,
-            average_score: result.average_score,
-            test_result: result.test_result,
-            transcript_id: result.transcript_id,
-            //jobtest: jobtest[0].id
-        };
-        TestResult.find({ test_id: result.test_id, applicant: result.user_id }).exec(function(err, result) {
-            if (result.length > 0) {
-                TestResult.update({ test_id: result.test_id, applicant: result.user_id }, test_result).exec(function() {});
-            } else {
-                TestResult.create(test_result).exec(function (err) {
-                    if (err) console.log(err);
-                });
-            }
+        CBTTest.find({ test_id: result.test_id }).exec(function(err, test) {
+            var test_result = {
+                test_id: result.test_id,
+                applicant: result.user_id,
+                percentage: result.percentage,
+                score: Math.floor((result.percentage / 100) * test[0].total_questions),
+                percentile: result.percentile,
+                average_score: result.average_score,
+                test_result: result.test_result,
+                transcript_id: result.transcript_id,
+                //jobtest: jobtest[0].id
+            };
+            TestResult.find({ test_id: result.test_id, applicant: result.user_id }).exec(function(err, result) {
+                if (result.length > 0) {
+                    TestResult.update({ test_id: result.test_id, applicant: result.user_id }, test_result).exec(function() {});
+                } else {
+                    TestResult.create(test_result).exec(function (err) {
+                        if (err) console.log(err);
+                    });
+                }
+            });
         });
+    },
+
+    ajaxTest: function(req, res) {
+        console.log(req.param('msg'));
+        return res.ok();
     }
 };
 

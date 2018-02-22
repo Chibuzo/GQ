@@ -23,6 +23,7 @@ module.exports = {
                     Schools.create({ abbr: abbr, school_name: school }).exec(function () {});
                 }
             });
+            return res.ok();
         });
     },
 
