@@ -26,6 +26,9 @@ $(".load-test").click(function() {
                 $(".test-title").text(d.test_name);
                 $(".instruction").html(d.instructions);
             });
+            // update test_id for the resuming section test (GQ aptitude test)
+            TEST_ID = d.test_id;
+            $(".load-test").data('test_id', d.test_id)
         }
     }, 'JSON');
 });
@@ -68,7 +71,8 @@ $("#start-test").click(function() {
             fetchNextQuestion(questions);
             startTimer();
 
-            // reset controls (start text button for now, haaa
+            // set/reset controls
+            $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
             $("#start-test").text('Start Test').prop('disabled', false);
         }
     }, 'JSON');
@@ -137,6 +141,7 @@ function fetchNextQuestion(questions, next_quest) {
     }
     if (parseInt(cur_question) > parseInt(question_num)) {
         //submitTest();
+        $("#next-question").html('End')
         return;
     }
 
@@ -264,7 +269,8 @@ function startTimer() {
         hours : hrs,
         minutes : mins,
         size : "md",
-        timeUp: submitTest
+        timeUp: submitTest,
+        stopButton: "stopTestTimer"
     });
 }
 
@@ -282,6 +288,25 @@ function createProctorSession() {
     $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(d) {
         console.log(d)
     }); // that'a all
+}
+
+
+function blockTest() {
+    $(".inner-test-div").fadeOut('fast', function() {
+        $(".test-blocked-screen").removeClass('hidden');
+    });
+    $("#stopTestTimer").click(); // prevent loaded test from submitting
+}
+
+
+function controlIntegrityBar(integrityScore) {
+    if (integrityScore < 70 && integrityScore > 55) {
+        $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+    }
+    else if (integrityScore < 55) {
+        $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+    }
+    $('.progress-bar').css('width', integrityScore + "%");
 }
 
 

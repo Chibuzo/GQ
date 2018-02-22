@@ -119,7 +119,7 @@ module.exports = {
         });
     },
 
-    saveGeneralTestScore: function(candidate, score) {
+    saveGeneralTestScore: function(candidate) {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({
                 candidate: candidate,
@@ -130,15 +130,14 @@ module.exports = {
                     user: candidate
                 };
                 GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
-                    //console.log(result)
                     if (result.length > 0) {
-                        GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function () {
-                            // hand errors if you like
+                        GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function (err, res) {
+                            // handle errors if you like
                             return resolve(true); // 13/02/2018
                         });
                     } else {
-                        GQAptitudeTestResult.create({user: candidate}, data).exec(function (e) {
-                            return resolve(true); //
+                        GQAptitudeTestResult.create(data).exec(function (e, nc) {
+                            return resolve(true);
                         });
                     }
                 });

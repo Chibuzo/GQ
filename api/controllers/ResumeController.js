@@ -7,7 +7,10 @@
 
 module.exports = {
 	editView: function(req, res) {
-        var test_id = 1;
+        //GQAptitudeTestResult.destroy({}).exec(function() {});
+        //GQAptitudeTestResult.find().exec(function(err, rr) {
+        //    console.log(rr)
+        //});
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {

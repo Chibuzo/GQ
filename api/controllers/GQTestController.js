@@ -118,8 +118,10 @@ module.exports = {
             GQTestService.determineTestId(req.session.userId).then(function (next_test) {
                 GQTest.find({id: next_test}).exec(function (err, test) {
                     if (err) return console.log(err);
+                    //console.log(test);
                     return res.json(200, {
                         status: 'success',
+                        test_id: test[0].id,
                         test_name: test[0].test_name,
                         instructions: test[0].instructions
                     });
@@ -130,6 +132,7 @@ module.exports = {
                 if (err) return console.log(err);
                 return res.json(200, {
                     status: 'success',
+                    test_id: test[0].id,
                     test_name: test[0].test_name,
                     instructions: test[0].instructions
                 });
@@ -206,7 +209,7 @@ module.exports = {
             }
         });
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-            CBTService.saveGeneralTestScore(req.session.userId, score).then(function(resp) {
+            CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
                 // update candidate's resume
                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                     if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {

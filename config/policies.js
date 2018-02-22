@@ -41,4 +41,8 @@ module.exports.policies = {
         //'viewResumeByUser': 'isAdmin',
         //'viewResumeByUser': 'isCompany'
     }
+
+    AdminController: {
+        '*': 'isAdmin'
+    }
 };
