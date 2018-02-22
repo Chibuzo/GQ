@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block body %}
+<style>
+	.tests-alert {
+		width: 90%;
+		margin: 0 auto;
+		text-align: center;
+	}
+</style>
 	<div class="col-md-5 pull-right">
 		<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
 	</div>
@@ -65,7 +72,10 @@
 					</tbody>
 				</table>
 			{% else %}
-				<div class="alert alert-info">You've not posted any job yet. Click on the add job button at the top right to begin.</div>
+				<hr>
+				<div class="alert alert-warning tests-alert" role="alert">
+					You've not posted any job yet. Click on the add job button at the top right to begin.
+				</div>
 			{% endif %}
 			</div>
 		</div>
