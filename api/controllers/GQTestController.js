@@ -93,8 +93,10 @@ module.exports = {
         });
     },
 
+    // when candidate clicks on take test from a job
     getTest: function(req, res) {
         var test_id = req.param('test_id');
+        var job_id = req.param('job_id');
 
         GQTestResult.find({
             test: test_id,
@@ -103,9 +105,11 @@ module.exports = {
             if (err) console.log(err)
             if (test_result.length > 0) {
                 GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
-                    return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result });
+                    return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result, test_title: test_result[0].test.test_name });
                 });
             } else {
+                // load test
+                req.session.job_id = job_id;
                 return res.view('gqtest/gqtest', { test_id: test_id });
             }
         });
@@ -173,6 +177,7 @@ module.exports = {
     markTest: function(req, res) {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
+        var integrity_score = req.param('integrity_score');
         var score = 0;
 
         req.session.suppliedAnswers.forEach(function(quest) {
@@ -180,7 +185,10 @@ module.exports = {
                 score++;
             }
         });
-        
+
+        // save integrity score
+        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
         // save or update candidate's test score
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             // destroy stored test answers
@@ -190,6 +198,10 @@ module.exports = {
             }).catch(function(err) {
                 console.log(err)
             });
+            // update application
+            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
+                req.session.job_id = null;
+            });
         });
 
         // end protor session for all tests except the three aptitude tests with ids (1,2,3)
@@ -198,9 +210,11 @@ module.exports = {
         }
     },
 
+    // called when the last section of GQ aptitude test gets submitted
     markGQTest: function(req, res) {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
+        var integrity_score = req.param('integrity_score');
         var score = 0;
 
         req.session.suppliedAnswers.forEach(function(quest) {
@@ -208,6 +222,10 @@ module.exports = {
                 score++;
             }
         });
+
+        // save integrity score
+        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
                 // update candidate's resume
@@ -287,7 +305,6 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-        //console.log('Audio ' + req.session.proctor)
         // save audio filename
         var data = {
             filename: filename,
@@ -307,8 +324,6 @@ module.exports = {
         var buff = new Buffer(photo, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-        //console.log('Video ' + req.session.proctor)
-
         // save photo filename
         var data = {
             filename: filename,

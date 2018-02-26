@@ -125,7 +125,7 @@
                                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                                             <td>{{ result.createdAt | date('d M, Y') }}</td>
                                             <td class="name">{{ result.applicant.fullname }}</td>
-                                            <td>{{ result.percentage }}%</td>
+                                            <td class="text-center">{{ result.percentage }}%</td>
                                             {#<td class="text-center">{{ result.aptitude_test }}</td>#}
                                             <td class="text-center">{{ result.aptitude_scores.indexOf(result.composite_score) + 1 }}</td>
                                             <td>{{ result.test_result }}</td>

@@ -290,7 +290,7 @@ module.exports = {
                     applications.forEach(function (application) {
                         candidates.push(application.applicant.id);
                     });
-                    CBTService.getJobTestResults(candidates, test[0]).then(function (all_text_result) {
+                    CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
                         SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
                             if (selected_candidates.length > 0) {
                                 var candidates = [];    // redeclared, haha!

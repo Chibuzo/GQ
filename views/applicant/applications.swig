@@ -51,7 +51,7 @@
 									<li class='dropdown-header'>Required Online Tests for the Job</li>
 									{% for test in job.tests %}
 										{% if test.test_source == 'gq' %}
-											<li><a href="/gqtest/gettest/{{ test.gq_test.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
+											<li><a href="/gqtest/gettest/{{ test.gq_test.id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 										{% else %}
 											<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 										{% endif %}

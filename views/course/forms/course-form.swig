@@ -7,8 +7,12 @@
 		<label>Course Category</label>
 		<select name="category" class="form-control">
 			<option value="">-- Select Course Category --</option>
-			{% for cat in coursecategories %}
-				<option value="{{ cat.id }}">{{ cat.category }}</option>
+			{% for cat in categories %}
+				{% if cat.id == course.category %}
+					<option value="{{ cat.id }}" selected="selected">{{ cat.category }}</option>
+				{% else %}
+					<option value="{{ cat.id }}">{{ cat.category }}</option>
+				{% endif %}
 			{% endfor %}
 		</select>
 	</div>
