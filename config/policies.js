@@ -40,9 +40,9 @@ module.exports.policies = {
         //'viewResumeByUser': ['isCompany', 'isAdmin', 'isLoggedIn']
         //'viewResumeByUser': 'isAdmin',
         //'viewResumeByUser': 'isCompany'
-    }
+    },
 
     AdminController: {
-        '*': 'isAdmin'
+        //'*': 'isAdmin'
     }
 };

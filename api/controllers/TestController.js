@@ -187,7 +187,7 @@ module.exports = {
             //browser_proctoring: 1,
             //webcam_proctoring: 1,
             //webcam_mandatory: 1,
-            reuse: true,
+            //reuse: true,
             er_internal: '1296451'
         };
         //console.log(data)
@@ -196,7 +196,6 @@ module.exports = {
             if (err || result.response.info.success != 1) {
                 // show error page
             }
-            console.log(result);
             return res.redirect(result.response.info.ticket);
         });
     },
@@ -229,6 +228,12 @@ module.exports = {
                 }
             });
         });
+        // update application
+        if (req.session.job_id) {
+            // update application status
+            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {});
+        }
+        return res.ok();
     },
 
     ajaxTest: function(req, res) {
