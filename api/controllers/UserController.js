@@ -264,7 +264,7 @@ module.exports = {
                 return res.badRequest("We don't even know what happened");
             }
             if (user.status == 'Inactive') {
-                sendMail.sendConfirmationEmail(newUser);
+                sendMail.sendConfirmationEmail(user);
                 return res.view('login', {msg: "You haven\'t verified your email address. Kindly check your email and verify your account"});
             }
             if (user) {
