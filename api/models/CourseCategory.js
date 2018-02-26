@@ -8,7 +8,15 @@
 module.exports = {
 
   attributes: {
+      category: {
+          type: 'string',
+          unique: 'true'
+      },
 
+      courses: {
+          collection: 'course',
+          via: 'category'
+      }
   }
 };
 

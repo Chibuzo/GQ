@@ -66,7 +66,7 @@
                                         <th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
                                         <th>Test Date</th>
                                         <th><i class="fa fa-user"></i> Candidate</th>
-                                        <th>Percentage</th>
+                                        <th class="text-center">Percentage</th>
                                         {#<th>Average Score</th>#}
                                         <th>Result</th>
                                         {#<th class="text-center">Action</th>#}
@@ -81,7 +81,7 @@
                                             <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
                                             <td>{{ result.createdAt | date('d M, Y') }}</td>
                                             <td class="name">{{ result.applicant.fullname }}</td>
-                                            <td>{{ result.percentage }}%</td>
+                                            <td class="text-center">{{ result.percentage }}%</td>
                                             {#<td class="">{{ result.average_score }}</td>#}
                                             <td>{{ result.test_result }}</td>
 											<td class="opt-icons text-center">

@@ -43,6 +43,6 @@ module.exports.policies = {
     },
 
     AdminController: {
-        '*': 'isAdmin'
+        //'*': 'isAdmin'
     }
 };

@@ -1,9 +1,6 @@
-
 module.exports.routes = {
 
-    '/': {
-        view: 'index'
-    },
+    '/': 'PageController.index',
 
     '/candidates': 'ApplicantController.showLanding',
 
@@ -98,9 +95,9 @@ module.exports.routes = {
 
     'POST /gqtest/return-answer': 'GQTestController.returnAnswer',
 
-    'GET /gqtest/marktest/:test_id/:no_of_questions': 'GQTestController.markTest',
+    'POST /gqtest/marktest': 'GQTestController.markTest',
 
-    'GET /gqtest/markGQAptitude/:test_id/:no_of_questions': 'GQTestController.markGQTest',
+    'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
@@ -108,7 +105,7 @@ module.exports.routes = {
 
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 
-    'GET /gqtest/gettest/:test_id': 'GQTestController.getTest',
+    'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
 
     'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
 
@@ -123,6 +120,9 @@ module.exports.routes = {
     'POST /proctor/reject-test': 'ProctorRecordController.rejectTest',
 
     //'POST /gqtest/createProctorSession': 'ProctorRecordController.stopSession',
+    'POST /courseCategory/save': 'CourseCategory.saveCategory',
+
+    'GET /courseCategory/delete/:category_id': 'CourseCategory.deleteCategory',
 
     'GET /courses': 'CourseController.listCourses',
 
@@ -216,15 +216,15 @@ module.exports.routes = {
 
     'GET /get-schools': 'SchoolsController.getSchools',
 
-    'GET /email': { view: 'email' },
-
-    'POST /pushajax': 'TestController.ajaxTest',
-
-    'GET /loadschools': 'BatchController.loadSchools',
-
-    'GET /savetest': 'TestController.saveTest',
-
-    'GET /countries': 'BatchController.countries',
-
-    '/states': 'BatchController.loadStates'
+    //'GET /email': { view: 'email' },
+    //
+    //'POST /pushajax': 'TestController.ajaxTest',
+    //
+    //'GET /loadschools': 'BatchController.loadSchools',
+    //
+    //'GET /savetest': 'TestController.saveTest',
+    //
+    //'GET /countries': 'BatchController.countries',
+    //
+    //'/states': 'BatchController.loadStates'
 };
