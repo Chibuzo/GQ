@@ -255,7 +255,7 @@
 				<div class="col-sm-3 col-xs-6">
 					<div class="number">
 						<i class="fa fa-briefcase"></i>
-						<h3 class="white-text"><span class="counter">125</span></h3>
+						<h3 class="white-text"><span class="counter">{{ jobs }}</span></h3>
 						<span class="white-text">Available Jobs</span>
 					</div>
 				</div>
@@ -265,7 +265,7 @@
 				<div class="col-sm-3 col-xs-6">
 					<div class="number">
 						<i class="fa fa-book"></i>
-						<h3 class="white-text"><span class="counter">10</span></h3>
+						<h3 class="white-text"><span class="counter">{{ courses }}</span></h3>
 						<span class="white-text">On-going Courses</span>
 					</div>
 				</div>
@@ -276,7 +276,7 @@
 					<div class="number">
 						<i class="fa fa-thumbs-up"></i>
 						<h3 class="white-text"><span class="counter">958</span></h3>
-						<span class="white-text">Recruitments</span>
+						<span class="white-text">Placements</span>
 					</div>
 				</div>
 				<!-- /number -->

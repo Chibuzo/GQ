@@ -36,6 +36,8 @@ module.exports = {
                 url: BASE_URL + 'coy/setup/' + hash + '/' + email_b64
             }
         };
+        console.log(BASE_URL + 'coy/setup/' + hash + '/' + email_b64)
+
         // send mail with defined transport object
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
@@ -55,7 +57,6 @@ module.exports = {
             user: user.fullname,
             url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
         };
-        console.log(data.url)
         var subject = "Confirm your email address";
         var template = 'verifyAccount';
         module.exports.sendMail(user.email, subject, template, data);

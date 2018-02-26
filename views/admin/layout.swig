@@ -10,6 +10,9 @@
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
 
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+
     <link href="/styles/dataTables.min.css" rel="stylesheet" />
     <!-- Bootstrap core CSS     -->
     <link href="/styles/bootstrap.min.css" rel="stylesheet" />
