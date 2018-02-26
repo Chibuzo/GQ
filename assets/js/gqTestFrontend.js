@@ -215,7 +215,7 @@ function restoreQuestionState(quest_id) {
 
 
 function submitTest() {
-    var integrity_score = $('.progress-bar').width();
+    var integrity_score = $("#integrity-score").text();
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
@@ -244,7 +244,7 @@ function submitTest() {
 function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
-    var integrity_score = $('.progress-bar').width();
+    var integrity_score = $("#integrity-score").text();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_question: questions.length,
@@ -313,6 +313,7 @@ function blockTest() {
 
 
 function controlIntegrityBar(integrityScore) {
+    $("#integrity-score").text(integrityScore);
     if (integrityScore < 70 && integrityScore > 55) {
         $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
     }

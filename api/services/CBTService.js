@@ -55,6 +55,7 @@ module.exports = {
                 });
             } else if (jobtest.test_source == 'gq') {
                 GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
+                    console.log(results)
                     if (results.length > 0) {
                         module.exports.processJobResult(results).then(function(_results) {
                             resolve(_results);
