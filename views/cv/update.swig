@@ -263,6 +263,7 @@
 													<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
 												</div>
 											</div>
+											<span id="integrity-score" class="hidden"></span>
 											<button class="btn btn-default hidden" id="stopTestTimer">Stop</button>
 										</div>
 									</div>

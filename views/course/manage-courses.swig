@@ -92,8 +92,8 @@
 												<td>{{ cat.category }}</td>
 												<td>{{ cat.courses.length }}</td>
 												<td class="opt-icons text-center">
-													<a href="" class="edit-category" rel="tooltip" title="Edit Category"><i class="fa fa-pencil fa-lg"></i>edit</a>
-													<a href="" class="del-category" rel="tooltip" title="Delete Category"><i class="fa fa-trash-o fa-lg"></i> del</a>
+													<a href="" class="edit-category" rel="tooltip" title="Edit Category"><i class="fa fa-pencil fa-lg"></i></a>
+													<a href="" class="del-category" rel="tooltip" title="Delete Category"><i class="fa fa-trash-o fa-lg"></i></a>
 												</td>
 											</tr>
 										{% endfor %}

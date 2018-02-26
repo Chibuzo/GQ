@@ -19,32 +19,38 @@
 
 module.exports.policies = {
 
-  /***************************************************************************
-  *                                                                          *
-  * Default policy for all controllers and actions (`true` allows public     *
-  * access)                                                                  *
-  *                                                                          *
-  ***************************************************************************/
+    /***************************************************************************
+    *                                                                          *
+    * Default policy for all controllers and actions (`true` allows public     *
+    * access)                                                                  *
+    *                                                                          *
+    ***************************************************************************/
 
-  JobController: {
-      'viewJobs': 'isLoggedIn',
-      'newJobForm':'isLoggedIn',
-      'editJob': 'isLoggedIn',
-      'viewJobs': 'isLoggedIn',
-      'saveJob': 'isLoggedIn',
-      'deleteJob': 'isLoggedIn'
-  },
+    JobController: {
+        'viewJobs': 'isLoggedIn',
+        'newJobForm':'isLoggedIn',
+        'editJob': 'isLoggedIn',
+        'viewJobs': 'isLoggedIn',
+        'saveJob': 'isLoggedIn',
+        'deleteJob': 'isLoggedIn'
+    },
 
     ResumeController: {
         '*': 'isLoggedIn',
-        //'viewResumeByUser': ['isCompany', 'isAdmin', 'isLoggedIn']
-        //'viewResumeByUser': 'isAdmin',
-        //'viewResumeByUser': 'isCompany'
     },
 
     AdminController: {
         'setup': 'isAdmin',
         'updateProfile': 'isAdmin',
         'profile': 'isAdmin'
+        //'*': 'isAdmin'
+    },
+
+    CourseController: {
+
+    },
+
+    CourseCategory: {
+        '*': 'isAdmin'
     }
 };
