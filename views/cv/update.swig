@@ -131,12 +131,12 @@
 
 					<div class="content">
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#resume" data-toggle="tab"> &nbsp;Resume</a></li>
+							<li class="active"><a href="#resume-tab" data-toggle="tab"> &nbsp;Resume</a></li>
 							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
 							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-						  	<div class="tab-pane fade active in" id="resume">
+						  	<div class="tab-pane fade active in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
 									{% include 'includes/resume.swig' %}
@@ -476,6 +476,16 @@ $(document).ready(function() {
 		}, 'JSON');
 	});
 
+	$("#candidate-editResumeBtn").on('click', function(e) {
+		e.preventDefault();
+
+		// Hide the Resume presentation View
+		$("#resume" ).addClass('hidden');
+		// Show the Resume Form View
+		$("#resumeForm-container").removeClass('hidden');
+	});
+
+
 
 	// video handlers
 	$("#add-video, #change-video").click(function(e) {
@@ -496,14 +506,6 @@ $(document).ready(function() {
 		$(".quest-instruction").slideUp();
 		$('#' + id + "-text").slideDown();
 	});
-
-	$("#candidate-editResumeBtn").on('click', function(e) {
-		console.log('Edit Resume Clicked');
-		e.preventDefault();
-		$("#resumePrensentation" ).addClass('hidden');
-		$("#resumeForm-container").removeClass('hidden');
-	});
-
 });
 
 //window.addEventListener("beforeunload", function (e) {
