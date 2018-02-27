@@ -94,14 +94,18 @@
 							</div>
 							<div class="col-md-3 text-right">
 								{% set status = 0 %}
-								{% if resume.status == 'Complete' %}
-									{% set status = status + 1 %}
-								{% endif %}
-								{% if result %}
+								{#{% if resume.status == 'Complete' %}#}
+									{#{% set status = status + 1 %}#}
+								{#{% endif %}#}
+								{% if resume.test_status === true %}
 									{% set status = status + 1 %}
 									{% set test_status = 1 %}
 								{% endif %}
-								{% if resume.video_file.length > 0 %}
+								{% if resume.profile_status %}
+									{% set status = status + 1 %}
+									{% set profile_status = 1 %}
+								{% endif %}
+								{% if resume.video_status === true %}
 									{% set status = status + 1 %}
 									{% set video_status = 1 %}
 								{% endif %}
@@ -180,14 +184,19 @@
 
 										<div id="test-notice">
 											<h3>Test Instruction</h3>
-											<p> The following test is in one part and will take [25] minutes. It is simply a test of your aptitude and it is standardized.
-											Please read each question carefully and choose your best answer.</p>
+											<p><i>[45] Minutes - [60] Questions</i></p>
+											<p>The GetQualified Assessment is administered online and the purpose is to test your basic problem solving and verbal reasoning abilities. In combination with other important elements of your job applications this assessment helps us, and potential employers, determine your suitability for an advertised role. Please note, this test is free of charge.</p>
+											<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
 											<p class="text-left"><br>
 												<ol class="text-left">
-													<li>This test is accompanied by anti-cheating technology and it requires you take this test in a well-lit and quiet room with no assistance.</li>
-													<li>Taking test otherwise might reflect in your result and your standing</li>
-													<li>It is advised you take this test with a computer.</li>
-													<li>The test auto-submits when your test time is up.</li>
+													<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
+													<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
+													<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
+													<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
+													<li>Please note that you are to take this test on your own, WITH NO OUTSIDE ASSISTANCE.</li>
+													<li>Ensure you are in a well lit, QUIET room and ALONE. The presence of others and certain background noises may adversely affect your result.</li>
+													<li>Any irregularities observed while taking the test could lead to your test score being rejected, hence preventing you from being able to apply for jobs through our platform.</li>
+													<li>Your test is timed and will automatically be submitted upon expiration of the time limit. Upon completion, your score will immediately appear on the screen and saved in your Get Qualified profile </li>
 												</ol>
 											</p><br>
 											<p>Proceed to take the test and Good luck!</p>
@@ -246,13 +255,16 @@
 												<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Test </button>
 											</div>
 										</div>
-										<div class="test-blocked-screen hidden">
+										<div class="test-blocked-screen hidden" style="margin-top: 15px">
 											<div class="alert alert-danger">
 												<div class="text-center">
 													<br><i class="fa fa-ban fa-4x"></i>
-													<br><br><h4>Hi, your microphone and webcam MUST be turned on before you can proceed with this test.</h4>
+													<br><br><h4>Hi {{ resume.fullname }},<br><br>Your microphone and webcam MUST grant access to this page before you can proceed with the test.</h4>
+													<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
 												</div>
 											</div>
+											<span id="integrity-score" class="hidden"></span>
+											<button class="btn btn-default hidden" id="stopTestTimer">Stop</button>
 										</div>
 									</div>
 								</div>
@@ -493,5 +505,12 @@ $(document).ready(function() {
 	});
 
 });
+
+//window.addEventListener("beforeunload", function (e) {
+//	var confirmationMessage = "\o/";
+//
+//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//	return confirmationMessage;                            //Webkit, Safari, Chrome
+//});
 </script>
 {% endblock %}

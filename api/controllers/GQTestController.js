@@ -93,8 +93,10 @@ module.exports = {
         });
     },
 
+    // when candidate clicks on take test from a job
     getTest: function(req, res) {
         var test_id = req.param('test_id');
+        var job_id = req.param('job_id');
 
         GQTestResult.find({
             test: test_id,
@@ -103,9 +105,11 @@ module.exports = {
             if (err) console.log(err)
             if (test_result.length > 0) {
                 GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
-                    return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result });
+                    return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result, test_title: test_result[0].test.test_name });
                 });
             } else {
+                // load test
+                req.session.job_id = job_id;
                 return res.view('gqtest/gqtest', { test_id: test_id });
             }
         });
@@ -113,11 +117,31 @@ module.exports = {
 
     loadTestInstruction: function(req, res) {
         var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).exec(function(err, test) {
-            if (err) return console.log(err);
-            //console.log(test);
-            return res.json(200, {status: 'success', test_name: test[0].test_name, instructions: test[0].instructions});
-        });
+        // dirty hack for resuming test that has sections. Currently, only applicable to GQ general test
+        if (test_id == 1) {
+            GQTestService.determineTestId(req.session.userId).then(function (next_test) {
+                GQTest.find({id: next_test}).exec(function (err, test) {
+                    if (err) return console.log(err);
+                    //console.log(test);
+                    return res.json(200, {
+                        status: 'success',
+                        test_id: test[0].id,
+                        test_name: test[0].test_name,
+                        instructions: test[0].instructions
+                    });
+                });
+            });
+        } else {
+            GQTest.find({id: test_id}).exec(function (err, test) {
+                if (err) return console.log(err);
+                return res.json(200, {
+                    status: 'success',
+                    test_id: test[0].id,
+                    test_name: test[0].test_name,
+                    instructions: test[0].instructions
+                });
+            });
+        }
     },
 
     loadTest: function(req, res) {
@@ -153,6 +177,7 @@ module.exports = {
     markTest: function(req, res) {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
+        var integrity_score = req.param('integrity_score');
         var score = 0;
 
         req.session.suppliedAnswers.forEach(function(quest) {
@@ -160,7 +185,10 @@ module.exports = {
                 score++;
             }
         });
-        
+
+        // save integrity score
+        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
         // save or update candidate's test score
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             // destroy stored test answers
@@ -170,6 +198,10 @@ module.exports = {
             }).catch(function(err) {
                 console.log(err)
             });
+            // update application
+            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
+                req.session.job_id = null;
+            });
         });
 
         // end protor session for all tests except the three aptitude tests with ids (1,2,3)
@@ -178,9 +210,11 @@ module.exports = {
         }
     },
 
+    // called when the last section of GQ aptitude test gets submitted
     markGQTest: function(req, res) {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
+        var integrity_score = req.param('integrity_score');
         var score = 0;
 
         req.session.suppliedAnswers.forEach(function(quest) {
@@ -188,12 +222,16 @@ module.exports = {
                 score++;
             }
         });
+
+        // save integrity score
+        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-            CBTService.saveGeneralTestScore(req.session.userId, score).then(function(resp) {
+            CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
                 // update candidate's resume
                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                     if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                        Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
+                        Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                     }
                 });
                 CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
@@ -267,7 +305,6 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-        //console.log('Audio ' + req.session.proctor)
         // save audio filename
         var data = {
             filename: filename,
@@ -287,8 +324,6 @@ module.exports = {
         var buff = new Buffer(photo, 'base64');
         const fs = require('fs');
         fs.writeFileSync(path, buff);
-        //console.log('Video ' + req.session.proctor)
-
         // save photo filename
         var data = {
             filename: filename,

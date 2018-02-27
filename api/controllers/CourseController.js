@@ -10,6 +10,7 @@ module.exports = {
         var q = req.param;
         var data = {
             course_title: q('course_title'),
+            category: q('category'),
             abstract: q('abstract'),
             body: q('body')
         };
@@ -33,21 +34,25 @@ module.exports = {
     },
 
     getCourses: function(req, res) {
-        Course.find().populate('subscriptions').exec(function(err, courses) {
+        Course.find().populate('subscriptions').populate('category').exec(function(err, courses) {
             if (err) return res.badRequest();
-            return res.view('course/manage-courses', { courses: courses });
+            CourseCategory.find().exec(function(err, courseCat) {
+                return res.view('course/manage-courses', { courses: courses, categories: courseCat });
+            });
         });
     },
 
     addNew: function(req, res) {
-        //CourseCategor.find().exec(function(err, courseCat) {
-            return res.view('course/addcourse');
-        //})
+        CourseCategory.find().exec(function(err, courseCat) {
+            return res.view('course/addcourse', { categories: courseCat });
+        });
     },
 
     editCourse: function(req, res) {
         Course.find({ id: req.param('id') }).exec(function(err, course) {
-            return res.view('course/addcourse', { course: course[0] });
+            CourseCategory.find().exec(function(err, courseCat) {
+                return res.view('course/addcourse', {course: course[0], categories: courseCat });
+            });
         });
     },
 
@@ -61,6 +66,7 @@ module.exports = {
     },
 
     deleteCourse: function(req, res) {
+        // remove course from category first
         Course.destroy({ id: req.param('id') }).exec(function() {});
         return res.ok();
     }

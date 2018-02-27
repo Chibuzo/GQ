@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/png" href="assets/img/favicon.ico">
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
     <title>Get Qualified | {{ title }}</title>
 
     <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport' />
     <meta name="viewport" content="width=device-width" />
-
 
     <!-- Bootstrap core CSS     -->
     <link href="/styles/bootstrap.min.css" rel="stylesheet" />
@@ -86,7 +86,7 @@
             <div class="logo">
                 <a href="" class="simple-text">
                     {#<img src="/images/gq-logo-emb.png" class="logo-img" />#}
-                    Get Qualified <small>Admin</small>
+                    Get Qualified
                 </a>
             </div>
 

@@ -113,7 +113,7 @@ module.exports = {
     },
 
     showLanding: function(req, res) {
-        Course.find({ status: 'Active' }).limit(4).exec(function(err, courses) {
+        Course.find({ status: 'Active' }).limit(3).exec(function(err, courses) {
             if (err) return res.badRequest();
             return res.view('candidate-page', { courses: courses });
         });

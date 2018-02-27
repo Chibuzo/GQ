@@ -46,6 +46,10 @@
 		border-color: #999;
 	}
 
+	.question-image img {
+		width: 450px;
+	}
+
 	.active_q {
 		background-color: #A37F2D;
 		color:#fff;
@@ -130,6 +134,8 @@
 														<label>Question 1</label>
 														<textarea name="question" id="_question" rows="4" class="form-control editor"></textarea>
 													</div>
+
+													<div class="question-image"></div>
 
 													<div class="form-group">
 														<label>Question Image</label><br>

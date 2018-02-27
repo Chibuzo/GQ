@@ -5,63 +5,106 @@
 {% endblock %}
 
 {% block body %}
+<style>
+	.tests-alert {
+		text-align: center;
+	}
 
-	<div class="col-md-5 pull-right">
-		<button class="btn btn-success btn-fill pull-right btnsm" data-toggle="modal" data-target="#userModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add New User</button>
-	</div>
+	.alert-container {
+		border-style: solid;
+		border-width: 3px;
+		border-radius: 5px;
+		border-color: white;
+		background: white;
+	}
 
-<div class="col-md-12">
-    <div class="card">
-        <div class="header row">
-          <div class="col-md-6">
-            <h4 class="title">All Users</h4>
-            <p class="category"></p>
-          </div>
+	.empty-warning {
+		color: black;
+		background: none;
+		font-weight: bold;
+	}
+</style>
 
-        </div>
-        <div class="content table-responsive table-full-width">
-          <table class="table table-striped">
-            <thead>
-              <tr>
-                <th>S/NO</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Location</th>
-                {#<th>User Type</th>#}
-                <th>Status</th>
-                <th class="text-center">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% set n = 0 %}
-              {% for user in users %}
-                {% set n = n + 1 %}
-                <tr id="{{ user.id }}">
-                  <td>{{ n }}</td>
-                  <td>{{ user.fullname }}</td>
-                  <td>{{ user.email }}</td>
-                  <td>{{ user.r_state }}</td>
-					<td>{{ user.status }}</td>
-                  <td class="opt-icons text-center">
-                    <div class="button-group" role="group">
-						{#<a href="/user/view-profile/{{ user.id }}" class="view-activities btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>#}
-						<a href="" class="remove-user btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Remove User"><i class="fa fa-trash-o fa-lg"></i> </a>
+	{% if users.length > 0%}
+		<div class="col-md-5 pull-right">
+			<button class="btn btn-success btn-fill pull-right btnsm" data-toggle="modal" data-target="#userModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add New User</button>
+		</div>
+
+		<div class="col-md-12">
+		    <div class="card">
+		        <div class="header row">
+		          <div class="col-md-6">
+		            <h4 class="title">All Users</h4>
+		            <p class="category"></p>
+		          </div>
+
+		        </div>
+		        <div class="content table-responsive table-full-width">
+		          <table class="table table-striped">
+		            <thead>
+		              <tr>
+		                <th>S/NO</th>
+		                <th>Name</th>
+		                <th>Email</th>
+		                <th>Location</th>
+		                {#<th>User Type</th>#}
+		                <th>Status</th>
+		                <th class="text-center">Action</th>
+		              </tr>
+		            </thead>
+		            <tbody>
+		              {% set n = 0 %}
+		              {% for user in users %}
+		                {% set n = n + 1 %}
+		                <tr id="{{ user.id }}">
+		                  <td>{{ n }}</td>
+		                  <td>{{ user.fullname }}</td>
+		                  <td>{{ user.email }}</td>
+		                  <td>{{ user.r_state }}</td>
+							<td>{{ user.status }}</td>
+		                  <td class="opt-icons text-center">
+		                    <div class="button-group" role="group">
+								{#<a href="/user/view-profile/{{ user.id }}" class="view-activities btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Profile"><i class="fa fa-user fa-lg"></i> </a>#}
+								<a href="" class="remove-user btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Remove User"><i class="fa fa-trash-o fa-lg"></i> </a>
+							</div>
+						  </td>
+		                </tr>
+		              {% endfor %}
+		            </tbody>
+		          </table>
+		        </div>
+		    </div>
+		</div>
+
+	{% else %}
+
+		<div class="container">
+			<div class="row alert-container col-xs-4 col-xs-offset-4">
+				<div class="col-xs-12">
+					<div class="row">
+						<div class="col-xs-12 alert empty-warning tests-alert" role="alert">
+							You don't have any users.
+						</div>
 					</div>
-				  </td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        </div>
-    </div>
-</div>
+					<div class="row">
+						<div class="col-xs-12" style="text-align: center; margin-bottom: 10px;">
+							<button class="btn btn-success btn-fill btnsm" data-toggle="modal" data-target="#userModal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add New User</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	{% endif %}
+
 {% endblock %}
 
 {% block modals %}
   {% include "../includes/user-modal.swig" %}
-{% endblock %}  
+{% endblock %}
 
 {% block scriptTag %}
+
 <script type="text/javascript">
 $(document).ready(function() {
   $(".users").addClass('active');

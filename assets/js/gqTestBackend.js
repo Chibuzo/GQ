@@ -66,6 +66,7 @@ $("#form-test").submit(function(e) {
 
 // fetch question for edit and update
 $(".question").click(function() {
+    $(".question-image").empty();
     $(".question").removeClass('active_q');
     $(this).addClass('active_q');
     var question_id = $(this).attr('id');
@@ -84,7 +85,10 @@ $(".question").click(function() {
             $("#_question_id").val(d.question.id);
             $("#_test_id").val(d.question.test);
             $("input[name=question_image]").val(null);
-            $("#image-file").val(d.question.image_file);
+            if (d.question.image_file) {
+                $(".question-image").html("<img src='/cbt-images/" + d.question.image_file + "' />");
+                $("#image-file").val(d.question.image_file);
+            }
 
             $("#form-update-question").fadeIn('fast');
         }

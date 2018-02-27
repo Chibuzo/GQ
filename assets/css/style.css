@@ -688,6 +688,7 @@ header {
 
 .landing-page-list {
 	list-style: initial;
+	padding-left: 15px;
 }
 
 /*------------------------------------*\
