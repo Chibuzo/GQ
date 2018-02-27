@@ -32,7 +32,8 @@ module.exports = {
                                     states: resp.states,
                                     result: result,
                                     test_title: 'General Aptitude Test',
-																		canEditResume: true
+                                    canEditResume: true,
+                                    showContactInfo: true
                                 });
                             } else {
                                 return res.view('cv/update', {
@@ -41,7 +42,8 @@ module.exports = {
                                     honours: honours,
                                     countries: resp.countries,
                                     states: resp.states,
-																		canEditResume: true
+                                    canEditResume: true,
+                                    showContactInfo: true
                                 });
                             }
                         }).catch(function(err) {
@@ -177,8 +179,13 @@ module.exports = {
     viewResume: function(req, res) {
         var resume_id = req.param('resume_id');
         ResumeService.viewResume(resume_id).then(function(response) {
+					var me = {
+							fname: response.resume.user.fullname.split(' ')[0],
+							lname: response.resume.user.fullname.split(' ')[1]
+					};
             return res.view('cv/viewresume', {
                 resume: response.resume,
+								me: me,
                 result: response.result ? response.result : null,
                 test_title: response.test_title ? response.test_title : null
             });
@@ -190,8 +197,13 @@ module.exports = {
     viewResumeByUser: function(req, res) {
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
+							var me = {
+									fname: response.resume.user.fullname.split(' ')[0],
+									lname: response.resume.user.fullname.split(' ')[1]
+							};
                 return res.view('cv/viewresume', {
                     resume: response.resume,
+										me: me,
                     result: response.result ? response.result : null,
                     test_title: response.test_title ? response.test_title : null
                 });

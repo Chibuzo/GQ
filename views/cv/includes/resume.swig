@@ -18,16 +18,20 @@
 	<hr/>
 	<div class="row">
 		<div class="col-md-12" style="padding: 50px; padding-top: 10px">
-			<h3 class="text-center"><strong>{{ resume.fullname }}</strong></h3>
-			<p class="text-center">{{ resume.address }}, {{ resume.city }} {{ resume.r_state }}</p>
-			<p class="text-center">
-				<i class="fa fa-phone-square" aria-hidden="true" style="color: #1DC7EA;"></i>
-				{{ resume.phone }}
-			</p>
-			<p class="text-center">
-				<i class="fa fa-envelope" aria-hidden="true" style="color: #1DC7EA;"></i>
-				{{ resume.email }}
-			</p>
+			{% if showContactInfo == true  %}
+				<h3 class="text-center"><strong>{{ resume.fullname }}</strong></h3>
+				<p class="text-center">{{ resume.address }}, {{ resume.city }} {{ resume.r_state }}</p>
+				<p class="text-center">
+					<i class="fa fa-phone-square" aria-hidden="true" style="color: #1DC7EA;"></i>
+					{{ resume.phone }}
+				</p>
+				<p class="text-center">
+					<i class="fa fa-envelope" aria-hidden="true" style="color: #1DC7EA;"></i>
+					{{ resume.email }}
+				</p>
+			{%  else %}
+				<h3 class="text-center"><strong>{{ me.fname }} {{ me.lname|first }}</strong></h3>
+			{% endif %}
 
 			<h4><strong>Summary</strong></h4><hr>
 			<div>{{ resume.introduction }}</div>
@@ -68,18 +72,21 @@
 				</div>
 			{% endfor %}
 
-			<h4><strong>Referrals</strong></h4><hr>
-			{% for ref in resume.referencecontacts %}
-				<div class="row">
-					<div class="col-md-12">
-						<h5><strong>{{ ref.name }}</strong></h5>
-						<div class=""> {{ ref.job_title }}, {{ ref.company }} </div>
-						<div>{{ ref.email }}</div>
-						<div>{{ ref.phone }}</div>
+			{% if showContactInfo == true %}
+				<h4><strong>Referrals</strong></h4><hr>
+				{% for ref in resume.referencecontacts %}
+					<div class="row">
+						<div class="col-md-12">
+							<h5><strong>{{ ref.name }}</strong></h5>
+							<div class=""> {{ ref.job_title }}, {{ ref.company }} </div>
+							<div>{{ ref.email }}</div>
+							<div>{{ ref.phone }}</div>
+						</div>
 					</div>
-				</div>
-				<br>
-			{% endfor %}
+					<br>
+				{% endfor %}
+			{% endif %}
+
 
 		</div>
 	</div>
