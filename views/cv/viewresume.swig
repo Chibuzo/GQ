@@ -59,68 +59,8 @@
 							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;Video</a></li>
 						</ul>
 						<div class="tab-content">
-						  	<div class="tab-pane fade active in" id="resume">
-								<div class="row">
-									<div class="col-md-12" style="padding: 50px; padding-top: 10px">
-										<h3 class="text-center">{{ resume.fullname }}</h3>
-										<h4>Contact:</h4><hr>
-										<p>{{ resume.address }}<br>{{ resume.city }}, {{ resume.r_state }}</p>
-										<p>
-											<strong>Tel: </strong>{{ resume.phone }}<br>
-											<strong>Email: </strong>{{ resume.email }}
-										</p>
-										<h4>Introduction</h4><hr>
-										<div>{{ resume.introduction }}</div>
-
-										<h4>Eduacation</h4><hr>
-										{% for edu in resume.educations %}
-											<div class="row">
-												<div class="col-md-4">{{ edu.start_date | date('m.Y') }} - {{ edu.end_date | date('m.Y') }}</div>
-												<div class="col-md-8"><div class="school">{{ edu.institution }}<br><small>{{ edu.honour }}. {{ edu.programme }}</small></div></div>
-											</div>
-											<br>
-										{% endfor %}
-
-										<h4>Qualifications</h4><hr>
-										{% for qual in resume.qualifications %}
-											<div class="row">
-												<div class="col-md-4">{{ qual.date_obtained | date('M, Y') }}</div>
-												<div class="col-md-8">{{ qual.qualification }}</div>
-											</div>
-											<br>
-										{% endfor %}
-
-										<h4>Employment History</h4><hr>
-										{% for emp in resume.employments %}
-											<div class="row">
-												<div class="col-md-4">{{ emp.start_date | date('m.Y') }} - {{ emp.end_date | date('m.Y') }}</div>
-												<div class="col-md-8">
-													<div class="school">{{ emp.company }}<br><small>{{ emp.role }}</small></div>
-													<p>{{ emp.duties | raw | safe }}</p>
-												</div>
-											</div>
-										{% endfor %}
-
-										<h4>Referees</h4><hr>
-										{% for ref in resume.referencecontacts %}
-											<div class="row">
-												<div class="col-md-4">
-													<h5>{{ ref.name }}</h5>
-													<div>{{ ref.email }}</div>
-													<div>{{ ref.phone }}</div>
-												</div>
-												<div class="col-md-8">
-													<div class="school"> {{ ref.company }}</div>
-													<div>{{ ref.job_title }}</div>
-												</div>
-											</div>
-											<br>
-										{% endfor %}
-
-									</div>
-								</div>
-							</div>
-
+							<!-- Resume -->
+							{% include 'includes/resume.swig' %}
 							<div class="tab-pane fade in" id="test">
 
 								<div class="col-md-7 col-md-offset-2" id="result-div">

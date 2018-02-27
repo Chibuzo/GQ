@@ -135,8 +135,8 @@
 						  	<div class="tab-pane fade active in" id="resume">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
-									<small>Fields marked in asterisk are compulsory</small>
-										{% include 'includes/resume-form.swig' %}
+									{% include 'includes/resume.swig' %}
+									{% include 'includes/resume-form.swig' %}
 									</div>
 								</div>
 							</div>
@@ -454,6 +454,9 @@ $(document).ready(function() {
 			if (d.status.trim() == 'success') {
 				var msg = "Your GetQualified profile has been successfully updated!";
 				showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+				window.setTimeout(function() {
+					window.location.reload();
+				}, 1000);
 			} else {
 				showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
 			}
@@ -481,6 +484,14 @@ $(document).ready(function() {
 		$(".quest-instruction").slideUp();
 		$('#' + id + "-text").slideDown();
 	});
+
+	$("#candidate-editResumeBtn").on('click', function(e) {
+		console.log('Edit Resume Clicked');
+		e.preventDefault();
+		$("#resumePrensentation" ).addClass('hidden');
+		$("#resumeForm-container").removeClass('hidden');
+	});
+
 });
 </script>
 {% endblock %}

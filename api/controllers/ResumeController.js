@@ -34,7 +34,8 @@ module.exports = {
                                     countries: resp.countries,
                                     states: resp.states,
                                     result: result,
-                                    test_title: 'General Aptitude Test'
+                                    test_title: 'General Aptitude Test',
+																		canEditResume: true
                                 });
                             } else {
                                 return res.view('cv/update', {
@@ -42,7 +43,8 @@ module.exports = {
                                     me: me,
                                     honours: honours,
                                     countries: resp.countries,
-                                    states: resp.states
+                                    states: resp.states,
+																		canEditResume: true
                                 });
                             }
                         }).catch(function(err) {
@@ -202,4 +204,3 @@ module.exports = {
         });
     }
 };
-
