@@ -387,7 +387,7 @@
                 monitorGain: parseInt(0, 10),
                 numberOfChannels: parseInt(1, 10),
                 wavBitDepth: parseInt(16, 10),
-                encoderPath: "js/waveWorker.min.js"
+                encoderPath: "js/proctor/waveWorker.min.js"
             });
 
             this.recorder.addEventListener("start", function(e){
@@ -517,7 +517,7 @@ function startProctor() {
                 // ambient timer recalculation
                 aN = Math.floor(new Date().getTime() / 1000);
                 // Integrity score
-                integrityScore -= integrityScore > 0 ? 1 : 0;
+                integrityScore -= integrityScore > 0 ? 2 : 0;
                 controlIntegrityBar(integrityScore);
             }
         },

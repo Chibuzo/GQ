@@ -215,6 +215,10 @@ function restoreQuestionState(quest_id) {
 
 
 function submitTest() {
+    if (TEST_ID == 1 || TEST_ID == 2) {
+        submitAndLoadNext();
+        return false;
+    }
     var integrity_score = $("#integrity-score").text();
     //proctor.stop();
     $.post('/gqtest/marktest', {
