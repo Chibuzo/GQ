@@ -63,7 +63,7 @@ $("#start-test").click(function() {
             // display question numbers
             var quests = '', n = 1;
             questions.forEach(function(quest) {
-                quests += "<div class='question-num' id='quest-" + n + "' data-quest_id='" + quest.id +"'>" + n + "</div>";
+                quests += "<div class='question-num question-num-base' id='quest-" + n + "' data-quest_id='" + quest.id +"'>" + n + "</div>";
                 n++;
             });
             $(".question-nums").html(quests);
