@@ -323,8 +323,8 @@
 
 												<div class="col-md-7">
 													<div class="nav-btns">
-														<button class="btn btn-info btn-fill">Prev<i class="fa fa-caret-left"></i> </button>
-														<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
+														<button class="btn btn-info btn-fill" id="prev-question"><i class="fa fa-caret-left"></i>Prev</button>
+														<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i></button>
 													</div>
 												</div>
 

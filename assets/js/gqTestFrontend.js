@@ -85,6 +85,20 @@ $("#next-question").click(function() {
     fetchNextQuestion(questions);
 });
 
+// TODO: Better implmentation. Hacky
+$("#prev-question").click(function() {
+    var cur_question = $("#current_quest").text();
+    var currQuestionInt = parseInt(cur_question);
+
+    if (currQuestionInt === 1) {
+        return;
+    }
+
+    // Get the previous question by calling fetchNextQuestion from previous 2 questions
+    fetchNextQuestion(questions, currQuestionInt - 2);
+})
+
+
 
 // load question from question numbers
 $(".question-nums").on('click', '.question-num', function() {
@@ -114,6 +128,8 @@ function fetchNextQuestion(questions, next_quest) {
         next_question = next_quest;
         cur_question = next_quest + 1;
     }
+
+    // If this is the last question, change the text to "End"
     if (parseInt(cur_question) > parseInt(question_num)) {
         //submitTest();
         $("#next-question").html('End')
