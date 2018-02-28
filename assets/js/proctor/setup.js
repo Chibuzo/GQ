@@ -387,7 +387,7 @@
                 monitorGain: parseInt(0, 10),
                 numberOfChannels: parseInt(1, 10),
                 wavBitDepth: parseInt(16, 10),
-                encoderPath: "js/proctor/waveWorker.min.js"
+                encoderPath: "/js/proctor/waveWorker.min.js"
             });
 
             this.recorder.addEventListener("start", function(e){

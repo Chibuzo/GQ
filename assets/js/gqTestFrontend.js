@@ -44,7 +44,7 @@ $("#start-test").click(function() {
     createProctorSession();
 
     // register event to warn candidate about leaving the test page
-    //addWindowsCloseEvent();
+    addWindowsCloseEvent();
 
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
@@ -93,36 +93,6 @@ $(".question-nums").on('click', '.question-num', function() {
     if (cur_question != question) {
         fetchNextQuestion(questions, question - 1);
         $(this).removeClass('skipped_q answered_q').addClass('active_q');
-    }
-});
-
-
-// submit test
-$("#submit-test").click(function(e) {
-    e.preventDefault();
-    if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
-        saveAnswer();
-        if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
-            submitAndLoadNext();
-            return;
-        } else if (parseInt(TEST_ID) == 3) {
-            var integrity_score = $('.progress-bar').width();
-            $.post('/gqtest/markGQAptitude', {
-                test_id: TEST_ID,
-                no_of_question: questions.length,
-                integrity_score: integrity_score
-            }, function (d) {
-                $("#score").text(d.result.score + '/60');
-                $("#percentage").text(d.result.percentage + '%');
-                $("#rank").text(d.result.rank + ' of ' + d.result.candidates);
-
-                $("#test-div").fadeOut('fast', function() {
-                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
-                });
-            });
-            return;
-        }
-        submitTest();
     }
 });
 
@@ -188,7 +158,7 @@ function fetchNextQuestion(questions, next_quest) {
     restoreQuestionState(questions[next_question].id);
 }
 
-
+// loosely acts as a checkpoint, so it saves test states
 function saveAnswer() {
     var quest_id = $("#current_quest").data('quest-id');
     var ans = $("input[name=opt]:checked").val();
@@ -203,6 +173,8 @@ function saveAnswer() {
     } else {
         $("#quest-" + cur_question).addClass('skipped_q');
     }
+    // save test state
+    localStorage.setItem('integrity_score', $('.progress-bar').width());
 }
 
 
@@ -212,6 +184,38 @@ function restoreQuestionState(quest_id) {
         $(':radio[value=' + ans + ']').prop('checked', true).parents('label').addClass('checked');
     }
 }
+
+
+// submit test
+$("#submit-test").click(function(e) {
+    e.preventDefault();
+    if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        saveAnswer();
+        if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
+            submitAndLoadNext();
+            return;
+        } else if (parseInt(TEST_ID) == 3) {
+            var integrity_score = $('.progress-bar').width();
+            $.post('/gqtest/markGQAptitude', {
+                test_id: TEST_ID,
+                no_of_questions: questions.length,
+                integrity_score: integrity_score
+            }, function (d) {
+                $("#score").text(d.result.score + '/60');
+                $("#percentage").text(d.result.percentage + '%');
+                $("#rank").text(d.result.rank + ' of ' + d.result.candidates);
+
+                $("#test-div").fadeOut('fast', function() {
+                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
+                });
+            });
+            return;
+        }
+        submitTest();
+        // remove windows close event
+        removeWindowsCloseEvent();
+    }
+});
 
 
 function submitTest() {
@@ -238,8 +242,6 @@ function submitTest() {
     });
     // clear local storage
     localStorage.clear();
-    // remove windows close event
-    //removeWindowsCloseEvent();
 }
 
 // NOTE! This function is a very dirty hack!
@@ -251,7 +253,7 @@ function submitAndLoadNext(next) {
     var integrity_score = $("#integrity-score").text();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
-        no_of_question: questions.length,
+        no_of_questions: questions.length,
         integrity_score: integrity_score
     }, function (d) {
         if (next <= 3) $(".load-test").click();
@@ -312,7 +314,12 @@ function blockTest() {
     $(".inner-test-div").fadeOut('fast', function() {
         $(".test-blocked-screen").removeClass('hidden');
     });
-    $("#stopTestTimer").click(); // prevent loaded test from auto submitting on time out by stopping the timer
+    $("#stopTestTimer").click(); // prevent loaded test from auto submitting on timeout by stopping the timer
+}
+
+
+function pauseTestOnInternetOut() {
+    //$(".inner-test-div").
 }
 
 
@@ -329,19 +336,27 @@ function controlIntegrityBar(integrityScore) {
 
 
 function addWindowsCloseEvent() {
-    window.addEventListener("beforeunload", warnCandidate(e));
+    window.addEventListener("beforeunload", submitTest);
 }
 
-function warnCandidate(e) {
-    var confirmationMessage = "\o/";
-
-	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-	return confirmationMessage;
-    //$.post('/pushajax', { msg: 'Window Closed'});
-}
+//function warnCandidate(e) {
+//    var confirmationMessage = "\o/";
+//
+//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
+//	return confirmationMessage;
+//    //$.post('/pushajax', { msg: 'Window Closed'});
+//}
 
 
 function removeWindowsCloseEvent() {
-    window.removeEventListener("beforeunload", warnCandidate());
+    window.removeEventListener("beforeunload", submitTest);
     //$.post('/pushajax', { msg: 'Window freed'});
 }
+
+window.addEventListener('online', () => {
+
+});
+
+window.addEventListener('offline', () => {
+
+});
