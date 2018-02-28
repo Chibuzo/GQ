@@ -340,7 +340,7 @@
                 pc.opts.onAmbientNoiseDetection(),
                     pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 5000);
+                }, 15000);
             }
 
             // console.log('Proctor: Pitch -> ' + pitch);
@@ -544,6 +544,8 @@ function startProctor() {
             console.log('Proctor is ready.');
         }
     });
+
+    return proctor;
 
     // You can call this at any time so long as the variable is set
     // proctor.stop();

@@ -131,16 +131,16 @@
 
 					<div class="content">
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#resume" data-toggle="tab"> &nbsp;Resume</a></li>
+							<li class="active"><a href="#resume-tab" data-toggle="tab"> &nbsp;Resume</a></li>
 							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
 							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-						  	<div class="tab-pane fade active in" id="resume">
+						  	<div class="tab-pane fade active in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
-									<small>Fields marked in asterisk are compulsory</small>
-										{% include 'includes/resume-form.swig' %}
+									{% include 'includes/resume.swig' %}
+									{% include 'includes/resume-form.swig' %}
 									</div>
 								</div>
 							</div>
@@ -466,12 +466,25 @@ $(document).ready(function() {
 			if (d.status.trim() == 'success') {
 				var msg = "Your GetQualified profile has been successfully updated!";
 				showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+				window.setTimeout(function() {
+					window.location.reload();
+				}, 1000);
 			} else {
 				showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
 			}
 			$("#btn-submit").html("Update Profile").prop('disabled', false);
 		}, 'JSON');
 	});
+
+	$("#candidate-editResumeBtn").on('click', function(e) {
+		e.preventDefault();
+
+		// Hide the Resume presentation View
+		$("#resume" ).addClass('hidden');
+		// Show the Resume Form View
+		$("#resumeForm-container").removeClass('hidden');
+	});
+
 
 
 	// video handlers
