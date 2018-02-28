@@ -82,7 +82,7 @@ $(".question").click(function() {
             $("#_answer").find('option').filter(function(i) {
                 return d.question.answer == $(this).val();
             }).prop("selected", true);
-            $("#_question_id").val(d.question.id);
+            $("#_question_id").val(question_id);
             $("#_test_id").val(d.question.test);
             $("input[name=question_image]").val(null);
             if (d.question.image_file) {

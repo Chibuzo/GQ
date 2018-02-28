@@ -57,11 +57,11 @@ module.exports = {
                     maxBytes: 100 * 1024 * 1024
                 },
                 function(err) {
-                    if (err) return err;
+                    if (err) return reject(err);
                     return resolve(filename);
                 });
             } else {
-                return resolve('This is not supposed to happen');
+                return reject('This is not supposed to happen');
             }
         });
     },

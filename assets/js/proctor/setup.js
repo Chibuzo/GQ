@@ -340,7 +340,7 @@
                 pc.opts.onAmbientNoiseDetection(),
                     pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 5000);
+                }, 15000);
             }
 
             // console.log('Proctor: Pitch -> ' + pitch);
@@ -517,7 +517,7 @@ function startProctor() {
                 // ambient timer recalculation
                 aN = Math.floor(new Date().getTime() / 1000);
                 // Integrity score
-                integrityScore -= integrityScore > 0 ? 1 : 0;
+                integrityScore -= integrityScore > 0 ? 2 : 0;
                 controlIntegrityBar(integrityScore);
             }
         },
@@ -544,6 +544,8 @@ function startProctor() {
             console.log('Proctor is ready.');
         }
     });
+
+    return proctor;
 
     // You can call this at any time so long as the variable is set
     // proctor.stop();

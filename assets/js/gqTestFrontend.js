@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [];
+var TEST_ID, duration, questions = [],PROCTOR;
 
 // retake test
 $("#retake-test").click(function() {
@@ -38,13 +38,16 @@ $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
     // start test proctoring
-    startProctor();
+    PROCTOR = startProctor();
 
     // register proctor session
     createProctorSession();
 
     // register event to warn candidate about leaving the test page
     addWindowsCloseEvent();
+
+    // reset/initialize invigilation bar
+    $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
 
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
@@ -189,6 +192,10 @@ function restoreQuestionState(quest_id) {
 // submit test
 $("#submit-test").click(function(e) {
     e.preventDefault();
+
+    // stop proctor
+    PROCTOR.stop();
+
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
         saveAnswer();
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
@@ -331,7 +338,7 @@ function controlIntegrityBar(integrityScore) {
     else if (integrityScore < 55) {
         $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
     }
-    $('.progress-bar').css('width', integrityScore + "%");
+    $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
 }
 
 
