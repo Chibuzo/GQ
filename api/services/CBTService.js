@@ -55,7 +55,6 @@ module.exports = {
                 });
             } else if (jobtest.test_source == 'gq') {
                 GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
-                    console.log(results)
                     if (results.length > 0) {
                         module.exports.processJobResult(results).then(function(_results) {
                             resolve(_results);
@@ -177,7 +176,7 @@ module.exports = {
         });
     },
 
-    // GQ aptitude test result
+    // GQ aptitude test result for a candidate
     candidateGeneralTestResult: function(candidate_id) {
         return new Promise(function(resolve, reject) {
             GQAptitudeTestResult.find({ user: candidate_id }).populate('user').exec(function(err, candidate_score) {
@@ -187,8 +186,8 @@ module.exports = {
                 GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
                     var c_score = candidate_score[0];
                     c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
-                    //c_score.rank = result.map(function(e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
-                    c_score.rank = result.indexOf(candidate_score[0].score) + 1;
+                    c_score.rank = result.map(function(e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                    //c_score.rank = result.indexOf(candidate_score[0].score) + 1;
                     c_score.candidates = result.length;
                     return resolve(c_score);
                 });

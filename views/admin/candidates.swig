@@ -41,9 +41,10 @@
 					<tr>
 						<th>Date</th>
 						<th>Name</th>
-						<th>Email</th>
-						<th>Phone</th>
 						<th>Employment Status</th>
+						<th>General</th>
+						<th>Aptitude</th>
+						<th>Maths</th>
 						<th>Resume Status</th>
 						<th class="text-center">Action</th>
 					</tr>
@@ -53,8 +54,6 @@
 						<tr>
 							<td>{{ user.createdAt | date('d/m/Y') }}</td>
 							<td>{{ user.fullname }}</td>
-							<td>{{ user.email }}</td>
-							<td>{{ user.phone }}</td>
 							<td>{{ user.employment_status }}</td>
 							<td>{{ user.status }}</td>
 							<td class="opt-icons text-center">

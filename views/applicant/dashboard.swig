@@ -29,7 +29,7 @@
 								<th>SCORE</th>
 								<th>PERCENTAGE</th>
 								<th class="text-center">AVERAGE</th>
-								<th>RESULT</th>
+								{#<th>RESULT</th>#}
 							</tr>
 						</thead>
 						<tbody>
@@ -41,7 +41,7 @@
 								<td>{{ result.score }}</td>
 								<td>{{ result.percentage }}%</td>
 								<td class="text-center">{{ result.average }}</td>
-								<td>{{ result.result }}</td>
+								{#<td>{{ result.result }}</td>#}
 							</tr>
 						{% endfor %}
 
