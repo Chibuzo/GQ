@@ -7,79 +7,108 @@
 {% block body %}
 <style>
 	.tests-alert {
-		width: 90%;
-		margin: 0 auto;
 		text-align: center;
 	}
-</style>
-	<div class="col-md-5 pull-right">
-		<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
-	</div>
 
-	<div class="col-md-12">
-		<div class="card">
-			<div class="header row">
-				<div class="col-md-6">
-					<h4 class="title">All Jobs</h4>
-					<p class="category"></p>
+	.alert-container {
+		border-style: solid;
+		border-width: 3px;
+		border-radius: 5px;
+		border-color: white;
+		background: white;
+	}
+
+	.empty-warning {
+		color: black;
+		background: none;
+		font-weight: bold;
+	}
+</style>
+
+	{% if jobs.length > 0 %}
+
+		<div class="col-md-5 pull-right">
+			<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
+		</div>
+
+		<div class="col-md-12">
+			<div class="card">
+				<div class="header row">
+					<div class="col-md-6">
+						<h4 class="title">All Jobs</h4>
+						<p class="category"></p>
+					</div>
+				</div>
+				<div class="content table-responsive table-full-width">
+					<table class="table table-striped tablebordered">
+						<thead>
+						<tr>
+							<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
+							<th>Date Added</th>
+							<th>Job Title</th>
+							<th>Job Level</th>
+							<th class="hidden">Job Category</th>
+							<th>Contract Type</th>
+							<th style="width: 60px">Applications</th>
+							{#<th>Candidates</th>#}
+							<th>Posted By</th>
+							{#<th>Status</th>#}
+							<th><i class="fa fa-calendar"></i> Closing Date</th>
+							<th class="text-center" style="width: 160px">Action</th>
+						</tr>
+						</thead>
+						<tbody>
+						{% for job in jobs %}
+							{% set applications = job.applications.length %}
+							<tr id="{{ job.id }}">
+								<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
+								<td>{{ job.createdAt | date('d-m-Y') }}</td>
+								<td>{{ job.job_title }}</td>
+								<td class="hidden">{{ job.category.category }}</td>
+								<td>{{ job.job_level }}</td>
+								<td>{{ job.contract_type }}</td>
+								<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+								{#<td><a href=""></a></td>#}
+								<td>{{ job.poster.fullname }}</td>
+								{#<td>{{ job.status }}</td>#}
+								<td>{{ job.closing_date | date('d-m-Y') }}</td>
+								<td class="opt-icons text-center">
+									<div class="button-group" role="group">
+										<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+										{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
+										<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
+										<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
+										<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
+									</div>
+								</td>
+							</tr>
+						{% endfor %}
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="content table-responsive table-full-width">
-			{% if jobs.length > 0 %}
-				<table class="table table-striped tablebordered">
-					<thead>
-					<tr>
-						<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
-						<th>Date Added</th>
-						<th>Job Title</th>
-						<th>Job Level</th>
-						<th class="hidden">Job Category</th>
-						<th>Contract Type</th>
-						<th style="width: 60px">Applications</th>
-						{#<th>Candidates</th>#}
-						<th>Posted By</th>
-						{#<th>Status</th>#}
-						<th><i class="fa fa-calendar"></i> Closing Date</th>
-						<th class="text-center" style="width: 160px">Action</th>
-					</tr>
-					</thead>
-					<tbody>
-					{% for job in jobs %}
-						{% set applications = job.applications.length %}
-						<tr id="{{ job.id }}">
-							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-							<td>{{ job.createdAt | date('d-m-Y') }}</td>
-							<td>{{ job.job_title }}</td>
-							<td class="hidden">{{ job.category.category }}</td>
-							<td>{{ job.job_level }}</td>
-							<td>{{ job.contract_type }}</td>
-							<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
-							{#<td><a href=""></a></td>#}
-							<td>{{ job.poster.fullname }}</td>
-							{#<td>{{ job.status }}</td>#}
-							<td>{{ job.closing_date | date('d-m-Y') }}</td>
-							<td class="opt-icons text-center">
-								<div class="button-group" role="group">
-									<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
-									{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-									<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
-									<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
-									<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
-								</div>
-							</td>
-						</tr>
-					{% endfor %}
-					</tbody>
-				</table>
-			{% else %}
-				<hr>
-				<div class="alert alert-warning tests-alert" role="alert">
-					You've not posted any job yet. Click on the add job button at the top right to begin.
+		</div>
+
+	{% else %}
+
+	<div class="container">
+		<div class="row alert-container col-xs-4 col-xs-offset-4">
+			<div class="col-xs-12">
+				<div class="row">
+					<div class="col-xs-12 alert empty-warning tests-alert" role="alert">
+						You've not posted any job yet.
+					</div>
 				</div>
-			{% endif %}
+				<div class="row">
+					<div class="col-xs-12" style="text-align: center; margin-bottom: 10px;">
+						<a href="/job/addjob" class="btn btn-success btn-fill btnsm" ><i class="fa fa-plus"></i> Add Job</a>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
+
+	{% endif %}
 
 	<form action="/company/upload-csv" method="post" id="form-csv" enctype="multipart/form-data">
 		<input type="hidden" name="job_id" id="job_id" />
