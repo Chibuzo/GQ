@@ -193,6 +193,11 @@ function restoreQuestionState(quest_id) {
 $("#submit-test").click(function(e) {
     e.preventDefault();
 
+    // prevent further [auto] submit
+    $("#stopTestTimer").text('Stop').click();
+    $("#hms_timer").countdowntimer("destroy");
+    //$("#hms_timer").countdowntimer("stop", "stop");
+
     // stop proctor
     PROCTOR.stop();
 
@@ -200,25 +205,13 @@ $("#submit-test").click(function(e) {
         saveAnswer();
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
             submitAndLoadNext();
-            return;
+            return false;
         } else if (parseInt(TEST_ID) == 3) {
-            var integrity_score = $('.progress-bar').width();
-            $.post('/gqtest/markGQAptitude', {
-                test_id: TEST_ID,
-                no_of_questions: questions.length,
-                integrity_score: integrity_score
-            }, function (d) {
-                $("#score").text(d.result.score + '/60');
-                $("#percentage").text(d.result.percentage + '%');
-                $("#rank").text(d.result.rank + ' of ' + d.result.candidates);
-
-                $("#test-div").fadeOut('fast', function() {
-                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
-                });
-            });
-            return;
+            submitGQAptitudeTest();
+            return false;
+        } else {
+            submitTest();
         }
-        submitTest();
         // remove windows close event
         removeWindowsCloseEvent();
     }
@@ -228,6 +221,9 @@ $("#submit-test").click(function(e) {
 function submitTest() {
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
+        return false;
+    } else if (TEST_ID == 3) {
+        submitGQAptitudeTest();
         return false;
     }
     var integrity_score = $("#integrity-score").text();
@@ -251,6 +247,12 @@ function submitTest() {
     localStorage.clear();
 }
 
+
+//function submitOnTimeOut() {
+//    $("#submit-test").click();
+//}
+
+
 // NOTE! This function is a very dirty hack!
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
@@ -269,6 +271,37 @@ function submitAndLoadNext(next) {
     localStorage.clear();
     $(".question-nums").empty();
     $("#current_quest").empty();
+}
+
+
+// NOTE! Another terrible hack
+// for GQ Aptitude test submit
+// should be modified to handle section submit for test with more than one section
+function submitGQAptitudeTest() {
+    var integrity_score = $('.progress-bar').width();
+    $.post('/gqtest/markGQAptitude', {
+        test_id: TEST_ID,
+        no_of_questions: questions.length,
+        integrity_score: integrity_score
+    }, function (d) {
+        console.log(d);
+        $("#general").find('td:nth-child(2)').text(d.result.general_ability);
+        $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
+
+        $("#verbal").find('td:nth-child(2)').text(d.result.verbal);
+        $("#verbal").find('td:nth-child(3)').text(d.result.verbal_percentage + '%');
+
+        $("#maths").find('td:nth-child(2)').text(d.result.maths);
+        $("#maths").find('td:nth-child(3)').text(d.result.maths_percentage + '%');
+
+        $("#total").find('td:nth-child(2)').text(d.result.score);
+        $("#total").find('td:nth-child(3)').text(d.result.percentage + '%');
+        $("#total").find('td:nth-child(4)').text(d.result.rank);
+
+        $("#test-div").fadeOut('fast', function() {
+            $("#result-div").hide().removeClass('hidden').fadeIn('fast');
+        });
+    });
 }
 
 

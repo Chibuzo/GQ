@@ -121,9 +121,12 @@ module.exports = {
 
 
     fetchApplicants: function(req, res) {
-        Resume.find({ }).populate('user').exec(function(err, candidates) {
-            if (err) return console.log(err);
+        //Resume.find({ }).populate('user').exec(function(err, candidates) {
+        //    if (err) return console.log(err);
+        GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
             return res.view('admin/candidates', { candidates: candidates });
+        }).catch(function(err) {
+            console.log(err);
         });
     }
 };

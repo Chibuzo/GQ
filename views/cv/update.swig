@@ -156,20 +156,56 @@
 								<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 									<div class="result">
 										<h3 class="test-title"></h3><br>
-										<div class="panel panel-default">
-											<div class="panel-heading">
-												{{ test_title }}
-											</div>
+										<table class="table table-striped">
+											<thead>
+												<tr>
+													<th></th>
+													<th>Score</th>
+													<th>Percentage</th>
+													<th>Rank</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr id="general">
+													<td>General Ability</td>
+													<td>{{ result.general_ability }}</td>
+													<td>{{ result.general_percentage }}%</td>
+													<td>-</td>
+												</tr>
+												<tr id="verbal">
+													<td>Verbal Reasoning</td>
+													<td>{{ result.verbal }}</td>
+													<td>{{ result.verbal_percentage }}%</td>
+													<td>-</td>
+												</tr>
+												<tr id="maths">
+													<td>Numerical Reasoning</td>
+													<td>{{ result.maths }}</td>
+													<td>{{ result.maths_percentage }}%</td>
+													<td></td>
+												</tr>
+												<tr id="total">
+													<td>Total Score</td>
+													<td>{{ result.score }}/60</td>
+													<td>{{ result.percentage }}%</td>
+													<td>{{ result.rank }}</td>
+												</tr>
+											</tbody>
+										</table>
+										{#<div class="panel panel-default">#}
+											{#<div class="panel-heading">#}
+												{#{{ test_title }}#}
+											{#</div>#}
 
-											<ul class="list-group">
-												<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>
-												<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>
-												<li class="list-group-item">Rank: <span id="rank">{{ result.rank }} of {{ result.candidates }} candidates</span></li>
-											</ul>
-											<div class="panel-body">
-												{#<strong>Note: </strong>You can always pay and retake the test to improve your score...#}
-											</div>
-										</div>
+											{#<ul class="list-group">#}
+												{#<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>#}
+												{#<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>#}
+												{#<li class="list-group-item">Rank: <span id="rank">{{ result.rank }} of {{ result.candidates }} candidates</span></li>#}
+											{#</ul>#}
+											{#<div class="panel-body">#}
+												{#&#123;&#35;<strong>Note: </strong>You can always pay and retake the test to improve your score...&#35;&#125;#}
+											{#</div>#}
+										{#</div>#}
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
@@ -252,7 +288,7 @@
 											<div class="nav-btns">
 												<button class="btn btn-info btn-fill hidden">Pev <i class="fa fa-caret-left"></i> </button>
 												<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
-												<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Test </button>
+												<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Section </button>
 											</div>
 										</div>
 										<div class="test-blocked-screen hidden" style="margin-top: 15px">
