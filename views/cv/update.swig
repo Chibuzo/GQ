@@ -287,7 +287,7 @@
 														<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 															<div class="invigilation-report">
 
-																<!-- TODO: Invigilation Score Number 
+																<!-- TODO: Invigilation Score Number
 																<span>Invigilation Score: </span>
 																<span id="invigilation-score">100%</span>
 																-->
@@ -326,14 +326,14 @@
 
 																<div class="col-xs-3">
 																	<p class="key-text">
-																		Current Question:
+																		Current:
 																	</p>
 																	<div class="question-num-base question-key" style="background-color: #A37F2D"></div>
 																</div>
 
 																<div class="col-xs-3">
 																	<p class="key-text">
-																		Unanswered Question:
+																		Unanswered:
 																	</p>
 																	<div class="question-num-base question-key"></div>
 																</div>
