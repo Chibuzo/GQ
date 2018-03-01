@@ -81,6 +81,11 @@ $("#start-test").click(function() {
 
 $("#next-question").click(function() {
     var cur_question = $("#current_quest").text();
+    var question_num = parseInt($("#total_questions").text());
+
+    if (parseInt(cur_question) === question_num) {
+        return;
+    }
 
     fetchNextQuestion(questions);
 });
@@ -97,7 +102,6 @@ $("#prev-question").click(function() {
     // Get the previous question by calling fetchNextQuestion from previous 2 questions
     fetchNextQuestion(questions, currQuestionInt - 2);
 })
-
 
 
 // load question from question numbers
@@ -129,12 +133,7 @@ function fetchNextQuestion(questions, next_quest) {
         cur_question = next_quest + 1;
     }
 
-    // If this is the last question, change the text to "End"
-    if (parseInt(cur_question) > parseInt(question_num)) {
-        //submitTest();
-        $("#next-question").html('End')
-        return;
-    }
+    disableButtons(cur_question, question_num);
 
     // save the state of the current question
     saveAnswer();
@@ -172,6 +171,21 @@ function fetchNextQuestion(questions, next_quest) {
         $("#span-opt-e").parents('li').hide();
     }
     restoreQuestionState(questions[next_question].id);
+}
+
+function disableButtons(currQuestion, totalQuestions) {
+    if (parseInt(currQuestion) == parseInt(totalQuestions)) {
+        //submitTest();
+        $("#next-question").addClass('disabled');
+    } else {
+        $("#next-question").removeClass('disabled');
+    }
+
+    if (parseInt(currQuestion) == 1) {
+        $("#prev-question").addClass('disabled');
+    } else {
+        $("#prev-question").removeClass('disabled');
+    }
 }
 
 // loosely acts as a checkpoint, so it saves test states

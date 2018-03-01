@@ -250,8 +250,11 @@
 													<div class="row">
 														<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 															<div class="invigilation-report">
+
+																<!-- TODO: Invigilation Score Number 
 																<span>Invigilation Score: </span>
 																<span id="invigilation-score">100%</span>
+																-->
 															</div>
 
 															<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
@@ -267,39 +270,36 @@
 													<div class="row">
 														<div class="col-md-12">
 															<div class="row" style="text-align: center;font-weight: bold;">
-																Test Key:
+																Question Key:
 															</div>
 
 															<div class="row">
-																<div class="col-xs-6 col-sm-3 col-sm-offset-3">
+																<div class="col-xs-3">
 																	<p class="key-text">
 																		Answered:
 																	</p>
-																	<div class="question-num-base question-key" style="background-color: #99cc66;">A</div>
+																	<div class="question-num-base question-key" style="background-color: #99cc66;"></div>
 																</div>
 
-																<div class="col-xs-6 col-sm-3">
+																<div class="col-xs-3">
 																	<p class="key-text">
 																		Skipped:
 																	</p>
-																	<div class="question-num-base question-key" style="background-color: #c9302c;">B</div>
+																	<div class="question-num-base question-key" style="background-color: #c9302c;"></div>
 																</div>
-															</div>
 
-															<div class="row" style="margin-top: 10px;">
-
-																<div class="col-xs-6 col-sm-3 col-sm-offset-3">
+																<div class="col-xs-3">
 																	<p class="key-text">
 																		Current Question:
 																	</p>
-																	<div class="question-num-base question-key" style="background-color: #A37F2D">C</div>
+																	<div class="question-num-base question-key" style="background-color: #A37F2D"></div>
 																</div>
 
-																<div class="col-xs-6 col-sm-3">
+																<div class="col-xs-3">
 																	<p class="key-text">
 																		Unanswered Question:
 																	</p>
-																	<div class="question-num-base question-key">D</div>
+																	<div class="question-num-base question-key"></div>
 																</div>
 
 															</div>

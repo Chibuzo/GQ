@@ -11,7 +11,7 @@
 }
 
 .question-nums {
-    width: 200px;
+    width: 250px;
     margin: auto;
 }
 
@@ -33,6 +33,8 @@
 
 .question-key {
     margin: auto;
+    width: 20px;
+    height: 20px;
 }
 
 .key-text {
