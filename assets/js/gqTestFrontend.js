@@ -286,6 +286,42 @@ function blockTest() {
     $("#stopTestTimer").click(); // prevent loaded test from auto submitting on timeout by stopping the timer
 }
 
+function startTest() {
+    console.log('Start Test');
+    $.get('/gqtest/load-test/' + TEST_ID, function(d) {
+        if (d.status.trim() == 'success') {
+            questions = d.questions;
+            shuffleArray(questions);
+            duration = d.duration;
+
+            var total_quests = d.questions.length;
+            //TEST_ID = d.test_id;
+            $("#total_questions").text(total_quests);
+
+            $(".test-blocked-screen").addClass('hidden');
+
+            $("#instructions").fadeOut('fast', function() {
+                $(".inner-test-div").fadeIn('fast');
+            });
+
+            // display question numbers
+            var quests = '', n = 1;
+            questions.forEach(function(quest) {
+                quests += "<div class='question-num' id='quest-" + n + "' data-quest_id='" + quest.id +"'>" + n + "</div>";
+                n++;
+            });
+            $(".question-nums").html(quests);
+
+            fetchNextQuestion(questions);
+            startTimer();
+
+            // set/reset controls
+            $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
+            $("#start-test").text('Start Test').prop('disabled', false);
+        }
+    }, 'JSON');
+}
+
 
 function pauseTestOnInternetOut() {
     //$(".inner-test-div").
