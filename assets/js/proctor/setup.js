@@ -464,7 +464,7 @@ function startProctor() {
         audioSensitivity: 4, // from 0 - 10
 
         handleOutdatedBrowser: function() {
-            alert('Update your browser ma niggah');
+            alert('Unsupported Broswer: You are using a broswer we do not support. Please update your broswer');
         },
 
         handleSnapshot: function(data64) {
@@ -512,6 +512,7 @@ function startProctor() {
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
+            // If 60s have passed, deduct from Integrity score
             if((timer - aN) > 60) {
                 console.log('Proctor: Ambient noise detected');
                 // ambient timer recalculation
@@ -540,8 +541,13 @@ function startProctor() {
             blockTest();
         },
 
+				/* This function is called when
+				* 1) mic/recorder is not ignored and ready, &
+				* 2) camera/tracker is not ignored and ready
+				*/
         proctorReady: function() {
             console.log('Proctor is ready.');
+            startTest();
         }
     });
 

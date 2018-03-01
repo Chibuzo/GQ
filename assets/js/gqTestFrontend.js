@@ -48,45 +48,32 @@ $("#start-test").click(function() {
 
     // reset/initialize invigilation bar
     $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
-
-    $.get('/gqtest/load-test/' + TEST_ID, function(d) {
-        if (d.status.trim() == 'success') {
-            questions = d.questions;
-            shuffleArray(questions);
-            duration = d.duration;
-
-            var total_quests = d.questions.length;
-            //TEST_ID = d.test_id;
-            $("#total_questions").text(total_quests);
-
-            $("#instructions").fadeOut('fast', function() {
-                $(".inner-test-div").fadeIn('fast');
-            });
-
-            // display question numbers
-            var quests = '', n = 1;
-            questions.forEach(function(quest) {
-                quests += "<div class='question-num' id='quest-" + n + "' data-quest_id='" + quest.id +"'>" + n + "</div>";
-                n++;
-            });
-            $(".question-nums").html(quests);
-
-            fetchNextQuestion(questions);
-            startTimer();
-
-            // set/reset controls
-            $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
-            $("#start-test").text('Start Test').prop('disabled', false);
-        }
-    }, 'JSON');
 });
 
 
 $("#next-question").click(function() {
     var cur_question = $("#current_quest").text();
+    var question_num = parseInt($("#total_questions").text());
+
+    if (parseInt(cur_question) === question_num) {
+        return;
+    }
 
     fetchNextQuestion(questions);
 });
+
+// TODO: Better implmentation. Hacky
+$("#prev-question").click(function() {
+    var cur_question = $("#current_quest").text();
+    var currQuestionInt = parseInt(cur_question);
+
+    if (currQuestionInt === 1) {
+        return;
+    }
+
+    // Get the previous question by calling fetchNextQuestion from previous 2 questions
+    fetchNextQuestion(questions, currQuestionInt - 2);
+})
 
 
 // load question from question numbers
@@ -117,11 +104,8 @@ function fetchNextQuestion(questions, next_quest) {
         next_question = next_quest;
         cur_question = next_quest + 1;
     }
-    if (parseInt(cur_question) > parseInt(question_num)) {
-        //submitTest();
-        $("#next-question").html('End')
-        return;
-    }
+
+    disableButtons(cur_question, question_num);
 
     // save the state of the current question
     saveAnswer();
@@ -159,6 +143,21 @@ function fetchNextQuestion(questions, next_quest) {
         $("#span-opt-e").parents('li').hide();
     }
     restoreQuestionState(questions[next_question].id);
+}
+
+function disableButtons(currQuestion, totalQuestions) {
+    if (parseInt(currQuestion) == parseInt(totalQuestions)) {
+        //submitTest();
+        $("#next-question").addClass('disabled');
+    } else {
+        $("#next-question").removeClass('disabled');
+    }
+
+    if (parseInt(currQuestion) == 1) {
+        $("#prev-question").addClass('disabled');
+    } else {
+        $("#prev-question").removeClass('disabled');
+    }
 }
 
 // loosely acts as a checkpoint, so it saves test states
@@ -355,6 +354,42 @@ function blockTest() {
         $(".test-blocked-screen").removeClass('hidden');
     });
     $("#stopTestTimer").click(); // prevent loaded test from auto submitting on timeout by stopping the timer
+}
+
+function startTest() {
+    console.log('Start Test');
+    $.get('/gqtest/load-test/' + TEST_ID, function(d) {
+        if (d.status.trim() == 'success') {
+            questions = d.questions;
+            shuffleArray(questions);
+            duration = d.duration;
+
+            var total_quests = d.questions.length;
+            //TEST_ID = d.test_id;
+            $("#total_questions").text(total_quests);
+
+            $(".test-blocked-screen").addClass('hidden');
+
+            $("#instructions").fadeOut('fast', function() {
+                $(".inner-test-div").fadeIn('fast');
+            });
+
+            // display question numbers
+            var quests = '', n = 1;
+            questions.forEach(function(quest) {
+                quests += "<div class='question-num' id='quest-" + n + "' data-quest_id='" + quest.id +"'>" + n + "</div>";
+                n++;
+            });
+            $(".question-nums").html(quests);
+
+            fetchNextQuestion(questions);
+            startTimer();
+
+            // set/reset controls
+            $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
+            $("#start-test").text('Start Test').prop('disabled', false);
+        }
+    }, 'JSON');
 }
 
 
