@@ -1,3 +1,8 @@
+.invigilation-report {
+    text-align: center;
+    font-size: 12px;
+}
+
 .question, .question-image {
     -webkit-user-select: none;  /* Chrome all / Safari all */
     -moz-user-select: none;     /* Firefox all */
@@ -5,8 +10,16 @@
     user-select: none;          /* Likely future */
 }
 
+.question-nums {
+    width: 250px;
+    margin: auto;
+}
+
 .question-num {
     float: left;
+}
+
+.question-num-base {
     width: 40px;
     height: 40px;
     margin: 5px;
@@ -16,6 +29,18 @@
     font-size: 15px;
     border: #ccc solid thin;
     cursor: pointer;
+}
+
+.question-key {
+    margin: auto;
+    width: 20px;
+    height: 20px;
+}
+
+.key-text {
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 5px;
 }
 
 .question-image img {
@@ -50,11 +75,9 @@ ul.opts {
     list-style-type: none;
 }
 
-.nav-btns {
+.nav-row {
     margin-top: 15px;
-    overflow: auto;
 }
-
-#countdowntimer {
-    padding-right: 27px;
+.nav-btns {
+    overflow: auto;
 }
