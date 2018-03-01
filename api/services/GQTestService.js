@@ -101,5 +101,35 @@ module.exports = {
                 return resolve(result);
             });
         });
+    },
+
+    fetchAllCandidatesAptitudeTestResult: function() {
+        return new Promise(function(resolve, reject) {
+            const candidates = [];
+            GQAptitudeTestResult.find().sort('score desc').exec(function(err, apt_results) {
+                var apt_scores = apt_results.map(function(e) { return e.score; });
+                apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
+                async.eachSeries(apt_results, function(apt_result, cb) {
+                    GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                        candidates.push({
+                            id: tests[0].candidate.id,
+                            fullname: tests[0].candidate.fullname,
+                            general_ability: tests[0].score,
+                            verbal: tests[1].score,
+                            maths: tests[2].score,
+                            test_date: apt_result.createdAt,
+                            percentage: ((apt_result.score / 60) * 100).toFixed(1),
+                            rank: apt_scores.indexOf(apt_result.score) + 1,
+                            integrity_score: tests[0].proctor.integrity_score,
+                            proctor_id: tests[0].proctor.id
+                        });
+                        cb();
+                    });
+                }, function(err) {
+                    if (err) return reject(err);
+                    return resolve(candidates);
+                });
+            });
+        });
     }
 }

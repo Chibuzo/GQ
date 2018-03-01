@@ -205,7 +205,7 @@ module.exports = {
         });
 
         // end protor session for all tests except the three aptitude tests with ids (1,2,3)
-        if ([1,2,3].indexOf(test_id) == -1) {
+        if (parseInt(test_id) > 2) { console.log('Proctor ended');
             req.session.proctor = false;
         }
     },
@@ -228,6 +228,9 @@ module.exports = {
 
         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
             CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+                // end proctor session
+                req.session.proctor = false;
+
                 // update candidate's resume
                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                     if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
@@ -245,9 +248,6 @@ module.exports = {
         }).catch(function(err) {
             console.log(err)
         });
-
-        // end protor session
-        req.session.proctor = false;
     },
 
     viewResults: function(req, res) {

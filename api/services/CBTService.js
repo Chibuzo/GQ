@@ -176,7 +176,7 @@ module.exports = {
         });
     },
 
-    // GQ aptitude test result for a candidate
+    // GQ aptitude test result for a candidate [ Resume Page ]
     candidateGeneralTestResult: function(candidate_id) {
         return new Promise(function(resolve, reject) {
             GQAptitudeTestResult.find({ user: candidate_id }).populate('user').exec(function(err, candidate_score) {
@@ -184,12 +184,20 @@ module.exports = {
                     return resolve(false);
                 }
                 GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
-                    var c_score = candidate_score[0];
-                    c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
-                    c_score.rank = result.map(function(e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
-                    //c_score.rank = result.indexOf(candidate_score[0].score) + 1;
-                    c_score.candidates = result.length;
-                    return resolve(c_score);
+                    GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                        var c_score = candidate_score[0];
+                        c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
+                        c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                        c_score.candidates = result.length;
+                        c_score.general_ability = tests[0].score;
+                        c_score.general_percentage = ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1);
+                        //c_score.general_rank =
+                        c_score.verbal = tests[1].score;
+                        c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
+                        c_score.maths = tests[2].score;
+                        c_score.maths_percentage = ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(1);
+                        return resolve(c_score);
+                    });
                 });
             });
         });

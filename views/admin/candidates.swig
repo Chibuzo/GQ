@@ -41,21 +41,28 @@
 					<tr>
 						<th>Date</th>
 						<th>Name</th>
-						<th>Employment Status</th>
+						{#<th>Employment Status</th>#}
 						<th>General</th>
 						<th>Aptitude</th>
 						<th>Maths</th>
-						<th>Resume Status</th>
+						<th>Rank</th>
+						<th>Invigilation</th>
+						{#<th>Resume Status</th>#}
 						<th class="text-center">Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for user in candidates %}
 						<tr>
-							<td>{{ user.createdAt | date('d/m/Y') }}</td>
+							<td>{{ user.test_date | date('d/m/Y') }}</td>
 							<td>{{ user.fullname }}</td>
-							<td>{{ user.employment_status }}</td>
-							<td>{{ user.status }}</td>
+							{#<td>{{ user.employment_status }}</td>#}
+							<td>{{ user.general_ability }}</td>
+							<td>{{ user.verbal }}</td>
+							<td>{{ user.maths }}</td>
+							<td>{{ user.rank }}</td>
+							<td>{{ user.integrity_score }}</td>
+							{#<td>{{ user.status }}</td>#}
 							<td class="opt-icons text-center">
 								<a href="/applicant/resume/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
 							</td>
