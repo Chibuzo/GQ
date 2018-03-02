@@ -40,7 +40,7 @@
 								<td>{{ result.test_title }}</td>
 								<td>{{ result.score }}</td>
 								<td>{{ result.percentage }}%</td>
-								<td class="text-center">{{ result.average }}</td>
+								<td class="text-center">{{ result.average | toFixed(1) }}</td>
 								{#<td>{{ result.result }}</td>#}
 							</tr>
 						{% endfor %}
