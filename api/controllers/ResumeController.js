@@ -162,7 +162,14 @@ module.exports = {
         };
         Resume.update({ id: q('resume_id') }, data).exec(function(err, resume) {
             if (err) {
-                return res.json(200, { status: 'error', msg: err });
+                if (err.invalidAttributes && err.invalidAttributes.phone && err.invalidAttributes.phone[0] && err.invalidAttributes.phone[0].rule === 'unique') {
+                    return res.json(200, {
+                        status: 'error',
+                        msg: 'You may already have an account on getQualified, Please try logging in to it.'
+                    });
+                } else {
+                    return res.json(200, { status: 'error', msg: err });
+                }
             }
             return res.json(200, { status: 'success' });
         });
@@ -197,13 +204,13 @@ module.exports = {
     viewResumeByUser: function(req, res) {
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
-							var me = {
-									fname: response.resume.user.fullname.split(' ')[0],
-									lname: response.resume.user.fullname.split(' ')[1]
-							};
+                var me = {
+                    fname: response.resume.user.fullname.split(' ')[0],
+                    lname: response.resume.user.fullname.split(' ')[1]
+                };
                 return res.view('cv/viewresume', {
                     resume: response.resume,
-										me: me,
+                    me: me,
                     result: response.result ? response.result : null,
                     test_title: response.test_title ? response.test_title : null
                 });

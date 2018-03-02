@@ -11,11 +11,11 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-6">
-					<label>First Name</label> [ <span class="red">*</span> ]
+					<label>First Name</label> <span class="red">*</span>
 					<input type="text" name="fname" class="form-control" placeholder="Enter your first name" value="{{ me.fname }}" required>
 				</div>
 				<div class="col-md-6">
-					<label>Last Name</label> [ <span class="red">*</span> ]
+					<label>Last Name</label> <span class="red">*</span>
 					<input type="text" name="lname" class="form-control" placeholder="Enter your last name" value="{{ me.lname }}" required>
 				</div>
 			</div>
@@ -33,7 +33,7 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-4">
-					<label><i class="fa fa-male"></i> &nbsp;Gender</label> [ <span class="red">*</span> ]
+					<label><i class="fa fa-male"></i> &nbsp;Gender</label> <span class="red">*</span>
 					{% if resume.gender == 'Female' %}
 						{% set female = 'selected=selected' %}
 					{% elseif resume.gender == 'Male' %}
@@ -46,7 +46,7 @@
 					</select>
 				</div>
 				<div class="col-md-4">
-					<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label> [ <span class="red">*</span> ]
+					<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label> <span class="red">*</span>
 					{% if resume.dob %}
 						<input type="text" name="dob" class="form-control datep" placeholder="Your Date of Birth" value="{{ resume.dob | date('Y-m-d') }}" required>
 					{% else %}
@@ -54,7 +54,7 @@
 					{% endif %}
 				</div>
 				<div class="col-md-4">
-					<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label> [ <span class="red">*</span> ]
+					<label><i class="fa fa-phone"></i> &nbsp;Phone Number</label> <span class="red">*</span>
 					<input type="text" name="phone" class="form-control" placeholder="Your Phone Number" value="{{ resume.phone }}" required>
 				</div>
 			</div>
@@ -63,7 +63,7 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-12">
-					<label><i class="fa fa-map-marker"></i>&nbsp;Address</label> [ <span class="red">*</span> ]
+					<label><i class="fa fa-map-marker"></i>&nbsp;Address</label> <span class="red">*</span>
 					<input type="text" name="address" class="form-control" placeholder="Your residential address" value="{{ resume.address }}" required>
 				</div>
 			</div>
@@ -72,7 +72,7 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-4">
-					<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label> [ <span class="red">*</span> ]
+					<label for="phone"><i class="fa fa-map-marker"></i>&nbsp;Resident Country</label> <span class="red">*</span>
 					<select name="country" class="form-control" required>
 						{% for country in countries %}
 							<option value="{{ country.country }}">{{ country.country }}</option>
@@ -89,7 +89,7 @@
 					</select>
 				</div>
 				<div class="col-md-4">
-					<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label> [ <span class="red">*</span> ]
+					<label for="email"><i class="fa fa-map-marker"></i>&nbsp;City</label> <span class="red">*</span>
 					<input type="text" name="city" class="form-control" value="{{ resume.city }}" required />
 				</div>
 			</div>
@@ -98,7 +98,7 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-12">
-					<label>Professional Summary</label> [ <span class="red">*</span> ]
+					<label>Professional Summary</label> <span class="red">*</span>
 					<textarea name="introduction" class="form-control" placeholder="Not more than 70 words" required>{{ resume.introduction }}</textarea>
 				</div>
 			</div>
@@ -107,7 +107,7 @@
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-4">
-					<label>Employment Status</label> [ <span class="red">*</span> ]
+					<label>Employment Status</label> <span class="red">*</span>
 					{% if resume.employment_status == 'Employed' %}
 						{% set employed = 'selected=selected' %}
 					{% elseif resume.employment_status == 'Unemployed' %}
@@ -120,7 +120,7 @@
 					</select>
 				</div>
 				<div class="col-md-4">
-					<label>Available Date</label> [ <span class="red">*</span> ]
+					<label>Available Date</label> <span class="red">*</span>
 					{% if resume.available_date %}
 						<input type="text" name="available_date" class="form-control datep" placeholder="When can you start work?" value="{{ resume.available_date | date('Y-m-d') }}" required>
 					{% else %}
@@ -187,11 +187,11 @@
 				{% if resume.educations.length < 1 %}
 					<div class="row inst-row">
 						<div class="col-md-3">
-							<label>Institution</label> [ <span class="red">*</span> ]
+							<label>Institution</label> <span class="red">*</span>
 							<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
 						</div>
 						<div class="col-md-1">
-							<label>Honour</label> [ <span class="red">*</span> ]
+							<label>Honour</label> <span class="red">*</span>
 							<select name="honour[]" class="form-control">
 								<option value=""></option>
 								{% for honor in honours %}
@@ -200,15 +200,15 @@
 							</select>
 						</div>
 						<div class="col-md-3">
-							<label>Programme</label> [ <span class="red">*</span> ]
+							<label>Programme</label> <span class="red">*</span>
 							<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
 						</div>
 						<div class="col-md-2">
-							<label>start Date</label> [ <span class="red">*</span> ]
+							<label>start Date</label> <span class="red">*</span>
 							<input type="text" name="inst_start_date[]" class="form-control datep" placeholder="Date started" required>
 						</div>
 						<div class="col-md-2">
-							<label>End Date</label> [ <span class="red">*</span> ]
+							<label>End Date</label> <span class="red">*</span>
 							<input type="text" name="inst_end_date[]" class="form-control datep" placeholder="Date ended" required>
 						</div>
 						<input type="hidden" name="inst_id[]" />

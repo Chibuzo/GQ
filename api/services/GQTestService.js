@@ -111,12 +111,18 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                        var _tests;
+                        if (tests.length > 0) {
+                            _tests = tests;
+                        } else {
+                            _tests = 0;
+                        }
                         candidates.push({
                             id: tests[0].candidate.id,
                             fullname: tests[0].candidate.fullname,
-                            general_ability: tests[0].score,
-                            verbal: tests[1].score,
-                            maths: tests[2].score,
+                            general_ability: tests[0] ? tests[0].score : 0,
+                            verbal: tests[1] ? tests[1].score : 0,
+                            maths: tests[2] ? tests[2].score : 0,
                             test_date: apt_result.createdAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
