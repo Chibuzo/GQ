@@ -57,11 +57,11 @@ module.exports = {
                     maxBytes: 100 * 1024 * 1024
                 },
                 function(err) {
-                    if (err) return err;
+                    if (err) return reject(err);
                     return resolve(filename);
                 });
             } else {
-                return resolve('This is not supposed to happen');
+                return reject('This is not supposed to happen');
             }
         });
     },
@@ -99,6 +99,44 @@ module.exports = {
                     no_of_questions: no_of_questions
                 };
                 return resolve(result);
+            });
+        });
+    },
+
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
+        return new Promise(function(resolve, reject) {
+            const candidates = [];
+            GQAptitudeTestResult.find(_candidates).sort('score desc').exec(function(err, apt_results) {
+                var count = apt_results.length;
+                var apt_scores = apt_results.map(function(e) { return e.score; });
+                apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
+                async.eachSeries(apt_results, function(apt_result, cb) {
+                    GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                        var _tests;
+                        if (tests.length > 0) {
+                            _tests = tests;
+                        } else {
+                            _tests = 0;
+                        }
+                        candidates.push({
+                            id: apt_result.user,
+                            fullname: tests[0].candidate.fullname,
+                            general_ability: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : 0,
+                            verbal: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : 0,
+                            maths: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : 0,
+                            test_date: apt_result.createdAt,
+                            percentage: ((apt_result.score / 60) * 100).toFixed(1),
+                            rank: apt_scores.indexOf(apt_result.score) + 1,
+                            integrity_score: tests[0].proctor ? tests[0].proctor.integrity_score : 0,
+                            proctor_id: tests[0].proctor ? tests[0].proctor.id: 0
+                        });
+                        cb();
+                    });
+                }, function(err) {
+                    if (err) return reject(err);
+                    candidates.num = count; // also return number of candidates that has taken the test
+                    return resolve(candidates);
+                });
             });
         });
     }

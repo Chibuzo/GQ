@@ -294,7 +294,7 @@
     }, proctor.prototype.takeSnapShot = function(rect) {
         if(this.stopped === true) return;
 
-        this.context.drawImage(this.video, 0, 0, 640, 360);
+        this.context.drawImage(this.video, 0, 0, 320, 180);
         this.opts.handleSnapshot(this.canvas.toDataURL("image/jpeg", 1));
     };
 
@@ -302,8 +302,8 @@
         var pc = this;
         this.audioContext = null,
             this.meter = null,
-            this.meterWidth = 500,
-            this.meterHeight = 50,
+            this.meterWidth = 100,
+            this.meterHeight = 10,
             this.rafID = null,
             this.mediaStreamSource;
 
@@ -340,7 +340,7 @@
                 pc.opts.onAmbientNoiseDetection(),
                     pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 5000);
+                }, 10000);
             }
 
             // console.log('Proctor: Pitch -> ' + pitch);
@@ -384,10 +384,11 @@
             pc.recorderReady = false;
 
             this.recorder = new Recorder({
+                //wavBitDepth: parseInt(16, 10),
                 monitorGain: parseInt(0, 10),
                 numberOfChannels: parseInt(1, 10),
-                wavBitDepth: parseInt(16, 10),
-                encoderPath: "js/waveWorker.min.js"
+                wavBitDepth: parseInt(8, 10),
+                encoderPath: "/js/proctor/waveWorker.min.js"
             });
 
             this.recorder.addEventListener("start", function(e){
@@ -464,7 +465,7 @@ function startProctor() {
         audioSensitivity: 4, // from 0 - 10
 
         handleOutdatedBrowser: function() {
-            alert('Update your browser ma niggah');
+            alert('Unsupported Broswer: You are using a broswer we do not support. Please update your broswer');
         },
 
         handleSnapshot: function(data64) {
@@ -512,12 +513,13 @@ function startProctor() {
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
+            // If 60s have passed, deduct from Integrity score
             if((timer - aN) > 60) {
                 console.log('Proctor: Ambient noise detected');
                 // ambient timer recalculation
                 aN = Math.floor(new Date().getTime() / 1000);
                 // Integrity score
-                integrityScore -= integrityScore > 0 ? 1 : 0;
+                integrityScore -= integrityScore > 0 ? 2 : 0;
                 controlIntegrityBar(integrityScore);
             }
         },
@@ -540,10 +542,17 @@ function startProctor() {
             blockTest();
         },
 
+				/* This function is called when
+				* 1) mic/recorder is not ignored and ready, &
+				* 2) camera/tracker is not ignored and ready
+				*/
         proctorReady: function() {
             console.log('Proctor is ready.');
+            startTest();
         }
     });
+
+    return proctor;
 
     // You can call this at any time so long as the variable is set
     // proctor.stop();

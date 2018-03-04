@@ -4,6 +4,24 @@
 	<i class="pe-7s-users"></i> Candidates
 {% endblock %}
 {% block body %}
+<style>
+	.filter-div {
+		/*margin-bottom: 25px*/
+		overflow: auto;
+	}
+
+	.modal-dialog {
+		width: 700px;
+	}
+
+	#audios, #photos, #profile-pic {
+		margin-top: 20px;
+	}
+
+	#photos .col-md-6 img {
+		width: 100%;
+	}
+</style>
 
 <div class="col-md-12">
 	<div class="card">
@@ -14,51 +32,39 @@
 			</div>
 		</div>
 
-		<div class="">
-			<form method="post" id="form-filter">
-				<div class="form-group">
-					<div class="col-md-4">
-						<label>School</label>
-						<input type="text" name="school" class="form-control" placeholder="Filter by school" />
-					</div>
-					<div class="col-md-3">
-						<label>Profession</label>
-						<input type="text" name="course" class="form-control" placeholder="Filter by Profession or course of study" />
-					</div>
-					<div class="col-md-3">
-						<label>Certification</label>
-						<input type="text" name="school" class="form-control" placeholder="Filter by Certification" />
-					</div>
-					<div class="col-md-2" style="padding-top: 30px">
-						<button type="submit" class="btn btn-info btn-block"><i class="fa fa-search"></i> Filter Candidates</button>
-					</div>
-				</div>
-			</form>
-		</div>
+		{% include 'includes/candidate-search-form.swig' %}
 		<div class="content table-responsive table-full-width">
 			<table class="table table-striped">
 				<thead>
 					<tr>
-						<th>Date</th>
+						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
-						<th>Email</th>
-						<th>Phone</th>
-						<th>Employment Status</th>
-						<th>Resume Status</th>
+						{#<th>Employment Status</th>#}
+						<th>General</th>
+						<th>Verbal</th>
+						<th>Numeric</th>
+						<th>Total</th>
+						<th>Rank</th>
+						<th class="text-center">Invigilation</th>
+						<th>Test Status</th>
 						<th class="text-center">Action</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for user in candidates %}
-						<tr>
-							<td>{{ user.createdAt | date('d/m/Y') }}</td>
+						<tr id="{{ user.id }}">
+							<td>{{ user.test_date | date('d/m/Y') }}</td>
 							<td>{{ user.fullname }}</td>
-							<td>{{ user.email }}</td>
-							<td>{{ user.phone }}</td>
-							<td>{{ user.employment_status }}</td>
+							{#<td>{{ user.employment_status }}</td>#}
+							<td>{{ user.general_ability }}%</td>
+							<td>{{ user.verbal }}%</td>
+							<td>{{ user.maths }}%</td>
+							<td>{{ user.percentage }}%</td>
+							<td>{{ user.rank }}</td>
+							<td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.proctor_id }}">{{ user.integrity_score }}</a></td>
 							<td>{{ user.status }}</td>
 							<td class="opt-icons text-center">
-								<a href="/applicant/resume/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
+								<a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -69,7 +75,12 @@
 </div>
 {% endblock %}
 
+{% block modals %}
+	{% include 'includes/proctorModal.swig' %}
+{% endblock %}
+
 {% block scriptTag %}
+<script src="/js/proctorBackend.js"></script>
 <script>
 	$(document).ready(function() {
 		$('.applicants').addClass('active');

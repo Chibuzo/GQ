@@ -28,10 +28,24 @@
 										</div>
 									</div>
 								</div>
+
 								<div class="form-group text-left">
 									<label>Email</label>
 									<input type="email" name="email" class="form-control input-lg" placeholder="Email Address" required />
 								</div>
+
+								<div class="form-group text-left">
+									<label>Password</label>
+									<div class="row">
+										<div class="col-md-6">
+											<input type="password" name="password" id="password" class="form-control input-lg" placeholder="Password" required />
+										</div>
+										<div class="col-md-6">
+											<input type="password" name="verify_password" id="verify_password" class="form-control input-lg" placeholder="Verify Password" required />
+										</div>
+									</div>
+								</div>
+
 								<input type="hidden" name="return_url" value="{{ return_url }}" />
 								<div class="alert alert-danger hidden"></div>
 								<button type="submit" class="btn btn-info input-lg btn-block">&nbsp; Sign Up </button>
@@ -62,6 +76,13 @@
 			var $this = $(this);
 
 			$(this).find('button').html("<i class='fa fa-cog fa-spin'></i> Processing").prop('disabled', true);
+
+			if ($('#password').val() != $('#verify_password').val()) {
+				$(".alert-danger").html("<strong>Error:</strong> Password doesn't match").removeClass('hidden');
+				$("#password").focus();
+				$this.find('button').html("&nbsp; Sign Up").prop('disabled', false);
+				return false;
+			}
 
 			$.post('/user/signup', $(this).serialize() + '&user_type=Applicant', function(d) {
 				if (d.status.trim() == 'success') {

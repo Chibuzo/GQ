@@ -7,10 +7,6 @@
 
 module.exports = {
 	editView: function(req, res) {
-        //GQAptitudeTestResult.destroy({}).exec(function() {});
-        //GQAptitudeTestResult.find().exec(function(err, rr) {
-        //    console.log(rr)
-        //});
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -23,25 +19,22 @@ module.exports = {
                     Honour.find().exec(function(err, honours) {
                         // check for test result
                         CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                            var _result, test_title;
                             if (result) {
-                                return res.view('cv/update', {
-                                    resume: resume,
-                                    me: me,
-                                    honours: honours,
-                                    countries: resp.countries,
-                                    states: resp.states,
-                                    result: result,
-                                    test_title: 'General Aptitude Test'
-                                });
-                            } else {
-                                return res.view('cv/update', {
-                                    resume: resume,
-                                    me: me,
-                                    honours: honours,
-                                    countries: resp.countries,
-                                    states: resp.states
-                                });
+                                _result = result;
+                                test_title = 'General Aptitude Test';
                             }
+                            return res.view('cv/update', {
+                                resume: resume,
+                                me: me,
+                                honours: honours,
+                                countries: resp.countries,
+                                states: resp.states,
+                                result: _result,
+                                test_title: test_title,
+                                canEditResume: true,
+                                showContactInfo: true
+                            });
                         }).catch(function(err) {
                             console.log(err);
                         });
@@ -158,7 +151,14 @@ module.exports = {
         };
         Resume.update({ id: q('resume_id') }, data).exec(function(err, resume) {
             if (err) {
-                return res.json(200, { status: 'error', msg: err });
+                if (err.invalidAttributes && err.invalidAttributes.phone && err.invalidAttributes.phone[0] && err.invalidAttributes.phone[0].rule === 'unique') {
+                    return res.json(200, {
+                        status: 'error',
+                        msg: 'You may already have an account on getQualified, Please try logging in to it.'
+                    });
+                } else {
+                    return res.json(200, { status: 'error', msg: err });
+                }
             }
             return res.json(200, { status: 'success' });
         });
@@ -175,8 +175,13 @@ module.exports = {
     viewResume: function(req, res) {
         var resume_id = req.param('resume_id');
         ResumeService.viewResume(resume_id).then(function(response) {
+					var me = {
+							fname: response.resume.user.fullname.split(' ')[0],
+							lname: response.resume.user.fullname.split(' ')[1]
+					};
             return res.view('cv/viewresume', {
                 resume: response.resume,
+								me: me,
                 result: response.result ? response.result : null,
                 test_title: response.test_title ? response.test_title : null
             });
@@ -188,8 +193,13 @@ module.exports = {
     viewResumeByUser: function(req, res) {
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
+                var me = {
+                    fname: response.resume.user.fullname.split(' ')[0],
+                    lname: response.resume.user.fullname.split(' ')[1]
+                };
                 return res.view('cv/viewresume', {
                     resume: response.resume,
+                    me: me,
                     result: response.result ? response.result : null,
                     test_title: response.test_title ? response.test_title : null
                 });
@@ -199,4 +209,3 @@ module.exports = {
         });
     }
 };
-

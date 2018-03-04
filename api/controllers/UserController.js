@@ -13,9 +13,9 @@ module.exports = {
             return res.badRequest('An email address is required!');
         }
 
-        //if (_.isUndefined(req.param('password')) || req.param('password').length < 6) {
-        //    return res.badRequest('A password is required, and must be aleast 6 characters');
-        //}
+        if (_.isUndefined(req.param('password')) || req.param('password').length < 6) {
+            return res.badRequest('A password is required, and must be aleast 6 characters');
+        }
         // validate email
         Emailaddresses.validate({
             string: req.param('email')
@@ -28,21 +28,34 @@ module.exports = {
             },
             success: function() {
                 // collect ALL signup data
-                var data = {
-                    fullname: req.param('fname') + ' ' + req.param('lname'),
-                    email: req.param('email'),
-                    user_type: req.param('user_type')
-                };
+                Passwords.encryptPassword({
+                    password: req.param('password'),
+                }).exec({
+                    error: function (err) {
+                        return res.serverError(err);
+                    },
+                    success: function (encryptedPassword) {
+                        var data = {
+                            fullname: req.param('fname') + ' ' + req.param('lname'),
+                            email: req.param('email'),
+                            password: encryptedPassword,
+                            user_type: req.param('user_type')
+                        };
 
-                User.create(data).exec(function(err, newUser) {
-                    if (err) {
-                        if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
-                            return res.json(200, { status: 'error', msg: 'Email address is already taken, please try another one.' });
-                        }
-                        return res.json(501, { status: 'error', msg: err }); // couldn't be completed
+                        User.create(data).exec(function (err, newUser) {
+                            if (err) {
+                                if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
+                                    return res.json(200, {
+                                        status: 'error',
+                                        msg: 'Email address is already taken, please try another one.'
+                                    });
+                                }
+                                return res.json(501, {status: 'error', msg: err}); // couldn't be completed
+                            }
+                            sendMail.sendConfirmationEmail(newUser);
+                            return res.json(200, {status: 'success'});
+                        });
                     }
-                    sendMail.sendConfirmationEmail(newUser);
-                    return res.json(200, { status: 'success' });
                 });
             }
         });
@@ -53,9 +66,9 @@ module.exports = {
         var hash = req.param('hash');
         User.findOne({ email : email }).exec(function(err, user) {
             if (err) return;
-            if (user.status == 'Active') {
-                return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
-            }
+            //if (user.status == 'Active') {
+            //    return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
+            //}
             if (user) {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
@@ -72,8 +85,10 @@ module.exports = {
                             lname: user[0].fullname.split(' ')[1]
                         };
                         if (user[0].user_type == 'Applicant') {
+                            // create their resume
+                            Resume.create({ email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
                             sendMail.welcomeNewCandidate(user[0]);
-                            return res.view('applicant/profile', {user: user[0], me: me, first_time: true});
+                            return res.view('applicant/profile', { user: user[0], me: me });
                         } else if (user[0].user_type == 'company') {
                             return res.view('company/users/profile', { user: user[0], me: me });
                         }
@@ -124,15 +139,11 @@ module.exports = {
                     req.session.user_type = foundUser.user_type;
                     if (req.param('return_url').length > 1) {
                         return res.json(200, { status: 'success', url: '/' + new Buffer(req.param('return_url'), 'base64').toString() });
-                        //return res.redirect(req.param('return_url'));
                     } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
                         req.session.coy_id = foundUser.company;
                         return res.json(200, { status: 'success', url: '/company/dashboard' });
-                        //return res.redirect('/company/dashboard');
                     } else if (foundUser.user_type == 'Applicant') {
                         return res.json(200, { status: 'success', url: '/applicant/dashboard' });
-                        //return res.redirect('/applicant/dashboard');
-                        //return res.json(200, { status: 'success', user_type: foundUser.user_type });
                     }
                 }
             });
@@ -188,34 +199,14 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
-            if (req.param('first_time') == 'Yes') {
-                Passwords.encryptPassword({
-                    password: req.param('new_password'),
-                }).exec({
-                    error: function (err) {
-                        console.log(err);
-                        //return res.serverError(err);
-                    },
-                    success: function (newPassword) {
-                        User.update({ id: req.session.userId }, { password: newPassword }).exec(function (err) {
-                            if (err) return res.json(200, { status: 'error', msg: err });
-
-                            // create resume
-                            udata.email = req.param('email');
-                            udata.user = req.session.userId;
-                            Resume.create(udata).exec(function() {});
-                            return res.json(200, { status: 'success' });
-                        });
-                    }
-                });
-            } else if(req.param('current_password') && req.param('new_password')) {
+            if(req.param('current_password') && req.param('new_password')) {
                 Passwords.checkPassword({
                     passwordAttempt: req.param('current_password'),
                     encryptedPassword: user[0].password
                 }).exec({
                     error: function (err) {
                         console.log(err);
-                        //return res.json(200, { status: 'Err', msg: err });
+                        return res.json(200, { status: 'Err', msg: err });
                     },
                     incorrect: function () {
                         return res.json(200, { status: 'error', msg: 'Wrong password' });
@@ -237,10 +228,9 @@ module.exports = {
                         });
                     }
                 });
-            } else {    // this would never happen though
+            } else {
                 return res.json(200, { status: 'success' });
             }
-            //return res.redirect('/user/profile');
         });
     },
 
@@ -264,7 +254,7 @@ module.exports = {
                 return res.badRequest("We don't even know what happened");
             }
             if (user.status == 'Inactive') {
-                sendMail.sendConfirmationEmail(newUser);
+                sendMail.sendConfirmationEmail(user);
                 return res.view('login', {msg: "You haven\'t verified your email address. Kindly check your email and verify your account"});
             }
             if (user) {
@@ -299,8 +289,6 @@ module.exports = {
 
     specialLoginPage: function(req, res) {
         var return_url = req.param('base64_url');
-        //var id = req.param('id').length > 0 ? '/' + req.param('id') : '';
-        //var path = (return_url + id).trim();
         return res.view('login', { return_url: return_url });
     }
 };
