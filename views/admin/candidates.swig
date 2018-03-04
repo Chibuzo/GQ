@@ -40,9 +40,10 @@
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						{#<th>Employment Status</th>#}
-						<th class="text-center">General</th>
-						<th class="text-center">Aptitude</th>
-						<th class="text-center">Maths</th>
+						<th>General</th>
+						<th>Verbal</th>
+						<th>Numeric</th>
+						<th>Total</th>
 						<th>Rank</th>
 						<th class="text-center">Invigilation</th>
 						<th>Test Status</th>
@@ -55,14 +56,15 @@
 							<td>{{ user.test_date | date('d/m/Y') }}</td>
 							<td>{{ user.fullname }}</td>
 							{#<td>{{ user.employment_status }}</td>#}
-							<td class="text-center">{{ user.general_ability }}</td>
-							<td class="text-center">{{ user.verbal }}</td>
-							<td class="text-center">{{ user.maths }}</td>
+							<td>{{ user.general_ability }}%</td>
+							<td>{{ user.verbal }}%</td>
+							<td>{{ user.maths }}%</td>
+							<td>{{ user.percentage }}%</td>
 							<td>{{ user.rank }}</td>
 							<td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.proctor_id }}">{{ user.integrity_score }}</a></td>
 							<td>{{ user.status }}</td>
 							<td class="opt-icons text-center">
-								<a href="/applicant/resume/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
+								<a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
 							</td>
 						</tr>
 					{% endfor %}

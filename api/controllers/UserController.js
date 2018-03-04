@@ -66,9 +66,9 @@ module.exports = {
         var hash = req.param('hash');
         User.findOne({ email : email }).exec(function(err, user) {
             if (err) return;
-            if (user.status == 'Active') {
-                return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
-            }
+            //if (user.status == 'Active') {
+            //    return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
+            //}
             if (user) {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
@@ -254,7 +254,7 @@ module.exports = {
                 return res.badRequest("We don't even know what happened");
             }
             if (user.status == 'Inactive') {
-                sendMail.sendConfirmationEmail(newUser);
+                sendMail.sendConfirmationEmail(user);
                 return res.view('login', {msg: "You haven\'t verified your email address. Kindly check your email and verify your account"});
             }
             if (user) {

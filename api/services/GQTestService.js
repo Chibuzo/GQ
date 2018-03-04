@@ -119,17 +119,16 @@ module.exports = {
                             _tests = 0;
                         }
                         candidates.push({
-                            id: tests[0].candidate.id,
+                            id: apt_result.user,
                             fullname: tests[0].candidate.fullname,
-                            general_ability: tests[0] ? tests[0].score : 0,
-                            verbal: tests[1] ? tests[1].score : 0,
-                            maths: tests[2] ? tests[2].score : 0,
+                            general_ability: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : 0,
+                            verbal: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : 0,
+                            maths: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : 0,
                             test_date: apt_result.createdAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: tests[0].proctor.integrity_score,
-                            proctor_id: tests[0].proctor.id,
-                            proctor_status: tests[0].proctor.status
+                            integrity_score: tests[0].proctor ? tests[0].proctor.integrity_score : 0,
+                            proctor_id: tests[0].proctor ? tests[0].proctor.id: 0
                         });
                         cb();
                     });

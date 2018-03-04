@@ -155,7 +155,7 @@
 
 								<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 									<div class="result">
-										<h3 class="test-title"></h3><br>
+										<h3 class="test-title">{{ test_title }}</h3><br>
 										<table class="table table-striped">
 											<thead>
 												<tr>
@@ -450,7 +450,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
+<script type="text/javascript" src="/js/gqTestFrontend.js?v=1"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -465,11 +465,10 @@
 	<!-- Audio tracking -->
 	<script src="/js/proctor/recorder.min.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js"></script>
+	<script src="/js/proctor/setup.js?v=1"></script>
 
 	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
-
-	<script type="text/javascript">
+<script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
 
