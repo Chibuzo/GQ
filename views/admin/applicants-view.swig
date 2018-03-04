@@ -177,76 +177,11 @@
 {% endblock %}
 
 {% block modals %}
-
-    <div class="modal fade in" id="proctorModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-                        ×
-                    </button>
-                    <h4 class="modal-title" id="myModalLabel">Invigilation Details</h4>
-                </div>
-
-                <div class="modal-body">
-					<span id="proctor-id" class="hidden"></span>
-					<span id="candidate-id" class="hidden"></span>
-
-					<ul class="nav nav-tabs">
-						<li class="active"><a href="#profile-photo" data-toggle="tab">Profile Photo</a></li>
-						<li><a href="#photo" data-toggle="tab">Photos</a></li>
-                        <li><a href="#audio" data-toggle="tab">Audios</a></li>
-                    </ul>
-                    <div class="tab-content">
-						<div class="tab-pane fade active in" id="profile-photo">
-							<div class="row" id="profile-pic">
-								<div class="col-md-6" id="profilePhoto"></div>
-							</div>
-						</div>
-                        <div class="tab-pane fade in" id="photo">
-							<div class="row" id="photos"></div>
-                        </div>
-
-                        <div class="tab-pane fade in" id="audio">
-							<div class="row" id="audios"></div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">
-                        <i class="fa fa-times"></i> Close
-                    </button>
-					<button class="btn btn-danger btn-fill" id="reject-test"><i class="fa fa-times fa-lg"></i> Reject</button>
-					<button class="btn btn-success btn-fill" id="accept-test"><i class="fa fa-check-circle-o fa-lg"></i> Accept</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    {#<div class="modal fade in" id="resumeModal" tabindex="-1" role="dialog" aria-labelledby="remoteModalLabel" aria-hidden="true">#}
-        {#<div class="modal-dialog">#}
-            {#<div class="modal-content">#}
-                {#<div class="modal-header">#}
-                    {#<button type="button" class="close" data-dismiss="modal" aria-hidden="true">#}
-                        {#×#}
-                    {#</button>#}
-                    {#<h4 class="modal-title" id="myModalLabel">Candidate's Profile</h4>#}
-                {#</div>#}
-
-                {#<div class="modal-body">#}
-
-                {#</div>#}
-                {#<div class="modal-footer">#}
-                    {#<button type="button" class="btn btn-default" data-dismiss="modal">#}
-                        {#<i class="fa fa-times"></i> Close#}
-                    {#</button>#}
-                {#</div>#}
-            {#</div>#}
-        {#</div>#}
-    {#</div>#}
+    {% include 'includes/proctorModal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/proctorBackend.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -278,58 +213,5 @@ $(document).ready(function() {
             showNotification('top', 'center', 'success', 'The candidate has been removed', 'pe-7s-bell');
         }
     });
-
-
-    $(".fetch-proctor-details").click(function() {
-	    var proctor_id = $(this).attr('id');
-		var candidate_id = $(this).parents('tr').attr('id');
-
-		$("#proctor-id").text(proctor_id);
-		$("#candidate-id").text(candidate_id);
-
-        $.get('/proctor/fetchFiles', { proctor_id: proctor_id, candidate_id: candidate_id }, function(d) {
-            if (d.status.trim() == 'success') {
-				$("#profilePhoto").html("<img src='/applicant_passports/" + d.profile_pic + "' />");
-				var audios = '', photos = '';
-				d.files.forEach(function(file) {
-					if (file.file_type == 'audio') {
-						audios += "<div class='col-md-6'>"
-									+"<audio src='/proctorFiles" + file.filename + "' controls='controls'></audio>"
-								+"</div>";
-					} else {
-						photos += "<div class='col-md-6'>"
-									+"<div class='proctor-pic'><img src='/proctorFiles" + file.filename + "' /></div>"
-							+"</div>";
-					}
-				});
-				$("#audios").html(audios);
-				$("#photos").html(photos);
-            }
-        }, 'JSON');
-    });
-
-
-	$("#accept-test").click(function() {
-		if (confirm("Are you sure you want to accept this test score?")) {
-			var proctor_id = $("#proctor-id").text();
-
-			$.post('/proctor/accept-test',  { proctor_id: proctor_id }, function(d) {
-
-			}, 'JSON');
-			$("#" + $("#candidate-id").text()).find("td:nth-child(8)").text('Accepted');
-		}
-	});
-
-	$("#reject-test").click(function() {
-		if (confirm("Are you sure you want to reject this test score?")) {
-			var proctor_id = $("#proctor-id").text();
-            var candidate_id = $("#candidate-id").text();
-
-			$.post('/proctor/reject-test',  { proctor_id: proctor_id, candidate_id: candidate_id }, function() {
-
-			}, 'JSON');
-            $("tr#" + candidate_id).find("td:nth-child(8)").html('Rejected');
-		}
-	});
 });
 </script>

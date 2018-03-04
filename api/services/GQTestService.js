@@ -103,10 +103,11 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function() {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            GQAptitudeTestResult.find().sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find(_candidates).sort('score desc').exec(function(err, apt_results) {
+                var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
@@ -127,12 +128,14 @@ module.exports = {
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
                             integrity_score: tests[0].proctor.integrity_score,
-                            proctor_id: tests[0].proctor.id
+                            proctor_id: tests[0].proctor.id,
+                            proctor_status: tests[0].proctor.status
                         });
                         cb();
                     });
                 }, function(err) {
                     if (err) return reject(err);
+                    candidates.num = count; // also return number of candidates that has taken the test
                     return resolve(candidates);
                 });
             });

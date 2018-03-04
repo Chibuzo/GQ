@@ -7,10 +7,6 @@
 
 module.exports = {
 	editView: function(req, res) {
-        //GQAptitudeTestResult.destroy({}).exec(function() {});
-        //GQAptitudeTestResult.find().exec(function(err, rr) {
-        //    console.log(rr)
-        //});
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -23,29 +19,22 @@ module.exports = {
                     Honour.find().exec(function(err, honours) {
                         // check for test result
                         CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                            var _result, test_title;
                             if (result) {
-                                return res.view('cv/update', {
-                                    resume: resume,
-                                    me: me,
-                                    honours: honours,
-                                    countries: resp.countries,
-                                    states: resp.states,
-                                    result: result,
-                                    test_title: 'General Aptitude Test',
-                                    canEditResume: true,
-                                    showContactInfo: true
-                                });
-                            } else {
-                                return res.view('cv/update', {
-                                    resume: resume,
-                                    me: me,
-                                    honours: honours,
-                                    countries: resp.countries,
-                                    states: resp.states,
-                                    canEditResume: true,
-                                    showContactInfo: true
-                                });
+                                _result = result;
+                                test_title = 'General Aptitude Test';
                             }
+                            return res.view('cv/update', {
+                                resume: resume,
+                                me: me,
+                                honours: honours,
+                                countries: resp.countries,
+                                states: resp.states,
+                                result: _result,
+                                test_title: test_title,
+                                canEditResume: true,
+                                showContactInfo: true
+                            });
                         }).catch(function(err) {
                             console.log(err);
                         });

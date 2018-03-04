@@ -43,7 +43,7 @@ $("#start-test").click(function() {
     // register proctor session
     createProctorSession();
 
-    // register event to warn candidate about leaving the test page
+    // register window onclose/leave event
     addWindowsCloseEvent();
 
     // reset/initialize invigilation bar
@@ -118,7 +118,9 @@ function fetchNextQuestion(questions, next_quest) {
     $("#quest-" + cur_question).removeClass('skipped_q answered_q').addClass('active_q');
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     if (questions[next_question].image_file) {
-        $(".question-image").html("<img src='/cbt-images/" + questions[next_question].image_file + "' />");
+        var img = $("<img />").attr('src', 'https://getqualified.work/cbt-images/' + questions[next_question].image_file).on('load', function() {
+            $(".question-image").append(img);
+        });
     }
     $(".question").html(questions[next_question].question);
     $("#span-opt-a").text(questions[next_question].opt_a);
@@ -344,7 +346,6 @@ function mobileCheck() {
 
 function createProctorSession() {
     $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(d) {
-        //console.log(d)
     }); // that'a all
 }
 
@@ -393,11 +394,6 @@ function startTest() {
 }
 
 
-function pauseTestOnInternetOut() {
-    //$(".inner-test-div").
-}
-
-
 function controlIntegrityBar(integrityScore) {
     $("#integrity-score").text(integrityScore);
     if (integrityScore < 70 && integrityScore > 55) {
@@ -425,13 +421,18 @@ function addWindowsCloseEvent() {
 
 function removeWindowsCloseEvent() {
     window.removeEventListener("beforeunload", submitTest);
-    //$.post('/pushajax', { msg: 'Window freed'});
 }
 
 window.addEventListener('online', () => {
-
+    PROCTOR = startProctor();
+    $("#internet-alert").addClass('hidden');
+    $(".test-overlay").fadeOut('fast');
+    $("#hms_timer").countdowntimer("pause", "resume");
 });
 
 window.addEventListener('offline', () => {
-
+    $("#hms_timer").countdowntimer("pause", "pause");
+    $("#internet-alert").removeClass('hidden');
+    $(".test-overlay").fadeIn('fast');
+    PROCTOR.stop();
 });
