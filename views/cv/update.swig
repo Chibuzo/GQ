@@ -382,7 +382,6 @@
 												</div>
 											</div>
 											<span id="integrity-score" class="hidden"></span>
-											<button class="btn btn-default hidden" id="stopTestTimer">Stop</button>
 										</div>
 									</div>
 								</div>
@@ -448,8 +447,8 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
+	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->

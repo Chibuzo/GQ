@@ -46,6 +46,7 @@ $("#start-test").click(function() {
     // register event to warn candidate about leaving the test page
     addWindowsCloseEvent();
 
+    startTest();
     // reset/initialize invigilation bar
     $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
 });
@@ -193,8 +194,8 @@ $("#submit-test").click(function(e) {
     e.preventDefault();
 
     // prevent further [auto] submit
-    $("#stopTestTimer").text('Stop').click();
-    $("#hms_timer").countdowntimer("destroy");
+    stopCountdownTimer();
+    destroyCountdownTimer();
     //$("#hms_timer").countdowntimer("stop", "stop");
 
     // stop proctor
@@ -313,26 +314,6 @@ function shuffleArray(array) {
     }
 }
 
-
-function startTimer() {
-    var hrs = mins = 0;
-    if (duration > 60) {
-        hrs = Math.floor(duration / 60);
-        mins = duration % 60;
-    } else {
-        hrs = 0;
-        mins = duration;
-    }
-    $("#hms_timer").countdowntimer({
-        hours : hrs,
-        minutes : mins,
-        size : "md",
-        timeUp: submitTest,
-        stopButton: "stopTestTimer"
-    });
-}
-
-
 function mobileCheck() {
     var isMobile = false;
     // device detection
@@ -348,16 +329,14 @@ function createProctorSession() {
     }); // that'a all
 }
 
-
 function blockTest() {
     $(".inner-test-div").fadeOut('fast', function() {
         $(".test-blocked-screen").removeClass('hidden');
     });
-    $("#stopTestTimer").click(); // prevent loaded test from auto submitting on timeout by stopping the timer
+    stopCountdownTimer(); // prevent loaded test from auto submitting on timeout by stopping the timer
 }
 
 function startTest() {
-    console.log('Start Test');
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
@@ -410,9 +389,7 @@ function controlIntegrityBar(integrityScore) {
 }
 
 
-function addWindowsCloseEvent() {
-    window.addEventListener("beforeunload", submitTest);
-}
+
 
 //function warnCandidate(e) {
 //    var confirmationMessage = "\o/";
@@ -423,9 +400,15 @@ function addWindowsCloseEvent() {
 //}
 
 
+// ------- START WINDOW EVENT HANDLERS ------ //
+
 function removeWindowsCloseEvent() {
     window.removeEventListener("beforeunload", submitTest);
     //$.post('/pushajax', { msg: 'Window freed'});
+}
+
+function addWindowsCloseEvent() {
+    window.addEventListener("beforeunload", submitTest);
 }
 
 window.addEventListener('online', () => {
@@ -435,3 +418,36 @@ window.addEventListener('online', () => {
 window.addEventListener('offline', () => {
 
 });
+
+// ------- END WINDOW EVENT HANDLERS ------ //
+
+
+// ------- START TIMER FUNCTIONS ------ //
+
+function startTimer() {
+    var hrs = mins = 0;
+    if (duration > 60) {
+        hrs = Math.floor(duration / 60);
+        mins = duration % 60;
+    } else {
+        hrs = 0;
+        mins = duration;
+    }
+    $("#hms_timer").countdowntimer({
+        hours : hrs,
+        minutes : mins,
+        seconds: 0,
+        size : "md",
+        timeUp: submitTest
+    });
+}
+
+function destroyCountdownTimer() {
+    $("#hms_timer").countdowntimer("destroy");
+}
+
+function stopCountdownTimer() {
+    $("#hms_timer").countdowntimer("stop", "stop");
+}
+
+// ------- END TIMER FUNCTIONS ------ //
