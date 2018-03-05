@@ -1,6 +1,11 @@
 // globals, yes shoot me
 var TEST_ID, duration, questions = [],PROCTOR;
 
+// TODO: improntu fix for skipping first question.
+// ProctorReady fires twice for subsequent tests after test #1.
+// startTest is called on ProctorReady, which calls fetchNextQuestion
+function debounce(a,b,c){var d;return function(){var e=this,f=arguments;clearTimeout(d),d=setTimeout(function(){d=null,c||a.apply(e,f)},b),c&&!d&&a.apply(e,f)}}
+
 // retake test
 $("#retake-test").click(function() {
     $("#result-div").fadeOut('fast', function() {
@@ -337,7 +342,7 @@ function blockTest() {
     stopCountdownTimer(); // prevent loaded test from auto submitting on timeout by stopping the timer
 }
 
-function startTest() {
+function _startTest() {
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
@@ -372,6 +377,7 @@ function startTest() {
     }, 'JSON');
 }
 
+var startTest = debounce(_startTest, 1000);
 
 function controlIntegrityBar(integrityScore) {
     $("#integrity-score").text(integrityScore);
