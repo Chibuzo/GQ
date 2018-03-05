@@ -103,10 +103,11 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function() {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            GQAptitudeTestResult.find().sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find(_candidates).sort('score desc').exec(function(err, apt_results) {
+                var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
@@ -118,21 +119,22 @@ module.exports = {
                             _tests = 0;
                         }
                         candidates.push({
-                            id: tests[0].candidate.id,
+                            id: apt_result.user,
                             fullname: tests[0].candidate.fullname,
-                            general_ability: tests[0] ? tests[0].score : 0,
-                            verbal: tests[1] ? tests[1].score : 0,
-                            maths: tests[2] ? tests[2].score : 0,
+                            general_ability: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : 0,
+                            verbal: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : 0,
+                            maths: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : 0,
                             test_date: apt_result.createdAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: tests[0].proctor.integrity_score,
-                            proctor_id: tests[0].proctor.id
+                            integrity_score: tests[0].proctor ? tests[0].proctor.integrity_score : 0,
+                            proctor_id: tests[0].proctor ? tests[0].proctor.id: 0
                         });
                         cb();
                     });
                 }, function(err) {
                     if (err) return reject(err);
+                    candidates.num = count; // also return number of candidates that has taken the test
                     return resolve(candidates);
                 });
             });

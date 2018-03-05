@@ -121,13 +121,86 @@ module.exports = {
 
 
     fetchApplicants: function(req, res) {
-        //Resume.find({ }).populate('user').exec(function(err, candidates) {
-        //    if (err) return console.log(err);
         GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
             return res.view('admin/candidates', { candidates: candidates });
         }).catch(function(err) {
             console.log(err);
         });
+    },
+
+    search: function(req, res) {
+        var q = req.param;
+        if (q('school') && q('course') && q('certification'))
+        {
+            var sql = "SELECT user FROM resume r JOIN education r ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE institution = ? AND programme = ? AND qualification = ?";
+
+            var data = [q('school'), q('course'), q('certification')];
+            Resume.query(sql, data, function(err, result) {
+                console.log(result);
+            });
+
+        }
+        else if (q('school') && q('course'))
+        {
+            console.log('Came here 2')
+
+            Resume.find().populate('educations', {
+                where: {
+                    institution: q('school'),
+                    programme: q('course')
+                }
+            }).exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        else if (q('course') && q('certification'))
+        {
+            console.log('Came here 3')
+
+            Resume.find().populate('educations', {
+                where: { programme: q('course') }
+            }).populate('qualification', {
+                where: { qualification: q('certification') }
+            }).exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        else if (q('school') && q('certification'))
+        {
+            console.log('Came here 4')
+
+            Resume.find().where({ institution: q('school'), qualification: q('certification')}).populate('educations').populate('qualifications').exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        else if (q('school'))
+        {
+            console.log('Came here 4.5')
+
+            Resume.find().populate('educations', {
+                where: { institution: q('school') }
+            }).exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        else if (q('course'))
+        {
+            console.log('Came here 5')
+
+            Education.find({ programme: q('course') }).populate('resume').exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        else if (q('certification'))
+        {
+            console.log('Came here 6')
+
+            Qualification.find({ qualification: q('certification') }).populate('resume').exec(function(err, resume) {
+                console.log(resume);
+            });
+        }
+        return res.ok()
     }
 };
 

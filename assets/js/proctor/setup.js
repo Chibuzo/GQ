@@ -294,7 +294,7 @@
     }, proctor.prototype.takeSnapShot = function(rect) {
         if(this.stopped === true) return;
 
-        this.context.drawImage(this.video, 0, 0, 640, 360);
+        this.context.drawImage(this.video, 0, 0, 320, 180);
         this.opts.handleSnapshot(this.canvas.toDataURL("image/jpeg", 1));
     };
 
@@ -302,8 +302,8 @@
         var pc = this;
         this.audioContext = null,
             this.meter = null,
-            this.meterWidth = 500,
-            this.meterHeight = 50,
+            this.meterWidth = 100,
+            this.meterHeight = 10,
             this.rafID = null,
             this.mediaStreamSource;
 
@@ -340,7 +340,7 @@
                 pc.opts.onAmbientNoiseDetection(),
                     pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 15000);
+                }, 10000);
             }
 
             // console.log('Proctor: Pitch -> ' + pitch);
@@ -384,9 +384,10 @@
             pc.recorderReady = false;
 
             this.recorder = new Recorder({
+                //wavBitDepth: parseInt(16, 10),
                 monitorGain: parseInt(0, 10),
                 numberOfChannels: parseInt(1, 10),
-                wavBitDepth: parseInt(16, 10),
+                wavBitDepth: parseInt(8, 10),
                 encoderPath: "/js/proctor/waveWorker.min.js"
             });
 

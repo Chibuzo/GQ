@@ -36,10 +36,13 @@ module.exports.policies = {
     },
 
     ResumeController: {
-        '*': 'isLoggedIn',
+        //'*': 'isLoggedIn',
     },
 
     AdminController: {
+        'setup': 'isAdmin',
+        'updateProfile': 'isAdmin',
+        'profile': 'isAdmin'
         //'*': 'isAdmin'
     },
 

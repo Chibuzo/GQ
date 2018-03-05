@@ -40,7 +40,7 @@
 		opacity: 0;
 		position: absolute !important;
 		/*right: -1500px;*/
-		z-index: -2;
+		/*z-index: -2;*/
 	}
 
 	/* CBT Styles */
@@ -115,9 +115,9 @@
 					</div><br>
 
 					<div class="cell">
-						<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
-							<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-							<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
+						<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
+							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+							<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
 						</div>
 					</div>
 
@@ -155,7 +155,7 @@
 
 								<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 									<div class="result">
-										<h3 class="test-title"></h3><br>
+										<h3 class="test-title">{{ test_title }}</h3><br>
 										<table class="table table-striped">
 											<thead>
 												<tr>
@@ -243,7 +243,9 @@
 
 									<!-- TEST CONTAINER -->
 									<div class="row test">
-										<div class="col-md-12">
+										<div class="col-md-12 overlay-container">
+											<div class="alert alert-warning text-center hidden" id="internet-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
+											<div class="test-overlay">Atu</div>
 
 											<div class="row">
 												<h3 class="test-title text-center"></h3>
@@ -448,7 +450,6 @@
 
 {% block scriptTag %}
 	<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
-	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -463,7 +464,9 @@
 	<!-- Audio tracking -->
 	<script src="/js/proctor/recorder.min.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js"></script>
+	<script src="/js/proctor/setup.js?v=1"></script>
+
+	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
