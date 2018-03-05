@@ -58,18 +58,33 @@
 						<div class="text-center"><br>
 
 							<div id="test-notice">
-								<h5>Would it not make sense to leave a brief message to the applicant about the test why they should care?</h5>
-								<br>
+								<p><strong>Please read the following instructions very carefully.</strong></p>
+								<p class="text-left"><br>
+								<ol class="text-left">
+									<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
+									<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
+									<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
+									<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
+									<li>Please note that you are to take this test on your own, WITH NO OUTSIDE ASSISTANCE.</li>
+									<li>Ensure you are in a well lit, QUIET room and ALONE. The presence of others and certain background noises may adversely affect your result.</li>
+									<li>Any irregularities observed while taking the test could lead to your test score being rejected, hence preventing you from being able to apply for jobs through our platform.</li>
+									<li>Your test is timed and will automatically be submitted upon expiration of the time limit. Upon completion, your score will immediately appear on the screen and saved in your Get Qualified profile </li>
+								</ol>
+								</p><br>
+								<p>Proceed to take the test and Good luck!</p>								<br>
 								<button class="btn btn-primary btn-lg load-test" data-test_id="{{ test_id }}">Take test</button>
 							</div>
 						</div>
 
-						<div class="test">
+						<div class="test overlay-container">
+							<div class="alert alert-warning text-center hidden" id="internet-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
+							<div class="test-overlay"></div>
+
 							<h3 class="test-title text-center"></h3>
 							<div id="instructions">
 								<div class="instruction"></div>
 								<div class="text-center">
-									<button class="btn btn-lg btn-primary hidden" id="start-test" data-test_id="{{ test_id }}"><i class="fa fa-clock-o"></i> Start Test</button>
+									<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
 								</div>
 							</div>
 
@@ -134,16 +149,14 @@
 </div>
 
 	<div class="cell">
-		<div class="proctor-container" style="position: relative; width: 640px; height: 360px">
-			<video id="proctor-video" width="640" height="360" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-			<canvas id="proctor-canvas" width="640" height="360" style="position: absolute; top: 0; left: 0"></canvas>
+		<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
+			<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+			<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
 		</div>
 	</div>
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
-<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 <!-- Facial tracking -->
 <script src="/js/proctor/tracking-min.js"></script>
 <script src="/js/proctor/face-min.js"></script>
@@ -157,4 +170,7 @@
 <script src="/js/proctor/recorder.min.js"></script>
 <!-- Main Setup -->
 <script src="/js/proctor/setup.js"></script>
+
+<script type="text/javascript" src="/js/gqTestFrontend.js?v=3"></script>
+<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
 {% endblock %}

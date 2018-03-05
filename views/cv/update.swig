@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-<link href="/styles/gq-cbt.css" rel="stylesheet" />
+<link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
 <link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
 	.plus-btn {
@@ -245,7 +245,7 @@
 									<div class="row test">
 										<div class="col-md-12 overlay-container">
 											<div class="alert alert-warning text-center hidden" id="internet-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
-											<div class="test-overlay">Atu</div>
+											<div class="test-overlay"></div>
 
 											<div class="row">
 												<h3 class="test-title text-center"></h3>
@@ -450,7 +450,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js?v=1"></script>
+<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -465,10 +465,11 @@
 	<!-- Audio tracking -->
 	<script src="/js/proctor/recorder.min.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js?v=1"></script>
+	<script src="/js/proctor/setup.js?v=2"></script>
 
 	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
-<script type="text/javascript">
+	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
+	<script type="text/javascript">
 $(document).ready(function() {
 	$(".resume").addClass('active');
 
