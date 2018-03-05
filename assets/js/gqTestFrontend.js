@@ -1,6 +1,11 @@
 // globals, yes shoot me
 var TEST_ID, duration, questions = [],PROCTOR;
 
+// TODO: improntu fix for skipping first question.
+// ProctorReady fires twice for subsequent tests after test #1.
+// startTest is called on ProctorReady, which calls fetchNextQuestion
+function debounce(a,b,c){var d;return function(){var e=this,f=arguments;clearTimeout(d),d=setTimeout(function(){d=null,c||a.apply(e,f)},b),c&&!d&&a.apply(e,f)}}
+
 // retake test
 $("#retake-test").click(function() {
     $("#result-div").fadeOut('fast', function() {
@@ -46,6 +51,7 @@ $("#start-test").click(function() {
     // register window onclose/leave event
     addWindowsCloseEvent();
 
+    startTest();
     // reset/initialize invigilation bar
     $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
 });
@@ -118,6 +124,7 @@ function fetchNextQuestion(questions, next_quest) {
     $("#quest-" + cur_question).removeClass('skipped_q answered_q').addClass('active_q');
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     if (questions[next_question].image_file) {
+        // TODO: have the URL be environment dependant
         var img = $("<img />").attr('src', 'https://getqualified.work/cbt-images/' + questions[next_question].image_file).on('load', function() {
             $(".question-image").append(img);
         });
@@ -195,9 +202,8 @@ $("#submit-test").click(function(e) {
     e.preventDefault();
 
     // prevent further [auto] submit
-    $("#stopTestTimer").text('Stop').click();
-    $("#hms_timer").countdowntimer("destroy");
-    //$("#hms_timer").countdowntimer("stop", "stop");
+    stopCountdownTimer();
+    destroyCountdownTimer();
 
     // stop proctor
     PROCTOR.stop();
@@ -315,26 +321,6 @@ function shuffleArray(array) {
     }
 }
 
-
-function startTimer() {
-    var hrs = mins = 0;
-    if (duration > 60) {
-        hrs = Math.floor(duration / 60);
-        mins = duration % 60;
-    } else {
-        hrs = 0;
-        mins = duration;
-    }
-    $("#hms_timer").countdowntimer({
-        hours : hrs,
-        minutes : mins,
-        size : "md",
-        timeUp: submitTest,
-        stopButton: "stopTestTimer"
-    });
-}
-
-
 function mobileCheck() {
     var isMobile = false;
     // device detection
@@ -349,16 +335,14 @@ function createProctorSession() {
     }); // that'a all
 }
 
-
 function blockTest() {
     $(".inner-test-div").fadeOut('fast', function() {
         $(".test-blocked-screen").removeClass('hidden');
     });
-    $("#stopTestTimer").click(); // prevent loaded test from auto submitting on timeout by stopping the timer
+    stopCountdownTimer(); // prevent loaded test from auto submitting on timeout by stopping the timer
 }
 
-function startTest() {
-    console.log('Start Test');
+function _startTest() {
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             questions = d.questions;
@@ -393,6 +377,7 @@ function startTest() {
     }, 'JSON');
 }
 
+var startTest = debounce(_startTest, 1000);
 
 function controlIntegrityBar(integrityScore) {
     $("#integrity-score").text(integrityScore);
@@ -406,9 +391,7 @@ function controlIntegrityBar(integrityScore) {
 }
 
 
-function addWindowsCloseEvent() {
-    window.addEventListener("beforeunload", submitTest);
-}
+
 
 //function warnCandidate(e) {
 //    var confirmationMessage = "\o/";
@@ -419,20 +402,67 @@ function addWindowsCloseEvent() {
 //}
 
 
+// ------- START WINDOW EVENT HANDLERS ------ //
+
 function removeWindowsCloseEvent() {
     window.removeEventListener("beforeunload", submitTest);
+}
+
+function addWindowsCloseEvent() {
+    window.addEventListener("beforeunload", submitTest);
 }
 
 window.addEventListener('online', () => {
     PROCTOR = startProctor();
     $("#internet-alert").addClass('hidden');
     $(".test-overlay").fadeOut('fast');
-    $("#hms_timer").countdowntimer("pause", "resume");
+    resumeCountdownTimer();
 });
 
 window.addEventListener('offline', () => {
-    $("#hms_timer").countdowntimer("pause", "pause");
+    pauseCountdownTimer();
     $("#internet-alert").removeClass('hidden');
     $(".test-overlay").fadeIn('fast');
     PROCTOR.stop();
 });
+
+// ------- END WINDOW EVENT HANDLERS ------ //
+
+
+// ------- START TIMER FUNCTIONS ------ //
+
+function startTimer() {
+    var hrs = mins = 0;
+    if (duration > 60) {
+        hrs = Math.floor(duration / 60);
+        mins = duration % 60;
+    } else {
+        hrs = 0;
+        mins = duration;
+    }
+    $("#hms_timer").countdowntimer({
+        hours : hrs,
+        minutes : mins,
+        seconds: 0,
+        size : "md",
+        timeUp: submitTest
+    });
+}
+
+function destroyCountdownTimer() {
+    $("#hms_timer").countdowntimer("destroy");
+}
+
+function stopCountdownTimer() {
+    $("#hms_timer").countdowntimer("stop", "stop");
+}
+
+function pauseCountdownTimer() {
+    $("#hms_timer").countdowntimer("pause", "pause");
+}
+
+function resumeCountdownTimer() {
+    $("#hms_timer").countdowntimer("pause", "resume");
+}
+
+// ------- END TIMER FUNCTIONS ------ //

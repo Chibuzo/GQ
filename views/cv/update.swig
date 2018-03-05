@@ -384,7 +384,6 @@
 												</div>
 											</div>
 											<span id="integrity-score" class="hidden"></span>
-											<button class="btn btn-default hidden" id="stopTestTimer">Stop</button>
 										</div>
 									</div>
 								</div>
