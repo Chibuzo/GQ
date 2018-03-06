@@ -430,6 +430,7 @@ window.addEventListener('offline', () => {
 
 
 // ------- START TIMER FUNCTIONS ------ //
+var countdownTimer = $("#countdowntimer");
 
 function startTimer() {
     var hrs = mins = 0;
@@ -440,29 +441,31 @@ function startTimer() {
         hrs = 0;
         mins = duration;
     }
-    $("#hms_timer").countdowntimer({
-        hours : hrs,
-        minutes : mins,
-        seconds: 0,
-        size : "md",
-        timeUp: submitTest
+
+    countdownTimer.timer({
+        countdown: true,
+        duration: mins + 'm0s', // The time to countdown from.
+        repeat: false, // If duration is set, `callback` will be called repeatedly
+        editable: false, // If click and edit time is enabled
+        format: "%H:%M:%S", // Format to show time in,
+        callback: submitTest // If duration is set, this function is called after `duration` has elapsed
     });
 }
 
 function destroyCountdownTimer() {
-    $("#hms_timer").countdowntimer("destroy");
+    countdownTimer.timer('remove');
 }
 
 function stopCountdownTimer() {
-    $("#hms_timer").countdowntimer("stop", "stop");
+    countdownTimer.timer('pause');
 }
 
 function pauseCountdownTimer() {
-    $("#hms_timer").countdowntimer("pause", "pause");
+    countdownTimer.timer('pause');
 }
 
 function resumeCountdownTimer() {
-    $("#hms_timer").countdowntimer("pause", "resume");
+    countdownTimer.timer('resume');
 }
 
 // ------- END TIMER FUNCTIONS ------ //

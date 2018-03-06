@@ -19,6 +19,10 @@
 		transition: all .25s ease;
 	}
 
+	#countdowntimer {
+		font-size: 20px;
+	}
+
 	.addable {
 		display: none;
 	}
@@ -281,7 +285,7 @@
 
 													<!-- Timer -->
 													<div class="row">
-														<div id="countdowntimer" class="text-center"><span id="hms_timer"><span>00:00</div>
+														<div id="countdowntimer" class="text-center"></div>
 													</div>
 
 													<!-- Invigilation Score -->
@@ -466,7 +470,7 @@
 	<!-- Main Setup -->
 	<script src="/js/proctor/setup.js?v=2"></script>
 
-	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 	<script type="text/javascript">
 $(document).ready(function() {
