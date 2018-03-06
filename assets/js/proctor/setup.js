@@ -240,6 +240,14 @@
             stop: function() {
                 pc.stopped = true;
                 pc.tracker && pc.tracker.stop();
+
+                let stream = pc.video.srcObject;
+                let tracks = stream.getTracks();
+
+                tracks.forEach(function(track) {
+                    track.stop();
+                });
+                pc.video.srcObject = null;
             }
         };
     }, proctor.prototype.proctor = function() {

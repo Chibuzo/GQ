@@ -180,6 +180,7 @@ module.exports = {
         var integrity_score = req.param('integrity_score');
         var score = 0;
 
+		// TODO: Sometimes suppliedAnswers is not defined. Throws error locally
         req.session.suppliedAnswers.forEach(function(quest) {
             if (quest.supplied_ans === quest.correct_ans) {
                 score++;
@@ -334,4 +335,3 @@ module.exports = {
         return res.ok();
     }
 };
-

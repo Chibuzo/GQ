@@ -65,7 +65,11 @@ module.exports = {
                 Education.update({ id: q('inst_id')[i] }, education).exec(function() {});
                 sections.education = true;
             } else {
-                Education.create(education).exec(function() {});
+                Education.findOrCreate({
+                    institution: q('institution')[i],
+                    honour: q('honour')[i],
+                    programme: q('programme')[i]
+                }, education).exec(function () {});
                 sections.education = true;
             }
         }
@@ -83,7 +87,7 @@ module.exports = {
             if (q('qualification_id')[i] && q('qualification_id')[i] > 0) {
                 Qualification.update({ id: q('qualification_id')[i] }, qualification).exec(function() {});
             } else {
-                Qualification.create(qualification).exec(function() {});
+                Qualification.findOrCreate({ qualification: q('qualification') }, qualification).exec(function() {});
                 //sections.qualification = true;
             }
         }
@@ -105,7 +109,7 @@ module.exports = {
             if (q('employment_id') && !_.isUndefined(q('employment_id')[i]) && q('employment_id')[i] > 0) {
                 Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
             } else {
-                Employment.create(employment).exec(function() {});
+                Employment.findOrCreate({ company: q('company'), role: q('job_title') }, employment).exec(function() {});
                 //sections.employment = true;
             }
         }
