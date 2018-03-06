@@ -256,7 +256,7 @@
 											</div>
 
 											<div class="row">
-												<div id="instructions">
+												<div id="instructions" class="col-md-10 col-md-offset-1">
 													<div class="instruction"></div>
 													<div class="text-center">
 														<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
