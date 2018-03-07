@@ -1,6 +1,27 @@
 // globals, yes shoot me
 var TEST_ID, duration, questions = [],PROCTOR;
 
+/* GQTestStatus is used to keep track of whether a test is in progress or not.
+ * Short term fix for 1st question being skipped when test starts because
+ * "proctorReady" can fired mutliple times if button dbl clicked
+*/
+var GQTestStatus = (function() {
+    var inProgress = false;
+
+    return {
+        isInProgress: function() {
+            return inProgress;
+        },
+
+        startProgress: function() {
+            inProgress = true;
+        },
+
+        stopProgress: function() {
+            inProgress = false;
+        }
+    }
+})();
 
 // retake test
 $("#retake-test").click(function() {
@@ -224,6 +245,8 @@ $("#submit-test").click(function(e) {
 
 
 function submitTest() {
+    GQTestStatus.stopProgress();
+
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
         return false;
@@ -262,6 +285,8 @@ function submitTest() {
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
 function submitAndLoadNext(next) {
+    GQTestStatus.stopProgress();
+
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
     var integrity_score = $("#integrity-score").text();
@@ -283,6 +308,8 @@ function submitAndLoadNext(next) {
 // for GQ Aptitude test submit
 // should be modified to handle section submit for test with more than one section
 function submitGQAptitudeTest() {
+    GQTestStatus.stopProgress();
+
     var integrity_score = $('.progress-bar').width();
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
@@ -338,11 +365,19 @@ function blockTest() {
         $(".test-blocked-screen").removeClass('hidden');
     });
     stopCountdownTimer(); // prevent loaded test from auto submitting on timeout by stopping the timer
+    GQTestStatus.stopProgress();
 }
 
 function startTest() {
+    if (GQTestStatus.isInProgress()) {
+        console.warn("Attempted to start test when a test already in progress ");
+        return;
+    }
+
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
+            GQTestStatus.startProgress();
+
             questions = d.questions;
             //shuffleArray(questions);
             duration = d.duration;
@@ -370,6 +405,7 @@ function startTest() {
 
             // set/reset controls
             $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
+            // TODO: ensure the disabled prop set to false after test finished
             $("#start-test").text('Start Test').prop('disabled', false);
         }
     }, 'JSON');
@@ -413,6 +449,7 @@ window.addEventListener('online', () => {
     $("#internet-alert").addClass('hidden');
     $(".test-overlay").fadeOut('fast');
     resumeCountdownTimer();
+    GQTestStatus.startProgress();
 });
 
 window.addEventListener('offline', () => {
@@ -420,6 +457,7 @@ window.addEventListener('offline', () => {
     $("#internet-alert").removeClass('hidden');
     $(".test-overlay").fadeIn('fast');
     PROCTOR.stop();
+    GQTestStatus.stopProgress();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
