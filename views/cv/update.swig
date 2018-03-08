@@ -398,16 +398,19 @@
 									<div class="col-md-6">
 										<h3>Instructions</h3>
 										<div class="">
-											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i> Introduce yourself</h5>
-											<div class="quest-instruction" id="about-text">Don’t answer this question by rambling on about your hobbies and your pets. Use this as another opportunity to direct the recruiter or hiring manager’s attention to your skills and accomplishment to really impress them. Talk about what interests you about the industry and what you hope to bring to their organization</div>
-											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i> Describe your work ethic</h5>
-											<div class="quest-instruction" id="work-text">Again, this question is asked to find out how well you can fit into a company’s culture. Describe how important it is to you to complete all of the tasks assigned to you effectively and efficiently.</div>
-											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i> What are your key strengths?</h5>
-											<div class="quest-instruction" id="strength-text">Your response should relate to the job description and your ability to perform the tasks assigned to you. For example, if you are being interviewed for a position where you will be leading a large group of people discuss your strong communication skills and ability to work with a variety of people and personalities.</div>
-											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i> What is your ideal work environment?</h5>
-											<div class="quest-instruction" id="environment-text">This question is asked so a recruiter or hiring manager can determine if you’d be a good fit for a company’s culture. Be honest in your response. If you would work well in a large, bustling office, say so. If you prefer working in a small office so you can easily collaborate with colleagues, explain why this is important to you.</div>
-											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i> Where do you see yourself in 5 years?</h5>
-											<div class="quest-instruction" id="future-text">There is no perfect answer to this question because responses will vary depending on the industry and the individual. A recruiter or hiring manager simply wants to find out how well you plan ahead and if your goals match those of the company. It’s important, though, to avoid saying anything that makes you seem abrasive, short-term minded, or lacking in goals.</div>
+											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i>Briefly introduce yourself to prospective employers</h5>
+											<div class="quest-instruction" id="about-text">Give employers a sense for who you are, your motivations and your aspirations. Focus on traits that make you unique and are not readily apparent from you CV. This is your personal “elevator pitch” to employers that ensures you are memorable and hence, stand out from the crowd.</div>
+											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i>Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
+											<div class="quest-instruction" id="work-text">This question tests your ability to be resilient and cope under pressure. It gives you the opportunity to demonstrate how you can use your initiative and act with integrity. Your answer should focus on a work-related issue, explain clearly the measures you took to overcome the obstacle. Don’t fall into the trap of criticising your company or colleagues and trying to present yourself in a superior light. This will come across as unprofessional and arrogant.</div>
+
+											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i>Describe the work environment or culture in which you are most productive and happy?</h5>
+											<div class="quest-instruction" id="strength-text">A good way to approach this question is to show that you are aware of the benefits of different work environments or cultures and you understand that you need to be comfortable working in these scenarios. It is fine to have a preference, as many of us will prefer one specific environment to the other. The key is for you to ensure that prospective employers understand your preferred environment or culture (working in a team or individually, working in an unstructured or structured environment, large or smaller team, strict supervision or less supervision, etc).</div>
+
+											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i>Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
+											<div class="quest-instruction" id="environment-text">This question is a good way to demonstrate that you are able to work well under pressure and stay focused on the task at hand. This is an opportunity to explain the measures you put in place to prevent an issue from spiralling into a stressful situation. Give an example of when you were faced with a difficult situation and how you kept a cool head and stuck through the situation. Getting overwhelmed by stress can be counter-productive, especially when working in a team. Employers will look to avoid hiring candidates who crack under pressure.</div>
+
+											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i>How do you react when asked to do something beyond your capabilities?</h5>
+											<div class="quest-instruction" id="future-text">There’s no right or wrong answer for this question. This question tries to establish what makes you tick, and how you manage challenging tasks. Therefore, your answer needs to reflect this. Whatever your answer is, make sure you say why.</div>
 										</div>
 									</div>
 									{% if resume.video_file.length > 3 %}
