@@ -220,15 +220,20 @@ function restoreQuestionState(quest_id) {
 $("#submit-test").click(function(e) {
     e.preventDefault();
 
-    // prevent further [auto] submit
-    stopCountdownTimer();
-    destroyCountdownTimer();
 
-    // stop proctor
-    PROCTOR.stop();
 
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        // prevent further [auto] submit
+        stopCountdownTimer();
+        destroyCountdownTimer();
+
+        // stop proctor
+        PROCTOR.stop();
+
         saveAnswer();
+
+        SingleFaceTracker.clearTimer();
+
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
             submitAndLoadNext();
             return false;
@@ -411,16 +416,6 @@ function startTest() {
     }, 'JSON');
 }
 
-function controlIntegrityBar(integrityScore) {
-    $("#integrity-score").text(integrityScore);
-    if (integrityScore < 70 && integrityScore > 55) {
-        $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
-    }
-    else if (integrityScore < 55) {
-        $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
-    }
-    $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
-}
 
 
 
@@ -450,6 +445,8 @@ window.addEventListener('online', () => {
     $(".test-overlay").fadeOut('fast');
     resumeCountdownTimer();
     GQTestStatus.startProgress();
+    SingleFaceTracker.setCounter();
+    SingleFaceTracker.startTimer();
 });
 
 window.addEventListener('offline', () => {
@@ -458,6 +455,7 @@ window.addEventListener('offline', () => {
     $(".test-overlay").fadeIn('fast');
     PROCTOR.stop();
     GQTestStatus.stopProgress();
+    SingleFaceTracker.clearTimer();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
@@ -503,3 +501,73 @@ function resumeCountdownTimer() {
 }
 
 // ------- END TIMER FUNCTIONS ------ //
+
+// ----- START FACE DETECTION FUNCTIONS ---- //
+
+var SingleFaceTracker = (function() {
+    var faceTrackedCount;
+    var timerId
+
+    var self = this;
+
+    return {
+        setCounter: function() {
+            faceTrackedCount = 0;
+        },
+
+        incrementCounter: function() {
+            faceTrackedCount++;
+        },
+
+        ensureFaceTracked: function() {
+            var _faceTrackedCount = faceTrackedCount;
+            faceTrackedCount = 0;
+
+            if (_faceTrackedCount <= 0) {
+                IntegrityScore.update(-5);
+                return;
+            }
+        },
+
+        startTimer: function() {
+            timerId = setInterval(this.ensureFaceTracked, 60000);
+        },
+
+        clearTimer: function() {
+            clearInterval(timerId);
+        }
+    };
+})();
+
+// ----- END FACE DETECTION FUNCTIONS ---- //
+
+// ----- START INTEGRITY SCORE FUNCTIONS ---- //
+
+var IntegrityScore = (function() {
+    var integrityScore = 100;
+
+    var updateIntegrityBar = function() {
+        $("#integrity-score").text(integrityScore);
+        if (integrityScore < 70 && integrityScore > 55) {
+            $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+        }
+        else if (integrityScore < 55) {
+            $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+        }
+        $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+    }
+
+    return {
+        update: function(value) {
+            integrityScore = integrityScore + value;
+            integrityScore  = integrityScore < 0 ? 0 : integrityScore;
+            updateIntegrityBar();
+        },
+
+        reset: function() {
+            integrityScore = 100;
+        }
+    };
+})();
+
+// ----- END INTEGRITY SCORE FUNCTIONS ---- //

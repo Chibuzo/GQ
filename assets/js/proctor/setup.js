@@ -453,7 +453,7 @@ function startProctor() {
      * integrity score measurement
      * You can use the (onMultiFaceTracked) option for the (-15) deduction on track
      */
-    var integrityScore = 100;
+    IntegrityScore.reset();
 
     // This part will only enable recording/ambient noise ish -> Once every minute as requested
     var aN = 0, timer = Math.floor(new Date().getTime() / 1000);
@@ -510,14 +510,13 @@ function startProctor() {
         onFaceTracked: function() {
             // on face detected
             console.log('Proctor: Single face detected');
+            SingleFaceTracker.incrementCounter();
         },
         // Integrity scoring can be applied here
         onMultiFaceTracked: function() {
             // on multi face detected
             console.log('Proctor: Multiple faces detected');
-            //integrityScore = integrityScore - 15;
-            integrityScore -= integrityScore > 0 ? 5 : 0;
-            controlIntegrityBar(integrityScore);
+            IntegrityScore.update(-5);
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
@@ -527,8 +526,7 @@ function startProctor() {
                 // ambient timer recalculation
                 aN = Math.floor(new Date().getTime() / 1000);
                 // Integrity score
-                integrityScore -= integrityScore > 0 ? 2 : 0;
-                controlIntegrityBar(integrityScore);
+                IntegrityScore.update(-2);
             }
         },
 
@@ -557,6 +555,8 @@ function startProctor() {
         proctorReady: function() {
             console.log('Proctor is ready.');
             startTest();
+            SingleFaceTracker.setCounter();
+            SingleFaceTracker.startTimer();
         }
     });
 
