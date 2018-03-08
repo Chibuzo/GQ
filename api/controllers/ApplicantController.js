@@ -53,39 +53,68 @@ module.exports = {
         });
     },
 
-    uploadVideo: function(req, res) {
-        var allowedVidTypes = ['video/mp4'];
-        var filename;
-        var hr = process.hrtime();
-        req.file('video_file').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_videos/'),
-            saveAs: function (file, cb) {
-                if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
-                    return res.badRequest('Unsupported video format.');
-                }
-                var ext = file.filename.split('.').pop();
-                filename = req.param('video_file').length > 3 ? req.param('video_file') : req.param('video_title') + "_" + hr[1] + '.' + ext;
-                return cb(null, filename);
-            },
-            maxBytes: 100 * 1024 * 1024
-        },
-        function (err) {
-            if (err) {
-                return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' });
-            }
-            console.log(req.param('resume_id'));
-            Resume.update({id: req.param('resume_id')}, { video_file: filename, video_status: 'true' }).exec(function (err, resume) {
-                if (err) {
-                    return res.badRequest(err);
-                }
-                if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
-                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
-                    });
-                }
-                return res.redirect('/applicant/resume-page');
+    //uploadVideo: function(req, res) {
+    //    var allowedVidTypes = ['video/mp4'];
+    //    var filename;
+    //    var hr = process.hrtime();
+    //    req.file('video_file').upload({
+    //        dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_videos/'),
+    //        saveAs: function (file, cb) {
+    //            if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
+    //                return res.badRequest('Unsupported video format.');
+    //            }
+    //            var ext = file.filename.split('.').pop();
+    //            filename = req.param('video_file').length > 3 ? req.param('video_file') : req.param('video_title') + "_" + hr[1] + '.' + ext;
+    //            return cb(null, filename);
+    //        },
+    //        maxBytes: 100 * 1024 * 1024
+    //    },
+    //    function (err) {
+    //        if (err) {
+    //            return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' });
+    //        }
+    //        console.log(req.param('resume_id'));
+    //        Resume.update({id: req.param('resume_id')}, { video_file: filename, video_status: 'true' }).exec(function (err, resume) {
+    //            if (err) {
+    //                return res.badRequest(err);
+    //            }
+    //            if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
+    //                Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {
+    //                });
+    //            }
+    //            return res.redirect('/applicant/resume-page');
+    //        });
+    //    });
+    //},
+
+    getYoutubeAccessToken: function(req, res) {
+        if (req.param('code')) { // for refresh token
+            Youtube.authenticate(req.param('code')).then(function(token) {
+                return res.json(200, { token: token });
+            }).catch(function(err) {
+                console.log('Error: ' + err);
             });
-        });
+        } else {
+            // run first time
+            Youtube.getToken().then(function(resp) {
+                if (resp.state == 'refresh') {
+                    return res.redirect(resp.url);
+                } else {
+                    return res.json(resp.tokens)
+                }
+            }).catch(function(err) {
+                console.log('Err: ' + err);
+            });
+        }
     },
+
+
+    addYoutubeVideoID: function(req, res) {
+        if (req.session.userId) {
+            Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id') }).exec(function() {});
+        }
+    },
+
 
     uploadPassport: function(req, res) {
         var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
