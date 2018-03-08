@@ -8,6 +8,11 @@
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
 <link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
+	#sample-vid-btn {
+		font-size: 1.2em;
+		margin-left: 10px;
+	}
+
 	.plus-btn {
 		position: relative;
 		top: 35px;
@@ -411,6 +416,8 @@
 
 											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i>How do you react when asked to do something beyond your capabilities?</h5>
 											<div class="quest-instruction" id="future-text">There’s no right or wrong answer for this question. This question tries to establish what makes you tick, and how you manage challenging tasks. Therefore, your answer needs to reflect this. Whatever your answer is, make sure you say why.</div>
+
+											<a id="sample-vid-btn" href="" data-modal-id="modal-sample-video"> See Sample Video </a>
 										</div>
 									</div>
 									{% if resume.video_file.length > 3 %}
@@ -453,7 +460,30 @@
 		</div>
 	</div>
 </div>
+
 {% endblock %}
+
+{% block modals %}
+	<div class="modal fade" id="modal-sample-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <div class="modal-body">
+	                <div class="modal-video">
+	                    <div class="embed-responsive embed-responsive-16by9">
+							<iframe id="sample-video" src="https://player.vimeo.com/video/259245017" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+{% endblock %}
+
 
 {% block scriptTag %}
 <script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
@@ -633,6 +663,26 @@ $(document).ready(function() {
 		var id = $(this).attr('id');
 		$(".quest-instruction").slideUp();
 		$('#' + id + "-text").slideDown();
+	});
+
+	$("#sample-vid-btn").on('click', function(e) {
+		e.preventDefault();
+		$( '#' + $(this).data('modal-id') ).modal({
+			keyboard: true
+		});
+	});
+
+	$('#modal-sample-video').on('hide.bs.modal', function(e) {
+		var $frame = $('iframe#sample-video');
+
+		// saves the current iframe source
+		var vidsrc = $frame.attr('src');
+
+		// sets the source to nothing, stopping the video
+		$frame.attr('src', '');
+
+		// sets it back to the correct link so that it reloads immediately on the next window open
+		$frame.attr('src', vidsrc);
 	});
 });
 
