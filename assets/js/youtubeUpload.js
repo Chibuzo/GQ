@@ -21,6 +21,7 @@ function initClient() {
     //}),
     $("#select-file").bind("change", function () {
         selectedFile = $("#select-file").prop("files")[0];
+        $(".select-file-button").html("<i class='fa fa-cog fa-spin'></i> Uploading...").prop('disabled', true);
         defineRequest();
     });
 }
@@ -422,7 +423,7 @@ function defineRequest() {
             var uploadResponse = JSON.parse(data);
             $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id });
             //console.log('Upload complete for video ' + uploadResponse.id);
-            location.href.reload(true);
+            location.reload(true);
         }.bind(this)
     });
 

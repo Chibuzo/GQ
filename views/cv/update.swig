@@ -415,8 +415,7 @@
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
 												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
 											{#</video>#}
-											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}">
-											</iframe>
+											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
 												<input id="select-file" type="file" style="display:none">
