@@ -440,7 +440,7 @@
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
 													<li>The video file size must not be more than 100MB</li>
-													<li>Then length of the video must not be more than 15 minutes</li>
+													<li>Then length of the video must not be more than 3 minutes</li>
 													<li>It is recommended you use a WIFI network to upload your profile video or compress video size before upload.</li>
 												</ul>
 											</div>
