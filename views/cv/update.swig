@@ -150,6 +150,7 @@
 									<div class="col-md-12" style="padding: 50px">
 									{% include 'includes/resume.swig' %}
 									{% include 'includes/resume-form.swig' %}
+									<span id="candidate_fullname">{{ resume.fullname }}</span>
 									</div>
 								</div>
 							</div>
@@ -428,14 +429,13 @@
 											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
-												<input id="select-file" type="file" style="display:none">
 											</div>
 										</div>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger select-file-button" id=""><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
+												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
@@ -446,6 +446,7 @@
 											</div>
 										</div>
 									{% endif %}
+									<input id="select-file" type="file" style="display:none">
 									</div>
 								</div>
 
