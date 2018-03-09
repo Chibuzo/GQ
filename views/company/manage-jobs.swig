@@ -54,7 +54,7 @@
 							<th>Posted By</th>
 							{#<th>Status</th>#}
 							<th><i class="fa fa-calendar"></i> Closing Date</th>
-							<th class="text-center" style="width: 160px">Action</th>
+							<th class="text-center" style="width: 170px">Action</th>
 						</tr>
 						</thead>
 						<tbody>

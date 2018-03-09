@@ -101,8 +101,7 @@
 							<th>Job Role</th>
 							<th class="text-center">Applicants</th>
 							<th class="text-center">Views</th>
-							<th>Closing Date</th>
-							<th></th>
+							<th style="width:101px">Closing Date</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -114,7 +113,6 @@
 								<td class="text-center">{{ job.applications.length }}</td>
 								<td class="text-center">{{ job.view_count }}</td>
 								<td>{{ job.closing_date | date('d-m-Y') }}</td>
-								<td></td>
 							</tr>
 						{% endif %}
 					{% endfor %}

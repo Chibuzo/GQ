@@ -40,7 +40,8 @@ module.exports.routes = {
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    'POST /applicant/add-video': 'ApplicantController.uploadVideo',
+    //'POST /applicant/add-video': 'ApplicantController.uploadVideo',    //--> deprecated
+    'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
     'POST /applicant/add-passport': 'ApplicantController.uploadPassport',
 
@@ -217,6 +218,8 @@ module.exports.routes = {
     'GET /get-schools': 'SchoolsController.getSchools',
 
     'GET /applicants/search': 'ApplicantController.search',
+
+    'GET /getYoutubeAccessToken': 'ApplicantController.getYoutubeAccessToken'
 
     //'GET /email': { view: 'email' },
     //

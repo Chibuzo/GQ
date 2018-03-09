@@ -87,6 +87,10 @@ module.exports = {
             type: 'string'
         },
 
+        youtube_vid_id: {
+            type: 'string'
+        },
+
         passport: {
             type: 'string'
         },
