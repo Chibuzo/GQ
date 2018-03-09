@@ -227,8 +227,12 @@ $("#submit-test").click(function(e) {
         stopCountdownTimer();
         destroyCountdownTimer();
 
-        // stop proctor
-        PROCTOR.stop();
+        try {
+            // stop proctor
+            PROCTOR.stop();
+        } catch () {
+            console.log('Proctor has gased');
+        }
 
         saveAnswer();
 

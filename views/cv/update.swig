@@ -489,7 +489,7 @@
 
 
 {% block scriptTag %}
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -691,6 +691,6 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="/js/youtubeUpload.js?v=1"></script>
+	<script src="/js/youtubeUpload.js?v=2"></script>
 
 {% endblock %}

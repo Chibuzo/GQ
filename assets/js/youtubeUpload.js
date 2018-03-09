@@ -379,7 +379,7 @@ function defineRequest() {
         'snippet.title': $("#candidate_fullname").text(),
         'status.embeddable': '',
         'status.license': '',
-        'status.privacyStatus': 'public',
+        'status.privacyStatus': 'private',
         'status.publicStatsViewable': ''
     });
 
