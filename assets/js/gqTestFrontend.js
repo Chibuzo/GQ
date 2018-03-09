@@ -489,10 +489,18 @@ function destroyCountdownTimer() {
 }
 
 function stopCountdownTimer() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     countdownTimer.timer('pause');
 }
 
 function pauseCountdownTimer() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     countdownTimer.timer('pause');
 }
 

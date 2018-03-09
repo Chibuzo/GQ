@@ -6,7 +6,6 @@
 
 {% block body %}
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
-<link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
