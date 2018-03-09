@@ -374,9 +374,9 @@ function defineRequest() {
     var metadata = createResource({
         'snippet.categoryId': '22',
         'snippet.defaultLanguage': '',
-        'snippet.description': 'Demo video',
+        'snippet.description': 'Candidate Profile Video',
         'snippet.tags[]': '',
-        'snippet.title': 'Test video upload',
+        'snippet.title': $("#candidate_fullname").text(),
         'status.embeddable': '',
         'status.license': '',
         'status.privacyStatus': 'public',
