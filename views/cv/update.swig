@@ -224,7 +224,7 @@
 
 										<div id="test-notice">
 											<h3>Test Instruction</h3>
-											<p><i>[45] Minutes - [60] Questions</i></p>
+											<p><i>[60] Minutes - [60] Questions</i></p>
 											<p>The GetQualified Assessment is administered online and the purpose is to test your basic problem solving and verbal reasoning abilities. In combination with other important elements of your job applications this assessment helps us, and potential employers, determine your suitability for an advertised role. Please note, this test is free of charge.</p>
 											<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
 											<p class="text-left"><br>
@@ -410,19 +410,22 @@
 											<div class="quest-instruction" id="future-text">There is no perfect answer to this question because responses will vary depending on the industry and the individual. A recruiter or hiring manager simply wants to find out how well you plan ahead and if your goals match those of the company. It’s important, though, to avoid saying anything that makes you seem abrasive, short-term minded, or lacking in goals.</div>
 										</div>
 									</div>
-									{% if resume.video_file.length > 3 %}
+									{% if resume.video_status == true %}
 										<div class="col-md-5">
-											<video style="margin-top: 50px;" width="450" height="300" controls=controls>
-												<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>
-											</video>
-											<div class="row text-center"><br><a href="" id="change-video">Change Video</a></div>
+											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
+												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
+											{#</video>#}
+											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<div class="row text-center"><br>
+												<button class="btn btn-default select-file-button">Change Video</button>
+												<input id="select-file" type="file" style="display:none">
+											</div>
 										</div>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger" id="add-video"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
-												{#<p><strong>Note: </strong></p>#}
+												<p><button class="btn btn-danger select-file-button" id=""><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
@@ -436,12 +439,12 @@
 									</div>
 								</div>
 
-								<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">
-									<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />
-									<input type="hidden" name="video_file" value="{{ resume.video_file }}">
-									<input type="hidden" name="resume_id" value="{{ resume.id }}">
-									<input type="file" name="video_file" style="display: none" id="file-control" />
-								</form>
+								{#<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">#}
+									{#<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />#}
+									{#<input type="hidden" name="video_file" value="{{ resume.video_file }}">#}
+									{#<input type="hidden" name="resume_id" value="{{ resume.id }}">#}
+									{#<input type="file" name="video_file" style="display: none" id="file-control" />#}
+								{#</form>#}
 							</div>
 						</div>
 					</div>
@@ -453,7 +456,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -473,171 +476,169 @@
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 	<script type="text/javascript">
-$(document).ready(function() {
-	$(".resume").addClass('active');
+		$(document).ready(function() {
+			$(".resume").addClass('active');
 
-	//$.getScript('/js/proctor/tracking-min.js');
-
-
-	$("select[name=country]").find('option').filter(function(i) {
-		return 'Nigeria' == $(this).val();
-	}).attr("selected", "selected");
+			//$.getScript('/js/proctor/tracking-min.js');
 
 
-	//fetch universities
-	var schools = [], options = [];
-	$.get('/get-schools', function(d) {
-		if (d.status == 'success') {
-			d.schools.forEach(function(schl) {
-				schools.push(schl.school_name);
+			$("select[name=country]").find('option').filter(function(i) {
+				return 'Nigeria' == $(this).val();
+			}).attr("selected", "selected");
+
+
+			//fetch universities
+			var schools = [], options = [];
+			$.get('/get-schools', function(d) {
+				if (d.status == 'success') {
+					d.schools.forEach(function(schl) {
+						schools.push(schl.school_name);
+					});
+
+					options = {
+						data: schools,
+						list: {
+							match: { enabled: true }
+						}
+					};
+					$(".school").easyAutocomplete(options);
+				}
 			});
 
-			options = {
-				data: schools,
-				list: {
-					match: { enabled: true }
-				}
-			};
-			$(".school").easyAutocomplete(options);
-		}
-	});
+
+			// add one row to institution
+			$("#institutions").on("click", ".add-institution", function(e) {
+				e.preventDefault();
+				$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
+				$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+
+				$(".school").easyAutocomplete(options);
+			});
 
 
-	// add one row to institution
-	$("#institutions").on("click", ".add-institution", function(e) {
-		e.preventDefault();
-		$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
-		$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
+			// remove one row from institutiob
+			$("#institutions").on("click", ".remove-institution-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".inst-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+			// add one row to qualifications
+			$("#qualifications").on("click", ".add-qualification", function(e) {
+				e.preventDefault();
+				$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
+				$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+			});
+
+
+			// remove one row from qualifications
+			$("#qualifications").on("click", ".remove-qualification-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".qual-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+			// add one row to emplyment
+			$("#employments").on("click", ".add-employment", function(e) {
+				e.preventDefault();
+				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
+				$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+			});
+
+
+			// remove one row from employment
+			$("#employments").on("click", ".remove-employment-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".employment-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+
+			// add one row to reference contact
+			$("#referenceContacts").on("click", ".add-reference", function(e) {
+				e.preventDefault();
+				$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
+				$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
+			});
+
+
+			// remove one row from reference contact
+			$("#referenceContacts").on("click", ".remove-reference-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".reference-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+
+			$("#form-resume").submit(function(e) {
+				e.preventDefault();
+
+				$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
+				$.post('/resume/update', $(this).serialize(), function(d) {
+					if (d.status.trim() == 'success') {
+						var msg = "Your GetQualified profile has been successfully updated!";
+						showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+						window.setTimeout(function() {
+							window.location.reload();
+						}, 1000);
+					} else {
+						showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
+					}
+					$("#btn-submit").html("Update Profile").prop('disabled', false);
+				}, 'JSON');
+			});
+
+			$("#candidate-editResumeBtn").on('click', function(e) {
+				e.preventDefault();
+
+				// Hide the Resume presentation View
+				$("#resume" ).addClass('hidden');
+				// Show the Resume Form View
+				$("#resumeForm-container").removeClass('hidden');
+			});
+
+
+
+			// video handlers
+			$("#add-video, #change-video").click(function(e) {
+				e.preventDefault();
+				$("#file-control").click();
+			});
+
+			$("#file-control").change(function() {
+				$("#form-video-upload").submit();
+				$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
+			});
+
+
+			$(".question-title").click(function() {
+				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
+				$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+				var id = $(this).attr('id');
+				$(".quest-instruction").slideUp();
+				$('#' + id + "-text").slideDown();
+			});
 		});
 
-		$(".school").easyAutocomplete(options);
-	});
+	</script>
 
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="/js/youtubeUpload.js?v=1"></script>
 
-	// remove one row from institutiob
-	$("#institutions").on("click", ".remove-institution-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".inst-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-	// add one row to qualifications
-	$("#qualifications").on("click", ".add-qualification", function(e) {
-		e.preventDefault();
-		$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
-		$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
-		});
-	});
-
-
-	// remove one row from qualifications
-	$("#qualifications").on("click", ".remove-qualification-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".qual-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-	// add one row to emplyment
-	$("#employments").on("click", ".add-employment", function(e) {
-		e.preventDefault();
-		$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
-		$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
-		});
-	});
-
-
-	// remove one row from employment
-	$("#employments").on("click", ".remove-employment-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".employment-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-
-	// add one row to reference contact
-	$("#referenceContacts").on("click", ".add-reference", function(e) {
-		e.preventDefault();
-		$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
-		$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
-	});
-
-
-	// remove one row from reference contact
-	$("#referenceContacts").on("click", ".remove-reference-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".reference-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-
-	$("#form-resume").submit(function(e) {
-		e.preventDefault();
-
-		$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
-		$.post('/resume/update', $(this).serialize(), function(d) {
-			if (d.status.trim() == 'success') {
-				var msg = "Your GetQualified profile has been successfully updated!";
-				showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
-				window.setTimeout(function() {
-					window.location.reload();
-				}, 1000);
-			} else {
-				showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
-			}
-			$("#btn-submit").html("Update Profile").prop('disabled', false);
-		}, 'JSON');
-	});
-
-	$("#candidate-editResumeBtn").on('click', function(e) {
-		e.preventDefault();
-
-		// Hide the Resume presentation View
-		$("#resume" ).addClass('hidden');
-		// Show the Resume Form View
-		$("#resumeForm-container").removeClass('hidden');
-	});
-
-
-
-	// video handlers
-	$("#add-video, #change-video").click(function(e) {
-		e.preventDefault();
-		$("#file-control").click();
-	});
-
-	$("#file-control").change(function() {
-		$("#form-video-upload").submit();
-		$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
-	});
-
-
-	$(".question-title").click(function() {
-		$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
-		$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
-		var id = $(this).attr('id');
-		$(".quest-instruction").slideUp();
-		$('#' + id + "-text").slideDown();
-	});
-});
-
-//window.addEventListener("beforeunload", function (e) {
-//	var confirmationMessage = "\o/";
-//
-//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-//	return confirmationMessage;                            //Webkit, Safari, Chrome
-//});
-</script>
 {% endblock %}

@@ -384,7 +384,7 @@ function startTest() {
             GQTestStatus.startProgress();
 
             questions = d.questions;
-            shuffleArray(questions);
+            //shuffleArray(questions);
             duration = d.duration;
 
             var total_quests = d.questions.length;

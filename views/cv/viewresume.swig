@@ -67,17 +67,42 @@
 									<div class="result">
 										{% if result %}
 											<h3 class="test-title hidden">{{ test_title }}</h3><br>
-											<div class="panel panel-default">
-												<div class="panel-heading">
-													{{ test_title }}
-												</div>
-
-												<ul class="list-group">
-													<li class="list-group-item">Score: <span id="score">{{ result.score }}/{{ result.no_of_questions }}</span></li>
-													<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>
-													<li class="list-group-item">Average: <span id="average">{{ result.average }}</span></li>
-												</ul>
-											</div>
+											<table class="table table-striped">
+											<thead>
+												<tr>
+													<th></th>
+													<th>Score</th>
+													<th>Percentage</th>
+													<th>Rank</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr id="general">
+													<td>General Ability</td>
+													<td>{{ result.general_ability }}</td>
+													<td>{{ result.general_percentage }}%</td>
+													<td>-</td>
+												</tr>
+												<tr id="verbal">
+													<td>Verbal Reasoning</td>
+													<td>{{ result.verbal }}</td>
+													<td>{{ result.verbal_percentage }}%</td>
+													<td>-</td>
+												</tr>
+												<tr id="maths">
+													<td>Numerical Reasoning</td>
+													<td>{{ result.maths }}</td>
+													<td>{{ result.maths_percentage }}%</td>
+													<td></td>
+												</tr>
+												<tr id="total">
+													<td>Total Score</td>
+													<td>{{ result.score }}/60</td>
+													<td>{{ result.percentage }}%</td>
+													<td>{{ result.rank }}</td>
+												</tr>
+											</tbody>
+										</table>
 										{% else %}
 											<br><br>
 											<div class="alert alert-info">This candidate hasn't taken the basic assessment.</div>
@@ -88,12 +113,13 @@
 
 							<div class="tab-pane fade in" id="video">
 								<div class="row" style="margin-top: 40px">
-									{% if resume.video_file.length > 3 %}
+									{% if resume.video_status == true %}
 										<div class="col-md-5 col-md-offset-3">
 											<h4>Video Profile</h4>
-											<video style="margin-top: 50px;" width="450" height="300" controls=controls>
-												<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>
-											</video>
+											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
+												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
+											{#</video>#}
+											<iframe width="420" height="340" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 										</div>
 									{% endif %}
 									</div>
