@@ -88,10 +88,31 @@ module.exports = {
     //},
 
     getYoutubeAccessToken: function(req, res) {
-        Youtube.authenticate().then(function(tokens) {
-            console.log('Returned tokens');
-            console.log(tokens);
-        });
+        if (req.param('code')) { // for refresh token
+            Youtube.authenticate(req.param('code')).then(function(token) {
+                return res.json(200, { token: token });
+            }).catch(function(err) {
+                console.log('Error: ' + err);
+            });
+        } else {
+            // run first time
+            Youtube.getToken().then(function(resp) {
+                if (resp.state == 'refresh') {
+                    return res.redirect(resp.url);
+                } else {
+                    return res.json(resp.tokens)
+                }
+            }).catch(function(err) {
+                console.log('Err: ' + err);
+            });
+        }
+    },
+
+
+    addYoutubeVideoID: function(req, res) {
+        if (req.session.userId) {
+            Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id') }).exec(function() {});
+        }
     },
 
 
@@ -136,79 +157,129 @@ module.exports = {
         });
     },
 
+    // consider refactoring this method
     search: function(req, res) {
         var q = req.param;
         if (q('school') && q('course') && q('certification'))
         {
-            var sql = "SELECT user FROM resume r JOIN education r ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
                 "WHERE institution = ? AND programme = ? AND qualification = ?";
 
             var data = [q('school'), q('course'), q('certification')];
             Resume.query(sql, data, function(err, result) {
-                console.log(result);
+                var users = [];
+                result.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
-
         }
         else if (q('school') && q('course'))
         {
-            console.log('Came here 2')
+            console.log('Sola')
+            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution = ? AND programme like ?";
 
-            Resume.find().populate('educations', {
-                where: {
-                    institution: q('school'),
-                    programme: q('course')
-                }
-            }).exec(function(err, resume) {
-                console.log(resume);
+            var data = [ q('school').trim(), '%' + q('course').trim() + '%' ];
+            Resume.query(sql, data, function(err, result) {
+                var users = [];
+                result.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
         }
         else if (q('course') && q('certification'))
         {
-            console.log('Came here 3')
+            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE programme = ? AND qualification = ?";
 
-            Resume.find().populate('educations', {
-                where: { programme: q('course') }
-            }).populate('qualification', {
-                where: { qualification: q('certification') }
-            }).exec(function(err, resume) {
-                console.log(resume);
+            var data = [q('course').trim(), '%' + q('certification').trim() + '%'];
+            Resume.query(sql, data, function(err, result) {
+                var users = [];
+                result.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
         }
         else if (q('school') && q('certification'))
         {
-            console.log('Came here 4')
+            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE institution = ? AND qualification = ?";
 
-            Resume.find().where({ institution: q('school'), qualification: q('certification')}).populate('educations').populate('qualifications').exec(function(err, resume) {
-                console.log(resume);
+            var data = [q('school'), q('certification')];
+            Resume.query(sql, data, function(err, result) {
+                var users = [];
+                result.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
         }
         else if (q('school'))
         {
-            console.log('Came here 4.5')
-
-            Resume.find().populate('educations', {
-                where: { institution: q('school') }
-            }).exec(function(err, resume) {
-                console.log(resume);
+            Education.find({ institution: q('school') }).populate('resume').exec(function(err, results) {
+                var users = [];
+                results.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
         }
         else if (q('course'))
         {
-            console.log('Came here 5')
-
-            Education.find({ programme: q('course') }).populate('resume').exec(function(err, resume) {
-                console.log(resume);
+            Education.find({ programme: q('course') }).populate('resume').exec(function(err, results) {
+                var users = [];
+                results.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
             });
         }
         else if (q('certification'))
         {
-            console.log('Came here 6')
-
-            Qualification.find({ qualification: q('certification') }).populate('resume').exec(function(err, resume) {
-                console.log(resume);
+            Qualification.find({ qualification: q('certification') }).populate('resume').exec(function(err, results) {
+                var users = [];
+                results.forEach(function(user) {
+                    users.push(user);
+                });
+                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
+                    return res.view('admin/candidates', { candidates: results });
+                }).catch(function(err) {
+                    return res.serverError(err);
+                });
+            });
+        } else {
+            GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
+                return res.view('admin/candidates', { candidates: candidates });
+            }).catch(function(err) {
+                console.log(err);
             });
         }
-        return res.ok()
     }
 };
 

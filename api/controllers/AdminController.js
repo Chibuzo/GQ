@@ -81,6 +81,7 @@ module.exports = {
                         return res.json(200, { status: 'Err', msg: "'Your account has been banned, most likely for violation of the Terms of Service. Please contact us.'"});
                     }
                     req.session.admin_id = foundUser.id;
+                    req.session.userId = foundUser.id;
                     req.session.admin = true;
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = 'admin';

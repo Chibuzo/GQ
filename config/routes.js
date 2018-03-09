@@ -40,7 +40,8 @@ module.exports.routes = {
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    'POST /applicant/add-video': 'ApplicantController.uploadVideo',
+    //'POST /applicant/add-video': 'ApplicantController.uploadVideo',    //--> deprecated
+    'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
     'POST /applicant/add-passport': 'ApplicantController.uploadPassport',
 

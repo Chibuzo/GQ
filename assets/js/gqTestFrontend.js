@@ -1,10 +1,27 @@
 // globals, yes shoot me
 var TEST_ID, duration, questions = [],PROCTOR;
 
-// TODO: improntu fix for skipping first question.
-// ProctorReady fires twice for subsequent tests after test #1.
-// startTest is called on ProctorReady, which calls fetchNextQuestion
-function debounce(a,b,c){var d;return function(){var e=this,f=arguments;clearTimeout(d),d=setTimeout(function(){d=null,c||a.apply(e,f)},b),c&&!d&&a.apply(e,f)}}
+/* GQTestStatus is used to keep track of whether a test is in progress or not.
+ * Short term fix for 1st question being skipped when test starts because
+ * "proctorReady" can fired mutliple times if button dbl clicked
+*/
+var GQTestStatus = (function() {
+    var inProgress = false;
+
+    return {
+        isInProgress: function() {
+            return inProgress;
+        },
+
+        startProgress: function() {
+            inProgress = true;
+        },
+
+        stopProgress: function() {
+            inProgress = false;
+        }
+    }
+})();
 
 // retake test
 $("#retake-test").click(function() {
@@ -51,7 +68,9 @@ $("#start-test").click(function() {
     // register window onclose/leave event
     addWindowsCloseEvent();
 
-    startTest();
+    // startTest is called when ProctorReady callback executed
+    // startTest();
+
     // reset/initialize invigilation bar
     $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
 });
@@ -201,15 +220,20 @@ function restoreQuestionState(quest_id) {
 $("#submit-test").click(function(e) {
     e.preventDefault();
 
-    // prevent further [auto] submit
-    stopCountdownTimer();
-    destroyCountdownTimer();
 
-    // stop proctor
-    PROCTOR.stop();
 
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        // prevent further [auto] submit
+        stopCountdownTimer();
+        destroyCountdownTimer();
+
+        // stop proctor
+        PROCTOR.stop();
+
         saveAnswer();
+
+        SingleFaceTracker.clearTimer();
+
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
             submitAndLoadNext();
             return false;
@@ -226,6 +250,8 @@ $("#submit-test").click(function(e) {
 
 
 function submitTest() {
+    GQTestStatus.stopProgress();
+
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
         return false;
@@ -264,6 +290,8 @@ function submitTest() {
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
 function submitAndLoadNext(next) {
+    GQTestStatus.stopProgress();
+
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
     var integrity_score = $("#integrity-score").text();
@@ -285,6 +313,8 @@ function submitAndLoadNext(next) {
 // for GQ Aptitude test submit
 // should be modified to handle section submit for test with more than one section
 function submitGQAptitudeTest() {
+    GQTestStatus.stopProgress();
+
     var integrity_score = $('.progress-bar').width();
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
@@ -340,13 +370,21 @@ function blockTest() {
         $(".test-blocked-screen").removeClass('hidden');
     });
     stopCountdownTimer(); // prevent loaded test from auto submitting on timeout by stopping the timer
+    GQTestStatus.stopProgress();
 }
 
-function _startTest() {
+function startTest() {
+    if (GQTestStatus.isInProgress()) {
+        console.warn("Attempted to start test when a test already in progress ");
+        return;
+    }
+
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
+            GQTestStatus.startProgress();
+
             questions = d.questions;
-            shuffleArray(questions);
+            //shuffleArray(questions);
             duration = d.duration;
 
             var total_quests = d.questions.length;
@@ -372,23 +410,12 @@ function _startTest() {
 
             // set/reset controls
             $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
+            // TODO: ensure the disabled prop set to false after test finished
             $("#start-test").text('Start Test').prop('disabled', false);
         }
     }, 'JSON');
 }
 
-var startTest = debounce(_startTest, 1000);
-
-function controlIntegrityBar(integrityScore) {
-    $("#integrity-score").text(integrityScore);
-    if (integrityScore < 70 && integrityScore > 55) {
-        $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
-    }
-    else if (integrityScore < 55) {
-        $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
-    }
-    $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
-}
 
 
 
@@ -417,6 +444,9 @@ window.addEventListener('online', () => {
     $("#internet-alert").addClass('hidden');
     $(".test-overlay").fadeOut('fast');
     resumeCountdownTimer();
+    GQTestStatus.startProgress();
+    SingleFaceTracker.setCounter();
+    SingleFaceTracker.startTimer();
 });
 
 window.addEventListener('offline', () => {
@@ -424,12 +454,15 @@ window.addEventListener('offline', () => {
     $("#internet-alert").removeClass('hidden');
     $(".test-overlay").fadeIn('fast');
     PROCTOR.stop();
+    GQTestStatus.stopProgress();
+    SingleFaceTracker.clearTimer();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
 
 
 // ------- START TIMER FUNCTIONS ------ //
+var countdownTimer = $("#countdowntimer");
 
 function startTimer() {
     var hrs = mins = 0;
@@ -440,11 +473,14 @@ function startTimer() {
         hrs = 0;
         mins = duration;
     }
-    var timer = new Timer();
-    timer.start({countdown: true, startValues: {seconds: 30}});
-    $('#countdowntimer').html('<span class="time-value">' + timer.getTimeValues().toString() + '</span>');
-    timer.addEventListener('secondsUpdated', function (e) {
-        $('#countdowntimer').html('<span class="time-value">' + timer.getTimeValues().toString() + '</span>');
+
+    countdownTimer.timer({
+        countdown: true,
+        duration: mins + 'm0s', // The time to countdown from.
+        repeat: false, // If duration is set, `callback` will be called repeatedly
+        editable: false, // If click and edit time is enabled
+        format: "%H:%M:%S", // Format to show time in,
+        callback: submitTest // If duration is set, this function is called after `duration` has elapsed
     });
     //$("#hms_timer").countdowntimer({
     //    hours : hrs,
@@ -456,19 +492,89 @@ function startTimer() {
 }
 
 function destroyCountdownTimer() {
-    $("#hms_timer").countdowntimer("destroy");
+    countdownTimer.timer('remove');
 }
 
 function stopCountdownTimer() {
-    $("#hms_timer").countdowntimer("stop", "stop");
+    countdownTimer.timer('pause');
 }
 
 function pauseCountdownTimer() {
-    $("#hms_timer").countdowntimer("pause", "pause");
+    countdownTimer.timer('pause');
 }
 
 function resumeCountdownTimer() {
-    $("#hms_timer").countdowntimer("pause", "resume");
+    countdownTimer.timer('resume');
 }
 
 // ------- END TIMER FUNCTIONS ------ //
+
+// ----- START FACE DETECTION FUNCTIONS ---- //
+
+var SingleFaceTracker = (function() {
+    var faceTrackedCount;
+    var timerId
+
+    var self = this;
+
+    return {
+        setCounter: function() {
+            faceTrackedCount = 0;
+        },
+
+        incrementCounter: function() {
+            faceTrackedCount++;
+        },
+
+        ensureFaceTracked: function() {
+            var _faceTrackedCount = faceTrackedCount;
+            faceTrackedCount = 0;
+
+            if (_faceTrackedCount <= 0) {
+                IntegrityScore.update(-5);
+                return;
+            }
+        },
+
+        startTimer: function() {
+            timerId = setInterval(this.ensureFaceTracked, 60000);
+        },
+
+        clearTimer: function() {
+            clearInterval(timerId);
+        }
+    };
+})();
+
+// ----- END FACE DETECTION FUNCTIONS ---- //
+
+// ----- START INTEGRITY SCORE FUNCTIONS ---- //
+
+var IntegrityScore = (function() {
+    var integrityScore = 100;
+
+    var updateIntegrityBar = function() {
+        $("#integrity-score").text(integrityScore);
+        if (integrityScore < 70 && integrityScore > 55) {
+            $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+        }
+        else if (integrityScore < 55) {
+            $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+        }
+        $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+    }
+
+    return {
+        update: function(value) {
+            integrityScore = integrityScore + value;
+            integrityScore  = integrityScore < 0 ? 0 : integrityScore;
+            updateIntegrityBar();
+        },
+
+        reset: function() {
+            integrityScore = 100;
+        }
+    };
+})();
+
+// ----- END INTEGRITY SCORE FUNCTIONS ---- //

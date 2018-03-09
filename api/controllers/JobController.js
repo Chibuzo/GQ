@@ -343,9 +343,15 @@ module.exports = {
     deleteJob: function (req, res) {
         var id = req.param('id');
         if (!req.session.coy_id) return;
-        Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
-            if (err) return;
-            return res.json(200, { status: 'success' });
+        Job.find({ id: id }).populate('applications').exec(function(err, job) {
+            if (job[0].applications.length < 1) {
+                return res.json(200, { status: 'error', "You can't delete this job at this time" });
+            } else {
+                Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
+                    if (err) return;
+                    return res.json(200, { status: 'success' });
+                });
+            }
         });
     }
 };

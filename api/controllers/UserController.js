@@ -151,7 +151,6 @@ module.exports = {
     },
 
     dashboard: function(req, res) {
-        console.log('here')
         if (!req.session.userId) {
             return res.view ('user/signin');
         }

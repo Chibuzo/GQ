@@ -8,6 +8,11 @@
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
 <link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
+	#sample-vid-btn {
+		font-size: 1.2em;
+		margin-left: 10px;
+	}
+
 	.plus-btn {
 		position: relative;
 		top: 35px;
@@ -17,6 +22,10 @@
 	.progress-bar {
 		-webkit-transition: all .25s ease;
 		transition: all .25s ease;
+	}
+
+	#countdowntimer {
+		font-size: 20px;
 	}
 
 	.addable {
@@ -220,7 +229,7 @@
 
 										<div id="test-notice">
 											<h3>Test Instruction</h3>
-											<p><i>[45] Minutes - [60] Questions</i></p>
+											<p><i>[60] Minutes - [60] Questions</i></p>
 											<p>The GetQualified Assessment is administered online and the purpose is to test your basic problem solving and verbal reasoning abilities. In combination with other important elements of your job applications this assessment helps us, and potential employers, determine your suitability for an advertised role. Please note, this test is free of charge.</p>
 											<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
 											<p class="text-left"><br>
@@ -252,7 +261,7 @@
 											</div>
 
 											<div class="row">
-												<div id="instructions">
+												<div id="instructions" class="col-md-10 col-md-offset-1">
 													<div class="instruction"></div>
 													<div class="text-center">
 														<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
@@ -281,7 +290,7 @@
 
 													<!-- Timer -->
 													<div class="row">
-														<div id="countdowntimer" class="text-center"><!--<span id="hms_timer"><span>-->00:00</div>
+														<div id="countdowntimer" class="text-center"></div>
 													</div>
 
 													<!-- Invigilation Score -->
@@ -394,50 +403,58 @@
 									<div class="col-md-6">
 										<h3>Instructions</h3>
 										<div class="">
-											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i> Introduce yourself</h5>
-											<div class="quest-instruction" id="about-text">Don’t answer this question by rambling on about your hobbies and your pets. Use this as another opportunity to direct the recruiter or hiring manager’s attention to your skills and accomplishment to really impress them. Talk about what interests you about the industry and what you hope to bring to their organization</div>
-											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i> Describe your work ethic</h5>
-											<div class="quest-instruction" id="work-text">Again, this question is asked to find out how well you can fit into a company’s culture. Describe how important it is to you to complete all of the tasks assigned to you effectively and efficiently.</div>
-											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i> What are your key strengths?</h5>
-											<div class="quest-instruction" id="strength-text">Your response should relate to the job description and your ability to perform the tasks assigned to you. For example, if you are being interviewed for a position where you will be leading a large group of people discuss your strong communication skills and ability to work with a variety of people and personalities.</div>
-											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i> What is your ideal work environment?</h5>
-											<div class="quest-instruction" id="environment-text">This question is asked so a recruiter or hiring manager can determine if you’d be a good fit for a company’s culture. Be honest in your response. If you would work well in a large, bustling office, say so. If you prefer working in a small office so you can easily collaborate with colleagues, explain why this is important to you.</div>
-											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i> Where do you see yourself in 5 years?</h5>
-											<div class="quest-instruction" id="future-text">There is no perfect answer to this question because responses will vary depending on the industry and the individual. A recruiter or hiring manager simply wants to find out how well you plan ahead and if your goals match those of the company. It’s important, though, to avoid saying anything that makes you seem abrasive, short-term minded, or lacking in goals.</div>
+											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i>Briefly introduce yourself to prospective employers</h5>
+											<div class="quest-instruction" id="about-text">Give employers a sense for who you are, your motivations and your aspirations. Focus on traits that make you unique and are not readily apparent from you CV. This is your personal “elevator pitch” to employers that ensures you are memorable and hence, stand out from the crowd.</div>
+											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i>Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
+											<div class="quest-instruction" id="work-text">This question tests your ability to be resilient and cope under pressure. It gives you the opportunity to demonstrate how you can use your initiative and act with integrity. Your answer should focus on a work-related issue, explain clearly the measures you took to overcome the obstacle. Don’t fall into the trap of criticising your company or colleagues and trying to present yourself in a superior light. This will come across as unprofessional and arrogant.</div>
+
+											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i>Describe the work environment or culture in which you are most productive and happy?</h5>
+											<div class="quest-instruction" id="strength-text">A good way to approach this question is to show that you are aware of the benefits of different work environments or cultures and you understand that you need to be comfortable working in these scenarios. It is fine to have a preference, as many of us will prefer one specific environment to the other. The key is for you to ensure that prospective employers understand your preferred environment or culture (working in a team or individually, working in an unstructured or structured environment, large or smaller team, strict supervision or less supervision, etc).</div>
+
+											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i>Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
+											<div class="quest-instruction" id="environment-text">This question is a good way to demonstrate that you are able to work well under pressure and stay focused on the task at hand. This is an opportunity to explain the measures you put in place to prevent an issue from spiralling into a stressful situation. Give an example of when you were faced with a difficult situation and how you kept a cool head and stuck through the situation. Getting overwhelmed by stress can be counter-productive, especially when working in a team. Employers will look to avoid hiring candidates who crack under pressure.</div>
+
+											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i>How do you react when asked to do something beyond your capabilities?</h5>
+											<div class="quest-instruction" id="future-text">There’s no right or wrong answer for this question. This question tries to establish what makes you tick, and how you manage challenging tasks. Therefore, your answer needs to reflect this. Whatever your answer is, make sure you say why.</div>
+
+											<a id="sample-vid-btn" href="" data-modal-id="modal-sample-video"> See Sample Video </a>
 										</div>
 									</div>
-									{% if resume.video_file.length > 3 %}
+									{% if resume.video_status == true %}
 										<div class="col-md-5">
-											<video style="margin-top: 50px;" width="450" height="300" controls=controls>
-												<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>
-											</video>
-											<div class="row text-center select-file-button"><br><button class="btn btn-default select-file-button">Change Video</button></div>
+											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
+												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
+											{#</video>#}
+											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<div class="row text-center"><br>
+												<button class="btn btn-default select-file-button">Change Video</button>
+											</div>
 										</div>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger select-file-button" id="select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
-												<input id="select-file" type="file" style="display:none">
+												<p><button class="btn btn-danger select-file-button" id=""><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
 													<li>The video file size must not be more than 100MB</li>
-													<li>Then length of the video must not be more than 15 minutes</li>
+													<li>Then length of the video must not be more than 3 minutes</li>
 													<li>It is recommended you use a WIFI network to upload your profile video or compress video size before upload.</li>
 												</ul>
 											</div>
 										</div>
 									{% endif %}
+									<input id="select-file" type="file" style="display:none">
 									</div>
 								</div>
 
-								<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">
-									<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />
-									<input type="hidden" name="video_file" value="{{ resume.video_file }}">
-									<input type="hidden" name="resume_id" value="{{ resume.id }}">
-									<input type="file" name="video_file" style="display: none" id="file-control" />
-								</form>
+								{#<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">#}
+									{#<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />#}
+									{#<input type="hidden" name="video_file" value="{{ resume.video_file }}">#}
+									{#<input type="hidden" name="resume_id" value="{{ resume.id }}">#}
+									{#<input type="file" name="video_file" style="display: none" id="file-control" />#}
+								{#</form>#}
 							</div>
 						</div>
 					</div>
@@ -446,10 +463,33 @@
 		</div>
 	</div>
 </div>
+
 {% endblock %}
 
+{% block modals %}
+	<div class="modal fade" id="modal-sample-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label">
+	    <div class="modal-dialog" role="document">
+	        <div class="modal-content">
+	            <div class="modal-header">
+	                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+	                    <span aria-hidden="true">&times;</span>
+	                </button>
+	            </div>
+	            <div class="modal-body">
+	                <div class="modal-video">
+	                    <div class="embed-responsive embed-responsive-16by9">
+							<iframe id="sample-video" src="https://player.vimeo.com/video/259245017" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+	                    </div>
+	                </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+{% endblock %}
+
+
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -466,173 +506,191 @@
 	<!-- Main Setup -->
 	<script src="/js/proctor/setup.js?v=2"></script>
 
-	{#<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>#}
-	<script type="text/javascript" src="/js/plugins/easytimer.min.js"></script>
+	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 	<script type="text/javascript">
-$(document).ready(function() {
-	$(".resume").addClass('active');
+		$(document).ready(function() {
+			$(".resume").addClass('active');
 
-	//$.getScript('/js/proctor/tracking-min.js');
-
-
-	$("select[name=country]").find('option').filter(function(i) {
-		return 'Nigeria' == $(this).val();
-	}).attr("selected", "selected");
+			//$.getScript('/js/proctor/tracking-min.js');
 
 
-	//fetch universities
-	var schools = [], options = [];
-	$.get('/get-schools', function(d) {
-		if (d.status == 'success') {
-			d.schools.forEach(function(schl) {
-				schools.push(schl.school_name);
+			$("select[name=country]").find('option').filter(function(i) {
+				return 'Nigeria' == $(this).val();
+			}).attr("selected", "selected");
+
+
+			//fetch universities
+			var schools = [], options = [];
+			$.get('/get-schools', function(d) {
+				if (d.status == 'success') {
+					d.schools.forEach(function(schl) {
+						schools.push(schl.school_name);
+					});
+
+					options = {
+						data: schools,
+						list: {
+							match: { enabled: true }
+						}
+					};
+					$(".school").easyAutocomplete(options);
+				}
 			});
 
-			options = {
-				data: schools,
-				list: {
-					match: { enabled: true }
-				}
-			};
-			$(".school").easyAutocomplete(options);
-		}
-	});
+
+			// add one row to institution
+			$("#institutions").on("click", ".add-institution", function(e) {
+				e.preventDefault();
+				$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
+				$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+
+				$(".school").easyAutocomplete(options);
+			});
 
 
-	// add one row to institution
-	$("#institutions").on("click", ".add-institution", function(e) {
-		e.preventDefault();
-		$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
-		$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
+			// remove one row from institutiob
+			$("#institutions").on("click", ".remove-institution-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".inst-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+			// add one row to qualifications
+			$("#qualifications").on("click", ".add-qualification", function(e) {
+				e.preventDefault();
+				$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
+				$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+			});
+
+
+			// remove one row from qualifications
+			$("#qualifications").on("click", ".remove-qualification-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".qual-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+			// add one row to emplyment
+			$("#employments").on("click", ".add-employment", function(e) {
+				e.preventDefault();
+				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
+				$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+				$('.datep').datepicker({
+					format: 'yyyy-mm-dd',
+					autoHide: true
+				});
+			});
+
+
+			// remove one row from employment
+			$("#employments").on("click", ".remove-employment-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".employment-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+
+			// add one row to reference contact
+			$("#referenceContacts").on("click", ".add-reference", function(e) {
+				e.preventDefault();
+				$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
+				$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
+			});
+
+
+			// remove one row from reference contact
+			$("#referenceContacts").on("click", ".remove-reference-btn", function(e) {
+				e.preventDefault();
+				$(this).parents(".reference-row").slideUp(function() {
+					$(this).remove();
+				});
+			});
+
+
+			$("#form-resume").submit(function(e) {
+				e.preventDefault();
+
+				$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
+				$.post('/resume/update', $(this).serialize(), function(d) {
+					if (d.status.trim() == 'success') {
+						var msg = "Your GetQualified profile has been successfully updated!";
+						showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+						window.setTimeout(function() {
+							window.location.reload();
+						}, 1000);
+					} else {
+						showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
+					}
+					$("#btn-submit").html("Update Profile").prop('disabled', false);
+				}, 'JSON');
+			});
+
+			$("#candidate-editResumeBtn").on('click', function(e) {
+				e.preventDefault();
+
+				// Hide the Resume presentation View
+				$("#resume" ).addClass('hidden');
+				// Show the Resume Form View
+				$("#resumeForm-container").removeClass('hidden');
+			});
+
+
+
+			// video handlers
+			$("#add-video, #change-video").click(function(e) {
+				e.preventDefault();
+				$("#file-control").click();
+			});
+
+			$("#file-control").change(function() {
+				$("#form-video-upload").submit();
+				$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
+			});
+
+
+			$(".question-title").click(function() {
+				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
+				$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+				var id = $(this).attr('id');
+				$(".quest-instruction").slideUp();
+				$('#' + id + "-text").slideDown();
+			});
+
+			$("#sample-vid-btn").on('click', function(e) {
+				e.preventDefault();
+				$( '#' + $(this).data('modal-id') ).modal({
+					keyboard: true
+				});
+			});
+
+			$('#modal-sample-video').on('hide.bs.modal', function(e) {
+				var $frame = $('iframe#sample-video');
+
+				// saves the current iframe source
+				var vidsrc = $frame.attr('src');
+
+				// sets the source to nothing, stopping the video
+				$frame.attr('src', '');
+
+				// sets it back to the correct link so that it reloads immediately on the next window open
+				$frame.attr('src', vidsrc);
+			});
 		});
+	</script>
 
-		$(".school").easyAutocomplete(options);
-	});
-
-
-	// remove one row from institutiob
-	$("#institutions").on("click", ".remove-institution-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".inst-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-	// add one row to qualifications
-	$("#qualifications").on("click", ".add-qualification", function(e) {
-		e.preventDefault();
-		$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
-		$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
-		});
-	});
-
-
-	// remove one row from qualifications
-	$("#qualifications").on("click", ".remove-qualification-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".qual-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-	// add one row to emplyment
-	$("#employments").on("click", ".add-employment", function(e) {
-		e.preventDefault();
-		$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
-		$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
-		$('.datep').datepicker({
-			format: 'yyyy-mm-dd',
-			autoHide: true
-		});
-	});
-
-
-	// remove one row from employment
-	$("#employments").on("click", ".remove-employment-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".employment-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-
-	// add one row to reference contact
-	$("#referenceContacts").on("click", ".add-reference", function(e) {
-		e.preventDefault();
-		$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
-		$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
-	});
-
-
-	// remove one row from reference contact
-	$("#referenceContacts").on("click", ".remove-reference-btn", function(e) {
-		e.preventDefault();
-		$(this).parents(".reference-row").slideUp(function() {
-			$(this).remove();
-		});
-	});
-
-
-	$("#form-resume").submit(function(e) {
-		e.preventDefault();
-
-		$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
-		$.post('/resume/update', $(this).serialize(), function(d) {
-			if (d.status.trim() == 'success') {
-				var msg = "Your GetQualified profile has been successfully updated!";
-				showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
-				window.setTimeout(function() {
-					window.location.reload();
-				}, 1000);
-			} else {
-				showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
-			}
-			$("#btn-submit").html("Update Profile").prop('disabled', false);
-		}, 'JSON');
-	});
-
-	$("#candidate-editResumeBtn").on('click', function(e) {
-		e.preventDefault();
-
-		// Hide the Resume presentation View
-		$("#resume" ).addClass('hidden');
-		// Show the Resume Form View
-		$("#resumeForm-container").removeClass('hidden');
-	});
-
-
-
-	// video handlers
-	$("#add-video, #change-video").click(function(e) {
-		e.preventDefault();
-		$("#file-control").click();
-	});
-
-	$("#file-control").change(function() {
-		$("#form-video-upload").submit();
-		$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
-	});
-
-
-	$(".question-title").click(function() {
-		$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
-		$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
-		var id = $(this).attr('id');
-		$(".quest-instruction").slideUp();
-		$('#' + id + "-text").slideDown();
-	});
-});
-
-</script>
-
-<script src="https://apis.google.com/js/api.js"></script>
-<script src="/js/youtubeUpload.js"></script>
+	<script src="https://apis.google.com/js/api.js"></script>
+	<script src="/js/youtubeUpload.js?v=1"></script>
 
 {% endblock %}

@@ -26,6 +26,12 @@ module.exports.policies = {
     *                                                                          *
     ***************************************************************************/
 
+    UserController: {
+        dashboard: 'isLoggedIn',
+        profile: 'isLoggedIn',
+        updateProfile: 'isLoggedIn'
+    },
+
     JobController: {
         'viewJobs': 'isLoggedIn',
         'newJobForm':'isLoggedIn',
@@ -36,7 +42,7 @@ module.exports.policies = {
     },
 
     ResumeController: {
-        //'*': 'isLoggedIn',
+        '*': 'isLoggedIn',
     },
 
     AdminController: {
@@ -51,6 +57,24 @@ module.exports.policies = {
     },
 
     CourseCategory: {
+        '*': 'isAdmin'
+    },
+
+    GQTestController: {
+        loadTestInstruction: 'isLoggedIn',
+        loadTest: 'isLoggedIn',
+        markTest: 'isLoggedIn',
+        markGQTest: 'isLoggedIn',
+        deleteTest: 'isAdmin',
+        deleteQuestion: 'isAdmin',
+        manageTest: 'isAdmin',
+        saveTest: 'isAdmin',
+        saveQuestion: 'isAdmin',
+        uploadQuestions: 'isAdmin',
+        editTest: 'isAdmin'
+    },
+
+    selectedCandidateController: {
         '*': 'isAdmin'
     }
 };

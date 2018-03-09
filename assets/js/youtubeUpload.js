@@ -16,9 +16,12 @@ function initClient() {
     $(".select-file-button").click(function () {
         $("#select-file").click();
     }),
-
+    //$("#upload-file-button").click(function () {
+    //
+    //}),
     $("#select-file").bind("change", function () {
         selectedFile = $("#select-file").prop("files")[0];
+        $(".select-file-button").html("<i class='fa fa-cog fa-spin'></i> Uploading...").prop('disabled', true);
         defineRequest();
     });
 }
@@ -407,17 +410,20 @@ function defineRequest() {
                 var errorResponse = JSON.parse(data);
                 message = errorResponse.error.message;
             } finally {
+                console.log(message);
                 alert(message);
             }
         }.bind(this),
         onProgress: function (data) {
             var currentTime = Date.now();
-            console.log('Progress: ' + data.loaded + ' bytes loaded out of ' + data.total);
+            //console.log('Progress: ' + data.loaded + ' bytes loaded out of ' + data.total);
             var totalBytes = data.total;
         }.bind(this),
         onComplete: function (data) {
             var uploadResponse = JSON.parse(data);
-            console.log('Upload complete for video ' + uploadResponse.id);
+            $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id });
+            //console.log('Upload complete for video ' + uploadResponse.id);
+            location.reload(true);
         }.bind(this)
     });
 
