@@ -322,6 +322,7 @@ module.exports = {
         });
     },
 
+
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');
         Job.find({ id: job_id }).populate('applications').exec(function(err, job) {

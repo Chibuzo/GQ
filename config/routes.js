@@ -218,6 +218,8 @@ module.exports.routes = {
 
     'GET /applicants/search': 'ApplicantController.search',
 
+    'GET /getYoutubeAccessToken': 'ApplicantController.getYoutubeAccessToken'
+
     //'GET /email': { view: 'email' },
     //
     //'POST /pushajax': 'TestController.ajaxTest',

@@ -440,13 +440,19 @@ function startTimer() {
         hrs = 0;
         mins = duration;
     }
-    $("#hms_timer").countdowntimer({
-        hours : hrs,
-        minutes : mins,
-        seconds: 0,
-        size : "md",
-        timeUp: submitTest
+    var timer = new Timer();
+    timer.start({countdown: true, startValues: {seconds: 30}});
+    $('#countdowntimer').html('<span class="time-value">' + timer.getTimeValues().toString() + '</span>');
+    timer.addEventListener('secondsUpdated', function (e) {
+        $('#countdowntimer').html('<span class="time-value">' + timer.getTimeValues().toString() + '</span>');
     });
+    //$("#hms_timer").countdowntimer({
+    //    hours : hrs,
+    //    minutes : mins,
+    //    seconds: 0,
+    //    size : "md",
+    //    timeUp: submitTest
+    //});
 }
 
 function destroyCountdownTimer() {

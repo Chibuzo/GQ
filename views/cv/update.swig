@@ -281,7 +281,7 @@
 
 													<!-- Timer -->
 													<div class="row">
-														<div id="countdowntimer" class="text-center"><span id="hms_timer"><span>00:00</div>
+														<div id="countdowntimer" class="text-center"><!--<span id="hms_timer"><span>-->00:00</div>
 													</div>
 
 													<!-- Invigilation Score -->
@@ -411,14 +411,14 @@
 											<video style="margin-top: 50px;" width="450" height="300" controls=controls>
 												<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>
 											</video>
-											<div class="row text-center"><br><a href="" id="change-video">Change Video</a></div>
+											<div class="row text-center select-file-button"><br><button class="btn btn-default select-file-button">Change Video</button></div>
 										</div>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger" id="add-video"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
-												{#<p><strong>Note: </strong></p>#}
+												<p><button class="btn btn-danger select-file-button" id="select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
+												<input id="select-file" type="file" style="display:none">
 												<br>
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
@@ -466,7 +466,8 @@
 	<!-- Main Setup -->
 	<script src="/js/proctor/setup.js?v=2"></script>
 
-	<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+	{#<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>#}
+	<script type="text/javascript" src="/js/plugins/easytimer.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 	<script type="text/javascript">
 $(document).ready(function() {
@@ -629,11 +630,9 @@ $(document).ready(function() {
 	});
 });
 
-//window.addEventListener("beforeunload", function (e) {
-//	var confirmationMessage = "\o/";
-//
-//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-//	return confirmationMessage;                            //Webkit, Safari, Chrome
-//});
 </script>
+
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="/js/youtubeUpload.js"></script>
+
 {% endblock %}

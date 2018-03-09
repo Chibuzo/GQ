@@ -1,0 +1,21 @@
+<div class="filter-div">
+	<form method="get" id="form-filter" action="/applicants/search">
+		<div class="form-group">
+			<div class="col-md-4">
+				<label>School</label>
+				<input type="text" name="school" class="form-control" placeholder="Filter by school" />
+			</div>
+			<div class="col-md-3">
+				<label>Profession</label>
+				<input type="text" name="course" class="form-control" placeholder="Filter by Profession or course of study" />
+			</div>
+			<div class="col-md-3">
+				<label>Certification</label>
+				<input type="text" name="certification" class="form-control" placeholder="Filter by Certification" />
+			</div>
+			<div class="col-md-2" style="padding-top: 30px">
+				<button type="submit" class="btn btn-info btn-block"><i class="fa fa-search"></i> Filter Candidates</button>
+			</div>
+		</div>
+	</form>
+</div>
