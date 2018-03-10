@@ -23,8 +23,12 @@
 		transition: all .25s ease;
 	}
 
+	.test-panel-text {
+		font-size: 16px;
+	}
+
 	#countdowntimer {
-		font-size: 20px;
+		display: inline-block;
 	}
 
 	.addable {
@@ -289,18 +293,23 @@
 												<div class="col-md-5">
 
 													<!-- Timer -->
-													<div class="row">
-														<div id="countdowntimer" class="text-center"></div>
+													<div class="row test-panel-text text-center">
+														<span><strong>Time Remaining: </strong></span>
+														<div id="countdowntimer"></div>
 													</div>
+
+													<hr>
 
 													<!-- Invigilation Score -->
 													<div class="row">
 														<div class="col-sm-8 col-sm-offset-2 col-xs-12">
-															<div class="invigilation-report">
+															<div class="invigilation-report test-panel-text">
+																<div><strong>Invigilation Score:</strong></div>
 
 																<!-- TODO: Invigilation Score Number
 																<span>Invigilation Score: </span>
 																<span id="invigilation-score">100%</span>
+
 																-->
 															</div>
 
