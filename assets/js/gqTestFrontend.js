@@ -230,8 +230,9 @@ $("#submit-test").click(function(e) {
         try {
             // stop proctor
             PROCTOR.stop();
-        } catch () {
-            console.log('Proctor has gased');
+        } catch (err) {
+            console.error("Proctor failed to stop");
+            console.error(err);
         }
 
         saveAnswer();
