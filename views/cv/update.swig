@@ -84,6 +84,10 @@
 		padding-left: 20px;
 	}
 
+	.datep {
+		cursor: default;
+		}
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
@@ -222,7 +226,7 @@
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info" id="retake-test">Retake Test</button>
+												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>

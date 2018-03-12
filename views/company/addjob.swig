@@ -23,6 +23,10 @@
 	.mce-branding {
 		font-size: 0;
 	}
+
+	.datep {
+		cursor: default;
+	}
 </style>
 <div class="content">
 	<div class="container-fluid">
