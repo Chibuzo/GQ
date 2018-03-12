@@ -345,7 +345,7 @@ module.exports = {
         if (!req.session.coy_id) return;
         Job.find({ id: id }).populate('applications').exec(function(err, job) {
             if (job[0].applications.length < 1) {
-                return res.json(200, { status: 'error', "You can't delete this job at this time" });
+                return res.json(200, { status: 'error', msg: "You can't delete this job at this time" });
             } else {
                 Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
                     if (err) return;
