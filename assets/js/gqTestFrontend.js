@@ -196,7 +196,15 @@ function saveAnswer() {
 
     if (ans) {
         $("#quest-" + cur_question).removeClass('skipped_q').addClass('answered_q');
-        $.post('/gqtest/return-answer', { quest_id: quest_id, answer: ans });
+        $.post('/gqtest/return-answer', { quest_id: quest_id, answer: ans }, function (d) {
+            if (d.status === "success") {
+                if (d.correct_ans === d.supplied_ans) {
+                    console.log("CORRECT: " + quest_id + ", Correct Ans: " + d.correct_ans +  ", Your Ans: " + d.supplied_ans);
+                } else {
+                    console.log("WRONG: " + quest_id + ", Correct Ans: " + d.correct_ans +  ", Your Ans: " + d.supplied_ans);
+                }
+            }
+        });
 
         // save answer on localstorage
         localStorage.setItem('questID-' + quest_id, ans);
@@ -264,7 +272,7 @@ function submitTest() {
         submitGQAptitudeTest();
         return false;
     }
-    var integrity_score = $("#integrity-score").text();
+    var integrity_score = IntegrityScore.get();
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
@@ -579,6 +587,10 @@ var IntegrityScore = (function() {
 
         reset: function() {
             integrityScore = 100;
+        },
+
+        get: function() {
+            return integrityScore;
         }
     };
 })();

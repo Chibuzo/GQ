@@ -170,7 +170,12 @@ module.exports = {
                 supplied_ans: req.param('answer'),
                 correct_ans: quest[0].answer
             });
-            return res.json(200, { status: 'success' });
+            return res.json(200, {
+				status: 'success',
+				correct_ans: quest[0].answer,
+				supplied_ans: req.param('answer')
+
+			});
         });
     },
 
