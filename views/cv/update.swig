@@ -491,7 +491,7 @@
 	            <div class="modal-body">
 	                <div class="modal-video">
 	                    <div class="embed-responsive embed-responsive-16by9">
-							<iframe id="sample-video" src="https://player.vimeo.com/video/259245017" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+							<iframe id="sample-video" src="https://player.vimeo.com/video/259674304" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 	                    </div>
 	                </div>
 	            </div>
