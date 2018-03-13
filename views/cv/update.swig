@@ -84,6 +84,10 @@
 		padding-left: 20px;
 	}
 
+	.datep {
+		cursor: default;
+		}
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
@@ -222,7 +226,7 @@
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info" id="retake-test">Retake Test</button>
+												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>
@@ -487,7 +491,7 @@
 	            <div class="modal-body">
 	                <div class="modal-video">
 	                    <div class="embed-responsive embed-responsive-16by9">
-							<iframe id="sample-video" src="https://player.vimeo.com/video/259245017" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+							<iframe id="sample-video" src="https://player.vimeo.com/video/259674304" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
 	                    </div>
 	                </div>
 	            </div>

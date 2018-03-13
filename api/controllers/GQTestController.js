@@ -159,18 +159,36 @@ module.exports = {
     },
 
     returnAnswer: function(req, res) {
-        GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
+        return GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
             if (err) return;
             // check if a question has been answered earlier and discard the earlier answer
+			var suppliedAnswersBefore = _.cloneDeep(req.session.suppliedAnswers);
+			var idsRemoved = [];
             req.session.suppliedAnswers = req.session.suppliedAnswers.filter(function(e) {
-                return e.id !== req.param('quest_id');
+				if (e.id !== req.param('quest_id')) {
+					return true;
+				} else {
+					idsRemoved.push(e.id);
+					return false;
+				}
             });
             req.session.suppliedAnswers.push({
                 id: req.param('quest_id'),
                 supplied_ans: req.param('answer'),
                 correct_ans: quest[0].answer
             });
-            return res.json(200, { status: 'success' });
+
+			req.session.save();
+
+            return res.json(200, {
+				status: 'success',
+				correct_ans: quest[0].answer,
+				supplied_ans: req.param('answer'),
+				suppliedAnswersBefore: suppliedAnswersBefore,
+				idsRemoved: idsRemoved,
+				suppliedAnswers: req.session.suppliedAnswers
+
+			});
         });
     },
 
@@ -187,6 +205,8 @@ module.exports = {
             }
         });
 
+		let suppliedAnswers = req.session.suppliedAnswers;
+
         // save integrity score
         ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
 
@@ -195,7 +215,7 @@ module.exports = {
             // destroy stored test answers
             req.session.suppliedAnswers = [];
             GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
-                return res.json(200, { status: 'success', result: resp });
+                return res.json(200, { status: 'success', result: resp, suppliedAnswers: suppliedAnswers });
             }).catch(function(err) {
                 console.log(err)
             });

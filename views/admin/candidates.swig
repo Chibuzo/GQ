@@ -34,7 +34,7 @@
 
 		{% include 'includes/candidate-search-form.swig' %}
 		<div class="content table-responsive table-full-width">
-			<table class="table table-striped">
+			<table class="table table-striped dataTable">
 				<thead>
 					<tr>
 						<th><i class="fa fa-calendar"></i> Date</th>
@@ -81,9 +81,19 @@
 
 {% block scriptTag %}
 <script src="/js/proctorBackend.js"></script>
+<script src="/js/plugins/datatables.min.js"></script>
 <script>
-	$(document).ready(function() {
-		$('.applicants').addClass('active');
+$(document).ready(function() {
+	$('.applicants').addClass('active');
+
+
+	$('.dataTable').DataTable({
+		pageLength: 50,
+		responsive: true,
+//		"aoColumnDefs": [
+//			{ 'bSortable': false, 'aTargets': [ 2, 3 ] }
+//		]
 	});
+});
 </script>
 {% endblock %}
