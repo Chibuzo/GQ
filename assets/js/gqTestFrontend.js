@@ -1,6 +1,8 @@
 // globals, yes shoot me
 var TEST_ID, duration, questions = [],PROCTOR;
 
+var ANSWERS_KEY = "test-user-answers";
+
 /* GQTestStatus is used to keep track of whether a test is in progress or not.
  * Short term fix for 1st question being skipped when test starts because
  * "proctorReady" can fired mutliple times if button dbl clicked
@@ -151,6 +153,7 @@ function fetchNextQuestion(questions, next_quest) {
     $(".question").html(questions[next_question].question);
     $("#span-opt-a").text(questions[next_question].opt_a);
     $("#span-opt-b").text(questions[next_question].opt_b);
+
     // display only options with a value
     if (questions[next_question].opt_c) {
         $("#span-opt-c").parents('li').show();
@@ -194,25 +197,32 @@ function saveAnswer() {
     var ans = $("input[name=opt]:checked").val();
     var cur_question = $("#current_quest").text();
 
-    if (ans) {
-        $("#quest-" + cur_question).removeClass('skipped_q').addClass('answered_q');
-        $.post('/gqtest/return-answer', { quest_id: quest_id, answer: ans }, function (d) {
-            if (d.status === "success") {
-                if (d.correct_ans === d.supplied_ans) {
-                    console.log("CORRECT: " + quest_id + ", Correct Ans: " + d.correct_ans +  ", Your Ans: " + d.supplied_ans);
-                } else {
-                    console.log("WRONG: " + quest_id + ", Correct Ans: " + d.correct_ans +  ", Your Ans: " + d.supplied_ans);
-                }
-            }
+    // Save Answer in local storage
+    var answers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
+
+    if (quest_id !== undefined && ans !== undefined) {
+        answers = answers.filter(function(ans) {
+            return quest_id !== ans.quest_id;
         });
 
+        answers.push({
+            quest_id: quest_id,
+            ans: ans
+        });
+    }
+
+    localStorage.setItem(ANSWERS_KEY, JSON.stringify(answers));
+
+    if (ans) {
+        $("#quest-" + cur_question).removeClass('skipped_q').addClass('answered_q');
         // save answer on localstorage
         localStorage.setItem('questID-' + quest_id, ans);
     } else {
         $("#quest-" + cur_question).addClass('skipped_q');
     }
+
     // save test state
-    localStorage.setItem('integrity_score', $('.progress-bar').width());
+    localStorage.setItem('integrity_score', IntegrityScore.get());
 }
 
 
@@ -273,11 +283,14 @@ function submitTest() {
         return false;
     }
     var integrity_score = IntegrityScore.get();
+
+    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score
+        integrity_score: integrity_score,
+        userAnswers: userAnswers
     }, function (d) {
         if (d.status.trim() == 'success') {
             $("#score").text(d.result.score + '/' + questions.length);
@@ -308,10 +321,14 @@ function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
     var integrity_score = $("#integrity-score").text();
+
+    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
+
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score
+        integrity_score: integrity_score,
+        userAnswers: userAnswers
     }, function (d) {
         if (next <= 3) $(".load-test").click();
     });
@@ -328,13 +345,15 @@ function submitAndLoadNext(next) {
 function submitGQAptitudeTest() {
     GQTestStatus.stopProgress();
 
+    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     var integrity_score = $('.progress-bar').width();
+
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score
+        integrity_score: integrity_score,
+        userAnswers: userAnswers
     }, function (d) {
-        console.log(d);
         $("#general").find('td:nth-child(2)').text(d.result.general_ability);
         $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
 
@@ -391,6 +410,8 @@ function startTest() {
         console.warn("Attempted to start test when a test already in progress ");
         return;
     }
+
+    localStorage.clear();
 
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {

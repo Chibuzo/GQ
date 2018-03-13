@@ -148,7 +148,6 @@ module.exports = {
         var test_id = req.param('test_id');
         GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
             if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
-            req.session.suppliedAnswers = [];
             return res.json(200, {
                 status: 'success',
                 questions: test[0].questions,
@@ -158,77 +157,61 @@ module.exports = {
         });
     },
 
-    returnAnswer: function(req, res) {
-        return GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
-            if (err) return;
-            // check if a question has been answered earlier and discard the earlier answer
-			var suppliedAnswersBefore = _.cloneDeep(req.session.suppliedAnswers);
-			var idsRemoved = [];
-            req.session.suppliedAnswers = req.session.suppliedAnswers.filter(function(e) {
-				if (e.id !== req.param('quest_id')) {
-					return true;
-				} else {
-					idsRemoved.push(e.id);
-					return false;
-				}
-            });
-            req.session.suppliedAnswers.push({
-                id: req.param('quest_id'),
-                supplied_ans: req.param('answer'),
-                correct_ans: quest[0].answer
-            });
-
-			req.session.save();
-
-            return res.json(200, {
-				status: 'success',
-				correct_ans: quest[0].answer,
-				supplied_ans: req.param('answer'),
-				suppliedAnswersBefore: suppliedAnswersBefore,
-				idsRemoved: idsRemoved,
-				suppliedAnswers: req.session.suppliedAnswers
-
-			});
-        });
-    },
-
     markTest: function(req, res) {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
         var integrity_score = req.param('integrity_score');
+        var userAnswers = req.param("userAnswers") || [];
         var score = 0;
 
-		// TODO: Sometimes suppliedAnswers is not defined. Throws error locally
-        req.session.suppliedAnswers.forEach(function(quest) {
-            if (quest.supplied_ans === quest.correct_ans) {
-                score++;
-            }
-        });
+            GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
+                if (err) {
+                    console.error(err);
+                    return;
+                }
 
-		let suppliedAnswers = req.session.suppliedAnswers;
+                userAnswers.forEach(function(userAnswer) {
+                    var question = _.find(questions, function(q) {
+                        return q.id == userAnswer.quest_id;
+                    });
 
-        // save integrity score
-        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+                    if (!question) {
+                        // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
+                        console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                        return;
+                    }
 
-        // save or update candidate's test score
-        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-            // destroy stored test answers
-            req.session.suppliedAnswers = [];
-            GQTestService.prepareCandidateResult(test_id, score, no_of_questions).then(function(resp) {
-                return res.json(200, { status: 'success', result: resp, suppliedAnswers: suppliedAnswers });
+                    if (question.answer === userAnswer.ans) {
+                        score++;
+                    }
+                });
+
+            // save integrity score
+            ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
+            // save or update candidate's test score
+            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                // destroy stored test answers
+
+            GQTestService.prepareCandidateResult(test_id, score, no_of_questions)
+            .then(function(resp) {
+                return res.json(200, { status: 'success', result: resp});
             }).catch(function(err) {
                 console.log(err)
             });
-            // update application
-            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
-                req.session.job_id = null;
-            });
-        });
 
-        // end protor session for all tests except the three aptitude tests with ids (1,2,3)
-        if (parseInt(test_id) > 2) { console.log('Proctor ended');
-            req.session.proctor = false;
-        }
+                // update application
+                Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
+                    req.session.job_id = null;
+                });
+            });
+
+            // end protor session for all tests except the three aptitude tests with ids (1,2,3)
+            if (parseInt(test_id) > 2) {
+                console.log('Proctor ended');
+                req.session.proctor = false;
+            }
+        });
     },
 
     // called when the last section of GQ aptitude test gets submitted
@@ -236,38 +219,55 @@ module.exports = {
         var test_id = req.param('test_id');
         var no_of_questions = req.param('no_of_questions');
         var integrity_score = req.param('integrity_score');
+        var userAnswers = req.param("userAnswers") || [];
         var score = 0;
 
-        req.session.suppliedAnswers.forEach(function(quest) {
-            if (quest.supplied_ans === quest.correct_ans) {
-                score++;
+        GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
+            if (err) {
+                console.error(err);
+                return;
             }
-        });
 
-        // save integrity score
-        ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
-
-        CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-            CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
-                // end proctor session
-                req.session.proctor = false;
-
-                // update candidate's resume
-                Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                    if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                        Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                    }
+            userAnswers.forEach(function(userAnswer) {
+                var question = _.find(questions, function(q) {
+                    return q.id == userAnswer.quest_id;
                 });
-                CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                    return res.json(200, { status: 'success', result: result });
+
+                if (!question) {
+                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                    return;
+                }
+
+                if (question.answer === userAnswer.ans) {
+                    score++;
+                }
+            });
+
+            // save integrity score
+            ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+
+            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+                    // end proctor session
+                    req.session.proctor = false;
+
+                    // update candidate's resume
+                    Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                        if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                            Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                        }
+                    });
+                    CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                        return res.json(200, { status: 'success', result: result });
+                    }).catch(function(err) {
+                        console.log(err)
+                    });
                 }).catch(function(err) {
                     console.log(err)
                 });
             }).catch(function(err) {
                 console.log(err)
             });
-        }).catch(function(err) {
-            console.log(err)
         });
     },
 

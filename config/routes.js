@@ -94,8 +94,6 @@ module.exports.routes = {
     //'GET /gqtest/load-default': 'GQTestController.loadGQDefaultTest',
     'GET /gqtest/load-test/:test_id': 'GQTestController.loadTest',
 
-    'POST /gqtest/return-answer': 'GQTestController.returnAnswer',
-
     'POST /gqtest/marktest': 'GQTestController.markTest',
 
     'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
