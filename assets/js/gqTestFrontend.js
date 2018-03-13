@@ -227,8 +227,13 @@ $("#submit-test").click(function(e) {
         stopCountdownTimer();
         destroyCountdownTimer();
 
-        // stop proctor
-        PROCTOR.stop();
+        try {
+            // stop proctor
+            PROCTOR.stop();
+        } catch (err) {
+            console.error("Proctor failed to stop");
+            console.error(err);
+        }
 
         saveAnswer();
 
@@ -496,10 +501,18 @@ function destroyCountdownTimer() {
 }
 
 function stopCountdownTimer() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     countdownTimer.timer('pause');
 }
 
 function pauseCountdownTimer() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     countdownTimer.timer('pause');
 }
 

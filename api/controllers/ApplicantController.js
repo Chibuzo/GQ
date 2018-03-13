@@ -111,7 +111,11 @@ module.exports = {
 
     addYoutubeVideoID: function(req, res) {
         if (req.session.userId) {
-            Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id') }).exec(function() {});
+            Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id'), video_status: 'true' }).exec(function(err, resume) {
+                if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
+                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
+                }
+            });
         }
     },
 

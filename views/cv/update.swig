@@ -6,7 +6,6 @@
 
 {% block body %}
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
-<link href="/styles/jquery.countdownTimer.css" rel="stylesheet" />
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -24,8 +23,12 @@
 		transition: all .25s ease;
 	}
 
+	.test-panel-text {
+		font-size: 16px;
+	}
+
 	#countdowntimer {
-		font-size: 20px;
+		display: inline-block;
 	}
 
 	.addable {
@@ -150,6 +153,7 @@
 									<div class="col-md-12" style="padding: 50px">
 									{% include 'includes/resume.swig' %}
 									{% include 'includes/resume-form.swig' %}
+									<span id="candidate_fullname">{{ resume.fullname }}</span>
 									</div>
 								</div>
 							</div>
@@ -289,18 +293,23 @@
 												<div class="col-md-5">
 
 													<!-- Timer -->
-													<div class="row">
-														<div id="countdowntimer" class="text-center"></div>
+													<div class="row test-panel-text text-center">
+														<span><strong>Time Remaining: </strong></span>
+														<div id="countdowntimer"></div>
 													</div>
+
+													<hr>
 
 													<!-- Invigilation Score -->
 													<div class="row">
 														<div class="col-sm-8 col-sm-offset-2 col-xs-12">
-															<div class="invigilation-report">
+															<div class="invigilation-report test-panel-text">
+																<div><strong>Invigilation Score:</strong></div>
 
 																<!-- TODO: Invigilation Score Number
 																<span>Invigilation Score: </span>
 																<span id="invigilation-score">100%</span>
+
 																-->
 															</div>
 
@@ -434,7 +443,7 @@
 										<div class="col-md-5">
 											<div class="empty-vid">
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger select-file-button" id=""><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
+												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
 													<li>Video file type MUST be in .mp4 format</li>
@@ -489,7 +498,7 @@
 
 
 {% block scriptTag %}
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=2"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
@@ -691,6 +700,6 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="/js/youtubeUpload.js?v=1"></script>
+	<script src="/js/youtubeUpload.js?v=2"></script>
 
 {% endblock %}

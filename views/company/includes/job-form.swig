@@ -89,6 +89,31 @@
 			</div>
 		</div>
 	</div>
+
+	<fieldset>
+		<legend>Salary Budget [ <small>Per annum</small> ]</legend>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-md-4">
+					<label>Currency</label>
+					<select name="currency" id="currency" class="form-control">
+						<option value=""></option>
+						<option value="NGN">NGN</option>
+						<option value="USD">USD</option>
+						<option value="EURO">EURO</option>
+					</select>
+				</div>
+				<div class="col-md-4">
+					<label>Minimum Salary Budget</label>
+					<input type="number" name="min_salary_budget" class="form-control" value="{{ job.min_salary_budget }}" placeholder="Minimum Salary budget" />
+				</div>
+				<div class="col-md-4">
+					<label>Maximum Salary Budget</label>
+					<input type="number" name="max_salary_budget" class="form-control" value="{{ job.max_salary_budget }}" placeholder="Maximum Salary budget" />
+				</div>
+			</div>
+		</div>
+	</fieldset><br>
 	<input type="hidden" name="job_id" id="job-id" value="{{ job.id }}"/>
 
 	<div class="form-group text-right">

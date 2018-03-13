@@ -52,6 +52,7 @@ $(document).ready(function() {
 	var job_level = {{ job.job_level | json | safe }};
 	var contract_type = {{ job.contract_type | json | safe }};
 	var country = {{ job.country | json | safe }};
+	var currency = {{ job.salary_currency | json | safe }};
 
 	$("select[name=category]").find('option').filter(function(i) {
 		return job_category_id == $(this).val();
@@ -67,6 +68,10 @@ $(document).ready(function() {
 
 	$("select[name=country]").find('option').filter(function(i) {
 		return country == $(this).val();
+	}).attr("selected", "selected");
+
+	$("select[name=currency]").find('option').filter(function(i) {
+		return currency == $(this).val();
 	}).attr("selected", "selected");
 });
 </script>

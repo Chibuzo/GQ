@@ -79,6 +79,18 @@ module.exports = {
             defaultsTo: 50
         },
 
+        salary_currency: {
+            type: 'string'
+        },
+
+        min_salary_budget: {
+            type: 'float'
+        },
+
+        max_salary_budget: {
+            type: 'float'
+        },
+
         poster: {
             model: 'user'
         },

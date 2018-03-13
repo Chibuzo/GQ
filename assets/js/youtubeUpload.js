@@ -16,9 +16,7 @@ function initClient() {
     $(".select-file-button").click(function () {
         $("#select-file").click();
     }),
-    //$("#upload-file-button").click(function () {
-    //
-    //}),
+
     $("#select-file").bind("change", function () {
         selectedFile = $("#select-file").prop("files")[0];
         $(".select-file-button").html("<i class='fa fa-cog fa-spin'></i> Uploading...").prop('disabled', true);
@@ -374,12 +372,12 @@ function defineRequest() {
     var metadata = createResource({
         'snippet.categoryId': '22',
         'snippet.defaultLanguage': '',
-        'snippet.description': 'Demo video',
+        'snippet.description': 'Candidate Profile Video',
         'snippet.tags[]': '',
-        'snippet.title': 'Test video upload',
+        'snippet.title': $("#candidate_fullname").text(),
         'status.embeddable': '',
         'status.license': '',
-        'status.privacyStatus': 'public',
+        'status.privacyStatus': 'private',
         'status.publicStatsViewable': ''
     });
 
@@ -421,9 +419,10 @@ function defineRequest() {
         }.bind(this),
         onComplete: function (data) {
             var uploadResponse = JSON.parse(data);
-            $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id });
+            $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id }, function() {
+                location.reload(true);
+            });
             //console.log('Upload complete for video ' + uploadResponse.id);
-            location.reload(true);
         }.bind(this)
     });
 

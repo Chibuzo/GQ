@@ -57,9 +57,13 @@
                     </div>
 
                     <div class="row">
-                          <div class="col-md-12" style="padding: 60px">
-                              {% include 'includes/company-form.swig' %}
-                          </div>
+                        <div class="col-md-12" style="padding: 60px">
+                            {% if first_time == 'true' %}
+                                <div class="alert alert-warning">NOTICE: Remember to set a password for this account before you leave this page.</div>
+                            {% endif %}
+
+                            {% include 'includes/company-form.swig' %}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -112,7 +116,7 @@ $(document).ready(function() {
         e.preventDefault();
 
         // let's see if password MUST be set at this time
-        if ($("#check_first").val() == 'true') {
+        if ($("#first_check").val() == 'true') {
             if ($("#password").val().length < 3) {
                 showNotification('bottom', 'center', 'danger', "Error: You MUST set password to continue.", 'pe-7s-attention');
                 return false;
@@ -134,8 +138,11 @@ $(document).ready(function() {
                 cache: false,
                 success: function(d) {
                     if (d.status.trim() == 'success') {
-                        var msg = "Your company profile has been successfully updated!";
+                        var msg = "Your company profile has been successfully updated! You'll be redirected to the dashboard in 3 seconds";
                         showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+                        setInterval(function() {
+                            location.href = '/company/dashboard';
+                        }, 6000);
                     }
                     $('#form-company-setup').find('button[type=submit]').html("<i class='fa fa-save'></i> Update Details").prop('disabled', false);
                 }

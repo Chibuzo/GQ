@@ -96,43 +96,45 @@
             </div>
 
             <ul class="nav">
-                <li class="dashboard">
-                    <a href="/company/dashboard">
-                        <i class="pe-7s-graph"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
-
-                <li class="job-page">
-                    <a href="/job/manage">
-                        <i class="pe-7s-timer"></i>
-                        <p>Job Board</p>
-                    </a>
-                </li>
-
-                {% if req.session.user_type == 'company' %}
-                    <li>
-                        <a href="/company/user-profile">
-                            <i class="pe-7s-user"></i>
-                            <p>My Profile</p>
-                        </a>
-                    </li>
-                {% endif %}
-
-                {% if req.session.user_type == 'company-admin' %}
-                    <li class="users">
-                        <a href="/company/users">
-                            <i class="pe-7s-users"></i>
-                            <p>Manage Users</p>
+                {% if first_time != 'true' %} {# prevent first time user from clicking away until they save the setup form #}
+                    <li class="dashboard">
+                        <a href="/company/dashboard">
+                            <i class="pe-7s-graph"></i>
+                            <p>Dashboard</p>
                         </a>
                     </li>
 
-                    <li class="profile">
-                        <a href="/company/profile">
-                            <i class="pe-7s-user"></i>
-                            <p>Company Profile</p>
+                    <li class="job-page">
+                        <a href="/job/manage">
+                            <i class="pe-7s-timer"></i>
+                            <p>Job Board</p>
                         </a>
                     </li>
+
+                    {% if req.session.user_type == 'company' %}
+                        <li>
+                            <a href="/company/user-profile">
+                                <i class="pe-7s-user"></i>
+                                <p>My Profile</p>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    {% if req.session.user_type == 'company-admin' %}
+                        <li class="users">
+                            <a href="/company/users">
+                                <i class="pe-7s-users"></i>
+                                <p>Manage Users</p>
+                            </a>
+                        </li>
+
+                        <li class="profile">
+                            <a href="/company/profile">
+                                <i class="pe-7s-user"></i>
+                                <p>Company Profile</p>
+                            </a>
+                        </li>
+                    {% endif %}
                 {% endif %}
             </ul>
         </div>
@@ -160,11 +162,13 @@
                     </ul>-->
 
                     <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="/user/signout">
-                                <i class="fa fa-sign-out"></i> Logout
-                            </a>
-                        </li>
+                        {% if first_time != 'true' %}
+                            <li>
+                                <a href="/user/signout">
+                                    <i class="fa fa-sign-out"></i> Logout
+                                </a>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>

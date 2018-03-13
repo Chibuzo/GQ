@@ -23,7 +23,7 @@ module.exports = {
         var crypto = require('crypto');
         var expected_hash = crypto.createHash('md5').update(email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
         if (hash == expected_hash) {
-            // lets see if this idiot is clicking a stale link
+            // lets see if this user is clicking a stale link
             Company.find({contact_email: email}).exec(function (err, com) {
                 if (err) return console.log(err);
                 CountryStateService.getCountries().then(function (resp) {
@@ -54,7 +54,6 @@ module.exports = {
                                 if (err) return console.log(err);
                                 // activate the account
                                 User.update({ email: email }, { status: 'Active' }).exec(function() {});
-                                console.log(cmpy);
                                 req.session.coy_id = cmpy.id;
                                 req.session.fname = cmpy.contact_person;
                                 req.session.user_type = 'company-admin';
@@ -114,7 +113,6 @@ module.exports = {
             if (err) {
                 return res.ok();
             }
-            //if (!_.isEmpty(q('logo_name'))) filename = q('logo_name');
             if (logo) {
                 Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
             }
@@ -136,7 +134,18 @@ module.exports = {
                         user_type: 'company-admin',
                         status: 'Active'
                     };
-                    User.create(user).exec(function (err) { console.log(err); });
+                    User.find({ email: q('contact_email') }).exec(function (err, coy_user) {
+                        if (coy_user.length > 0) {
+                            User.update({ email: q('contact_email') }, user).exec(function(err, new_user) {
+                                req.session.userId = new_user[0].id;
+                            });
+                        } else {
+                            User.create(user).exec(function(err, new_user) {
+                                req.session.userId = new_user.id;
+                            });
+                        }
+                        req.session.save();
+                    });
                     sendMail.companyIntroduction(q('contact_person'));
                     sendMail.GQNewActiveCompany(q('company_name'));
                 }

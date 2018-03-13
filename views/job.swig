@@ -143,13 +143,20 @@ input[type="text"] {
 
 					<h3>Requirements</h3>
 					{{ job.job_requirements | safe }}
+
 					{% if job.qualifications.length > 3 %}
 						<h3>Qualifications</h3>
 						{{ job.qualifications | safe }}
 					{% endif %}
+
 					{% if job.nice_to_have.length > 3 %}
 						<h3>Nice to Have</h3>
 						{{ job.nice_to_have | safe }}
+					{% endif %}
+
+					{% if job.salary_currency %}
+						<h3>Salary Budget <small>[ {{ job.salary_currency }} ]</small></h3>
+						{{ job.min_salary_budget }} - {{ job.max_salary_budget }}
 					{% endif %}
 				</div>
 				<br><br>

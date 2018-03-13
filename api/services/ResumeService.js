@@ -7,7 +7,7 @@ module.exports = {
                 .exec(function(err, resume) {
                     if (err) return;
                     // check for test result
-                    CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                    CBTService.candidateGeneralTestResult(resume.user.id).then(function(result) {
                         var _result, test_title;
                         if (result) {
                             _result = result;
