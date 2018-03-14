@@ -46,6 +46,7 @@ module.exports = {
     save: function(req, res) {
         var q = req.param;  // trying to make life easier
         var sections = [], status; // for profile complete status
+        let resumeId = q('resume_id');
 
         // lets handle associative data
         // Education
@@ -75,22 +76,73 @@ module.exports = {
         }
 
         // Qualifications
-        for (var i = 0; i < q('qualification').length; i++) {
-            if (q('qualification')[i].length < 1) continue;
 
-            var qualification = {
-                qualification: q('qualification')[i],
-                date_obtained: new Date(Date.parse(q('qualification_date')[i])).toISOString(),
-                resume: q('resume_id')
+        // Store data from the Resume Form in variables
+        let updatedQualificationsList = q('qualification') || [];
+        let updatedQualificationsIDs = q('qualification_id') || [];
+        let updatedQualificationsDates = q('qualification_date') || [];
+
+        // Remove empty qualifications
+        updatedQualificationsList = updatedQualificationsList.filter(function(qualification) {
+            return qualification !== "";
+        });
+
+        // Ensure updatedQualificationsIDs is an array of integers
+        updatedQualificationsIDs = updatedQualificationsIDs.map(function(qualificationId) {
+            return parseInt(qualificationId);
+        });
+
+        // Create an array of the updated qualifications. false IDs indicate it needs to be created
+        let userQualifications = updatedQualificationsList.map(function(qualificationItem, idx) {
+            let id = updatedQualificationsIDs[idx] ? updatedQualificationsIDs[idx] : false;
+            return {
+                name: qualificationItem,
+                id: id,
+                date: updatedQualificationsDates[idx]
             };
+        });
 
-            if (q('qualification_id')[i] && q('qualification_id')[i] > 0) {
-                Qualification.update({ id: q('qualification_id')[i] }, qualification).exec(function() {});
-            } else {
-                Qualification.findOrCreate({ qualification: q('qualification') }, qualification).exec(function() {});
-                //sections.qualification = true;
+        Qualification.find({resume: q('resume_id')})
+        .then(function(qualificationsArr) {
+            let currentQualificationsIDs = _.map(qualificationsArr, function(qualificationObject) {
+                return qualificationObject.id
+            });
+
+            // Array of qualifications IDs to be deleted =  IDs current saved not included in the updated list
+            let qualificationsToDelete = _.difference(currentQualificationsIDs, updatedQualificationsIDs);
+
+            userQualifications.forEach(function(userQualification) {
+                var qualification = {
+                    qualification: userQualification.name,
+                    date_obtained: userQualification.date,
+                    resume: resumeId
+                };
+
+                if (userQualification.id === false) {
+                    // Create
+                    Qualification.create(qualification)
+                    .catch(err => {
+                        console.error(err);
+                    })
+                } else {
+                    // Update
+                    // TODO: Don't make an update if we don't have to...
+                    Qualification.update({ id: userQualification.id }, qualification)
+                    .catch(err => {
+                        console.error(err);
+                    });
+                }
+            });
+
+            if (qualificationsToDelete.length > 0) {
+                Qualification.destroy({id: qualificationsToDelete})
+                .catch(err => {
+                    console.error(err);
+                });
             }
-        }
+        }).catch(function(error) {
+            console.error(error);
+        });
 
         // Employments
         for (var i = 0; i < q('company').length; i++) {
