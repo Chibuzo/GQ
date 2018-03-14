@@ -271,12 +271,11 @@
 						</div>
 						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
 						<div class="col-md-1">
-							<a href="" class="plus-btn add-qualification"><i class="fa fa-plus fa-lg"></i></a>
+							<a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
 						</div>
 					</div>
 				{% endfor %}
 
-				{% if resume.qualifications.length < 1 %}
 					<div class="row qual-row">
 						<div class="col-md-9">
 							<label>Qualification</label>
@@ -292,7 +291,6 @@
 							<a href="" class="plus-btn add-qualification"><i class="fa fa-plus fa-lg"></i></a>
 						</div>
 					</div>
-				{% endif %}
 
 				<div class="row qual-row addable" id="another-qualification">
 					<div class="col-md-9">
