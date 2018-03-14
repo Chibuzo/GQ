@@ -178,6 +178,12 @@ module.exports = {
 
     viewResume: function(req, res) {
         var resume_id = req.param('resume_id');
+
+        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
+            folder = 'company';
+        } else if (req.session.user_type == 'admin') {
+            folder = 'admin';
+        }
         ResumeService.viewResume(resume_id).then(function(response) {
 					var me = {
 							fname: response.resume.user.fullname.split(' ')[0],
@@ -187,7 +193,8 @@ module.exports = {
                 resume: response.resume,
 								me: me,
                 result: response.result ? response.result : null,
-                test_title: response.test_title ? response.test_title : null
+                test_title: response.test_title ? response.test_title : null,
+                folder: folder
             });
         }).catch(function(err) {
             console.log(err);
@@ -195,6 +202,11 @@ module.exports = {
     },
 
     viewResumeByUser: function(req, res) {
+        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
+            folder = 'company';
+        } else if (req.session.user_type == 'admin') {
+            folder = 'admin';
+        }
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
                 var me = {
@@ -205,7 +217,8 @@ module.exports = {
                     resume: response.resume,
                     me: me,
                     result: response.result ? response.result : null,
-                    test_title: response.test_title ? response.test_title : null
+                    test_title: response.test_title ? response.test_title : null,
+                    folder: folder
                 });
             }).catch(function(err) {
                 console.log(err);

@@ -29,24 +29,29 @@ module.exports = {
                 var aptitude_test_results = []; // for computing aptitude test ranking
                 async.eachSeries(candidates, function(candidate_id, cb) {
                     // get their BEST aptitude test score
-                    GQAptitudeTestResult.find({ user: candidate_id }).populate('user').sort('score desc').limit(1).exec(function(err, apt_score) {
-                        var percentage = ((apt_score[0].score / 60) * 100).toFixed(1);
-                        aptitude_test_results.push(apt_score[0].score);
-                        gq_results.push({
-                            test_id: apt_score[0].id,
-                            applicant: apt_score[0].user,
-                            score: 'NA',
-                            percentage: 'NA',
-                            percentile: '-',
-                            test_result: percentage > 59 ? 'Passed' : 'Failed',
-                            composite_score: 'NA',
-                            //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                            //integrity_score: result.proctor.integrity_score,
-                            //proctor_status: result.proctor.status,
-                            proctor_id: 0,
-                            createdAt: apt_score[0].createdAt
-                        });
-                        cb();
+                    GQAptitudeTestResult.find({user: candidate_id}).populate('user').sort('score desc').limit(1).exec(function (err, apt_score) {
+                        try {
+                            var percentage = ((apt_score[0].score / 60) * 100).toFixed(1);
+                            aptitude_test_results.push(apt_score[0].score);
+                            gq_results.push({
+                                test_id: apt_score[0].id,
+                                applicant: apt_score[0].user,
+                                score: 'NA',
+                                percentage: 'NA',
+                                percentile: '-',
+                                test_result: percentage > 59 ? 'Passed' : 'Failed',
+                                composite_score: 'NA',
+                                //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                                //integrity_score: result.proctor.integrity_score,
+                                //proctor_status: result.proctor.status,
+                                proctor_id: 0,
+                                createdAt: apt_score[0].createdAt
+                            });
+                            cb();
+                        } catch(err) {
+                            cb(err);
+                            return reject(err);
+                        }
                     });
                 }, function(err) {
                     if (err) return reject(err);
