@@ -195,17 +195,22 @@ module.exports = {
     },
 
     viewResumeByUser: function(req, res) {
+        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
+            folder = 'company';
+        } else if (req.session.user_type == 'admin') {
+            folder = 'admin';
+        }
         Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
             ResumeService.viewResume(resume[0].id).then(function(response) {
                 var me = {
                     fname: response.resume.user.fullname.split(' ')[0],
                     lname: response.resume.user.fullname.split(' ')[1]
                 };
-                return res.view('cv/viewresume', {
+                return res.view(folder + '/gqprofileview', {
                     resume: response.resume,
                     me: me,
                     result: response.result ? response.result : null,
-                    test_title: response.test_title ? response.test_title : null
+                    test_title: response.test_title ? response.test_title : null,
                 });
             }).catch(function(err) {
                 console.log(err);

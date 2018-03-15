@@ -144,7 +144,7 @@ function fetchNextQuestion(questions, next_quest) {
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     if (questions[next_question].image_file) {
         // TODO: have the URL be environment dependant
-        var img = $("<img />").attr('src', 'https://getqualified.work/cbt-images/' + questions[next_question].image_file).on('load', function() {
+        var img = $("<img />").attr('src', '/cbt-images/' + questions[next_question].image_file).on('load', function() {
             $(".question-image").append(img);
         });
     }

@@ -159,18 +159,11 @@ module.exports = {
     },
 
     returnAnswer: function(req, res) {
-        return GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
+        GQTestQuestions.find({ id: req.param('quest_id') }).exec(function(err, quest) {
             if (err) return;
             // check if a question has been answered earlier and discard the earlier answer
-			var suppliedAnswersBefore = _.cloneDeep(req.session.suppliedAnswers);
-			var idsRemoved = [];
             req.session.suppliedAnswers = req.session.suppliedAnswers.filter(function(e) {
-				if (e.id !== req.param('quest_id')) {
-					return true;
-				} else {
-					idsRemoved.push(e.id);
-					return false;
-				}
+                return e.id !== req.param('quest_id');
             });
             req.session.suppliedAnswers.push({
                 id: req.param('quest_id'),
@@ -178,14 +171,12 @@ module.exports = {
                 correct_ans: quest[0].answer
             });
 
-			req.session.save();
-
             return res.json(200, {
 				status: 'success',
 				correct_ans: quest[0].answer,
 				supplied_ans: req.param('answer'),
-				suppliedAnswersBefore: suppliedAnswersBefore,
-				idsRemoved: idsRemoved,
+				//suppliedAnswersBefore: suppliedAnswersBefore,
+				//idsRemoved: idsRemoved,
 				suppliedAnswers: req.session.suppliedAnswers
 
 			});

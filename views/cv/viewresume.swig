@@ -1,10 +1,6 @@
-{% extends '../admin/layout.swig' %}
-{% set title = 'Candidates Resume' %}
-{% block page_title %}
-	<i class="pe-7s-user"></i> &nbsp;Candidate's Resume
-{% endblock %}
+{% set title = 'Candidate GQ Profile' %}
 
-{% block body %}
+
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
 <style>
 	.tab-pane {
@@ -132,7 +128,6 @@
 		</div>
 	</div>
 </div>
-{% endblock %}
 
 {% block scriptTag %}
 <script type="text/javascript" src="/js/gqTestFrontend.js"></script>
