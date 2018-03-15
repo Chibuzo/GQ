@@ -1,7 +1,10 @@
 ;(function($, win, doc) {
     'use strict';
 
-    if(!$) console.warn('Proctor: No library found. Use jQuery or MLIB');
+    if(!$) {
+        console.warn('Proctor: No library found. Use jQuery or MLIB');
+        return;
+    }
 
     var defaults, proctor;
 
@@ -27,6 +30,12 @@
          * @summary Canvas id or class
          */
         cavnas: '#proctor-canvas',
+
+        audioFPS: 1,
+        videoFPS: 2,
+
+        streamWidth: 320,
+        streamHeight: 240,
         /**
          * Perform a function on face tracked
          * @type function
@@ -191,6 +200,35 @@
         });
     }
 
+    function limitFPS(fn, fps) {
+        var requestAnimFrame =  window.requestAnimationFrame ||
+            window.webkitRequestAnimationFrame ||
+            window.mozRequestAnimationFrame ||
+            window.oRequestAnimationFrame ||
+            window.msRequestAnimationFrame ||
+            function(callback) {
+                window.setTimeout(callback, 1000 / fps);
+            };
+
+        var then = new Date().getTime();
+
+        fps = fps || 30;
+        var interval = 1000 / fps;
+
+        return (function loop(time){
+            requestAnimationFrame(loop);
+
+            var now = new Date().getTime();
+            var delta = now - then;
+
+            if (delta > interval) {
+                then = now - (delta % interval);
+
+                fn();
+            }
+        }(0));
+    }
+
     proctor = function(options) {
         // Initialize proctor and begin instance
         this.opts = $.extend({}, defaults, options);
@@ -220,7 +258,7 @@
 
             // log cam persmission not granted
             !isWebcamAlreadyCaptured && !pc.opts.ignoreTrack && pc.opts.onCamPermissionDenied(),
-                // log mic permission not granted
+            // log mic permission not granted
             !isMicrophoneAlreadyCaptured && !pc.opts.ignoreRecording && pc.opts.onMicPermissionDenied();
 
             if(!hasWebcam || !hasMicrophone) return;
@@ -247,6 +285,7 @@
                 tracks.forEach(function(track) {
                     track.stop();
                 });
+
                 pc.video.srcObject = null;
             }
         };
@@ -263,6 +302,7 @@
         tracker.setInitialScale(4);
         tracker.setStepSize(2);
         tracker.setEdgesDensity(0.1);
+        tracker.setFPS(pc.opts.videoFPS);
 
         pc.tracker = tracking.track(this.video, tracker, { camera: true });
 
@@ -298,22 +338,23 @@
         if(this.stopped === true) return;
 
         this.takeSnapShot(rect),
-            this.opts.onMultiFaceTracked();
+        this.opts.onMultiFaceTracked();
     }, proctor.prototype.takeSnapShot = function(rect) {
         if(this.stopped === true) return;
 
-        this.context.drawImage(this.video, 0, 0, 320, 180);
+        this.context.drawImage(this.video, 0, 0,
+            this.opts.streamWidth, this.opts.streamHeight);
         this.opts.handleSnapshot(this.canvas.toDataURL("image/jpeg", 1));
     };
 
     proctor.prototype.beginAudioTracking = function() {
         var pc = this;
         this.audioContext = null,
-            this.meter = null,
-            this.meterWidth = 100,
-            this.meterHeight = 10,
-            this.rafID = null,
-            this.mediaStreamSource;
+        this.meter = null,
+        this.meterWidth = 500,
+        this.meterHeight = 5,
+        this.rafID = null,
+        this.mediaStreamSource;
 
         this.$meter = $("#vol-meter");
 
@@ -327,34 +368,34 @@
             if(pc.stopped === true) return;
 
             /*
-             if(pc.$meter[0]) {
-             pc.$meter.css({
-             width: pc.meterWidth + 'px',
-             height: pc.meterHeight + 'px'
-             })
+            if(pc.$meter[0]) {
+                pc.$meter.css({
+                    width: pc.meterWidth + 'px',
+                    height: pc.meterHeight + 'px'
+                })
 
-             if (pc.meter.checkClipping())
-             pc.$meter.css({ background: 'red' })
-             else
-             pc.$meter.css({ background: 'green' })
+                if (pc.meter.checkClipping())
+                    pc.$meter.css({ background: 'red' })
+                else
+                    pc.$meter.css({ background: 'green' })
 
-             pc.$meter.css({ width: pc.meter.volume * pc.meterWidth * 1.4 + 'px' });
-             }
-             */
+                pc.$meter.css({ width: pc.meter.volume * pc.meterWidth * 1.4 + 'px' });
+            }
+            */
 
             var pitch = pc.meter.volume * 100;
 
             if(pitch >= pc.opts.audioSensitivity) {
                 pc.opts.onAmbientNoiseDetection(),
-                    pc.recorder.start(), setTimeout(function() {
+                pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 10000);
+                }, 5000);
             }
 
             // console.log('Proctor: Pitch -> ' + pitch);
 
             // set up the next visual callback
-            pc.rafID = window.requestAnimationFrame(drawLoop);
+            //pc.rafID = window.requestAnimationFrame(drawLoop);
         }
 
         try {
@@ -379,59 +420,61 @@
                 pc.mediaStreamSource.connect(pc.meter);
 
                 // kick off the visual updating
-                drawLoop();
+                limitFPS(function() {
+                    drawLoop();
+                }, pc.opts.audioFPS);
             }, function(e) {});
         } catch(e) {
             console.log('Proctor: getUserMedia threw exception :' + e);
         }
     },
 
-        proctor.prototype.prepareRecorder = function() {
-            var pc = this;
+    proctor.prototype.prepareRecorder = function() {
+        var pc = this;
 
-            pc.recorderReady = false;
+        pc.recorderReady = false;
 
-            this.recorder = new Recorder({
-                //wavBitDepth: parseInt(16, 10),
-                monitorGain: parseInt(0, 10),
-                numberOfChannels: parseInt(1, 10),
-                wavBitDepth: parseInt(8, 10),
-                encoderPath: "/js/proctor/waveWorker.min.js"
-            });
+        this.recorder = new Recorder({
+            //wavBitDepth: parseInt(16, 10),
+            monitorGain: parseInt(0, 10),
+            numberOfChannels: parseInt(1, 10),
+            wavBitDepth: parseInt(8, 10),
+            encoderPath: "/js/proctor/waveWorker.min.js"
+        });
 
-            this.recorder.addEventListener("start", function(e){
-                if(pc.stopped === true) return;
-                console.log('Proctor: Recorder is started');
-            });
-            this.recorder.addEventListener("stop", function(e){
-                console.log('Proctor: Recorder is stopped');
-            });
-            this.recorder.addEventListener("pause", function(e){
-                console.log('Proctor: Recorder is paused');
-            });
-            this.recorder.addEventListener("resume", function(e){
-                console.log('Proctor: Recorder is resuming');
-            });
-            this.recorder.addEventListener("streamError", function(e){
-                console.log('Proctor: Error encountered: ' + e.error.name );
-            });
-            this.recorder.addEventListener("streamReady", function(e){
-                pc.recorderReady = true, pc.setProctorReady();
-                console.log('Proctor: Audio stream is ready.');
-            });
-            this.recorder.addEventListener("dataAvailable", function(e){
-                if(pc.stopped === true) return;
-                var dataBlob = new Blob( [e.detail], { type: 'audio/wav' } );
-                var reader = new window.FileReader();
-                reader.readAsDataURL(dataBlob);
-                reader.onloadend = function() {
-                    var base64data = reader.result;
-                    pc.opts.handleAudio(base64data);
-                }
-            });
+        this.recorder.addEventListener("start", function(e){
+            if(pc.stopped === true) return;
+            console.log('Proctor: Recorder is started');
+        });
+        this.recorder.addEventListener("stop", function(e){
+            console.log('Proctor: Recorder is stopped');
+        });
+        this.recorder.addEventListener("pause", function(e){
+            console.log('Proctor: Recorder is paused');
+        });
+        this.recorder.addEventListener("resume", function(e){
+            console.log('Proctor: Recorder is resuming');
+        });
+        this.recorder.addEventListener("streamError", function(e){
+            console.log('Proctor: Error encountered: ' + e.error.name );
+        });
+        this.recorder.addEventListener("streamReady", function(e){
+            pc.recorderReady = true, pc.setProctorReady();
+            console.log('Proctor: Audio stream is ready.');
+        });
+        this.recorder.addEventListener("dataAvailable", function(e){
+            if(pc.stopped === true) return;
+            var dataBlob = new Blob( [e.detail], { type: 'audio/wav' } );
+            var reader = new window.FileReader();
+            reader.readAsDataURL(dataBlob);
+            reader.onloadend = function() {
+                var base64data = reader.result;
+                pc.opts.handleAudio(base64data);
+            }
+        });
 
-            this.recorder.initStream()
-        };
+        this.recorder.initStream()
+    };
 
     proctor.prototype.setProctorReady = function() {
         var proctor = false;
@@ -472,8 +515,14 @@ function startProctor() {
 
         audioSensitivity: 4, // from 0 - 10
 
+        audioFPS: 1, // from 0(cpu available fps) - 60(hz)
+        videoFPS: 2, // from 0(cpu available fps) - 60(hz)
+
+        streamWidth: 320,
+        streamHeight: 240,
+
         handleOutdatedBrowser: function() {
-            alert('Unsupported Broswer: You are using a broswer we do not support. Please update your broswer');
+            alert('Update your browser ma niggah');
         },
 
         handleSnapshot: function(data64) {
@@ -484,8 +533,8 @@ function startProctor() {
                     imgBase64: data64
                 }, success: function(data){
                     // Some success ish blah blah
-                }, error: function() {
-                    // some error handling blah nlah
+                }, error: function(err) {
+                    console.error("Failed to upload Proctor Picture.");
                 }
             }).done(function(msg) {
                 // Some message blah blah
@@ -499,8 +548,8 @@ function startProctor() {
                     data: data64
                 }, success: function(data){
                     // Some success ish blah blah
-                }, error: function() {
-                    // some error handling blah nlah
+                }, error: function(err) {
+                    console.error("Failed to upload Proctor Audio.");
                 }
             }).done(function(msg) {
                 // Some message blah blah
@@ -509,6 +558,8 @@ function startProctor() {
 
         onFaceTracked: function() {
             // on face detected
+            console.log('Proctor: Single face detected');
+
             console.log('Proctor: Single face detected');
 
             if (!GQTestStatus.isInProgress()) {
@@ -530,8 +581,10 @@ function startProctor() {
             addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
                 timer: 10000
             });
+            console.log("Deducting -5 for multiple faces");
             IntegrityScore.update(-5);
         },
+
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
             if (!GQTestStatus.isInProgress()) {
@@ -554,6 +607,7 @@ function startProctor() {
             console.warn('Proctor (Perms): Microphone needed for this test');
             blockTest();
         },
+
         onCamPermissionDenied: function() {
             console.warn('Proctor (Perms): Webcam needed for this test');
             blockTest();
@@ -563,15 +617,12 @@ function startProctor() {
             console.warn('Proctor: This device does not have a webcam');
             blockTest();
         },
+
         onMicNotDetected: function() {
             console.warn('Proctor: This device does not have a microphone');
             blockTest();
         },
 
-				/* This function is called when
-				* 1) mic/recorder is not ignored and ready, &
-				* 2) camera/tracker is not ignored and ready
-				*/
         proctorReady: function() {
             console.log('Proctor is ready.');
             startTest();
