@@ -261,7 +261,7 @@
 									<!-- TEST CONTAINER -->
 									<div class="row test">
 										<div class="col-md-12 overlay-container">
-											<div class="alert alert-warning text-center hidden" id="internet-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
+											<div class="alert alert-warning text-center invisible" id="notification-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
 											<div class="test-overlay"></div>
 
 											<div class="row">

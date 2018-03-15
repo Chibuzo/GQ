@@ -508,20 +508,35 @@ function startProctor() {
         },
 
         onFaceTracked: function() {
+            if (!GQTestStatus.isInProgress()) {
+                return;
+            }
             // on face detected
             console.log('Proctor: Single face detected');
             SingleFaceTracker.incrementCounter();
         },
         // Integrity scoring can be applied here
         onMultiFaceTracked: function() {
+            if (!GQTestStatus.isInProgress()) {
+                return;
+            }
             // on multi face detected
-            console.log('Proctor: Multiple faces detected');
+            // console.log('Proctor: Multiple faces detected');
+            addNoticfication("We detected multiple faces", {
+                timer: 10000
+            });
             IntegrityScore.update(-5);
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: function() {
+            if (!GQTestStatus.isInProgress()) {
+                return;
+            }
             // If 60s have passed, deduct from Integrity score
             if((timer - aN) > 60) {
+                addNoticfication("Ambient noise detected. Please make sure youre in a quiet environment", {
+                    timer: 10000
+                });
                 console.log('Proctor: Ambient noise detected');
                 // ambient timer recalculation
                 aN = Math.floor(new Date().getTime() / 1000);

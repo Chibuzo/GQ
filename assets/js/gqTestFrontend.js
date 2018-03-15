@@ -241,6 +241,7 @@ $("#submit-test").click(function(e) {
 
 
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        removeNotification();
         // prevent further [auto] submit
         stopCountdownTimer();
         destroyCountdownTimer();
@@ -274,6 +275,7 @@ $("#submit-test").click(function(e) {
 
 function submitTest() {
     GQTestStatus.stopProgress();
+    removeNotification();
 
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
@@ -462,6 +464,38 @@ function startTest() {
 //    //$.post('/pushajax', { msg: 'Window Closed'});
 //}
 
+// ------- START NOTIFICATIONS ------ //
+
+var notificationTimer;
+function addNoticfication(msg, opts) {
+    if (!msg) {
+        return;
+    }
+    opts = opts || {};
+    var overlay = opts.overlay || false;
+
+    $("#notification-alert").text(msg);
+    $("#notification-alert").removeClass('invisible');
+    if (overlay) {
+        $(".test-overlay").fadeIn('fast');
+    }
+
+    if (opts.timer) {
+        clearInterval(notificationTimer);
+        notificationTimer = setTimeout(function() {
+            removeNotification();
+        }, opts.timer);
+    }
+}
+
+function removeNotification() {
+
+    $("#notification-alert").text("");
+    $("#notification-alert").addClass('invisible');
+    $(".test-overlay").fadeOut('fast');
+}
+
+// ------- END NOTIFICATIONS ------ //
 
 // ------- START WINDOW EVENT HANDLERS ------ //
 
@@ -475,8 +509,9 @@ function addWindowsCloseEvent() {
 
 window.addEventListener('online', () => {
     PROCTOR = startProctor();
-    $("#internet-alert").addClass('hidden');
-    $(".test-overlay").fadeOut('fast');
+
+    removeNotification();
+
     resumeCountdownTimer();
     GQTestStatus.startProgress();
     SingleFaceTracker.setCounter();
@@ -485,8 +520,11 @@ window.addEventListener('online', () => {
 
 window.addEventListener('offline', () => {
     pauseCountdownTimer();
-    $("#internet-alert").removeClass('hidden');
-    $(".test-overlay").fadeIn('fast');
+
+    addNoticfication("You are currently disconnected from the internet. You need to be connected on the internet to continue this test", {
+        overlay: true
+    });
+
     PROCTOR.stop();
     GQTestStatus.stopProgress();
     SingleFaceTracker.clearTimer();
@@ -573,6 +611,9 @@ var SingleFaceTracker = (function() {
             faceTrackedCount = 0;
 
             if (_faceTrackedCount <= 0) {
+                addNoticfication("We couldn't detect your face", {
+                    timer: 10000
+                });
                 IntegrityScore.update(-5);
                 return;
             }
