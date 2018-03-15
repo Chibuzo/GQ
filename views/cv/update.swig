@@ -442,6 +442,7 @@
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
 											</div>
+											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
 										</div>
 									{% else %}
 										<div class="col-md-5">
