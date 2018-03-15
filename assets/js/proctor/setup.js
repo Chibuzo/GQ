@@ -276,6 +276,7 @@
 
         return {
             stop: function() {
+                console.log("Proctor Stop.");
                 pc.stopped = true;
                 pc.tracker && pc.tracker.stop();
 
