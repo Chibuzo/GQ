@@ -19,9 +19,5 @@ module.exports = {
 
    models: {
      connection: 'MysqlServer'
-   },
-
-
-    port: 80
-
+   }
 };

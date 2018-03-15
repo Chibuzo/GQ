@@ -1,6 +1,5 @@
 {% set title = 'Candidate GQ Profile' %}
 
-
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
 <style>
 	.tab-pane {
