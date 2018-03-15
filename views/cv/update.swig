@@ -86,7 +86,11 @@
 
 	.datep {
 		cursor: default;
-		}
+	}
+
+	#notification-alert {
+		min-height: 40px;
+	}
 
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {

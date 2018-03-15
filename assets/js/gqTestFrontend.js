@@ -611,7 +611,7 @@ var SingleFaceTracker = (function() {
             faceTrackedCount = 0;
 
             if (_faceTrackedCount <= 0) {
-                addNoticfication("We couldn't detect your face", {
+                addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
                     timer: 10000
                 });
                 IntegrityScore.update(-5);
