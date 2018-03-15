@@ -370,11 +370,11 @@ MediaUploader.prototype.buildUrl_ = function (id, params, baseUrl) {
 
 function defineRequest() {
     // let's see if there's an old video and then delete it, we badt like that
-    if ($("#video_id").val().length > 3) {
-        var video_id = $("#video_id").val();
-        var delete_path = '/youtube/v3/videos';
-        buildApiRequest('DELETE', delete_path, { 'id': video_id });
-    }
+    //if ($("#video_id").val().length > 3) {
+    //    var video_id = $("#video_id").val();
+    //    var delete_path = '/youtube/v3/videos';
+    //    buildApiRequest('DELETE', delete_path, { 'id': video_id });
+    //}
 
     var metadata = createResource({
         'snippet.categoryId': '22',
@@ -418,6 +418,8 @@ function defineRequest() {
                 console.log(message);
                 alert(message);
             }
+            console.error(message)
+
         }.bind(this),
         onProgress: function (data) {
             var currentTime = Date.now();
