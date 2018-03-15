@@ -1,5 +1,5 @@
-{% extends '../' + folder + '/layout.swig' %}
-{% set title = 'Candidates Resume' %}
+{#{% extends '../admin/layout.swig' %}#}
+{% set title = 'Candidate GQ Profile' %}
 {% block page_title %}
 	<i class="pe-7s-user"></i> &nbsp;Candidate's Resume
 {% endblock %}
