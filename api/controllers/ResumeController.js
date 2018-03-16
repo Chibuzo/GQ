@@ -265,7 +265,7 @@ module.exports = {
                     fname: response.resume.user.fullname.split(' ')[0],
                     lname: response.resume.user.fullname.split(' ')[1]
                 };
-                return res.view('cv/viewresume', {
+                return res.view(folder + '/gqprofileview', {
                     resume: response.resume,
                     me: me,
                     result: response.result ? response.result : null,
