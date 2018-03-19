@@ -32,7 +32,7 @@
         cavnas: '#proctor-canvas',
 
         audioFPS: 1,
-        videoFPS: 2,
+        videoFPS: 10,
 
         streamWidth: 320,
         streamHeight: 240,
