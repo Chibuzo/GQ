@@ -230,7 +230,7 @@
 
 										<div class="text-center">
 											<div class="col-md-12"><br>
-												<button class="btn btn-info" id="retake-test">Retake Test</button>
+												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 											</div>
 										</div>
 									</div>
