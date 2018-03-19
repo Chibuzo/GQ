@@ -18,7 +18,7 @@
 				<table class="table table-striped">
 					<thead>
 					<tr>
-						<th>Date</th>
+						<th style="width: 100px">Date Joined</th>
 						<th style="width: 20%">Company/Organisation</th>
 						<th>Sector</th>
 						<th>Location</th>
@@ -32,14 +32,14 @@
 					<tbody>
 					{% for coy in companies %}
 						<tr id="{{ coy.id }}">
-							<td>{{ coy.createdAt | date('d M, Y') }}</td>
+							<td>{{ coy.createdAt | date('d.m.Y') }}</td>
 							<td>{{ coy.company_name }}</td>
 							<td>{{ coy.sector }}</td>
 							<td>{{ coy.country }}, {{ coy.r_state }} {{ coy.city }}</td>
 							<td>{{ coy.contact_person }}</td>
 							<td>{{ coy.contact_email }}</td>
 							<td>{{ coy.contact_phone }}</td>
-							<td><a href="/admin/coy-jobs/{{ coy.id }}">{{ coy.jobs }}</a></td>
+							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}">{{ coy.jobs }}</a></td>
 							<td class="hidden">
 								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
 							</td>
