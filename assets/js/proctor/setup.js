@@ -32,7 +32,7 @@
         cavnas: '#proctor-canvas',
 
         audioFPS: 1,
-        videoFPS: 10,
+        videoFPS: 2,
 
         streamWidth: 320,
         streamHeight: 240,
@@ -517,7 +517,7 @@ function startProctor() {
         audioSensitivity: 4, // from 0 - 10
 
         audioFPS: 1, // from 0(cpu available fps) - 60(hz)
-        videoFPS: 2, // from 0(cpu available fps) - 60(hz)
+        videoFPS: 10, // from 0(cpu available fps) - 60(hz)
 
         streamWidth: 320,
         streamHeight: 240,
