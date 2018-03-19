@@ -348,7 +348,7 @@ function submitGQAptitudeTest() {
     GQTestStatus.stopProgress();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-    var integrity_score = $('.progress-bar').width();
+    var integrity_score = IntegrityScore.get();
 
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
