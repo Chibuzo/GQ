@@ -322,7 +322,7 @@ function submitAndLoadNext(next) {
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
-    var integrity_score = $("#integrity-score").text();
+    var integrity_score = IntegrityScore.get();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
