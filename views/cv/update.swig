@@ -447,6 +447,7 @@
 												<button class="btn btn-default select-file-button">Change Video</button>
 											</div>
 										</div>
+										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
@@ -454,7 +455,6 @@
 												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
-													<li>Video file type MUST be in .mp4 format</li>
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 3 minutes</li>
 													<li>It is recommended you use a WIFI network to upload your profile video or compress video size before upload.</li>

@@ -17,7 +17,7 @@ module.exports = {
     getToken: function() {
         return new Promise(function(resolve, reject) {
             const fs = require('fs');
-            var tokens = JSON.parse(fs.readFileSync(require('path').resolve(sails.config.appPath, "config/youtube_tokens.json"), 'utf8'));
+            const tokens = JSON.parse(fs.readFileSync(require('path').resolve(sails.config.appPath, "config/youtube_tokens.json"), 'utf8'));
             if (!tokens.access_token) {
                 var url = oauth2Client.generateAuthUrl({
                     access_type: 'offline',
@@ -51,7 +51,7 @@ module.exports = {
     authenticate: function(code) {
         return new Promise(function(resolve, reject) {
             const fs = require('fs');
-            var tokens = JSON.parse(fs.readFileSync(require('path').resolve(sails.config.appPath, "config/youtube_tokens.json"), 'utf8'));
+            const tokens = JSON.parse(fs.readFileSync(require('path').resolve(sails.config.appPath, "config/youtube_tokens.json"), 'utf8'));
             if (tokens.access_token) {
                 oauth2Client.setCredentials(tokens);
                 return resolve(tokens);
@@ -72,6 +72,23 @@ module.exports = {
                     }
                 });
             }
+        });
+    },
+
+
+    deleteVideo: function(video_id) {
+        module.exports.getToken().then(function () {
+            var service = google.youtube('v3');
+            var parameters = [];
+            parameters['auth'] = oauth2Client;
+            parameters['id'] = video_id;
+            service.videos.delete(parameters, function (err, response) {
+                if (err) {
+                    console.log('The API returned an error: ' + err);
+                    return;
+                }
+                return; // we are done, haha!
+            });
         });
     }
 }
