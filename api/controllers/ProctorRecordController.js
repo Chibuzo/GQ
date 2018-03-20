@@ -8,17 +8,14 @@
 module.exports = {
     startSession: function(req, res) {
         var test_id = req.param('test_id');
-        if (req.session.proctor) {
-            // relax, God is in control
-            console.log('This happend')
-        } else {
-            ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
-                req.session.proctor = sess.id;
-                req.session.save();
-                console.log('Started Proctor Session ' + req.session.proctor);
-                return res.json(200, { status: 'success', proctor_id: sess.id });
-            });
-        }
+
+        // Create a new proctor session for each test.
+        ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
+            req.session.proctor = sess.id;
+            req.session.save();
+            console.log('Started Proctor Session ' + req.session.proctor);
+            return res.json(200, { status: 'success', proctor_id: sess.id });
+        });
     },
 
 
@@ -56,4 +53,3 @@ module.exports = {
         return res.ok();
     }
 };
-

@@ -499,6 +499,8 @@ function startProctor() {
      */
     IntegrityScore.reset();
 
+    InvigilationTracker.reset();
+
     // This part will only enable recording/ambient noise ish -> Once every minute as requested
     var aN = 0, timer = Math.floor(new Date().getTime() / 1000);
     setInterval(function() {
@@ -584,6 +586,7 @@ function startProctor() {
             });
             console.log("Deducting -5 for multiple faces");
             IntegrityScore.update(-5);
+            InvigilationTracker.incrementMultipleFacesCount();
         },
 
         // Integrity score deduction can be applied here
@@ -601,6 +604,7 @@ function startProctor() {
                 aN = Math.floor(new Date().getTime() / 1000);
                 // Integrity score
                 IntegrityScore.update(-2);
+                InvigilationTracker.incrementNoiseCount();
             }
         },
 
