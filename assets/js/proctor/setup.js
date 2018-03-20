@@ -517,7 +517,7 @@ function startProctor() {
         audioSensitivity: 4, // from 0 - 10
 
         audioFPS: 1, // from 0(cpu available fps) - 60(hz)
-        videoFPS: 2, // from 0(cpu available fps) - 60(hz)
+        videoFPS: 10, // from 0(cpu available fps) - 60(hz)
 
         streamWidth: 320,
         streamHeight: 240,

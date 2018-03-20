@@ -274,8 +274,7 @@ module.exports = {
         } else if (req.session.user_type == 'admin') {
             folder = 'admin';
         } else {
-            // get the fuck out (because this is not supposed to happen)
-            return res.badRequest('Gerrout!');
+            return res.redirect('/');
         }
 
         var job_id =  req.param('job_id');
@@ -314,6 +313,7 @@ module.exports = {
                                 return res.view(folder + '/applicants-view.swig', {
                                     applicants: applications,
                                     results: all_text_result,
+                                    job_id: job_id
                                 });
                             }
                         });

@@ -146,7 +146,7 @@ function fetchNextQuestion(questions, next_quest) {
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     if (questions[next_question].image_file) {
         // TODO: have the URL be environment dependant
-        var img = $("<img />").attr('src', 'https://getqualified.work/cbt-images/' + questions[next_question].image_file).on('load', function() {
+        var img = $("<img />").attr('src', '/cbt-images/' + questions[next_question].image_file).on('load', function() {
             $(".question-image").append(img);
         });
     }
@@ -322,7 +322,7 @@ function submitAndLoadNext(next) {
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
-    var integrity_score = $("#integrity-score").text();
+    var integrity_score = IntegrityScore.get();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
@@ -348,7 +348,7 @@ function submitGQAptitudeTest() {
     GQTestStatus.stopProgress();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-    var integrity_score = $('.progress-bar').width();
+    var integrity_score = IntegrityScore.get();
 
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
