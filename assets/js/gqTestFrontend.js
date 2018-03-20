@@ -286,13 +286,16 @@ function submitTest() {
     }
     var integrity_score = IntegrityScore.get();
 
+    var invigilationTracking = InvigilationTracker.getAll();
+
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
         integrity_score: integrity_score,
-        userAnswers: userAnswers
+        userAnswers: userAnswers,
+        invigilationTracking: invigilationTracking
     }, function (d) {
         if (d.status.trim() == 'success') {
             $("#score").text(d.result.score + '/' + questions.length);
@@ -323,6 +326,7 @@ function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
     var integrity_score = IntegrityScore.get();
+    var invigilationTracking = InvigilationTracker.getAll();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
@@ -330,7 +334,8 @@ function submitAndLoadNext(next) {
         test_id: TEST_ID,
         no_of_questions: questions.length,
         integrity_score: integrity_score,
-        userAnswers: userAnswers
+        userAnswers: userAnswers,
+        invigilationTracking: invigilationTracking
     }, function (d) {
         if (next <= 3) $(".load-test").click();
     });
@@ -350,11 +355,14 @@ function submitGQAptitudeTest() {
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     var integrity_score = IntegrityScore.get();
 
+    var invigilationTracking = InvigilationTracker.getAll();
+
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
         integrity_score: integrity_score,
-        userAnswers: userAnswers
+        userAnswers: userAnswers,
+        invigilationTracking: invigilationTracking
     }, function (d) {
         $("#general").find('td:nth-child(2)').text(d.result.general_ability);
         $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
@@ -615,6 +623,7 @@ var SingleFaceTracker = (function() {
                     timer: 10000
                 });
                 IntegrityScore.update(-5);
+                InvigilationTracker.incrementNoFaceCount();
                 return;
             }
         },
@@ -665,3 +674,41 @@ var IntegrityScore = (function() {
 })();
 
 // ----- END INTEGRITY SCORE FUNCTIONS ---- //
+
+// ----- START INVIGILATION COUNT/TRACK FUNCTIONS ---- //
+
+var InvigilationTracker = (function() {
+    var noFace = 0;
+    var noise = 0;
+    var multipleFaces = 0;
+
+    return {
+        incrementNoFaceCount: function() {
+            noFace++;
+        },
+
+        incrementNoiseCount: function() {
+            noise++;
+        },
+
+        incrementMultipleFacesCount: function() {
+            multipleFaces++;
+        },
+
+        reset: function() {
+            noFace = 0;
+            noise = 0;
+            multipleFaces = 0;
+        },
+
+        getAll: function() {
+            return {
+                noFace: noFace,
+                noise: noise,
+                multipleFaces: multipleFaces
+            }
+        }
+    }
+})();
+
+// ----- END INVIGILATION COUNT/TRACK  FUNCTIONS ---- //

@@ -24,7 +24,21 @@ module.exports = {
       status: {
           type: 'string',
           defaultsTo: 'Pending' // Accepted, Rejected
+      },
+
+      noFaceCount: {
+          type: 'integer',
+          defaultsTo: -1
+      },
+
+      noiseCount: {
+          type: 'integer',
+          defaultsTo: -1
+      },
+
+      multipleFacesCount: {
+          type: 'integer',
+          defaultsTo: -1
       }
   }
 };
-

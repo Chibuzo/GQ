@@ -163,6 +163,8 @@ module.exports = {
         var no_of_questions = req.param('no_of_questions');
         var integrity_score = req.param('integrity_score');
         var userAnswers = req.param("userAnswers") || [];
+		var invigilationTracking = req.param('invigilationTracking') || {};
+
         var score = 0;
 
             GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
@@ -187,8 +189,24 @@ module.exports = {
                     }
                 });
 
-            // save integrity score
-            ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+                // fall back for user who don't refresh their JS during this release
+                if (_.isEmpty(invigilationTracking)) {
+                    invigilationTracking = {
+                        noFace: -1,
+                        noise: -1,
+                        multipleFaces: -1
+                    };
+                }
+
+            // update integrity score and invigilationTracking data
+            ProctorSession.update({ id: req.session.proctor },
+                {
+                    integrity_score: integrity_score,
+                    noFaceCount: invigilationTracking.noFace,
+                    noiseCount: invigilationTracking.noise,
+                    multipleFacesCount: invigilationTracking.multipleFaces
+                }
+            ).exec(function() {});
 
             // save or update candidate's test score
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
@@ -221,6 +239,8 @@ module.exports = {
         var no_of_questions = req.param('no_of_questions');
         var integrity_score = req.param('integrity_score');
         var userAnswers = req.param("userAnswers") || [];
+        var invigilationTracking = req.param('invigilationTracking') || {};
+
         var score = 0;
 
         GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
@@ -244,8 +264,24 @@ module.exports = {
                 }
             });
 
+            // fall back for user who don't refresh their JS during this release
+            if (_.isEmpty(invigilationTracking)) {
+                invigilationTracking = {
+                    noFace: -1,
+                    noise: -1,
+                    multipleFaces: -1
+                };
+            }
+
             // save integrity score
-            ProctorSession.update({ id: req.session.proctor }, { integrity_score: integrity_score }).exec(function() {});
+            ProctorSession.update({ id: req.session.proctor },
+                {
+                    integrity_score: integrity_score,
+                    noFaceCount: invigilationTracking.noFace,
+                    noiseCount: invigilationTracking.noise,
+                    multipleFacesCount: invigilationTracking.multipleFaces
+                }
+            ).exec(function() {});
 
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
