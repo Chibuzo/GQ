@@ -50,7 +50,7 @@
 							<td>{{ coy.contact_phone }}</td>
 							<td>
 								<a href="" class="btn btn-success btn-sm btn-fill approve-company"><i class="fa fa-check-square-o"></i> Approve</a>
-								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
+								<a href="" class="btn btn-danger btn-sm btn-fill delete-request"><i class="fa fa-trash-o"></i> Delete</a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -73,6 +73,20 @@ $(document).ready(function() {
 			var $parentTr = $(this).parents('tr');
 			var coy_id = $parentTr.attr('id');
 			$.post('/company-request/approve', {id: coy_id}, function (d) {
+				if (d.status.trim() == 'success') {
+					$parentTr.fadeOut();
+				}
+			}, 'JSON');
+		}
+	});
+
+	// delete company request
+	$(".delete-request").click(function(e) {
+		e.preventDefault();
+		if (confirm("Are you sure you want to cancel this request?")) {
+			var $parentTr = $(this).parents('tr');
+			var coy_id = $parentTr.attr('id');
+			$.get('/company-request/reject', {id: coy_id}, function (d) {
 				if (d.status.trim() == 'success') {
 					$parentTr.fadeOut();
 				}

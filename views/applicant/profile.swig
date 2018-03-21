@@ -106,10 +106,10 @@
                                 <button href="#" class="btn btn-simple"><i class="fa fa-google-plus-square"></i></button>-->
                             </div>
                         </div>
-                        <form action="/applicant/add-passport" method="post" id="form-passport-upload" enctype="multipart/form-data">
+                        <form action="/applicant/add-profilephoto" method="post" id="form-passport-upload" enctype="multipart/form-data">
                             <input type="hidden" name="photo_title" value="{{ me.fname }}-{{ me.lname }}" />
                             <input type="hidden" name="user_id" value="{{ user.id }}">
-                            <input type="file" name="passport" style="display: none" id="file-control" />
+                            <input type="file" name="photo" style="display: none" id="file-control" />
                         </form>
                     </div>
 
@@ -120,41 +120,11 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script type="text/javascript" src="/js/profile-photo.js"></script>
+
 <script type="text/javascript">
 $(document).ready(function() {
     $(".setting").addClass('active');
-
-    $("#form-profile").submit(function(e) {
-        e.preventDefault();
-
-        // check password match
-        if ($("#new_password").val() != $("#verify_password").val()) {
-            showNotification('bottom', 'center', 'danger', "Password doesn't match", 'pe-7s-bell');
-            return false;
-        }
-        $.post('/user/update', $(this).serialize(), function(d) {
-            if (d.status.trim() == 'success') {
-                if ($("#btn-submit").data('opt') == 'update-job-profile') {
-                    location.replace('/applicant/resume-page');
-                } else {
-                    var msg = "Your profile has been successfully updated!";
-                    showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
-                }
-            } else {
-                showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
-            }
-        }, 'JSON');
-    });
-
-
-    $("#change-pic").click(function(e) {
-        e.preventDefault();
-        $("#file-control").click();
-    });
-
-    $("#file-control").change(function() {
-        $("#form-passport-upload").submit();
-    });
-})
+});
 </script>
 {% endblock %}
