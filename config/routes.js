@@ -114,6 +114,8 @@ module.exports.routes = {
 
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',
 
+    'GET /proctor/session': 'ProctorSessionController.getProctorSession',
+
     'POST /proctor/accept-test': 'ProctorRecordController.acceptTest',
 
     'POST /proctor/reject-test': 'ProctorRecordController.rejectTest',
