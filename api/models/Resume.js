@@ -91,8 +91,13 @@ module.exports = {
             type: 'string'
         },
 
-        passport: {
+        photo: {
             type: 'string'
+        },
+
+        photo_status: {
+            type: 'boolean',
+            defaultsTo: 'false'
         },
 
         profile_status: {

@@ -127,11 +127,12 @@ module.exports = {
     },
 
 
-    uploadPassport: function(req, res) {
+    // candidate's profile photo
+    uploadPhoto: function(req, res) {
         var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
         var filename;
-        req.file('passport').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_passports/'),
+        req.file('photo').upload({
+            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto/'),
             saveAs: function (file, cb) {
                 if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
                     return res.badRequest('Unsupported photo format.');
@@ -140,14 +141,20 @@ module.exports = {
                 filename = req.param('photo_title') + "_" + req.session.userId + '.' + ext;
                 return cb(null, filename);
             },
-            maxBytes: 16 * 1024 * 1024
+            maxBytes: 2 * 1024 * 1024
         },
         function (err) {
             if (err) {
-                return res.badRequest(err);
+                return res.view('misc/error-page', { error: 'Photo file size must not be more than 2MB', url: '/applicant/resume-page' })
             }
-            Resume.update({ user: req.session.userId }, { passport: filename }).exec(function () {
-                return res.redirect('/applicant/profile');
+            // copy the uploaded photo to the public folder
+            const fs = require('fs');
+            const uploadedpic = require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto') + '/' + filename;
+            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/applicant_profilephoto') + '/' + filename;
+            fs.createReadStream(uploadedpic).pipe(fs.createWriteStream(temp_pic));
+
+            Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
+                return res.redirect('/applicant/resume-page');
             });
         });
     },

@@ -35,6 +35,13 @@ module.exports = {
             sendMail.companyVerification(coy[0]);
             return res.json(200, { status: 'success' });
         });
+    },
+
+    cancel: function(req, res) {
+        var id = req.param('id');
+        CompanyRequest.update({ id: id }, { status: 'Cancelled' }).exec(function(err, coy) {
+            return res.json(200, { status: 'success' });
+        });
     }
 };
 

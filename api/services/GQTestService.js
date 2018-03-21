@@ -118,9 +118,6 @@ module.exports = {
                         } else {
                             _tests = 0;
                         }
-                        if (tests[0] === undefined) {
-                            console.log(apt_result)
-                        }
                         candidates.push({
                             id: apt_result.user,
                             fullname: tests[0].candidate.fullname,
