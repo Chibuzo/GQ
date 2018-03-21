@@ -49,7 +49,11 @@ config/email.js
 assets/logos/*
 assets/csv-files/*
 assets/applicant_videos/*
+<<<<<<< HEAD
 assets/applicant_passports/*
+=======
+assets/applicant_profilephoto/*
+>>>>>>> 871d67a868aac3b72365a6e077a5ea64a540cf85
 assets/cbt-images/*
 assets/proctorFiles/*
 assets/textexcel/*

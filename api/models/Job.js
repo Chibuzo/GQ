@@ -113,7 +113,7 @@ module.exports = {
         },
 
         status: {
-            type: 'string', // Active, Expired
+            type: 'string', // Active, Expired, Deleted
             defaultsTo: 'Active'
         }
     }

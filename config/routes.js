@@ -43,7 +43,7 @@ module.exports.routes = {
     //'POST /applicant/add-video': 'ApplicantController.uploadVideo',    //--> deprecated
     'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
-    'POST /applicant/add-passport': 'ApplicantController.uploadPassport',
+    'POST /applicant/add-profilephoto': 'ApplicantController.uploadPhoto',
 
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
@@ -144,6 +144,8 @@ module.exports.routes = {
     'GET /company-request/view-requests': 'CompanyRequestController.viewPendingRequests',
 
     'POST /company-request/approve': 'CompanyRequestController.approve',
+
+    'GET /company-request/reject': 'CompanyRequestController.cancel',
 
     'POST /company/update-details': 'CompanyController.updateDetails',
 

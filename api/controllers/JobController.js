@@ -31,7 +31,7 @@ module.exports = {
     // for companies
 	viewJobs: function(req, res) {
         var coy_id = req.session.coy_id;
-        Job.find({ company: coy_id }).populate('category').populate('applications').populate('poster').exec(function(err, jobs) {
+        Job.find({ company: coy_id, status: 'Active' }).populate('category').populate('applications').populate('poster').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().exec(function (err, categories) {
                 return res.view('company/manage-jobs', { jobs: jobs, jobcategories: categories });
@@ -156,7 +156,7 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date(); //.toISOString();
-        Job.find({ closing_date: { '>=': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ closing_date: { '>=': today }, status: 'Active' }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
@@ -185,7 +185,7 @@ module.exports = {
         var category_id = req.param('id');
         var today = new Date().toISOString();
 
-        Job.find({ category: category_id, closing_date: { '>=': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ category: category_id, status: 'Active', closing_date: { '>=': today } }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
             //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
@@ -278,7 +278,7 @@ module.exports = {
         }
 
         var job_id =  req.param('job_id');
-        Job.find({ id: job_id }).exec(function(err, job) {
+        Job.find({ id: job_id, status: 'Active' }).exec(function(err, job) {
             // let's prevent companies from viewing this data while the job is still active
             var today = new Date().toISOString();
             if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
@@ -348,7 +348,9 @@ module.exports = {
         if (!req.session.coy_id) return;
         Job.find({ id: id }).populate('applications').exec(function(err, job) {
             if (job[0].applications.length < 1) {
-                return res.json(200, { status: 'error', msg: "You can't delete this job at this time" });
+                // soft delete
+                Job.update({ id: id }, { status: 'Deleted' }).exec(function() {});
+                return res.json(200, { status: 'success', msg: "You can't delete this job at this time" });
             } else {
                 Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
                     if (err) return;
