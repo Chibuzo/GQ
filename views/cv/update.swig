@@ -49,10 +49,11 @@
 	}
 
 	.cell {
-		opacity: 0;
-		position: absolute !important;
-		/*right: -1500px;*/
-		/*z-index: -2;*/
+		/*opacity: 0;*/
+		position: fixed !important;
+		left:-60px;
+		top:122px;
+		z-index: 20000;
 	}
 
 	/* CBT Styles */
@@ -102,6 +103,20 @@
 		}
 	}
 </style>
+	<div class="cell">
+		<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
+			<video id="proctor-video" width="320" height="240" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+			<canvas id="proctor-canvas" width="320" height="240" style="position: absolute; top: 0; left: 0"></canvas>
+		</div>
+	</div>
+
+	<div class="cell">
+		<div id="vol-meter"></div>
+
+		<div class="stats">
+
+		</div>
+	</div>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -137,21 +152,6 @@
 							</div>
 						</div>
 					</div><br>
-
-					<div class="cell">
-						<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
-							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-							<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
-						</div>
-					</div>
-
-					<div class="cell">
-						<div id="vol-meter"></div>
-
-						<div class="stats">
-
-						</div>
-					</div>
 
 					<div class="content">
 						<ul class="nav nav-tabs">
@@ -226,183 +226,183 @@
 
 											<div class="text-center">
 												<div class="col-md-12"><br>
-													<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+													<button class="btn btn-info" id="retake-test">Retake Test</button>
 												</div>
 											</div>
 										</div>
+									</div>
 
-										<div class="{{ test_visibility }}" id="test-div">
-											<div class="text-center"><br>
+									<div class="{{ test_visibility }}" id="test-div">
+										<div class="text-center"><br>
 
-												<div id="test-notice">
-													<h3>Test Instruction</h3>
-													<p><i>[60] Minutes - [60] Questions</i></p>
-													<p>The GetQualified Assessment is administered online and the purpose is to test your basic problem solving and verbal reasoning abilities. In combination with other important elements of your job applications this assessment helps us, and potential employers, determine your suitability for an advertised role. Please note, this test is free of charge.</p>
-													<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
-													<p class="text-left"><br>
-														<ol class="text-left">
-															<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
-															<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
-															<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
-															<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
-															<li>Please note that you are to take this test on your own, WITH NO OUTSIDE ASSISTANCE.</li>
-															<li>Ensure you are in a well lit, QUIET room and ALONE. The presence of others and certain background noises may adversely affect your result.</li>
-															<li>Any irregularities observed while taking the test could lead to your test score being rejected, hence preventing you from being able to apply for jobs through our platform.</li>
-															<li>Your test is timed and will automatically be submitted upon expiration of the time limit. Upon completion, your score will immediately appear on the screen and saved in your Get Qualified profile </li>
-														</ol>
-													</p><br>
-													<p>Proceed to take the test and Good luck!</p>
-													<br>
-													<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
-												</div>
+											<div id="test-notice">
+												<h3>Test Instruction</h3>
+												<p><i>[60] Minutes - [60] Questions</i></p>
+												<p>The GetQualified Assessment is administered online and the purpose is to test your basic problem solving and verbal reasoning abilities. In combination with other important elements of your job applications this assessment helps us, and potential employers, determine your suitability for an advertised role. Please note, this test is free of charge.</p>
+												<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
+												<p class="text-left"><br>
+													<ol class="text-left">
+														<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
+														<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
+														<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
+														<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
+														<li>Please note that you are to take this test on your own, WITH NO OUTSIDE ASSISTANCE.</li>
+														<li>Ensure you are in a well lit, QUIET room and ALONE. The presence of others and certain background noises may adversely affect your result.</li>
+														<li>Any irregularities observed while taking the test could lead to your test score being rejected, hence preventing you from being able to apply for jobs through our platform.</li>
+														<li>Your test is timed and will automatically be submitted upon expiration of the time limit. Upon completion, your score will immediately appear on the screen and saved in your Get Qualified profile </li>
+													</ol>
+												</p><br>
+												<p>Proceed to take the test and Good luck!</p>
+												<br>
+												<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
 											</div>
+										</div>
 
-											<!-- TEST CONTAINER -->
-											<div class="row test">
-												<div class="col-md-12 overlay-container">
-													<div class="alert alert-warning text-center invisible" id="notification-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
-													<div class="test-overlay"></div>
+										<!-- TEST CONTAINER -->
+										<div class="row test">
+											<div class="col-md-12 overlay-container">
+												<div class="alert alert-warning text-center invisible" id="notification-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
+												<div class="test-overlay"></div>
 
-													<div class="row">
-														<h3 class="test-title text-center"></h3>
-													</div>
-
-													<div class="row">
-														<div id="instructions" class="col-md-10 col-md-offset-1">
-															<div class="instruction"></div>
-															<div class="text-center">
-																<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
-															</div>
-														</div>
-													</div>
-
-													<div class="row inner-test-div" style="display: none;">
-														<div class="col-md-7">
-															<div class="col-md-9 col-sm-12 col-xs-12">
-																<div class="question"></div>
-																<div class="question-image"></div>
-																<div class="options">
-																	<ul class="opts">
-																		<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
-																		<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
-																		<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
-																		<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
-																		<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
-																	</ul>
-																</div>
-															</div>
-														</div>
-
-														<div class="col-md-5">
-
-															<!-- Timer -->
-															<div class="row test-panel-text text-center">
-																<span><strong>Time Remaining: </strong></span>
-																<div id="countdowntimer"></div>
-															</div>
-
-															<hr>
-
-															<!-- Invigilation Score -->
-															<div class="row">
-																<div class="col-sm-8 col-sm-offset-2 col-xs-12">
-																	<div class="invigilation-report test-panel-text">
-																		<div><strong>Invigilation Score:</strong></div>
-																	</div>
-
-																	<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
-																	  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; ">
-																		{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
-																	  </div>
-																	</div>
-																</div>
-															</div>
-
-															<hr>
-
-															<div class="row">
-																<div class="col-md-12">
-																	<div class="row" style="text-align: center;font-weight: bold;">
-																		Question Key:
-																	</div>
-
-																	<div class="row">
-																		<div class="col-xs-3">
-																			<p class="key-text">
-																				Answered:
-																			</p>
-																			<div class="question-num-base question-key" style="background-color: #99cc66;"></div>
-																		</div>
-
-																		<div class="col-xs-3">
-																			<p class="key-text">
-																				Skipped:
-																			</p>
-																			<div class="question-num-base question-key" style="background-color: #c9302c;"></div>
-																		</div>
-
-																		<div class="col-xs-3">
-																			<p class="key-text">
-																				Current:
-																			</p>
-																			<div class="question-num-base question-key" style="background-color: #A37F2D"></div>
-																		</div>
-
-																		<div class="col-xs-3">
-																			<p class="key-text">
-																				Unanswered:
-																			</p>
-																			<div class="question-num-base question-key"></div>
-																		</div>
-
-																	</div>
-																</div>
-															</div>
-
-															<hr>
-
-															<div class="row">
-																<!-- THIS IS HIDDEN -->
-																<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
-																<div class="col-md-12">
-																	<div class="question-nums row">
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<div class="row nav-row inner-test-div" style="display: none;">
-
-														<div class="col-md-7">
-															<div class="nav-btns">
-																<button class="btn btn-info btn-fill" id="prev-question"><i class="fa fa-caret-left"></i>Prev</button>
-																<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i></button>
-															</div>
-														</div>
-
-														<div class="col-md-5">
-															<div class="nav-btns" style="text-align: center">
-																<button class="btn btn-primary btn-fill" id="submit-test">Submit Section </button>
-															</div>
-														</div>
-
-													</div>
-
+												<div class="row">
+													<h3 class="test-title text-center"></h3>
 												</div>
-												<div class="test-blocked-screen hidden" style="margin-top: 15px">
-													<div class="alert alert-danger">
+
+												<div class="row">
+													<div id="instructions" class="col-md-10 col-md-offset-1">
+														<div class="instruction"></div>
 														<div class="text-center">
-															<br><i class="fa fa-ban fa-4x"></i>
-															<br><br><h4>Hi {{ resume.fullname }},<br><br>Your microphone and webcam MUST grant access to this page before you can proceed with the test.</h4>
-															<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
+															<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
 														</div>
 													</div>
-													<span id="integrity-score" class="hidden"></span>
 												</div>
+
+												<div class="row inner-test-div" style="display: none;">
+													<div class="col-md-7">
+														<div class="col-md-9 col-sm-12 col-xs-12">
+															<div class="question"></div>
+															<div class="question-image"></div>
+															<div class="options">
+																<ul class="opts">
+																	<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
+																	<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
+																	<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
+																	<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
+																	<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
+																</ul>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-5">
+
+														<!-- Timer -->
+														<div class="row test-panel-text text-center">
+															<span><strong>Time Remaining: </strong></span>
+															<div id="countdowntimer"></div>
+														</div>
+
+														<hr>
+
+														<!-- Invigilation Score -->
+														<div class="row">
+															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
+																<div class="invigilation-report test-panel-text">
+																	<div><strong>Invigilation Score:</strong></div>
+																</div>
+
+																<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
+																  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; ">
+																	{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
+																  </div>
+																</div>
+															</div>
+														</div>
+
+														<hr>
+
+														<div class="row">
+															<div class="col-md-12">
+																<div class="row" style="text-align: center;font-weight: bold;">
+																	Question Key:
+																</div>
+
+																<div class="row">
+																	<div class="col-xs-3">
+																		<p class="key-text">
+																			Answered:
+																		</p>
+																		<div class="question-num-base question-key" style="background-color: #99cc66;"></div>
+																	</div>
+
+																	<div class="col-xs-3">
+																		<p class="key-text">
+																			Skipped:
+																		</p>
+																		<div class="question-num-base question-key" style="background-color: #c9302c;"></div>
+																	</div>
+
+																	<div class="col-xs-3">
+																		<p class="key-text">
+																			Current:
+																		</p>
+																		<div class="question-num-base question-key" style="background-color: #A37F2D"></div>
+																	</div>
+
+																	<div class="col-xs-3">
+																		<p class="key-text">
+																			Unanswered:
+																		</p>
+																		<div class="question-num-base question-key"></div>
+																	</div>
+
+																</div>
+															</div>
+														</div>
+
+														<hr>
+
+														<div class="row">
+															<!-- THIS IS HIDDEN -->
+															<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
+															<div class="col-md-12">
+																<div class="question-nums row">
+																</div>
+															</div>
+														</div>
+													</div>
+												</div>
+
+												<div class="row nav-row inner-test-div" style="display: none;">
+
+													<div class="col-md-7">
+														<div class="nav-btns">
+															<button class="btn btn-info btn-fill" id="prev-question"><i class="fa fa-caret-left"></i>Prev</button>
+															<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i></button>
+														</div>
+													</div>
+
+													<div class="col-md-5">
+														<div class="nav-btns" style="text-align: center">
+															<button class="btn btn-primary btn-fill" id="submit-test">Submit Section </button>
+														</div>
+													</div>
+
+												</div>
+
 											</div>
-											<!-- test row end -->
+											<div class="test-blocked-screen hidden" style="margin-top: 15px">
+												<div class="alert alert-danger">
+													<div class="text-center">
+														<br><i class="fa fa-ban fa-4x"></i>
+														<br><br><h4>Hi {{ resume.fullname }},<br><br>Your microphone and webcam MUST grant access to this page before you can proceed with the test.</h4>
+														<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
+													</div>
+												</div>
+												<span id="integrity-score" class="hidden"></span>
+											</div>
 										</div>
+										<!-- test row end -->
 									</div>
 								{% else %}
 									<div><div class="alert alert-warning">We've detected that you don't have a profile photo yet. Please upload a profile photo to continue with the test</div></div>
