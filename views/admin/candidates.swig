@@ -18,6 +18,10 @@
 		margin-top: 20px;
 	}
 
+	#profile-pic .col-md-6 img {
+		width: 100%;
+	}
+
 	#photos .col-md-6 img {
 		width: 100%;
 	}
