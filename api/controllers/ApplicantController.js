@@ -115,8 +115,15 @@ module.exports = {
                 if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
                     Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
                 }
+                return res.ok();
             });
         }
+    },
+
+
+    deleteYoutubeVideo: function(req, res) {
+        Youtube.deleteVideo(req.param('video_id'));
+        return res.ok();
     },
 
 
