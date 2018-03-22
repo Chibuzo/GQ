@@ -638,7 +638,7 @@ function startProctor() {
             streamHeight: 240,
             ignoreTrack: false,
             takeInitialSnapshot: true
-        }
+        },
 
         handleOutdatedBrowser: function() {
             alert('Please Update your browser to the latest version.');
