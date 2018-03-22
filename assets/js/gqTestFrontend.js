@@ -225,7 +225,9 @@ function saveAnswer() {
     }
 
     // save test state
-    localStorage.setItem('integrity_score', IntegrityScore.get());
+    var proctorFeedback = PROCTOR.getFeedback();
+
+    localStorage.setItem('integrity_score', proctorFeedback.integrityScore);
 }
 
 
@@ -262,8 +264,6 @@ $("#submit-test").click(function(e) {
 
         saveAnswer();
 
-        SingleFaceTracker.clearTimer();
-
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
             submitAndLoadNext();
             return false;
@@ -290,16 +290,20 @@ function submitTest() {
         submitGQAptitudeTest();
         return false;
     }
-    var integrity_score = IntegrityScore.get();
+    var proctorFeedback = PROCTOR.getFeedback();
 
-    var invigilationTracking = InvigilationTracker.getAll();
+    var invigilationTracking = {
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
+    };
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
@@ -331,15 +335,19 @@ function submitAndLoadNext(next) {
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
-    var integrity_score = IntegrityScore.get();
-    var invigilationTracking = InvigilationTracker.getAll();
+    var proctorFeedback = PROCTOR.getFeedback();
 
+    var invigilationTracking = {
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
+    };
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
@@ -359,14 +367,19 @@ function submitGQAptitudeTest() {
     GQTestStatus.stopProgress();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-    var integrity_score = IntegrityScore.get();
 
-    var invigilationTracking = InvigilationTracker.getAll();
+    var proctorFeedback = PROCTOR.getFeedback();
+
+    var invigilationTracking = {
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
+    };
 
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
@@ -528,8 +541,6 @@ window.addEventListener('online', () => {
 
     resumeCountdownTimer();
     GQTestStatus.startProgress();
-    SingleFaceTracker.setCounter();
-    SingleFaceTracker.startTimer();
 });
 
 window.addEventListener('offline', () => {
@@ -541,7 +552,6 @@ window.addEventListener('offline', () => {
 
     PROCTOR.stop();
     GQTestStatus.stopProgress();
-    SingleFaceTracker.clearTimer();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
@@ -568,13 +578,6 @@ function startTimer() {
         format: "%H:%M:%S", // Format to show time in,
         callback: submitTest // If duration is set, this function is called after `duration` has elapsed
     });
-    //$("#hms_timer").countdowntimer({
-    //    hours : hrs,
-    //    minutes : mins,
-    //    seconds: 0,
-    //    size : "md",
-    //    timeUp: submitTest
-    //});
 }
 
 function destroyCountdownTimer() {
@@ -603,118 +606,117 @@ function resumeCountdownTimer() {
 
 // ------- END TIMER FUNCTIONS ------ //
 
-// ----- START FACE DETECTION FUNCTIONS ---- //
 
-var SingleFaceTracker = (function() {
-    var faceTrackedCount;
-    var timerId
 
-    var self = this;
-
-    return {
-        setCounter: function() {
-            faceTrackedCount = 0;
-        },
-
-        incrementCounter: function() {
-            faceTrackedCount++;
-        },
-
-        ensureFaceTracked: function() {
-            var _faceTrackedCount = faceTrackedCount;
-            faceTrackedCount = 0;
-
-            if (_faceTrackedCount <= 0) {
-                addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
-                    timer: 10000
-                });
-                IntegrityScore.update(-5);
-                InvigilationTracker.incrementNoFaceCount();
-                return;
-            }
-        },
-
-        startTimer: function() {
-            timerId = setInterval(this.ensureFaceTracked, 60000);
-        },
-
-        clearTimer: function() {
-            clearInterval(timerId);
-        }
-    };
-})();
-
-// ----- END FACE DETECTION FUNCTIONS ---- //
-
-// ----- START INTEGRITY SCORE FUNCTIONS ---- //
-
-var IntegrityScore = (function() {
-    var integrityScore = 100;
-
-    var updateIntegrityBar = function() {
-        $("#integrity-score").text(integrityScore);
-        if (integrityScore < 70 && integrityScore > 55) {
-            $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
-        }
-        else if (integrityScore < 55) {
-            $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
-        }
-        $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+var updateIntegrityBar = function(integrityScore) {
+    $("#integrity-score").text(integrityScore);
+    if (integrityScore < 70 && integrityScore > 55) {
+        $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
     }
-
-    return {
-        update: function(value) {
-            integrityScore = integrityScore + value;
-            integrityScore  = integrityScore < 0 ? 0 : integrityScore;
-            updateIntegrityBar();
-        },
-
-        reset: function() {
-            integrityScore = 100;
-        },
-
-        get: function() {
-            return integrityScore;
-        }
-    };
-})();
-
-// ----- END INTEGRITY SCORE FUNCTIONS ---- //
-
-// ----- START INVIGILATION COUNT/TRACK FUNCTIONS ---- //
-
-var InvigilationTracker = (function() {
-    var noFace = 0;
-    var noise = 0;
-    var multipleFaces = 0;
-
-    return {
-        incrementNoFaceCount: function() {
-            noFace++;
-        },
-
-        incrementNoiseCount: function() {
-            noise++;
-        },
-
-        incrementMultipleFacesCount: function() {
-            multipleFaces++;
-        },
-
-        reset: function() {
-            noFace = 0;
-            noise = 0;
-            multipleFaces = 0;
-        },
-
-        getAll: function() {
-            return {
-                noFace: noFace,
-                noise: noise,
-                multipleFaces: multipleFaces
-            }
-        }
+    else if (integrityScore < 55) {
+        $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
     }
-})();
+    $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+}
 
-// ----- END INVIGILATION COUNT/TRACK  FUNCTIONS ---- //
+function startProctor() {
+    return new Proctor({
+        detectionLapse: 60,
+
+        scores: {
+            noFace: -5,
+            multiFace: -10,
+            ambientNoise: -2,
+            integrityScore: 100,
+        },
+
+        handleOutdatedBrowser: function() {
+            alert('Please Update your browser to the latest version.');
+        },
+
+        handleSnapshotUpload: function(data64) {
+            console.log("Taking a snapshot");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorPicture",
+                data: {
+                    imgBase64: data64
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function(err) {
+                    console.error("Failed to upload Proctor Picture.");
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
+        },
+
+        handleAudioUpload: function(data64) {
+            console.log("recording audio");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorAudio",
+                data: {
+                    data: data64
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function(err) {
+                    console.error("Failed to upload Proctor Audio.");
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
+        },
+
+        onNoFaceTracked: function() {
+            console.log("onNoFaceTracked");
+            addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
+                timer: 10000
+            });
+        },
+
+        onMultiFaceTracked: function() {
+            console.log('Proctor: Multiple faces detected');
+            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
+                timer: 10000
+            });
+        },
+
+        onAmbientNoiseDetection: function() {
+            console.log('Proctor: Ambient noise detected');
+            addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
+                timer: 10000
+            });
+        },
+
+        onMicPermissionDenied: function() {
+            console.warn('Proctor (Perms): Microphone needed for this test');
+            blockTest();
+        },
+
+        onCamPermissionDenied: function() {
+            console.warn('Proctor (Perms): Webcam needed for this test');
+            blockTest();
+        },
+
+        onCamNotDetected: function() {
+            console.warn('Proctor: This device does not have a webcam');
+            blockTest();
+        },
+
+        onMicNotDetected: function() {
+            console.warn('Proctor: This device does not have a microphone');
+            blockTest();
+        },
+
+        proctorReady: function() {
+            console.log('Proctor is ready.');
+            startTest();
+            updateIntegrityBar(100);
+        },
+
+        feedback: function(feedback) {
+            updateIntegrityBar(feedback.integrityScore);
+        }
+    });
+}
