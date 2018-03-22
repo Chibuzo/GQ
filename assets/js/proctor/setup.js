@@ -37,7 +37,7 @@
             /**
              * @summary Video id or class
              */
-            element: '#proctor-video',
+            element: '#proctor-canvas',
             /**
              * @summary Canvas id or class
              */
@@ -56,7 +56,7 @@
              * Take snaphot on proctor intialization and face tracked
              * @type boolean
              */
-            takeInitialSnapshot: true
+            takeInitialSnapshot: false
         },
         /**
          * No face was detected
@@ -263,8 +263,6 @@
         this.opts.showLogs && console.log(log);
     }
 
-
-
     proctor.prototype.init = function() {
         var pc = this; pc.stopped = false;
 
@@ -317,7 +315,6 @@
             }
         };
     },
-
     proctor.prototype.proctor = function() {
         !this.opts.video.ignoreTrack && this.beginTrack(),
         !this.opts.audio.ignoreRecording && this.prepareRecorder();
@@ -330,7 +327,7 @@
 
         var tracker = new tracking.ObjectTracker(['face']);
         tracker.setInitialScale(4);
-        tracker.setStepSize(2);
+        tracker.setStepSize(1.4);
         tracker.setEdgesDensity(0.1);
         tracker.setFPS(pc.opts.video.fps);
 

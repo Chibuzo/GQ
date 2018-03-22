@@ -630,6 +630,16 @@ function startProctor() {
             integrityScore: 100,
         },
 
+        video: {
+            element: '#proctor-video',
+            canvas: '#proctor-canvas',
+            fps: 30,
+            streamWidth: 320,
+            streamHeight: 240,
+            ignoreTrack: false,
+            takeInitialSnapshot: true
+        }
+
         handleOutdatedBrowser: function() {
             alert('Please Update your browser to the latest version.');
         },
