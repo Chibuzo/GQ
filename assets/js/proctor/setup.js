@@ -1,68 +1,83 @@
-;(function($, win, doc) {
+;(($, win, doc) => {
     'use strict';
 
-    if(!$) {
-        console.warn('Proctor: No library found. Use jQuery or MLIB');
-        return;
-    }
+    if(!$) return console.warn('Proctor: No library found. Use jQuery or MLIB');
 
     var defaults, proctor;
 
     defaults = {
+        detectionLapse: 10, // lapse between general detections (audio, face)
         /**
-         * @summary Proctor INtegrity score per instance
+         * @summary Score descriptions
          */
-        integrityScore: 100,
-        audioSensitivity: 4,
-        /**
-         * @summary Ignore Recording
-         */
-        ignoreRecording: false,
-        /**
-         * @summary Ignore Tracking
-         */
-        ignoreTrack: false,
-        /**
-         * @summary Video if or class
-         */
-        video: '#proctor-canvas',
-        /**
-         * @summary Canvas id or class
-         */
-        cavnas: '#proctor-canvas',
+        scores: {
+            noFace: 0,
+            multiFace: 0,
+            ambientNoise: 0,
+            integrityScore: 100,
+        },
 
-        audioFPS: 1,
-        videoFPS: 2,
+        audio: {
+            fps: 30,
+            /**
+             * Audio sensitivity to trigger recording
+             */
+            sensitivity: 4,
+            /**
+             * @summary Ignore Recording
+             */
+            ignoreRecording: false,
+            /**
+             * Duration of audio recoding (Measured in ms)
+             */
+            recordingDuration: 5000
+        },
 
-        streamWidth: 320,
-        streamHeight: 240,
+        video: {
+            /**
+             * @summary Video id or class
+             */
+            element: '#proctor-canvas',
+            /**
+             * @summary Canvas id or class
+             */
+            canvas: '#proctor-canvas',
+            /**
+             * Video operational frames per second
+             */
+            fps: 30,
+            streamWidth: 320,
+            streamHeight: 240,
+            /**
+             * @summary Ignore Tracking
+             */
+            ignoreTrack: false,
+            /**
+             * Take snaphot on proctor intialization and face tracked
+             * @type boolean
+             */
+            takeInitialSnapshot: false
+        },
         /**
-         * Perform a function on face tracked
+         * No face was detected
          * @type function
          */
-        onFaceTracked: function() {},
+        onNoFaceTracked: function() {},
         /**
          * Perform a function on multi face tracked
          * @type function
          */
         onMultiFaceTracked: function() {},
         /**
-         * Take snaphot on proctor intialization and face tracked
-         * @type boolean
-         */
-        takeInitialSnapshot: false,
-        /**
          * @summary Do something with the snapshot taken (upload|display...) Data is in base64
          * @type function
          * @param data64 {Object} Image file in base64
          */
-        handleSnapshot: function(data64) {},
+        handleSnapshotUpload: function(data64) {},
         /**
          * Ambient noise detection
          */
-        onAmbientNoiseDetection: function() {
-
-        },
+        onAmbientNoiseDetection: function(pitch, meter) {},
         /**
          * @summary This plugin is on the bleeding edge of tech. Gracefully handle exceptions
          */
@@ -86,9 +101,9 @@
         /**
          * Proctor ready
          */
-        proctorReady: function() {
+        proctorReady: function() {},
 
-        }
+        showLogs: false
     };
 
     if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
@@ -231,17 +246,21 @@
 
     proctor = function(options) {
         // Initialize proctor and begin instance
-        this.opts = $.extend({}, defaults, options);
+        this.opts = $.extend(true, defaults, options);
 
-        this.opts.takeInitialSnapshot && (this.initialSnap = false);
+        this.opts.video.takeInitialSnapshot && (this.initialSnap = false);
 
-        this.$video = $(this.opts.video), this.video = this.$video[0]
-        this.$canvas = $(this.opts.canvas), this.canvas = this.$canvas[0];
+        this.$video = $(this.opts.video.element), this.video = this.$video[0]
+        this.$canvas = $(this.opts.video.canvas), this.canvas = this.$canvas[0];
 
-        if((!this.video || !this.canvas) && !this.opts.ignoreTrack)
+        if((!this.video || !this.canvas) && !this.opts.video.ignoreTrack)
             return console.warn('Proctor: Video or Canvas not found');
 
         return this.init();
+    }
+
+    proctor.prototype.log = function(log) {
+        this.opts.showLogs && console.log(log);
     }
 
     proctor.prototype.init = function() {
@@ -252,31 +271,30 @@
 
         checkDeviceSupport(function() {
             // log device has no cam
-            !hasWebcam && (pc.opts.onCamNotDetected(), console.log('Proctor: Webcam not found'));
+            !hasWebcam && (pc.opts.onCamNotDetected(), pc.log('Proctor: Webcam not found'));
             // log device has no mic
-            !hasMicrophone && (pc.opts.onMicNotDetected(), console.log('Proctor: Microphone not found'));
+            !hasMicrophone && (pc.opts.onMicNotDetected(), pc.log('Proctor: Microphone not found'));
 
             // log cam persmission not granted
-            !isWebcamAlreadyCaptured && !pc.opts.ignoreTrack && pc.opts.onCamPermissionDenied(),
+            !isWebcamAlreadyCaptured && !pc.opts.video.ignoreTrack && pc.opts.onCamPermissionDenied(),
             // log mic permission not granted
-            !isMicrophoneAlreadyCaptured && !pc.opts.ignoreRecording && pc.opts.onMicPermissionDenied();
+            !isMicrophoneAlreadyCaptured && !pc.opts.audio.ignoreRecording && pc.opts.onMicPermissionDenied();
 
             if(!hasWebcam || !hasMicrophone) return;
 
             /* handle browser support for tracker and recorder */
-            if((!pc.opts.ignoreRecording && !navigator.getUserMedia) || (!pc.opts.ignoreRecording && !Recorder.isRecordingSupported())) {
+            if((!pc.opts.audio.ignoreRecording && !navigator.getUserMedia) || (!pc.opts.audio.ignoreRecording && !Recorder.isRecordingSupported())) {
                 return pc.opts.handleOutdatedBrowser();
             };
 
             // request webcam and mic permissions
-            if((!isWebcamAlreadyCaptured && !pc.opts.ignoreTrack) || (!isMicrophoneAlreadyCaptured && !pc.opts.ignoreRecording)) return navigator.getUserMedia({audio: true, video: true}, function(stream) { pc.proctor(); }, function(e) {});
+            if((!isWebcamAlreadyCaptured && !pc.opts.video.ignoreTrack) || (!isMicrophoneAlreadyCaptured && !pc.opts.audio.ignoreRecording)) return navigator.getUserMedia({audio: true, video: true}, function(stream) { pc.proctor(); }, function(e) {});
 
             pc.proctor();
         });
 
         return {
             stop: function() {
-                console.log("Proctor Stop.");
                 pc.stopped = true;
                 pc.tracker && pc.tracker.stop();
 
@@ -288,42 +306,90 @@
                 });
 
                 pc.video.srcObject = null;
+
+                pc.recorder.stop(),
+                clearInterval(pc.timerIntervals);
+            },
+            getFeedback: function() {
+                return pc.feedback;
             }
         };
-    }, proctor.prototype.proctor = function() {
-        !this.opts.ignoreTrack && this.beginTrack(),
-        !this.opts.ignoreRecording && this.prepareRecorder();
+    },
+    proctor.prototype.proctor = function() {
+        !this.opts.video.ignoreTrack && this.beginTrack(),
+        !this.opts.audio.ignoreRecording && this.prepareRecorder();
 
         this.beginAudioTracking();
-    }, proctor.prototype.beginTrack = function() {
+    },
+    proctor.prototype.beginTrack = function() {
         var pc = this;
         var context = pc.context = this.canvas.getContext('2d');
 
         var tracker = new tracking.ObjectTracker(['face']);
         tracker.setInitialScale(4);
-        tracker.setStepSize(2);
+        tracker.setStepSize(1.4);
         tracker.setEdgesDensity(0.1);
-        tracker.setFPS(pc.opts.videoFPS);
+        tracker.setFPS(pc.opts.video.fps);
 
         pc.tracker = tracking.track(this.video, tracker, { camera: true });
 
         tracker.on('track', function(event) {
             context.clearRect(0, 0, pc.canvas.width, pc.canvas.height);
 
-            !pc.trackerReady && (pc.trackerReady = true, pc.setProctorReady());
+            !pc.trackerReady && (pc.trackerReady = true, pc.setProctorReady(), pc.log('Proctor: Tracker is ready'));
 
             if(event.data.length === 0) {
                 // nothing was tracked
+                var timer_diff = pc.timerNfT - pc.noFaceT;
+
+                timer_diff >= pc.opts.detectionLapse && (pc.noFaceDetect = false, pc.noFaceT = pc.timerNfT = 0);
+
+                if(timer_diff >= pc.opts.detectionLapse && !pc.noFaceDetect) {
+                    // no face timer recalculation
+                    pc.noFaceT = pc.timerNfT = 0;
+
+                    // Integrity score
+                    pc.noFaceN += 1,
+                    pc.feedback.video.counter.noFace = pc.noFaceN,
+                    pc.integrityScore -= -pc.opts.scores.noFace,
+                    pc.feedback.integrityScore = pc.integrityScore;
+
+                    pc.opts.onNoFaceTracked();
+
+                    pc.noFaceDetect = true;
+                }
             } else {
                 event.data.forEach(function(rect) {
                     pc.onFaceTracked(rect);
-
-                    event.data.length > 1 && pc.onMultiFaceTracked(rect);
-                    event.data.length === 1 && pc.opts.onFaceTracked();
                 });
+
+                var timer_diff = pc.timerMfT - pc.multiFaceT;
+
+                timer_diff >= pc.opts.detectionLapse && (pc.multiFaceDetect = false, pc.multiFaceT = pc.timerMfT = 0);
+
+                if(event.data.length > 1 && timer_diff <= pc.opts.detectionLapse && !pc.multiFaceDetect) {
+                    // multi timer recalculation
+                    pc.multiFaceT = pc.timerMfT = 0;
+
+                    // Integrity score
+                    pc.multiFaceN += 1,
+                    pc.feedback.video.counter.multiFace = pc.multiFaceN,
+                    pc.integrityScore -= -pc.opts.scores.multiFace,
+                    pc.feedback.integrityScore = pc.integrityScore;
+
+                    pc.takeSnapShot(),
+                    pc.opts.onMultiFaceTracked();
+
+                    pc.multiFaceDetect = true;
+                }
+
+                pc.initialSnap === false && (pc.takeSnapShot(), pc.initialSnap = true);
             }
+
+            pc.opts.feedback(pc.feedback);
         });
-    }, proctor.prototype.onFaceTracked = function(rect) {
+    },
+    proctor.prototype.onFaceTracked = function(rect) {
         if(this.stopped === true) return;
 
         this.context.strokeStyle = 'rgba(255, 255, 255, .8)';
@@ -333,31 +399,20 @@
         this.context.strokeRect(rect.x, rect.y, rect.width, rect.height);
         this.context.fillText('x: ' + rect.x + 'px', rect.x + rect.width + 5, rect.y + 11);
         this.context.fillText('y: ' + rect.y + 'px', rect.x + rect.width + 5, rect.y + 22);
-
-        this.initialSnap === false && (this.takeSnapShot(rect), this.initialSnap = true);
-    }, proctor.prototype.onMultiFaceTracked = function(rect) {
-        if(this.stopped === true) return;
-
-        this.takeSnapShot(rect),
-        this.opts.onMultiFaceTracked();
-    }, proctor.prototype.takeSnapShot = function(rect) {
+    },
+    proctor.prototype.takeSnapShot = function() {
         if(this.stopped === true) return;
 
         this.context.drawImage(this.video, 0, 0,
-            this.opts.streamWidth, this.opts.streamHeight);
-        this.opts.handleSnapshot(this.canvas.toDataURL("image/jpeg", 1));
+            this.opts.video.streamWidth, this.opts.video.streamHeight);
+        this.opts.handleSnapshotUpload(this.canvas.toDataURL("image/jpeg", 1));
     };
 
     proctor.prototype.beginAudioTracking = function() {
         var pc = this;
         this.audioContext = null,
         this.meter = null,
-        this.meterWidth = 500,
-        this.meterHeight = 5,
-        this.rafID = null,
         this.mediaStreamSource;
-
-        this.$meter = $("#vol-meter");
 
         // monkeypatch Web Audio
         window.AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -368,35 +423,36 @@
         function drawLoop( time ) {
             if(pc.stopped === true) return;
 
-            /*
-            if(pc.$meter[0]) {
-                pc.$meter.css({
-                    width: pc.meterWidth + 'px',
-                    height: pc.meterHeight + 'px'
-                })
-
-                if (pc.meter.checkClipping())
-                    pc.$meter.css({ background: 'red' })
-                else
-                    pc.$meter.css({ background: 'green' })
-
-                pc.$meter.css({ width: pc.meter.volume * pc.meterWidth * 1.4 + 'px' });
-            }
-            */
-
             var pitch = pc.meter.volume * 100;
 
-            if(pitch >= pc.opts.audioSensitivity) {
-                pc.opts.onAmbientNoiseDetection(),
+            // Update feedback
+            pc.feedback.audio.pitch = pitch,
+            pc.feedback.audio.meter = pc.meter;
+
+            var timer_diff = pc.timerAnT - pc.ambientNoiseT;
+
+            timer_diff >= pc.opts.detectionLapse && (pc.noiseDetect = false, pc.ambientNoiseT = pc.timerAnT = 0);
+
+            if(pitch >= pc.opts.audio.sensitivity && timer_diff <= pc.opts.detectionLapse && !pc.noiseDetect) {
+                // ambient timer recalculation
+                pc.ambientNoiseT = pc.timerAnT = 0;
+                // Integrity score
+                pc.ambientNoiseN += 1,
+                pc.feedback.audio.counter.noise = pc.ambientNoiseN,
+                pc.integrityScore -= -pc.opts.scores.ambientNoise,
+                pc.feedback.integrityScore = pc.integrityScore,
+                // Call ambient noise detected function
+                pc.opts.onAmbientNoiseDetection(pitch, pc.meter),
+                // Start recording noise
+                // Stop recording after 5 seconds
                 pc.recorder.start(), setTimeout(function() {
                     pc.recorder.stop();
-                }, 5000);
+                }, pc.opts.audio.recordingDuration);
+
+                pc.noiseDetect = true;
             }
 
-            // console.log('Proctor: Pitch -> ' + pitch);
-
-            // set up the next visual callback
-            //pc.rafID = window.requestAnimationFrame(drawLoop);
+            pc.opts.feedback(pc.feedback);
         }
 
         try {
@@ -412,7 +468,7 @@
                     "optional": []
                 },
             }, function(stream) {
-                console.log('Proctor: Listening');
+                pc.log('Proctor: Listening');
                 // Create an AudioNode from the stream.
                 pc.mediaStreamSource = pc.audioContext.createMediaStreamSource(stream);
 
@@ -420,13 +476,13 @@
                 pc.meter = createAudioMeter(pc.audioContext);
                 pc.mediaStreamSource.connect(pc.meter);
 
-                // kick off the visual updating
+                // kick off the audio updating/measures
                 limitFPS(function() {
                     drawLoop();
-                }, pc.opts.audioFPS);
+                }, pc.opts.audio.fps);
             }, function(e) {});
         } catch(e) {
-            console.log('Proctor: getUserMedia threw exception :' + e);
+            pc.log('Proctor: getUserMedia threw exception :' + e);
         }
     },
 
@@ -436,32 +492,31 @@
         pc.recorderReady = false;
 
         this.recorder = new Recorder({
-            //wavBitDepth: parseInt(16, 10),
             monitorGain: parseInt(0, 10),
             numberOfChannels: parseInt(1, 10),
-            wavBitDepth: parseInt(8, 10),
+            wavBitDepth: parseInt(16, 10),
             encoderPath: "/js/proctor/waveWorker.min.js"
         });
 
         this.recorder.addEventListener("start", function(e){
             if(pc.stopped === true) return;
-            console.log('Proctor: Recorder is started');
+            pc.log('Proctor: Recorder is started');
         });
         this.recorder.addEventListener("stop", function(e){
-            console.log('Proctor: Recorder is stopped');
+            pc.log('Proctor: Recorder is stopped');
         });
         this.recorder.addEventListener("pause", function(e){
-            console.log('Proctor: Recorder is paused');
+            pc.log('Proctor: Recorder is paused');
         });
         this.recorder.addEventListener("resume", function(e){
-            console.log('Proctor: Recorder is resuming');
+            pc.log('Proctor: Recorder is resuming');
         });
         this.recorder.addEventListener("streamError", function(e){
-            console.log('Proctor: Error encountered: ' + e.error.name );
+            pc.log('Proctor: Error encountered: ' + e.error.name );
         });
         this.recorder.addEventListener("streamReady", function(e){
             pc.recorderReady = true, pc.setProctorReady();
-            console.log('Proctor: Audio stream is ready.');
+            pc.log('Proctor: Audio stream is ready.');
         });
         this.recorder.addEventListener("dataAvailable", function(e){
             if(pc.stopped === true) return;
@@ -470,7 +525,7 @@
             reader.readAsDataURL(dataBlob);
             reader.onloadend = function() {
                 var base64data = reader.result;
-                pc.opts.handleAudio(base64data);
+                pc.opts.handleAudioUpload(base64data);
             }
         });
 
@@ -478,166 +533,61 @@
     };
 
     proctor.prototype.setProctorReady = function() {
-        var proctor = false;
+        var proctor = false, pc = this;
 
         // check if mic/recorder is not ignored and ready
-        proctor = !this.opts.ignoreRecording && this.recorderReady ? true : false;
+        proctor = !this.opts.audio.ignoreRecording && this.recorderReady ? true : false;
         // check if camera/tracker is not ignored and ready
-        proctor = !this.opts.ignoreTrack && this.trackerReady ? true : false;
+        proctor = !this.opts.video.ignoreTrack && this.trackerReady ? true : false;
+
+        if(!proctor || pc.proctorReady === true)
+            return;
 
         // Default on proctor ready state
         proctor && this.opts.proctorReady();
+
+        // Computations
+        this.integrityScore = this.opts.scores.integrityScore,
+        this.ambientNoiseN = this.noFaceN = this.multiFaceN = 0;
+
+        this.noiseDetect = this.noFaceDetect = this.multiFaceDetect = false,
+        // Timer computations for audio tracking
+        this.ambientNoiseT = this.noFaceT = this.multiFaceT = 0,
+        // Timers
+        this.timerAnT = this.timerNfT = this.timerMfT = 0,
+        // Timing Intervals
+        this.timerIntervals = setInterval(function() {
+            pc.timerAnT += 1; pc.timerNfT += 1; pc.timerMfT += 1;
+        }, 1000);
+
+        // Data feedback for creating visuals etc.
+        this.feedback = {
+            integrityScore: this.integrityScore,
+
+            /** Audio Visuals */
+            audio: {
+                fps: this.opts.audio.fps,
+                sensitivity: this.opts.audio.sensitivity,
+                pitch: null,
+                meter: null,
+                counter: {
+                    noise: this.ambientNoiseN
+                }
+            },
+
+            video: {
+                fps: this.opts.video.fps,
+                width: this.opts.video.streamWidth,
+                height: this.opts.video.streamHeight,
+                counter: {
+                    noFace: this.noFaceN,
+                    multiFace: this.multiFaceN
+                }
+            }
+        }
+
+        pc.proctorReady = true;
     };
 
     win.Proctor = proctor;
 })('undefined' != typeof jQuery && jQuery, window, document)
-
-function startProctor() {
-    /**
-     * integrity score measurement
-     * You can use the (onMultiFaceTracked) option for the (-15) deduction on track
-     */
-    IntegrityScore.reset();
-
-    InvigilationTracker.reset();
-
-    // This part will only enable recording/ambient noise ish -> Once every minute as requested
-    var aN = 0, timer = Math.floor(new Date().getTime() / 1000);
-    setInterval(function() {
-        timer += 1;
-    }, 1000);
-
-    var proctor = new Proctor({
-        ignoreRecording: false,
-        ignoreTrack: false,
-
-        video: '#proctor-video',
-        canvas: '#proctor-canvas',
-
-        takeInitialSnapshot: true,
-
-        audioSensitivity: 4, // from 0 - 10
-
-        audioFPS: 1, // from 0(cpu available fps) - 60(hz)
-        videoFPS: 10, // from 0(cpu available fps) - 60(hz)
-
-        streamWidth: 320,
-        streamHeight: 240,
-
-        handleOutdatedBrowser: function() {
-            alert('Update your browser ma niggah');
-        },
-
-        handleSnapshot: function(data64) {
-            $.ajax({
-                type: "POST",
-                url: "/gqtest/uploadProctorPicture",
-                data: {
-                    imgBase64: data64
-                }, success: function(data){
-                    // Some success ish blah blah
-                }, error: function(err) {
-                    console.error("Failed to upload Proctor Picture.");
-                }
-            }).done(function(msg) {
-                // Some message blah blah
-            });
-        },
-        handleAudio: function(data64) {
-            $.ajax({
-                type: "POST",
-                url: "/gqtest/uploadProctorAudio",
-                data: {
-                    data: data64
-                }, success: function(data){
-                    // Some success ish blah blah
-                }, error: function(err) {
-                    console.error("Failed to upload Proctor Audio.");
-                }
-            }).done(function(msg) {
-                // Some message blah blah
-            });
-        },
-
-        onFaceTracked: function() {
-            // on face detected
-            console.log('Proctor: Single face detected');
-
-            console.log('Proctor: Single face detected');
-
-            if (!GQTestStatus.isInProgress()) {
-                return;
-            }
-
-            SingleFaceTracker.incrementCounter();
-        },
-
-        // Integrity scoring can be applied here
-        onMultiFaceTracked: function() {
-            // on multi face detected
-            console.log('Proctor: Multiple faces detected');
-
-            if (!GQTestStatus.isInProgress()) {
-                return;
-            }
-
-            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
-                timer: 10000
-            });
-            console.log("Deducting -5 for multiple faces");
-            IntegrityScore.update(-5);
-            InvigilationTracker.incrementMultipleFacesCount();
-        },
-
-        // Integrity score deduction can be applied here
-        onAmbientNoiseDetection: function() {
-            if (!GQTestStatus.isInProgress()) {
-                return;
-            }
-            // If 60s have passed, deduct from Integrity score
-            if((timer - aN) > 60) {
-                addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
-                    timer: 10000
-                });
-                console.log('Proctor: Ambient noise detected');
-                // ambient timer recalculation
-                aN = Math.floor(new Date().getTime() / 1000);
-                // Integrity score
-                IntegrityScore.update(-2);
-                InvigilationTracker.incrementNoiseCount();
-            }
-        },
-
-        onMicPermissionDenied: function() {
-            console.warn('Proctor (Perms): Microphone needed for this test');
-            blockTest();
-        },
-
-        onCamPermissionDenied: function() {
-            console.warn('Proctor (Perms): Webcam needed for this test');
-            blockTest();
-        },
-
-        onCamNotDetected: function() {
-            console.warn('Proctor: This device does not have a webcam');
-            blockTest();
-        },
-
-        onMicNotDetected: function() {
-            console.warn('Proctor: This device does not have a microphone');
-            blockTest();
-        },
-
-        proctorReady: function() {
-            console.log('Proctor is ready.');
-            startTest();
-            SingleFaceTracker.setCounter();
-            SingleFaceTracker.startTimer();
-        }
-    });
-
-    return proctor;
-
-    // You can call this at any time so long as the variable is set
-    // proctor.stop();
-}

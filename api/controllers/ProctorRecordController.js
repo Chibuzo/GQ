@@ -25,7 +25,7 @@ module.exports = {
         ProctorRecord.find({ proctor: proctor_id }).exec(function(err, files) {
             // also fetch profile picture (passport)
             Resume.find({ user: req.param('candidate_id') }).exec(function(err, user) {
-                return res.json(200, { status: 'success', files: files, profile_pic: user[0].passport });
+                return res.json(200, { status: 'success', files: files, profile_pic: user[0].photo });
             });
         });
     },

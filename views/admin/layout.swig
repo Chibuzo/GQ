@@ -99,7 +99,7 @@
                     </a>
                 </li>
 
-                <li class="assessment">
+                <li class="assessment hidden">
                     <a href="/assessments">
                         <i class="pe-7s-news-paper"></i>
                         <p>Assessments</p>
