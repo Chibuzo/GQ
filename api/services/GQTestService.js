@@ -118,9 +118,6 @@ module.exports = {
                         } else {
                             _tests = 0;
                         }
-                        if (tests[0] === undefined) {
-                            console.log(apt_result)
-                        }
 
                         // get all proctor Ids, remove false, and ensure uniq
                         let proctorIds = _(tests).map(function(test) {
