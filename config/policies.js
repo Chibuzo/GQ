@@ -42,7 +42,7 @@ module.exports.policies = {
     },
 
     ResumeController: {
-        //'*': 'isLoggedIn',
+        '*': 'isLoggedIn',
     },
 
     AdminController: {
@@ -75,6 +75,10 @@ module.exports.policies = {
     },
 
     selectedCandidateController: {
+        '*': 'isAdmin'
+    },
+
+    CompanyRequest: {
         '*': 'isAdmin'
     }
 };

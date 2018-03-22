@@ -88,7 +88,7 @@
                                 <div class="author">
                                      <a href="" id="change-pic">
                                      {% if passport.length > 3 %}
-                                         <img class="avatar border-gray" src="/applicant_passports/{{ passport }}" alt="..."/>
+                                         <img class="avatar border-gray" src="/applicant_profilephoto/{{ passport }}" alt="..."/>
                                      {% else %}
                                          <img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
                                      {% endif %}
