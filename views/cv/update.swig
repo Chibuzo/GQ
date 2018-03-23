@@ -49,7 +49,7 @@
 	}
 
 	.cell {
-		opacity: 0;
+		/*opacity: 0;*/
 		position: absolute !important;
 		/*right: -1500px;*/
 		/*z-index: -2;*/
@@ -139,7 +139,7 @@
 					</div><br>
 
 					<div class="cell">
-						<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
+						<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
 							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
 							<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
 						</div>
