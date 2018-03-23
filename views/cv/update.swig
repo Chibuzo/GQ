@@ -50,9 +50,10 @@
 
 	.cell {
 		/*opacity: 0;*/
-		position: absolute !important;
-		/*right: -1500px;*/
-		/*z-index: -2;*/
+		position: fixed !important;
+		left:-60px;
+		top:122px;
+		z-index: 20000;
 	}
 
 	/* CBT Styles */
@@ -102,6 +103,20 @@
 		}
 	}
 </style>
+	<div class="cell">
+		<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
+			<video id="proctor-video" width="320" height="240" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+			<canvas id="proctor-canvas" width="320" height="240" style="position: absolute; top: 0; left: 0"></canvas>
+		</div>
+	</div>
+
+	<div class="cell">
+		<div id="vol-meter"></div>
+
+		<div class="stats">
+
+		</div>
+	</div>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -138,6 +153,7 @@
 						</div>
 					</div><br>
 
+<<<<<<< HEAD
 					<div class="cell">
 						<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
 							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
@@ -153,6 +169,8 @@
 						</div>
 					</div>
 
+=======
+>>>>>>> 92f4c3660f2f7506f5fcf6fd874c2a1c9109b36b
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
@@ -164,11 +182,15 @@
 						  	<div class="tab-pane fade active in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
-									{% include 'includes/resume.swig' %}
-									{% include 'includes/resume-form.swig' %}
-									<span id="candidate_fullname">{{ resume.fullname }}</span>
+										{% include 'includes/resume.swig' %}
+										{% include 'includes/resume-form.swig' %}
+										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
 									</div>
 								</div>
+							</div>
+
+							<div class="tab-pane fade in" id="photo" style="padding-top: 30px">
+								{% include '../applicant/includes/profile-photo.swig' %}
 							</div>
 
 							<div class="tab-pane fade in" id="test">
@@ -219,24 +241,11 @@
 													</tr>
 												</tbody>
 											</table>
-											{#<div class="panel panel-default">#}
-												{#<div class="panel-heading">#}
-													{#{{ test_title }}#}
-												{#</div>#}
 
-												{#<ul class="list-group">#}
-													{#<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>#}
-													{#<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>#}
-													{#<li class="list-group-item">Rank: <span id="rank">{{ result.rank }} of {{ result.candidates }} candidates</span></li>#}
-												{#</ul>#}
-												{#<div class="panel-body">#}
-													{#&#123;&#35;<strong>Note: </strong>You can always pay and retake the test to improve your score...&#35;&#125;#}
-												{#</div>#}
-											{#</div>#}
-
-										<div class="text-center">
-											<div class="col-md-12"><br>
-												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+											<div class="text-center">
+												<div class="col-md-12"><br>
+													<button class="btn btn-info" id="retake-test">Retake Test</button>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -318,12 +327,6 @@
 															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 																<div class="invigilation-report test-panel-text">
 																	<div><strong>Invigilation Score:</strong></div>
-
-																	<!-- TODO: Invigilation Score Number
-																	<span>Invigilation Score: </span>
-																	<span id="invigilation-score">100%</span>
-
-																	-->
 																</div>
 
 																<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
@@ -417,6 +420,7 @@
 												<span id="integrity-score" class="hidden"></span>
 											</div>
 										</div>
+										<!-- test row end -->
 									</div>
 								{% else %}
 									<div><div class="alert alert-warning">We've detected that you don't have a profile photo yet. Please upload a profile photo to continue with the test</div></div>
@@ -448,13 +452,15 @@
 									{% if resume.video_status == true %}
 										<div class="col-md-5">
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
-												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
+											{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
 											{#</video>#}
 											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
 											</div>
+											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
 										</div>
+										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
@@ -462,7 +468,6 @@
 												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
 												<ul class="text-left">
-													<li>Video file type MUST be in .mp4 format</li>
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 3 minutes</li>
 													<li>It is recommended you use a WIFI network to upload your profile video or compress video size before upload.</li>
@@ -471,20 +476,9 @@
 										</div>
 									{% endif %}
 									<input id="select-file" type="file" style="display:none">
-									</div>
 								</div>
-
-							<div class="tab-pane fade in" id="photo" style="padding-top: 30px">
-								{% include '../applicant/includes/profile-photo.swig' %}
 							</div>
 
-
-							{#<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">#}
-									{#<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />#}
-									{#<input type="hidden" name="video_file" value="{{ resume.video_file }}">#}
-									{#<input type="hidden" name="resume_id" value="{{ resume.id }}">#}
-									{#<input type="file" name="video_file" style="display: none" id="file-control" />#}
-								{#</form>#}
 						</div>
 					</div>
 				</div>

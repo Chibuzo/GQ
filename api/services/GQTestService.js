@@ -118,6 +118,21 @@ module.exports = {
                         } else {
                             _tests = 0;
                         }
+
+                        // get all proctor Ids, remove false, and ensure uniq
+                        let proctorIds = _(tests).map(function(test) {
+                            return test.proctor ? test.proctor.id : false;
+                        })
+                        .uniq()
+                        .filter(function(proctorId) {
+                            return proctorId !== false;
+                        })
+                        .value();
+
+                        let firstTestProctor = tests[0].proctor ? tests[0].proctor : false;
+                        let proctorId = firstTestProctor ? firstTestProctor.id: 0;
+                        let integrityScore = firstTestProctor ? firstTestProctor.integrity_score : 0;
+
                         candidates.push({
                             id: apt_result.user,
                             fullname: tests[0].candidate.fullname,
@@ -127,8 +142,9 @@ module.exports = {
                             test_date: apt_result.updatedAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: tests[0].proctor ? tests[0].proctor.integrity_score : 0,
-                            proctor_id: tests[0].proctor ? tests[0].proctor.id: 0
+                            integrity_score: integrityScore,
+                            proctor_id: proctorId,
+                            proctorIds: JSON.stringify(proctorIds)
                         });
                         cb();
                     });

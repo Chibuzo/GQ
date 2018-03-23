@@ -185,7 +185,7 @@ module.exports = {
                 lname: _user.fullname.split(' ')[1]
             };
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                return res.view('applicant/profile', { user: _user, me: me, passport: resume[0].passport });
+                return res.view('applicant/profile', { user: _user, me: me, passport: resume[0].photo });
             });
         });
     },

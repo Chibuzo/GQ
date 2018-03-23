@@ -369,6 +369,11 @@ MediaUploader.prototype.buildUrl_ = function (id, params, baseUrl) {
 };
 
 function defineRequest() {
+    // let's see if there's an old video and then delete it, we badt like that
+    if ($("#video_id").text().length > 3) {
+        $.post('/deleteYoutubeVideo', { video_id: $("#video_id").text() });
+    }
+
     var metadata = createResource({
         'snippet.categoryId': '22',
         'snippet.defaultLanguage': '',
@@ -377,7 +382,7 @@ function defineRequest() {
         'snippet.title': $("#candidate_fullname").text(),
         'status.embeddable': '',
         'status.license': '',
-        'status.privacyStatus': 'private',
+        'status.privacyStatus': 'unlisted',
         'status.publicStatsViewable': ''
     });
 
@@ -406,11 +411,14 @@ function defineRequest() {
 
             try {
                 var errorResponse = JSON.parse(data);
+                console.log(errorResponse);
                 message = errorResponse.error.message;
             } finally {
                 console.log(message);
                 alert(message);
             }
+            console.error(message)
+
         }.bind(this),
         onProgress: function (data) {
             var currentTime = Date.now();
@@ -419,6 +427,7 @@ function defineRequest() {
         }.bind(this),
         onComplete: function (data) {
             var uploadResponse = JSON.parse(data);
+            console.log(uploadResponse)
             $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id }, function() {
                 location.reload(true);
             });

@@ -18,6 +18,10 @@
 		margin-top: 20px;
 	}
 
+	#profile-pic .col-md-6 img {
+		width: 100%;
+	}
+
 	#photos .col-md-6 img {
 		width: 100%;
 	}
@@ -61,7 +65,7 @@
 							<td>{{ user.maths }}%</td>
 							<td>{{ user.percentage }}%</td>
 							<td>{{ user.rank }}</td>
-							<td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.proctor_id }}">{{ user.integrity_score }}</a></td>
+							<td class="text-center"><a href="#proctorModal" data-toggle="modal" data-proctorids="{{ user.proctorIds }}" class="fetch-proctor-details" id="{{ user.proctor_id }}">{{ user.integrity_score }}</a></td>
 							<td>{{ user.status }}</td>
 							<td class="opt-icons text-center">
 								<a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>

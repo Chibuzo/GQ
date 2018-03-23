@@ -61,6 +61,9 @@ $(".load-test").click(function() {
 $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
+    // unhide proctor canvas in case it's hidden
+    $('.cell').show();
+
     // start test proctoring
     PROCTOR = startProctor();
 
@@ -245,6 +248,9 @@ $("#submit-test").click(function(e) {
         // prevent further [auto] submit
         stopCountdownTimer();
         destroyCountdownTimer();
+
+        // hide the damn video canvas
+        $(".cell").hide();
 
         try {
             // stop proctor

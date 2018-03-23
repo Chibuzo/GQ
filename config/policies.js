@@ -76,5 +76,9 @@ module.exports.policies = {
 
     selectedCandidateController: {
         '*': 'isAdmin'
+    },
+
+    CompanyRequest: {
+        '*': 'isAdmin'
     }
 };
