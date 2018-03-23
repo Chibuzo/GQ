@@ -241,8 +241,6 @@ function restoreQuestionState(quest_id) {
 $("#submit-test").click(function(e) {
     e.preventDefault();
 
-
-
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
         removeNotification();
         // prevent further [auto] submit
@@ -282,6 +280,9 @@ $("#submit-test").click(function(e) {
 function submitTest() {
     GQTestStatus.stopProgress();
     removeNotification();
+
+    // hide the damn video canvas
+    $(".cell").hide();
 
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
