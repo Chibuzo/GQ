@@ -53,6 +53,7 @@
 		position: fixed !important;
 		left:-60px;
 		top:122px;
+		display: none;
 		z-index: 20000;
 	}
 
@@ -153,24 +154,6 @@
 						</div>
 					</div><br>
 
-<<<<<<< HEAD
-					<div class="cell">
-						<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
-							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-							<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
-						</div>
-					</div>
-
-					<div class="cell">
-						<div id="vol-meter"></div>
-
-						<div class="stats">
-
-						</div>
-					</div>
-
-=======
->>>>>>> 92f4c3660f2f7506f5fcf6fd874c2a1c9109b36b
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
