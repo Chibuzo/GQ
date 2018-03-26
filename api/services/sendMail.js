@@ -87,7 +87,7 @@ module.exports = {
             company: job.company.company_name,
             url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
         };
-        var subject = "Application for the position of ". job.job_title + " with " + job.company_name;
+        var subject = "Application for the position of " + job.job_title + " with " + job.company_name;
         var template = 'appliedJobNotice';
         module.exports.sendMail(user.email, subject, template, data);
     },
