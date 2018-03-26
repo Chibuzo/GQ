@@ -112,39 +112,45 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        var _tests;
-                        if (tests.length > 0) {
-                            _tests = tests;
-                        } else {
-                            _tests = 0;
-                        }
-
-                        // get all proctor Ids, remove false, and ensure uniq
-                        let proctorIds = _(tests).map(function(test) {
-                            return test.proctor ? test.proctor.id : false;
+                        // Get Overall/average Integrity Score
+                        let integrityScoreCumalative = _(tests).map(function(test) {
+                            return test.proctor ? test.proctor.integrity_score : false;
                         })
-                        .uniq()
-                        .filter(function(proctorId) {
-                            return proctorId !== false;
-                        })
-                        .value();
+                        .filter(function(integrityScore) {
+                            return integrityScore !== false;
+                        });
+                        let integrityScore = integrityScoreCumalative.sum() / integrityScoreCumalative.value().length;
+                        integrityScore = integrityScore.toFixed(1);
 
-                        let firstTestProctor = tests[0].proctor ? tests[0].proctor : false;
-                        let proctorId = firstTestProctor ? firstTestProctor.id: 0;
-                        let integrityScore = firstTestProctor ? firstTestProctor.integrity_score : 0;
+                        // Group together test information for each test
+                        let generalAbilityTest = {
+                            score: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : -1,
+                            proctorScore: _.get(tests, '[0].proctor.integrity_score', -1),
+                            proctorId: _.get(tests, '[0].proctor.id', -1)
+                        };
+
+                        let verbalTest = {
+                            score: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : -1,
+                            proctorScore: _.get(tests, '[1].proctor.integrity_score', -1),
+                            proctorId: _.get(tests, '[1].proctor.id', -1)
+                        };
+
+                        let mathsTest = {
+                            score: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : -1,
+                            proctorScore: _.get(tests, '[2].proctor.integrity_score', -1),
+                            proctorId: _.get(tests, '[2].proctor.id', -1)
+                        };
 
                         candidates.push({
                             id: apt_result.user,
                             fullname: tests[0].candidate.fullname,
-                            general_ability: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : 0,
-                            verbal: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : 0,
-                            maths: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : 0,
+                            generalAbilityTest: generalAbilityTest,
+                            verbalTest: verbalTest,
+                            mathsTest: mathsTest,
                             test_date: apt_result.updatedAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: integrityScore,
-                            proctor_id: proctorId,
-                            proctorIds: JSON.stringify(proctorIds)
+                            integrity_score: integrityScore
                         });
                         cb();
                     });

@@ -44,12 +44,15 @@
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						{#<th>Employment Status</th>#}
-						<th>General</th>
-						<th>Verbal</th>
-						<th>Numeric</th>
+						<th>Gen. Score</th>
+						<th>Gen. Proctor</th>
+						<th>Verbal Score</th>
+						<th>Verbal Proctor</th>
+						<th>Math Score</th>
+						<th>Math Proctor</th>
 						<th>Total</th>
 						<th>Rank</th>
-						<th class="text-center">Invigilation</th>
+						<th class="text-center">Avg. Invigilation</th>
 						<th>Test Status</th>
 						<th class="text-center">Action</th>
 					</tr>
@@ -60,12 +63,27 @@
 							<td>{{ user.test_date | date('d/m/Y') }}</td>
 							<td>{{ user.fullname }}</td>
 							{#<td>{{ user.employment_status }}</td>#}
-							<td>{{ user.general_ability }}%</td>
-							<td>{{ user.verbal }}%</td>
-							<td>{{ user.maths }}%</td>
+							<td>{{ user.generalAbilityTest.score }}%</td>
+							<td>
+								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.generalAbilityTest.proctorId }}">
+									{{ user.generalAbilityTest.proctorScore }}%
+								</a>
+							</td>
+							<td>{{ user.verbalTest.score }}%</td>
+							<td>
+								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.verbalTest.proctorId }}">
+									{{ user.verbalTest.proctorScore }}%
+								</a>
+							</td>
+							<td>{{ user.mathsTest.score }}%</td>
+							<td>
+								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.mathsTest.proctorId }}">
+									{{ user.mathsTest.proctorScore }}%
+								</a>
+							</td>
 							<td>{{ user.percentage }}%</td>
 							<td>{{ user.rank }}</td>
-							<td class="text-center"><a href="#proctorModal" data-toggle="modal" data-proctorids="{{ user.proctorIds }}" class="fetch-proctor-details" id="{{ user.proctor_id }}">{{ user.integrity_score }}</a></td>
+							<td class="text-center">{{ user.integrity_score }}</td>
 							<td>{{ user.status }}</td>
 							<td class="opt-icons text-center">
 								<a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>

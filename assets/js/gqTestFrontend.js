@@ -278,8 +278,13 @@ $("#submit-test").click(function(e) {
 
 
 function submitTest() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
     removeNotification();
+    removeWindowsCloseEvent();
 
     // hide the damn video canvas
     $(".cell").hide();
@@ -325,7 +330,13 @@ function submitTest() {
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
 function submitAndLoadNext(next) {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
+    removeNotification();
+    removeWindowsCloseEvent();
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
@@ -352,7 +363,13 @@ function submitAndLoadNext(next) {
 // for GQ Aptitude test submit
 // should be modified to handle section submit for test with more than one section
 function submitGQAptitudeTest() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
+    removeNotification();
+    removeWindowsCloseEvent();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
@@ -772,25 +789,56 @@ function startProctor() {
         },
 
         handleSnapshotUpload: (data64, eventName) => {
-            // console.log("Proctor: Upload Snapshot");
+            console.log("Proctor: Upload Snapshot");
+            $.ajax({
+                 type: "POST",
+                 url: "/gqtest/uploadProctorPicture",
+                 data: {
+                     imgBase64: data64
+                 }, success: function(data){
+                     // Some success ish blah blah
+                 }, error: function() {
+                     // some error handling blah nlah
+                 }
+             }).done(function(msg) {
+                 // Some message blah blah
+             });
         },
+
         handleAudioUpload: (data64) => {
-            // console.log("Proctor: Upload Audio");
+            console.log("Proctor: Upload Audio");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorAudio",
+                data: {
+                    data: data64
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function() {
+                    // some error handling blah nlah
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
         },
+
         onNoFaceTracked: (feedback) => {
-            // console.log('Proctor: No face detected');
             console.log('No face detected...');
             SingleFaceTracker.ensureFaceTracked();
         },
         // on multi face detected
         onMultiFaceTracked: (f) => {
-            // console.log('Proctor: Multiple faces detected');
             console.log('Multiple faces detected...');
+            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
+                 timer: 10000
+             });
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: (f, pitch, meter) => {
-            // console.log('Proctor: Ambient noise detected');
             console.log('Noise detected...');
+            addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
+                timer: 10000
+            });
         },
 
         onMicPermissionDenied: () => {
