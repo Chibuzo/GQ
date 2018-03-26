@@ -120,7 +120,7 @@ module.exports = {
                             return integrityScore !== false;
                         });
                         let integrityScore = integrityScoreCumalative.sum() / integrityScoreCumalative.value().length;
-                        let integrityScore = integrity.toFixed(1);
+                        integrityScore = integrity.toFixed(1);
 
                         // Group together test information for each test
                         let generalAbilityTest = {
