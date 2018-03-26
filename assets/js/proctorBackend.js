@@ -2,8 +2,6 @@ $(".fetch-proctor-details").click(function() {
     var proctor_id = $(this).attr('id');
     var candidate_id = $(this).parents('tr').attr('id');
 
-    var proctorIds = $(this).data("proctorids");
-
     $("#proctor-id").text(proctor_id);
     $("#candidate-id").text(candidate_id);
 
@@ -27,7 +25,7 @@ $(".fetch-proctor-details").click(function() {
         }
     }, 'JSON');
 
-    $.get('/proctor/session', { proctor_ids: proctorIds, }, function(d) {
+    $.get('/proctor/session', { proctor_ids: proctor_id, }, function(d) {
         if (d.status.trim() == 'success') {
             var stats = '';
             var sessions = d.sessions || [];
