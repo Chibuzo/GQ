@@ -819,19 +819,22 @@ function startProctor() {
         },
 
         onNoFaceTracked: (feedback) => {
-            // console.log('Proctor: No face detected');
             console.log('No face detected...');
             SingleFaceTracker.ensureFaceTracked();
         },
         // on multi face detected
         onMultiFaceTracked: (f) => {
-            // console.log('Proctor: Multiple faces detected');
             console.log('Multiple faces detected...');
+            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
+                 timer: 10000
+             });
         },
         // Integrity score deduction can be applied here
         onAmbientNoiseDetection: (f, pitch, meter) => {
-            // console.log('Proctor: Ambient noise detected');
             console.log('Noise detected...');
+            addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
+                timer: 10000
+            });
         },
 
         onMicPermissionDenied: () => {
