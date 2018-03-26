@@ -275,8 +275,13 @@ $("#submit-test").click(function(e) {
 
 
 function submitTest() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
     removeNotification();
+    removeWindowsCloseEvent();
 
     // hide the damn video canvas
     $(".cell").hide();
@@ -322,7 +327,13 @@ function submitTest() {
 // strictly for GQ Aptitude test page.
 // It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
 function submitAndLoadNext(next) {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
+    removeNotification();
+    removeWindowsCloseEvent();
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
@@ -349,7 +360,13 @@ function submitAndLoadNext(next) {
 // for GQ Aptitude test submit
 // should be modified to handle section submit for test with more than one section
 function submitGQAptitudeTest() {
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
+
     GQTestStatus.stopProgress();
+    removeNotification();
+    removeWindowsCloseEvent();
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 

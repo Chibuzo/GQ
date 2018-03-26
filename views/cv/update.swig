@@ -225,7 +225,7 @@
 												</tbody>
 											</table>
 
-											<div class="text-center">
+											<div class="text-center hidden">
 												<div class="col-md-12"><br>
 													<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 												</div>
