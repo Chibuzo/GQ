@@ -334,20 +334,14 @@ function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
 
+	var proctorFeed = PROCTOR.getFeedback();
+
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
         noise: proctorFeedback.audio.counter.noise,
         multipleFaces: proctorFeedback.video.counter.multiFace
     };
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-
-    var proctorFeed = PROCTOR.getFeedback();
-
-    var invigilationTracking = {
-        noFace: proctorFeed.video.counter.noFace,
-        noise: proctorFeed.audio.counter.noise,
-        multipleFaces: proctorFeed.video.counter.multiFace
-    }
 
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
