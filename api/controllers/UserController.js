@@ -10,11 +10,11 @@ var Passwords = require('machinepack-passwords');
 module.exports = {
     signup: function(req, res) {
         if (_.isUndefined(req.param('email'))) {
-            return res.badRequest('An email address is required!');
+            return res.json(200, { status: 'error', msg: 'An email address is required!' });
         }
 
         if (_.isUndefined(req.param('password')) || req.param('password').length < 6) {
-            return res.badRequest('A password is required, and must be aleast 6 characters');
+            return res.json(200, { status: 'error', msg: 'A password is required, and must be at least 6 characters' });
         }
         // validate email
         Emailaddresses.validate({
@@ -24,7 +24,7 @@ module.exports = {
                 return res.serverError(err);
             },
             invalid: function() {
-                return res.badRequest('Doesn\'t look like an email address to me!');
+                return res.json(200, { status: 'error', msg: 'Doesn\'t look like an email address to me!' });
             },
             success: function() {
                 // collect ALL signup data

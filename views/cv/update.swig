@@ -187,7 +187,7 @@
 								{% if resume.photo_status === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
-											<h3 class="test-title">{{ test_title }}</h3><br>
+											<h3 class="test-title">{{ test_title }} Result</h3><br>
 											<table class="table table-striped">
 												<thead>
 													<tr>
@@ -651,7 +651,7 @@
 				e.preventDefault();
 
 				// Hide the Resume presentation View
-				$("#resume" ).addClass('hidden');
+				$("#resume").addClass('hidden');
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
 			});

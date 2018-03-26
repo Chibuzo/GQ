@@ -61,6 +61,9 @@ $(".load-test").click(function() {
 $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
+    // make sure proctor canvas is showing
+    $(".cell").show();
+
     // start test proctoring
     PROCTOR = startProctor();
 
@@ -374,6 +377,7 @@ function submitGQAptitudeTest() {
         $("#total").find('td:nth-child(4)').text(d.result.rank);
 
         $("#test-div").fadeOut('fast', function() {
+            $(".test-title").text("General Aptitude Test Result");
             $("#result-div").hide().removeClass('hidden').fadeIn('fast');
         });
     });
