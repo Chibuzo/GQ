@@ -49,11 +49,11 @@
 	}
 
 	.cell {
-		/*opacity: 0;*/
+		opacity: 0;
 		position: fixed !important;
 		left:-60px;
 		top:122px;
-		display: none;
+		/*display: none;*/
 		z-index: 20000;
 	}
 
@@ -187,7 +187,7 @@
 								{% if resume.photo_status === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
-											<h3 class="test-title">{{ test_title }}</h3><br>
+											<h3 class="test-title">{{ test_title }} Result</h3><br>
 											<table class="table table-striped">
 												<thead>
 													<tr>
@@ -225,9 +225,9 @@
 												</tbody>
 											</table>
 
-											<div class="text-center">
+											<div class="text-center ">
 												<div class="col-md-12"><br>
-													<button class="btn btn-info" id="retake-test">Retake Test</button>
+													<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
 												</div>
 											</div>
 										</div>
@@ -496,11 +496,10 @@
 
 {% block scriptTag %}
 	<script type="text/javascript" src="/js/profile-photo.js"></script>
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-min.js"></script>
+	<script src="/js/proctor/tracking-new.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
 	<script src="/js/proctor/mouth-min.js"></script>
@@ -511,7 +510,11 @@
 	<!-- Audio tracking -->
 	<script src="/js/proctor/recorder.min.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js?v=2"></script>
+	<script src="/js/proctor/setup-new.js?v=1"></script>
+
+	{#<script src="/js/proctorSetup.js"></script>#}
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
+
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
@@ -648,7 +651,7 @@
 				e.preventDefault();
 
 				// Hide the Resume presentation View
-				$("#resume" ).addClass('hidden');
+				$("#resume").addClass('hidden');
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
 			});

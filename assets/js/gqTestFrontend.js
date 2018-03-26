@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [],PROCTOR;
+var TEST_ID, duration, questions = [],PROCTOR, PROCTOR_FEEDBACK;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -61,8 +61,8 @@ $(".load-test").click(function() {
 $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
-    // unhide proctor canvas in case it's hidden
-    $('.cell').show();
+    // make sure proctor canvas is showing
+    $(".cell").show();
 
     // start test proctoring
     PROCTOR = startProctor();
@@ -254,13 +254,15 @@ $("#submit-test").click(function(e) {
 
         try {
             // stop proctor
-            PROCTOR.stop();
+            PROCTOR_FEEDBACK = stopProctorAndGetFeedback();
         } catch (err) {
             console.error("Proctor failed to stop");
             console.error(err);
         }
 
         saveAnswer();
+
+        //SingleFaceTracker.clearTimer();
 
         if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
             submitAndLoadNext();
@@ -296,22 +298,15 @@ function submitTest() {
         submitGQAptitudeTest();
         return false;
     }
-    var proctorFeedback = PROCTOR.getFeedback();
-
-    var invigilationTracking = {
-        noFace: proctorFeedback.video.counter.noFace,
-        noise: proctorFeedback.audio.counter.noise,
-        multipleFaces: proctorFeedback.video.counter.multiFace
-    };
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
     //proctor.stop();
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeedback.integrityScore,
+        integrity_score: IntegrityScore.get(),
         userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
+        invigilationTracking: InvigilationTracker.getAll()
     }, function (d) {
         if (d.status.trim() == 'success') {
             $("#score").text(d.result.score + '/' + questions.length);
@@ -347,7 +342,6 @@ function submitAndLoadNext(next) {
 
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
-    var proctorFeedback = PROCTOR.getFeedback();
 
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
@@ -359,9 +353,9 @@ function submitAndLoadNext(next) {
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeedback.integrityScore,
+        integrity_score: IntegrityScore.get(),
         userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
+        invigilationTracking: InvigilationTracker.getAll()
     }, function (d) {
         if (next <= 3) $(".load-test").click();
     });
@@ -386,20 +380,12 @@ function submitGQAptitudeTest() {
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
-    var proctorFeedback = PROCTOR.getFeedback();
-
-    var invigilationTracking = {
-        noFace: proctorFeedback.video.counter.noFace,
-        noise: proctorFeedback.audio.counter.noise,
-        multipleFaces: proctorFeedback.video.counter.multiFace
-    };
-
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeedback.integrityScore,
+        integrity_score: IntegrityScore.get(),
         userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
+        invigilationTracking: InvigilationTracker.getAll()
     }, function (d) {
         $("#general").find('td:nth-child(2)').text(d.result.general_ability);
         $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
@@ -415,6 +401,7 @@ function submitGQAptitudeTest() {
         $("#total").find('td:nth-child(4)').text(d.result.rank);
 
         $("#test-div").fadeOut('fast', function() {
+            $(".test-title").text("General Aptitude Test Result");
             $("#result-div").hide().removeClass('hidden').fadeIn('fast');
         });
     });
@@ -559,6 +546,8 @@ window.addEventListener('online', () => {
 
     resumeCountdownTimer();
     GQTestStatus.startProgress();
+    //SingleFaceTracker.setCounter();
+    //SingleFaceTracker.startTimer();
 });
 
 window.addEventListener('offline', () => {
@@ -568,8 +557,10 @@ window.addEventListener('offline', () => {
         overlay: true
     });
 
-    PROCTOR.stop();
-    GQTestStatus.stopProgress();
+    //PROCTOR.stop();
+    PROCTOR_FEEDBACK = stopProctorAndGetFeedback();
+    //GQTestStatus.stopProgress();
+    //SingleFaceTracker.clearTimer();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
@@ -625,6 +616,33 @@ function resumeCountdownTimer() {
 // ------- END TIMER FUNCTIONS ------ //
 
 
+// ------- SHOW CANDIDATE'S FACE BRIEFLY ------//
+var proctorCanvas = (function() {
+    return {
+        init: function() {
+            //$(".cell").fadeIn('slow');
+            $(".cell").css('opacity', 1);
+            setTimeout(this.hide, 60000);
+        },
+
+        show: function() {
+            // show video canvas
+            $(".cell").css('opacity', 1);
+            setTimeout(this.hide, 30000);
+        },
+
+        hide: function() {
+            // hide the damn video canvas
+            $(".cell").css('opacity', 0);
+        }
+    };
+})();
+
+
+// ----- START FACE DETECTION FUNCTIONS ---- //
+var SingleFaceTracker = (function() {
+    var faceTrackedCount;
+    var timerId
 
 var updateIntegrityBar = function(integrityScore) {
     $("#integrity-score").text(integrityScore);
@@ -648,35 +666,55 @@ function startProctor() {
             integrityScore: 100,
         },
 
-        video: {
-            element: '#proctor-video',
-            canvas: '#proctor-canvas',
-            fps: 30,
-            streamWidth: 320,
-            streamHeight: 240,
-            ignoreTrack: false,
-            takeInitialSnapshot: true
+        ensureFaceTracked: function() {
+            var _faceTrackedCount = faceTrackedCount;
+            faceTrackedCount = 0;
+
+            //if (_faceTrackedCount <= 0) {
+                addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
+                    timer: 10000
+                });
+                proctorCanvas.show();
+                //IntegrityScore.update(-5);
+                //InvigilationTracker.incrementNoFaceCount();
+                return;
+            //}
         },
 
         handleOutdatedBrowser: function() {
             alert('Please Update your browser to the latest version.');
         },
 
-        handleSnapshotUpload: function(data64) {
-            console.log("Taking a snapshot");
-            $.ajax({
-                type: "POST",
-                url: "/gqtest/uploadProctorPicture",
-                data: {
-                    imgBase64: data64
-                }, success: function(data){
-                    // Some success ish blah blah
-                }, error: function(err) {
-                    console.error("Failed to upload Proctor Picture.");
-                }
-            }).done(function(msg) {
-                // Some message blah blah
-            });
+        clearTimer: function() {
+            clearInterval(timerId);
+        }
+    };
+})();
+
+// ----- END FACE DETECTION FUNCTIONS ---- //
+
+// ----- START INTEGRITY SCORE FUNCTIONS ---- //
+
+var IntegrityScore = (function() {
+    var integrityScore;
+
+    var updateIntegrityBar = function(new_val) {
+        $("#integrity-score").text(new_val);
+        if (integrityScore < 70 && integrityScore > 55) {
+            $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
+        }
+        else if (integrityScore < 55) {
+            $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
+        }
+        $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+    }
+
+    return {
+        update: function(value) {
+            //integrityScore = integrityScore + value;
+            //integrityScore  = integrityScore < 0 ? 0 : integrityScore;
+            integrityScore = value;
+            updateIntegrityBar();
         },
 
         handleAudioUpload: function(data64) {
@@ -717,34 +755,163 @@ function startProctor() {
             });
         },
 
-        onMicPermissionDenied: function() {
-            console.warn('Proctor (Perms): Microphone needed for this test');
-            blockTest();
-        },
+var InvigilationTracker = (function() {
+    //var noFace = 0;
+    //var noise = 0;
+    //var multipleFaces = 0;
 
-        onCamPermissionDenied: function() {
-            console.warn('Proctor (Perms): Webcam needed for this test');
-            blockTest();
-        },
+    return {
+        //incrementNoFaceCount: function() {
+        //    noFace++;
+        //},
+        //
+        //incrementNoiseCount: function() {
+        //    noise++;
+        //},
+        //
+        //incrementMultipleFacesCount: function() {
+        //    multipleFaces++;
+        //},
+        //
+        //reset: function() {
+        //    noFace = 0;
+        //    noise = 0;
+        //    multipleFaces = 0;
+        //},
 
-        onCamNotDetected: function() {
-            console.warn('Proctor: This device does not have a webcam');
-            blockTest();
-        },
-
-        onMicNotDetected: function() {
-            console.warn('Proctor: This device does not have a microphone');
-            blockTest();
-        },
-
-        proctorReady: function() {
-            console.log('Proctor is ready.');
-            startTest();
-            updateIntegrityBar(100);
-        },
-
-        feedback: function(feedback) {
-            updateIntegrityBar(feedback.integrityScore);
+        getAll: function() {
+            return {
+                noFace: PROCTOR_FEEDBACK.video.counter.noFace,
+                noise: PROCTOR_FEEDBACK.audio.counter.noise,
+                multipleFaces: PROCTOR_FEEDBACK.video.counter.multiFace
+            }
         }
+    }
+})();
+
+// ----- END INVIGILATION COUNT/TRACK  FUNCTIONS ---- //
+
+// sample initializing proctor/setup
+function startProctor() {
+    return new Proctor({
+        detectionLapse: 60, // detection lapse (seconds)
+
+        scores: {
+            noFace: -3,
+            multiFace: -10,
+            ambientNoise: -2,
+            integrityScore: 100,
+        },
+
+        audio: {
+            fps: 2, // from 0(maximum cpu available fps) 60hz max (1)
+            sensitivity: 95, // from 0 - 100
+            ignoreRecording: false
+        },
+
+        video: {
+            element: '#proctor-video',
+            canvas: '#proctor-canvas',
+            fps: 20, // from 0(maximum cpu available fps) 60hz max (2)
+            streamWidth: 320,
+            streamHeight: 240,
+            ignoreTrack: false,
+            takeInitialSnapshot: true
+        },
+
+        handleOutdatedBrowser: () => {
+            // alert('Update your browser ma niggah');
+        },
+
+        handleSnapshotUpload: (data64, eventName) => {
+            console.log("Proctor: Upload Snapshot");
+            $.ajax({
+                 type: "POST",
+                 url: "/gqtest/uploadProctorPicture",
+                 data: {
+                     imgBase64: data64
+                 }, success: function(data){
+                     // Some success ish blah blah
+                 }, error: function() {
+                     // some error handling blah nlah
+                 }
+             }).done(function(msg) {
+                 // Some message blah blah
+             });
+        },
+
+        handleAudioUpload: (data64) => {
+            console.log("Proctor: Upload Audio");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorAudio",
+                data: {
+                    data: data64
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function() {
+                    // some error handling blah nlah
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
+        },
+
+        onNoFaceTracked: (feedback) => {
+            console.log('No face detected...');
+            SingleFaceTracker.ensureFaceTracked();
+        },
+        // on multi face detected
+        onMultiFaceTracked: (f) => {
+            console.log('Multiple faces detected...');
+            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
+                 timer: 10000
+             });
+        },
+        // Integrity score deduction can be applied here
+        onAmbientNoiseDetection: (f, pitch, meter) => {
+            console.log('Noise detected...');
+            addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
+                timer: 10000
+            });
+        },
+
+        onMicPermissionDenied: () => {
+            // console.warn('Proctor (Perms): Microphone needed for this test');
+            blockTest();
+        },
+        onCamPermissionDenied: () => {
+            // console.warn('Proctor (Perms): Webcam needed for this test');
+            blockTest();
+        },
+
+        onCamNotDetected: () => {
+            // console.warn('Proctor: This device does not have a webcam');
+            blockTest();
+        },
+        onMicNotDetected: () => {
+            // console.warn('Proctor: This device does not have a microphone');
+            blockTest();
+        },
+
+        proctorReady: () => {
+            // console.log('Proctor is ready.');
+            startTest();
+            // initialize proctor streaming canvas
+            proctorCanvas.init();
+        },
+
+        feedback: (e) => {
+            console.log('Integrity: ' + e.integrityScore);
+            IntegrityScore.update(e.integrityScore);
+        },
+
+        showLogs: true
     });
+}
+function stopProctorAndGetFeedback() {
+    let feedback;
+    PROCTOR.stop(), (feedback = PROCTOR.getFeedback());
+    console.log(feedback);
+    return feedback;
 }
