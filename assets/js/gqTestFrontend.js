@@ -785,11 +785,39 @@ function startProctor() {
         },
 
         handleSnapshotUpload: (data64, eventName) => {
-            // console.log("Proctor: Upload Snapshot");
+            console.log("Proctor: Upload Snapshot");
+            $.ajax({
+                 type: "POST",
+                 url: "/gqtest/uploadProctorPicture",
+                 data: {
+                     imgBase64: data64
+                 }, success: function(data){
+                     // Some success ish blah blah
+                 }, error: function() {
+                     // some error handling blah nlah
+                 }
+             }).done(function(msg) {
+                 // Some message blah blah
+             });
         },
+
         handleAudioUpload: (data64) => {
-            // console.log("Proctor: Upload Audio");
+            console.log("Proctor: Upload Audio");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorAudio",
+                data: {
+                    data: data64
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function() {
+                    // some error handling blah nlah
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
         },
+
         onNoFaceTracked: (feedback) => {
             // console.log('Proctor: No face detected');
             console.log('No face detected...');
