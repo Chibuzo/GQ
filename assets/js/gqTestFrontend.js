@@ -718,7 +718,6 @@ function startProctor() {
             addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
                 timer: 10000
              });
-             proctorCanvas.show();
         },
 
         onAmbientNoiseDetection: (feedback, pitch, meter) => {
