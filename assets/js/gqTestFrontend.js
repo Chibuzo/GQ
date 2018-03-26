@@ -334,15 +334,14 @@ function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
 
-    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-
-    var proctorFeed = PROCTOR.getFeedback();
+	var proctorFeed = PROCTOR.getFeedback();
 
     var invigilationTracking = {
-        noFace: proctorFeed.video.counter.noFace,
-        noise: proctorFeed.audio.counter.noise,
-        multipleFaces: proctorFeed.video.counter.multiFace
-    }
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
+    };
+    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
@@ -572,13 +571,6 @@ function startTimer() {
         format: "%H:%M:%S", // Format to show time in,
         callback: submitTest // If duration is set, this function is called after `duration` has elapsed
     });
-    //$("#hms_timer").countdowntimer({
-    //    hours : hrs,
-    //    minutes : mins,
-    //    seconds: 0,
-    //    size : "md",
-    //    timeUp: submitTest
-    //});
 }
 
 function destroyCountdownTimer() {
