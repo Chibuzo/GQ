@@ -375,8 +375,9 @@ module.exports = {
 
     uploadProctorPicture: function(req, res) {
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
+        var eventName = req.param('eventName') ?  req.param('eventName') + "_" : "";
         var hr = process.hrtime();
-        var filename = '/pic_' + hr[1] + '.png';
+        var filename = `/pic_${eventName}${hr[1]}.png`;
         path += filename;
         var photo = req.param('imgBase64').split(';base64,').pop();
         var buff = new Buffer(photo, 'base64');
