@@ -52,7 +52,7 @@
 						<th>Math Proctor</th>
 						<th>Total</th>
 						<th>Rank</th>
-						<th class="text-center">Invigilation</th>
+						<th class="text-center">Avg. Invigilation</th>
 						<th>Test Status</th>
 						<th class="text-center">Action</th>
 					</tr>
