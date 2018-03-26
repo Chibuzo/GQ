@@ -287,12 +287,12 @@ function submitTest() {
         return false;
     }
 
-    var proctorFeed = PROCTOR.getFeedback();
+    var proctorFeedback = PROCTOR.getFeedback();
 
     var invigilationTracking = {
-        noFace: proctorFeed.video.counter.noFace,
-        noise: proctorFeed.audio.counter.noise,
-        multipleFaces: proctorFeed.video.counter.multiFace
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
     }
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
@@ -300,7 +300,7 @@ function submitTest() {
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeed.integrityScore,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
@@ -334,7 +334,7 @@ function submitAndLoadNext(next) {
     var next = parseInt(TEST_ID) + 1;
     $('.load-test').data('test_id', next);
 
-	var proctorFeed = PROCTOR.getFeedback();
+	var proctorFeedback = PROCTOR.getFeedback();
 
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
@@ -346,7 +346,7 @@ function submitAndLoadNext(next) {
     $.post('/gqtest/marktest', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeed.integrityScore,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
@@ -373,18 +373,18 @@ function submitGQAptitudeTest() {
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
-    var proctorFeed = PROCTOR.getFeedback();
+    var proctorFeedback = PROCTOR.getFeedback();
 
     var invigilationTracking = {
-        noFace: proctorFeed.video.counter.noFace,
-        noise: proctorFeed.audio.counter.noise,
-        multipleFaces: proctorFeed.video.counter.multiFace
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
     }
 
     $.post('/gqtest/markGQAptitude', {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeed.integrityScore,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking
     }, function (d) {
