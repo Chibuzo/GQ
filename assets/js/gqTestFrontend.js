@@ -62,7 +62,7 @@ $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
     // make sure proctor canvas is showing
-    $(".cell").show();
+	proctorCanvas.mount();
 
     // start test proctoring
     PROCTOR = startProctor();
@@ -245,7 +245,7 @@ $("#submit-test").click(function(e) {
         destroyCountdownTimer();
 
         // hide the damn video canvas
-        $(".cell").hide();
+		proctorCanvas.remove();
 
         stopProctor();
 
@@ -277,7 +277,7 @@ function submitTest() {
     removeWindowsCloseEvent();
 
     // hide the damn video canvas
-    $(".cell").hide();
+	proctorCanvas.remove();
 
     if (TEST_ID == 1 || TEST_ID == 2) {
         submitAndLoadNext();
@@ -603,22 +603,22 @@ function resumeCountdownTimer() {
 // ------- SHOW CANDIDATE'S FACE BRIEFLY ------//
 var proctorCanvas = (function() {
     return {
-        init: function() {
-            //$(".cell").fadeIn('slow');
-            $(".cell").css('opacity', 1);
-            setTimeout(this.hide, 60000);
-        },
+		makeVisible: function(time) {
+			$(".cell").css('opacity', 1);
+			setTimeout(this.makeInvisible, time);
+		},
 
-        show: function() {
-            // show video canvas
-            $(".cell").css('opacity', 1);
-            setTimeout(this.hide, 30000);
-        },
+		makeInvisible: function() {
+			$(".cell").css('opacity', 0);
+		},
 
-        hide: function() {
-            // hide the damn video canvas
-            $(".cell").css('opacity', 0);
-        }
+		remove: function() {
+			$(".cell").addClass("hidden");
+		},
+
+		mount: function() {
+			$(".cell").removeClass("hidden");
+		}
     };
 })();
 
@@ -709,7 +709,7 @@ function startProctor() {
             addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
                 timer: 10000
             });
-            proctorCanvas.show();
+            proctorCanvas.makeVisible(30000);
         },
 
         onMultiFaceTracked: (feedback) => {
@@ -751,8 +751,8 @@ function startProctor() {
         proctorReady: () => {
             // console.log('Proctor is ready.');
             startTest();
-            // initialize proctor streaming canvas
-            proctorCanvas.init();
+            // Make proctor visible for 60s
+            proctorCanvas.makeVisible(60000);
         },
 
         feedback: () => {
@@ -764,6 +764,7 @@ function startProctor() {
 
 function stopProctor() {
     try {
+		proctorCanvas.remove();
         PROCTOR.stop();
     } catch (err) {
         console.error("Proctor threw an error when attempting to stop...");
