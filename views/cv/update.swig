@@ -53,7 +53,6 @@
 		position: fixed !important;
 		left:-60px;
 		top:122px;
-		/*display: none;*/
 		z-index: 20000;
 	}
 
@@ -104,7 +103,7 @@
 		}
 	}
 </style>
-	<div class="cell">
+	<div class="cell hidden">
 		<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
 			<video id="proctor-video" width="320" height="240" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
 			<canvas id="proctor-canvas" width="320" height="240" style="position: absolute; top: 0; left: 0"></canvas>
