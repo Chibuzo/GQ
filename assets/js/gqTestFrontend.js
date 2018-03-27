@@ -651,7 +651,8 @@ function startProctor() {
         audio: {
             fps: 2, // from 0(maximum cpu available fps) 60hz max (1)
             sensitivity: 95, // from 0 - 100
-            ignoreRecording: false
+            ignoreRecording: false,
+			recordingDuration: 15000
         },
 
         video: {
