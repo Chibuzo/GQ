@@ -16,7 +16,6 @@
 					<li class="active"><a href="#profile-photo" data-toggle="tab">Profile Photo</a></li>
 					<li><a href="#photo" data-toggle="tab">Photos</a></li>
 					<li><a href="#audio" data-toggle="tab">Audios</a></li>
-                    <li><a href="#info" data-toggle="tab">Info</a></li>
 				</ul>
 				<div class="tab-content">
 					<div class="tab-pane fade active in" id="profile-photo">
@@ -25,18 +24,19 @@
 						</div>
 					</div>
 					<div class="tab-pane fade in" id="photo">
+						<div class="row">
+							<div class="col-md-12 stats-info">
+							</div>
+						</div>
 						<div class="row" id="photos"></div>
 					</div>
 
 					<div class="tab-pane fade in" id="audio">
-						<div class="row" id="audios"></div>
-					</div>
-
-                    <div class="tab-pane fade in" id="info">
 						<div class="row">
-                            <div id="stats-info" class="col-md-12">
-                            </div>
-                        </div>
+							<div class="col-md-12 stats-info">
+							</div>
+						</div>
+						<div class="row" id="audios"></div>
 					</div>
 				</div>
 			</div>

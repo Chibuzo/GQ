@@ -47,7 +47,7 @@
                                         <div class=""><h4 class="title">Change Password</h4></div>
                                         <div class="form-group">
                                             <div class="row">
-                                                {% if !first_time %}
+                                                {% if user.password.length > 30 %}
                                                     <div class="col-md-4">
                                                         <label>Current Password</label>
                                                         <input type="password" name="current_password" class="form-control" placeholder="Enter your current password">

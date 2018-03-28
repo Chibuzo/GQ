@@ -25,6 +25,21 @@
 	#photos .col-md-6 img {
 		width: 100%;
 	}
+
+	.proctor-pic {
+		position: relative;
+	}
+
+	.image-tag {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		color: white;
+		font-size: 20px;
+		margin-left: 5px;
+		margin-bottom: 5px;
+	}
+
 </style>
 
 <div class="col-md-12">

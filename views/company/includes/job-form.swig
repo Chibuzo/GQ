@@ -115,6 +115,7 @@
 		</div>
 	</fieldset><br>
 	<input type="hidden" name="job_id" id="job-id" value="{{ job.id }}"/>
+	<input type="hidden" name="coy_id" value="{{ coy_id }}" />
 
 	<div class="form-group text-right">
 		<button type="reset" class="btn btn-default btn-lg">

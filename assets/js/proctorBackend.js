@@ -7,7 +7,7 @@ $(".fetch-proctor-details").click(function() {
 
     $.get('/proctor/fetchFiles', { proctor_id: proctor_id, candidate_id: candidate_id }, function(d) {
         if (d.status.trim() == 'success') {
-            $("#profilePhoto").html("<img src='/applicant_passports/" + d.profile_pic + "' />");
+            $("#profilePhoto").html("<img src='/applicant_profilephoto/" + d.profile_pic + "' />");
             var audios = '', photos = '';
             d.files.forEach(function(file) {
                 if (file.file_type == 'audio') {
@@ -15,9 +15,19 @@ $(".fetch-proctor-details").click(function() {
                         +"<audio src='/proctorFiles" + file.filename + "' controls='controls'></audio>"
                         +"</div>";
                 } else {
+                    var span = "";
+                    if (file.filename.includes("initial")) {
+                        span = "<span class='image-tag'>Initial</span>"
+                    } else if(file.filename.includes("noFace")) {
+                        span = "<span class='image-tag'>noFace</span>"
+                    } else if (file.filename.includes("multi")) {
+                        span = "<span class='image-tag'>multiFace</span>"
+                    }
                     photos += "<div class='col-md-6'>"
-                        +"<div class='proctor-pic'><img src='/proctorFiles" + file.filename + "' /></div>"
-                        +"</div>";
+                        + "<div class='proctor-pic'><img src='/proctorFiles" + file.filename + "' />"
+                        + span
+                        + "</div>"
+                        + "</div>";
                 }
             });
             $("#audios").html(audios);
@@ -60,7 +70,7 @@ $(".fetch-proctor-details").click(function() {
             });
 
             // stats += "<p><strong>Number of Multiple Face Detected:</strong> " + d.session.multipleFacesCount + "</p>";
-            $("#stats-info").html(stats);
+            $(".stats-info").html(stats);
         }
     }, 'JSON');
 });
