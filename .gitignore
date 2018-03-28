@@ -44,6 +44,7 @@ config/connection.js
 config/youtube_tokens.json
 config/env/development.js
 config/env/production.js
+config/session.js
 config/local.js
 config/email.js
 assets/logos/*

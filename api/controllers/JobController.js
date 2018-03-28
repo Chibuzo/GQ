@@ -131,53 +131,45 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
+            var csv = require('csv');
             const fs = require('fs');
-            fs.readFile(csvpath + '/' + filename, 'utf8', function(err, data) {
-                var rows = data.split('\r\n');
-                // sign up the applicants
-                async.each(rows, function(row, cb) {
-                    var entry = row.split(',');
-                    //if (entry.length == 3) {
+            fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
+                csv.parse(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                    for (var index = 0; index < data.length; index++) {
                         var data = {
-                            fullname: entry[0] ? entry[0].trim() : '',
-                            email: entry[1] ? entry[1].trim() : '',
-                            phone: entry[2] ? entry[2].trim() : '',
+                            fullname: data[index][0],
+                            email: data[index][1],
+                            phone: data[index][2],
                             user_type: 'Applicant'
                         };
-                        Job.findOne({ id: job_id }).populate('company').exec(function (j_err, job) {
+                        Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
                             if (j_err) console.log(j_err);
-                            User.findOrCreate({ email: entry[1].trim() }, data).exec(function(err, user) {
-                                if (err) {}
-                                //JobService.apply(job_id, user[0].id).then(function (resp) {
-                                //    //console.log(resp);
-                                //}).catch(function (err) {
-                                //    console.log(err);
-                                //});
+                            User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
+                                if (err) {
+                                }
+                                JobService.apply(job_id, user.id).then(function (resp) {
+                                    //console.log(resp);
+                                }).catch(function (err) {
+                                    console.log(err);
+                                });
 
                                 var msg_type; // for determining the content of the invite email to send
                                 if (user.status == 'Inactive') {
                                     msg_type = 'new-user';
                                     sendMail.sendAppliedJobNotice(job, user, msg_type);
-                                    cb();
                                 } else {
-                                    Resume.find({ user: user.id }).exec(function(err, resume) {
+                                    Resume.find({user: user.id}).exec(function (err, resume) {
                                         if (resume[0].profile_status == true) {
                                             msg_type = 'fyi'; // inform them
                                         } else {
                                             msg_type = 'incomplete-profile';
                                         }
                                         sendMail.sendAppliedJobNotice(job, user, msg_type);
-                                        cb();
                                     });
                                 }
                             });
                         });
-                    //} else {
-                    //    cb();
-                    //}
-                },
-                function (err) {
-                    if (err) return console.log(err);
+                    }
                     return res.redirect('/job/manage');
                 });
             });
