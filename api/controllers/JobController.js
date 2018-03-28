@@ -9,7 +9,14 @@ module.exports = {
     newJobForm: function (req, res) {
         JobCategory.find().exec(function (err, categories) {
             CountryStateService.getCountries().then(function(resp) {
-                return res.view('company/addjob', { jobcategories: categories, countries: resp.countries });
+                var coy_id = 0;
+                if (req.session.admin) {
+                    coy_id = req.param('coy_id');
+                    folder = 'admin';
+                } else {
+                    folder = 'company';
+                }
+                return res.view(folder + '/addjob', { jobcategories: categories, countries: resp.countries, coy_id: coy_id });
             }).catch(function(err) {
                 return res.ok();
             });
@@ -17,10 +24,20 @@ module.exports = {
     },
 
     editJob: function (req, res) {
-        Job.findOne({ id: req.param('job_id'), company: req.session.coy_id }).exec(function (err, job) {
+        Job.findOne({ id: req.param('job_id') }).exec(function (err, job) {
             JobCategory.find().exec(function (err, categories) {
                 CountryStateService.getCountries().then(function(resp) {
-                    return res.view('company/editjob', { job: job, jobcategories: categories, countries: resp.countries });
+                    var folder;
+                    if (req.session.admin) {
+                        folder = 'admin';
+                    } else {
+                        folder = 'company';
+                    }
+                    return res.view(folder + '/editjob', {
+                        job: job,
+                        jobcategories: categories,
+                        countries: resp.countries
+                    });
                 }).catch(function(err) {
                     return res.ok();
                 });
@@ -55,27 +72,38 @@ module.exports = {
             location: q('location'),
             nice_to_have: q('nice_to_have'),
             salary_currency: q('currency'),
-            min_salary_budget: q('min_salary_budget'),
-            max_salary_budget: q('max_salary_budget'),
-            poster: req.session.userId,
+            min_salary_budget: q('min_salary_budget') ? q('min_salary_budget') : 0.0,
+            max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
             published: publish,
             date_published: publish_date,
             closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
-            company: req.session.coy_id
         };
+
         if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
-            Job.update({ id: q('job_id') }, data).exec(function(err) {
+            Job.update({ id: q('job_id') }, data).exec(function(err, job) {
                 if (err) console.log(err);
-                return res.redirect('/job/manage');
+                if (req.session.admin) {
+                    return res.redirect('/admin/coy-jobs/' + job[0].company);
+                } else {
+                    return res.redirect('/job/manage');
+                }
             });
         } else {
+            data.poster = req.session.userId,
+            data.company = req.session.coy_id ? req.session.coy_id : q('coy_id');
             Job.create(data).exec(function (err, job) {
                 if (err) return console.log(err);
                 User.find({ id: req.session.userId }).populate('company').exec(function(err, user) {
                     sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
-                    sendMail.GQnewJobAlert(user[0].company.company_name);
+                    if (req.session.coy_id) {
+                        sendMail.GQnewJobAlert(user[0].company.company_name);
+                    }
                 });
-                return res.redirect('/job/manage');
+                if (req.session.admin) {
+                    return res.redirect('/admin/coy-jobs/' + job.company);
+                } else {
+                    return res.redirect('/job/manage');
+                }
             });
         }
     },
@@ -109,41 +137,44 @@ module.exports = {
                 // sign up the applicants
                 async.each(rows, function(row, cb) {
                     var entry = row.split(',');
-                    if (entry.length == 3) {
+                    //if (entry.length == 3) {
                         var data = {
-                            fullname: entry[0].trim(),
-                            email: entry[1].trim(),
-                            phone: entry[2].trim(),
+                            fullname: entry[0] ? entry[0].trim() : '',
+                            email: entry[1] ? entry[1].trim() : '',
+                            phone: entry[2] ? entry[2].trim() : '',
                             user_type: 'Applicant'
                         };
                         Job.findOne({ id: job_id }).populate('company').exec(function (j_err, job) {
                             if (j_err) console.log(j_err);
-                            User.create(data).exec(function(err, user) {
-                                if (err) {
-                                    if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
-                                        // already a user so we try to automatically apply for this job on his behalf
-                                        User.findOne({ email: entry[1].trim() }).exec(function (err, old_user) {
-                                            if (err) cb('err');
-                                            if (old_user.status == 'Inactive') {
-                                                sendMail.sendAppliedJobNotice(job, old_user);
-                                            }
-                                            JobService.apply(job_id, old_user.id).then(function (resp) {
-                                                //console.log(resp);
-                                            }).catch(function (err) {
-                                                console.log(err);
-                                            });
-                                            cb();
-                                        });
-                                    }
-                                }
-                                if (user) {
-                                    JobService.apply(job_id, user.id);
-                                    sendMail.sendAppliedJobNotice(job, user);
+                            User.findOrCreate({ email: entry[1].trim() }, data).exec(function(err, user) {
+                                if (err) {}
+                                //JobService.apply(job_id, user[0].id).then(function (resp) {
+                                //    //console.log(resp);
+                                //}).catch(function (err) {
+                                //    console.log(err);
+                                //});
+
+                                var msg_type; // for determining the content of the invite email to send
+                                if (user.status == 'Inactive') {
+                                    msg_type = 'new-user';
+                                    sendMail.sendAppliedJobNotice(job, user, msg_type);
                                     cb();
+                                } else {
+                                    Resume.find({ user: user.id }).exec(function(err, resume) {
+                                        if (resume[0].profile_status == true) {
+                                            msg_type = 'fyi'; // inform them
+                                        } else {
+                                            msg_type = 'incomplete-profile';
+                                        }
+                                        sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                        cb();
+                                    });
                                 }
                             });
                         });
-                    }
+                    //} else {
+                    //    cb();
+                    //}
                 },
                 function (err) {
                     if (err) return console.log(err);

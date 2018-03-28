@@ -512,7 +512,7 @@
 	<script src="/js/proctor/setup-new.js?v=1"></script>
 
 	{#<script src="/js/proctorSetup.js"></script>#}
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=9"></script>
 
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
