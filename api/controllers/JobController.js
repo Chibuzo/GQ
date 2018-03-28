@@ -131,15 +131,15 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
-            var csv = require('csv');
+            var parser = require('csv-parse');
             const fs = require('fs');
             fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
-                csv.parse(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
-                    for (var index = 0; index < data.length; index++) {
+                parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                    async.eachSeries(data, function(entry, cb) {
                         var data = {
-                            fullname: data[index][0],
-                            email: data[index][1],
-                            phone: data[index][2],
+                            fullname: entry[0],
+                            email: entry[1],
+                            phone: entry[2],
                             user_type: 'Applicant'
                         };
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
@@ -157,6 +157,7 @@ module.exports = {
                                 if (user.status == 'Inactive') {
                                     msg_type = 'new-user';
                                     sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                    cb();
                                 } else {
                                     Resume.find({user: user.id}).exec(function (err, resume) {
                                         if (resume[0].profile_status == true) {
@@ -165,12 +166,16 @@ module.exports = {
                                             msg_type = 'incomplete-profile';
                                         }
                                         sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                        cb();
                                     });
                                 }
                             });
                         });
-                    }
-                    return res.redirect('/job/manage');
+                    },
+                    function(err) {
+                        if (err) console.log(err);
+                        return res.redirect('/job/manage');
+                    });
                 });
             });
         });

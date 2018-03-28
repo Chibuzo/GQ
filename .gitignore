@@ -46,6 +46,7 @@ config/env/development.js
 config/env/production.js
 config/session.js
 config/local.js
+config/session.js
 config/email.js
 assets/logos/*
 assets/csv-files/*

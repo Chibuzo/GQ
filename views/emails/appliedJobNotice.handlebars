@@ -25,24 +25,15 @@
     <tr>
         <td>
             <p>Dear {{ user }},</p>
-            <p>Testing mode, case: {{ msg_type }}</p>
             <p>Thank you for your recent application for the position of {{ job_title }} at {{ company }}</p>
-            <p>The next step in the process is to complete <a href="{{ url }}">this form</a> with all your relevant details. On receipt of this,
-                you will be required to undertake an aptitude and competency assessment. Timely completion of these steps
-                will ensure that you will be considered during the shortlisting process which will take place on {{ closing_date }}
-            </p>
-            {{#if fyi}}
-                <div>For your info</div>
-            {{/if}}
+
             {{#if newuser }}
-                <div>New user</div>
-            {{/if}}
-            {{#if incompleteprofile }}
-                <div>Incomplete nigga</div>
-            {{/if}}
-            <p>On behalf of {{ company }}, we thank you, again, for your interest in this role. We do appreciate the time that you invested in this application.</p>
-            <br>
-            <a href="{{ url }}" style="text-decoration: none;
+                <p>The next step in the process is to complete <a href="{{ url }}">this form</a> with all your relevant details. On receipt of this,
+                    you will be required to undertake an aptitude and competency assessment. Timely completion of these steps
+                    will ensure that you will be considered during the shortlisting process which will take place on {{ closing_date }}
+                </p>
+                <br>
+                <a href="{{ url }}" style="text-decoration: none;
         color: #fff;
         background-color: #269abc;
         border-color: #1b6d85;
@@ -66,6 +57,19 @@
         font-size: 18px;
         line-height: 1.3333333;
         border-radius: 6px;">Complete your application</a>
+            {{/if}}
+
+            {{#if fyi}}
+               <p>You will be notified if you are considered during the shortlist which will take place on {{ closing_date }} </p>
+            {{/if}}
+
+            {{#if incompleteprofile }}
+                <p>You have a few more steps to complete the process. On receipt of this, you will be required to undertake an aptitude and competency assessment.
+                    Timely completion of these steps will ensure that you will be considered during the shortlisting process which will take place on {{ closing_date }}
+                </p>
+            {{/if}}
+
+            <p>On behalf of {{ company }}, we thank you, again, for your interest in this role. We do appreciate the time that you invested in this application.</p>
         </td>
     </tr>
     <tr>
