@@ -547,12 +547,14 @@
 				}
 			});
 
-
 			// add one row to institution
 			$("#institutions").on("click", ".add-institution", function(e) {
 				e.preventDefault();
-				$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
-				$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+				var institutionsClone =  $("#another-inst").clone();
+                institutionsClone.insertBefore("#another-inst").slideDown().removeAttr("id");
+
+                $('.is-required', institutionsClone).prop('required', true);
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -561,8 +563,7 @@
 				$(".school").easyAutocomplete(options);
 			});
 
-
-			// remove one row from institutiob
+			// remove one row from institution
 			$("#institutions").on("click", ".remove-institution-btn", function(e) {
 				e.preventDefault();
 				$(this).parents(".inst-row").slideUp(function() {
@@ -573,8 +574,10 @@
 			// add one row to qualifications
 			$("#qualifications").on("click", ".add-qualification", function(e) {
 				e.preventDefault();
-				$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
-				$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+
+				let qualificationClone = $("#another-qualification").clone();
+                qualificationClone.insertBefore("#another-qualification").slideDown().removeAttr("id");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -651,11 +654,12 @@
 
 				// Hide the Resume presentation View
 				$("#resume").addClass('hidden');
+
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
+                // easyAutocomplete sometimes has a width of 0px. Makes input field look small
+                $('.easy-autocomplete .school').parent().css('min-width', '200px');
 			});
-
-
 
 			// video handlers
 			$("#add-video, #change-video").click(function(e) {
