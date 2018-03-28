@@ -6,6 +6,7 @@
   "keywords": [],
   "dependencies": {
     "connect-redis": "3.0.2",
+    "csv": "^2.0.0",
     "csv-parse": "^1.2.4",
     "ejs": "2.3.4",
     "exceljs": "^0.8.2",
