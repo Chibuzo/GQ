@@ -597,7 +597,7 @@
 			$("#employments").on("click", ".add-employment", function(e) {
 				e.preventDefault();
 				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
-				$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -618,7 +618,6 @@
 			$("#referenceContacts").on("click", ".add-reference", function(e) {
 				e.preventDefault();
 				$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
-				$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
 			});
 
 

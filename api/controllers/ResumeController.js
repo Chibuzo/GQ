@@ -11,11 +11,21 @@ function removeEmptyStrings(arr = []) {
   })
 }
 
+function removeLastEmptyStrings(arr = []) {
+    let length = arr.length;
+
+    if (arr.length > 0 && arr[length - 1] == "") {
+        arr.pop();
+    }
+
+    return arr;
+}
+
 function updateResumeQualifications(q, resumeId) {
     // Qualifications
 
     // Store data from the Resume Form in variables
-    let updatedQualificationsList = q('qualification') || [];
+    let updatedQualificationsList = removeLastEmptyStrings(q('qualification'));
     let updatedQualificationsIDs = q('qualification_id') || [];
     let updatedQualificationsDates = q('qualification_date') || [];
 
@@ -39,7 +49,7 @@ function updateResumeQualifications(q, resumeId) {
         };
     });
 
-    Qualification.find({resume: q('resume_id')})
+    Qualification.find({resume: resumeId})
     .then(function(qualificationsArr) {
         let currentQualificationsIDs = _.map(qualificationsArr, function(qualificationObject) {
             return qualificationObject.id
@@ -51,7 +61,7 @@ function updateResumeQualifications(q, resumeId) {
         userQualifications.forEach(function(userQualification) {
             var qualification = {
                 qualification: userQualification.name,
-                date_obtained: userQualification.date,
+                date_obtained: userQualification.date ? new Date(Date.parse(userQualification.date)).toISOString() : new Date(Date.now()).toISOString(),
                 resume: resumeId
             };
 
@@ -87,12 +97,12 @@ function updateResumeEducation(q, resumeId) {
     // Education
 
     // Store data from the Resume Form in variables
-    let updatedInstitutionIDs = removeEmptyStrings(q('inst_id'));
-    let updatedInstitutionList = removeEmptyStrings(q('institution'));
-    let updatedHonorsList = removeEmptyStrings(q('honour'));
-    let updatedProgrammeList = removeEmptyStrings(q('programme'));
-    let updatedInstituteStart = removeEmptyStrings(q('inst_start_date'));
-    let updatedInstituteEnd = removeEmptyStrings(q('inst_end_date'));
+    let updatedInstitutionIDs = q('inst_id') || [];
+    let updatedInstitutionList = removeLastEmptyStrings(q('institution'));
+    let updatedHonorsList = q('honour') || [];
+    let updatedProgrammeList = q('programme') || [];
+    let updatedInstituteStart = q('inst_start_date') || [];
+    let updatedInstituteEnd = q('inst_end_date') || [];
 
     // Ensure updatedInstitutionIDs is an array of integers
     updatedInstitutionIDs = updatedInstitutionIDs.map(function(institutionId) {
@@ -108,8 +118,8 @@ function updateResumeEducation(q, resumeId) {
             institution: institution,
             honour: updatedHonorsList[idx] || "",
             programme: updatedProgrammeList[idx] || "",
-            start_date: new Date(Date.parse(updatedInstituteStart[idx])).toISOString(),
-            end_date: new Date(Date.parse(updatedInstituteEnd[idx])).toISOString(),
+            start_date: updatedInstituteStart[idx] ? new Date(Date.parse(updatedInstituteStart[idx])).toISOString() : new Date(Date.now()).toISOString(),
+            end_date: updatedInstituteEnd[idx] ? new Date(Date.parse(updatedInstituteEnd[idx])).toISOString(): new Date(Date.now()).toISOString(),
             resume: resumeId
         };
     });
@@ -152,36 +162,174 @@ function updateResumeEducation(q, resumeId) {
 
     })
     .catch(function(err) {
-        console.log(err);
+        console.error(err);
     });
 }
 
 function updateResumeEmploymentHistory(q, resumeId) {
 
-    // let updatedCompanies = removeEmptyStrings()
+    let updatedJobIds = q('employment_id') || [];
+    let updatedCompanyList = removeEmptyStrings(q('company') || []);
+    let updatedRoleList = q('job_title') || [];
+    let updatedLocationList = q('location') || [];
+    let updateDutiesList = q('duty') || [];
+    let updateStartDates = q('employment_start_date') || [];
+    let updateEndedDates = q('employment_start_date') || [];
 
-    // Employments
-    for (var i = 0; i < q('company').length; i++) {
-        if (q('company')[i].length < 1) continue;
+    // Ensure updatedJobIds is an array of integers
+    updatedJobIds = updatedJobIds.map(function(jobId) {
+        return parseInt(jobId);
+    });
 
-        var employment = {
-            company: q('company')[i],
-            role: q('job_title')[i],
-            location: q('location')[i],
-            duties: q('duty')[i],
-            start_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
-            end_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
+    // Create an array of the updated jobs. false IDs indicate it needs to be created
+    let userEmploymentHistory = updatedCompanyList.map(function(company, idx) {
+        let id = updatedJobIds[idx] ? updatedJobIds[idx] : false;
+
+        return {
+            id: id,
+            company: company,
+            role: updatedRoleList[idx],
+            location: updatedLocationList[idx],
+            duties: updateDutiesList[idx],
+            start_date: updateStartDates[idx] ? new Date(Date.parse(updateStartDates[idx])).toISOString() : new Date(Date.now()).toISOString(),
+            end_date: updateEndedDates[idx] ? new Date(Date.parse(updateEndedDates[idx])).toISOString() :  new Date(Date.now()).toISOString(),
+            resume: resumeId
+        };
+    });
+
+
+    Employment.find({resume: resumeId}).then(function(employmentHistoryArr) {
+        let currentEmploymentIds = _.map(employmentHistoryArr, function(employmentObject) {
+            return employmentObject.id
+        });
+
+        // Array of job IDs to be deleted =  IDs current saved not included in the updated list
+        let jobsToDelete = _.difference(currentEmploymentIds, updatedJobIds);
+
+        userEmploymentHistory.forEach(function(employmentHistory) {
+            var employmentHistoryClone = _.cloneDeep(employmentHistory);
+            delete employmentHistoryClone.id;
+
+            if (employmentHistory.id === false) {
+                // Create
+                Employment.create(employmentHistoryClone)
+                .catch(err => {
+                    console.error(err);
+                });
+            } else {
+              // Update
+              // TODO: Don't make an update if we don't have to...
+              Employment.update({ id: employmentHistory.id }, employmentHistoryClone)
+                .catch(err => {
+                  console.error(err);
+                });
+            }
+        });
+
+      if (jobsToDelete.length > 0) {
+        Employment.destroy({id: jobsToDelete})
+          .catch(err => {
+            console.error(err);
+          });
+      }
+
+    }).catch(function(err) {
+        console.error(err);
+    })
+}
+
+function updateReferences(q, resumeId) {
+
+    // TODO: only need to do this for first entry
+    let referenceIds = q('reference_id') || [];
+    let referenceFnameList = removeLastEmptyStrings(q('reference_fname'));
+    let referenceLnameList = q('reference_lname') || [];
+    let referenceCompanyList = q('reference_company') || [];
+    let referenceJobList = q('reference_job_title') || [];
+    let referenceEmailList = q('reference_email') || [];
+    let referencePhoneList= q('reference_phone') || [];
+
+    // Ensure referenceIds is an array of integers
+    referenceIds = referenceIds.map(function(referenceId) {
+        return parseInt(referenceId);
+    });
+
+    // Create an array of the updated references. false IDs indicate it needs to be created
+    let userReferences = referenceFnameList.map(function(referenceFname, idx) {
+        let id = referenceIds[idx] ? referenceIds[idx] : false;
+
+        return {
+            id: id,
+            name: `${referenceFname} ${referenceLnameList[idx]}`,
+            company: referenceCompanyList[idx],
+            job_title: referenceJobList[idx],
+            email: referenceEmailList[idx],
+            phone: referencePhoneList[idx],
+            resume: resumeId
+        };
+    });
+
+    ReferenceContact.find({resume: resumeId}).then(function(referencesArr) {
+        let currentReferencesIds = _.map(referencesArr, function(referenceObj) {
+            return referenceObj.id
+        });
+
+        // Array of reference IDs to be deleted =  IDs current saved not included in the updated list
+        let referencesToDelete = _.difference(currentReferencesIds, referenceIds);
+
+        userReferences.forEach(function(userReference) {
+            var userReferenceClone = _.cloneDeep(userReference);
+            delete userReferenceClone.id;
+
+            if (userReference.id === false) {
+                // Create
+                ReferenceContact.create(userReferenceClone)
+                .catch(err => {
+                    console.error(err);
+                });
+            } else {
+              // Update
+              // TODO: Don't make an update if we don't have to...
+              ReferenceContact.update({ id: userReference.id }, userReferenceClone)
+                .catch(err => {
+                  console.error(err);
+                });
+            }
+
+
+        });
+
+      if (referencesToDelete.length > 0) {
+        ReferenceContact.destroy({id: referencesToDelete})
+          .catch(err => {
+            console.error(err);
+          });
+      }
+    }).catch(function(err) {
+        console.error(err);
+    });
+
+    // Reference Contact, not compulsory
+    for (var i = 0; i < q('reference_fname').length; i++) {
+        if (q('reference_fname')[i].length < 1) continue;
+
+        var reference = {
+            name: q('reference_fname')[i] + ' ' + q('reference_lname')[i],
+            company: q('reference_company')[i],
+            job_title: q('reference_job_title')[i],
+            email: q('reference_email')[i],
+            phone: q('reference_phone')[i],
             resume: q('resume_id')
         };
 
-        if (q('employment_id') && !_.isUndefined(q('employment_id')[i]) && q('employment_id')[i] > 0) {
-            Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
+        if (q('reference_id')[i] && q('reference_id')[i] > 0) {
+            ReferenceContact.update({ id: q('reference_id')[i] }, reference).exec(function() {});
         } else {
-            Employment.findOrCreate({ company: q('company'), role: q('job_title') }, employment).exec(function() {});
-            //sections.employment = true;
+            ReferenceContact.create(reference).exec(function() {});
         }
     }
 }
+
 
 module.exports = {
 	editView: function(req, res) {
@@ -232,29 +380,13 @@ module.exports = {
 
         updateResumeEmploymentHistory(req.param, resumeId);
 
+        updateReferences(req.param, resumeId);
+
         // lets handle associative data
 
 
 
-        // Reference Contact, not compulsory
-        for (var i = 0; i < q('reference_fname').length; i++) {
-            if (q('reference_fname')[i].length < 1) continue;
 
-            var reference = {
-                name: q('reference_fname')[i] + ' ' + q('reference_lname')[i],
-                company: q('reference_company')[i],
-                job_title: q('reference_job_title')[i],
-                email: q('reference_email')[i],
-                phone: q('reference_phone')[i],
-                resume: q('resume_id')
-            };
-
-            if (q('reference_id')[i] && q('reference_id')[i] > 0) {
-                ReferenceContact.update({ id: q('reference_id')[i] }, reference).exec(function() {});
-            } else {
-                ReferenceContact.create(reference).exec(function() {});
-            }
-        }
         if ((q('video_status') == true) && (q('test_status') == true)) {
             status = 'Complete';
         } else {
