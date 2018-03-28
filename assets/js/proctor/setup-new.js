@@ -268,7 +268,6 @@
     proctor.prototype.init = function() {
         var pc = this; pc.stopped = false;
 
-        /* making sure user browser is updated and can take photos via webcam html5 */
         navigator.getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia );
 
         checkDeviceSupport(function() {
@@ -277,7 +276,7 @@
             // log device has no mic
             !hasMicrophone && (pc.opts.onMicNotDetected(), pc.log('Proctor: Microphone not found'));
             
-            // log cam persmission not granted
+            // log cam permission not granted
             !isWebcamAlreadyCaptured && !pc.opts.video.ignoreTrack && pc.opts.onCamPermissionDenied(),
             // log mic permission not granted
             !isMicrophoneAlreadyCaptured && !pc.opts.audio.ignoreRecording && pc.opts.onMicPermissionDenied();
@@ -285,7 +284,7 @@
             if(!hasWebcam || !hasMicrophone) return;
 
             /* handle browser support for tracker and recorder */
-            if((!pc.opts.audio.ignoreRecording && !navigator.getUserMedia) || (!pc.opts.audio.ignoreRecording && !Recorder.isRecordingSupported())) {
+            if((!pc.opts.audio.ignoreRecording && !navigator.getUserMedia) || (!pc.opts.audio.ignoreRecording && !true)) {
                 return pc.opts.handleOutdatedBrowser();
             };
 
@@ -310,7 +309,7 @@
                 pc.video.srcObject = null;
 
                 // stop audio recorder
-                pc.recorder.stop(), pc.recorder.clearStream(),
+                pc.audioRecorder.clear(),
                 // stop audio loop fps
                 window.cancelAnimationFrame(pc.audioLoop),
                 // clear all timing intervals
@@ -330,7 +329,6 @@
         var pc = this;
         
         !this.opts.video.ignoreTrack && this.beginTrack(),
-        !this.opts.audio.ignoreRecording && this.prepareRecorder();
 
         // Computations
         this.integrityScore = this.opts.scores.integrityScore,
@@ -372,7 +370,7 @@
             }
         }
 
-        this.beginAudioTracking();
+        this.beginAudioTracking(), this.opts.feedback(this.feedback);
     },
     proctor.prototype.beginTrack = function() {
         var pc = this;
@@ -481,6 +479,13 @@
 
         // grab an audio context
         this.audioContext = new AudioContext();
+        this.audioInput = null;
+        this.realAudioInput = null;
+        this.inputPoint = null;
+        this.isRecording = false;
+        this.audioRecorder = null;
+        this.analyserContext = null;
+        this.recIndex = 0;
 
         function drawLoop( time ) {
             if(pc.stopped === true) return;
@@ -504,17 +509,31 @@
                 pc.integrityScore -= -pc.opts.scores.ambientNoise,
                 pc.feedback.integrityScore = pc.integrityScore,
                 // Call ambient noise detected function
-                pc.opts.onAmbientNoiseDetection(pc.feedback, pitch, pc.meter),
+                pc.opts.onAmbientNoiseDetection(pc.feedback, pitch, pc.meter);
+
                 // Start recording noise
                 // Stop recording after 5 seconds
-                pc.recorder.start(), setTimeout(function() {
-                    pc.recorder.stop();
-                }, pc.opts.audio.recordingDuration);
+                if(pc.audioRecorder && !pc.isRecording) {
+                    pc.isRecording = true,
+                    pc.audioRecorder.clear(),
+                    pc.audioRecorder.record();
+
+                    pc.log("Proctor: Recording started");
+
+                    setTimeout(function() {
+                        pc.isRecording = false;
+                        pc.audioRecorder.stop();
+                        pc.log("Proctor: Recording stopped");
+                        pc.audioRecorder.getBuffers(function(buffers) {
+                            pc.gotBuffers(buffers);
+                        });
+                    }, pc.opts.audio.recordingDuration);
+                }
 
                 pc.noiseDetect = true;
             }
 
-            //pc.opts.feedback(pc.feedback);
+            pc.opts.feedback(pc.feedback);
         }
 
         try {
@@ -522,10 +541,10 @@
             navigator.getUserMedia({
                 "audio": {
                     "mandatory": {
-                        "googEchoCancellation": "true",
-                        "googAutoGainControl": "true",
-                        "googNoiseSuppression": "true",
-                        "googHighpassFilter": "true"
+                        "googEchoCancellation": "false",
+                        "googAutoGainControl": "false",
+                        "googNoiseSuppression": "false",
+                        "googHighpassFilter": "false"
                     },
                     "optional": []
                 },
@@ -542,47 +561,38 @@
                 pc.audioLoop = limitFPS(function() {
                     drawLoop();
                 }, pc.opts.audio.fps);
+
+                !pc.opts.audio.ignoreRecording && pc.prepareRecorder2(stream);
             }, function(e) {});
         } catch(e) {
             pc.log('Proctor: getUserMedia threw exception :' + e);
         }
     },
+    proctor.prototype.prepareRecorder2 = function(stream) {
+        this.inputPoint = this.audioContext.createGain();
 
-    proctor.prototype.prepareRecorder = function() {
+        this.realAudioInput = this.audioContext.createMediaStreamSource(stream);
+        this.audioInput = this.realAudioInput;
+        this.audioInput.connect(this.inputPoint);
+
+        // this.audioInput = convertToMono( input );
+
+        this.analyserNode = this.audioContext.createAnalyser();
+        this.analyserNode.fftSize = 2048;
+        this.inputPoint.connect( this.analyserNode );
+
+        this.audioRecorder = new Recorder( this.inputPoint );
+
+        this.zeroGain = this.audioContext.createGain();
+        this.zeroGain.gain.value = 0.0;
+        this.inputPoint.connect( this.zeroGain );
+        this.zeroGain.connect( this.audioContext.destination );
+    },
+    proctor.prototype.gotBuffers = function(buffers) {
         var pc = this;
 
-        pc.recorderReady = false;
-
-        this.recorder = new Recorder({
-            monitorGain: parseInt(0, 10),
-            numberOfChannels: parseInt(1, 10),
-            wavBitDepth: parseInt(16, 10),
-            encoderPath: "/js/proctor/waveWorker.min.js"
-        });
-
-        this.recorder.addEventListener("start", function(e){
-            if(pc.stopped === true) return;    
-            pc.log('Proctor: Recorder is started');
-        });
-        this.recorder.addEventListener("stop", function(e){
-            pc.log('Proctor: Recorder is stopped');
-        });
-        this.recorder.addEventListener("pause", function(e){
-            pc.log('Proctor: Recorder is paused');
-        });
-        this.recorder.addEventListener("resume", function(e){
-            pc.log('Proctor: Recorder is resuming');
-        });
-        this.recorder.addEventListener("streamError", function(e){
-            pc.log('Proctor: Error encountered: ' + e.error.name );
-        });
-        this.recorder.addEventListener("streamReady", function(e){
-            pc.recorderReady = true, pc.setProctorReady();
-            pc.log('Proctor: Audio stream is ready');
-        });
-        this.recorder.addEventListener("dataAvailable", function(e){
-            if(pc.stopped === true) return;
-            var dataBlob = new Blob( [e.detail], { type: 'audio/wav' } );
+        pc.audioRecorder.exportWAV( function(blob) {
+            var dataBlob = blob;
             var reader = new window.FileReader();
             reader.readAsDataURL(dataBlob); 
             reader.onloadend = function() {
@@ -590,9 +600,7 @@
                 pc.opts.handleAudioUpload(base64data);
             }
         });
-        
-        this.recorder.initStream();
-    };
+    },
     
     proctor.prototype.setProctorReady = function() {
         var proctor = false, pc = this;

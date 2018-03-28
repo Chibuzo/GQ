@@ -183,7 +183,7 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								{% if resume.photo_status === true %}
+								{% if resume.photo_status === true && resume.profile_status === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
 											<h3 class="test-title">{{ test_title }} Result</h3><br>
@@ -295,15 +295,12 @@
 													</div>
 
 													<div class="col-md-5">
-
 														<!-- Timer -->
 														<div class="row test-panel-text text-center">
 															<span><strong>Time Remaining: </strong></span>
 															<div id="countdowntimer"></div>
 														</div>
-
 														<hr>
-
 														<!-- Invigilation Score -->
 														<div class="row">
 															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
@@ -405,7 +402,7 @@
 										<!-- test row end -->
 									</div>
 								{% else %}
-									<div><div class="alert alert-warning">We've detected that you don't have a profile photo yet. Please upload a profile photo to continue with the test</div></div>
+									<div><div class="alert alert-warning">Your GQ profile is not yet complete. Please fill in your personal details and upload a profile photo before you continue with the test</div></div>
 								{% endif %}
 							</div>
 
@@ -507,9 +504,9 @@
 	<script src="/js/proctor/volume-meter.js"></script>
 
 	<!-- Audio tracking -->
-	<script src="/js/proctor/recorder.min.js"></script>
+	<script src="/js/proctor/recorder-new.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup-new.js?v=1"></script>
+	<script src="/js/proctor/setup-new.js?v=2"></script>
 
 	{#<script src="/js/proctorSetup.js"></script>#}
 	<script type="text/javascript" src="/js/gqTestFrontend.js?v=9"></script>
