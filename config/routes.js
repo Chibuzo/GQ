@@ -173,6 +173,8 @@ module.exports.routes = {
 
     'GET /job/manage': 'JobController.viewJobs',
 
+    'GET /job/addjob/:coy_id': 'JobController.newJobForm',
+
     'GET /job/addjob': 'JobController.newJobForm',
 
     'POST /job/save': 'JobController.saveJob',

@@ -76,18 +76,37 @@ module.exports = {
         module.exports.sendMail(user.email, subject, template, data);
     },
     
-    sendAppliedJobNotice: function(job, user) {
+    sendAppliedJobNotice: function(job, user, msg_type) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
         var hash = crypto.createHash('md5').update(user.email + 'okirikwenEE129Okpkenakai').digest('hex');
 
+        var date_opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        var fyi, newuser, incompleteprofile;
+        switch(msg_type) {
+            case 'fyi':
+                fyi = true;
+                break;
+            case 'new-user':
+                newuser = true;
+                break;
+            case 'incomplete-profile':
+                incompleteprofile = true;
+                break;
+            default:
+                break;
+        }
         var data = {
             user: user.fullname,
             job_title: job.job_title,
             company: job.company.company_name,
+            fyi: fyi,
+            newuser: newuser,
+            incompleteprofile: incompleteprofile,
+            closing_date: job.closing_date.toLocaleDateString('en-US', date_opt),
             url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
         };
-        var subject = "Application for the position of " + job.job_title + " with " + job.company_name;
+        var subject = "Application for the position of " + job.job_title + " at " + job.company.company_name;
         var template = 'appliedJobNotice';
         module.exports.sendMail(user.email, subject, template, data);
     },

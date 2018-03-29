@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
+		<a href="/job/addjob/{{ coy_id }}" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
 	</div>
 
 	<div class="col-md-12">

@@ -307,7 +307,7 @@ module.exports = {
         var coy_id = req.param('coy_id');
         Job.find({ company: coy_id }).populate('applications').populate('poster').exec(function(err, jobs) {
             if (err) return;
-            return res.view('admin/coy-jobs', { jobs: jobs});
+            return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
         });
     }
 };
