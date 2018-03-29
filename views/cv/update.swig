@@ -93,6 +93,14 @@
 		min-height: 40px;
 	}
 
+    .photo-instructions-title {
+        margin-bottom: 15px;
+    }
+
+    .photo-instructions-item {
+        margin-bottom: 5px;
+    }
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
