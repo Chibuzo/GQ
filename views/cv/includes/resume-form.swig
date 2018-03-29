@@ -189,7 +189,7 @@
                     <div class="row inst-row"">
                         <div class="col-md-3">
                             <label>Institution</label>
-                            <input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution">
+                            <input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution" required>
                         </div>
                         <div class="col-md-1">
                             <label>Honour</label>
@@ -202,15 +202,15 @@
                         </div>
                         <div class="col-md-3">
                             <label>Programme</label>
-                            <input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study">
+                            <input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study" required>
                         </div>
                         <div class="col-md-2">
                             <label>start Date</label>
-                            <input type="text" name="inst_start_date[]" class="form-control datep is-required" readonly placeholder="Date started">
+                            <input type="text" name="inst_start_date[]" class="form-control datep is-required" readonly placeholder="Date started" required>
                         </div>
                         <div class="col-md-2">
                             <label>End Date</label>
-                            <input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended">
+                            <input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended" required>
                         </div>
                         <div class="col-md-1">
                             <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>

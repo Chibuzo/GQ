@@ -350,6 +350,11 @@ module.exports = {
                                 _result = result;
                                 test_title = 'General Aptitude Test';
                             }
+                            let resumeEducation = resume.educations;
+
+                            let hasEducationName = resumeEducation && resumeEducation[0] && resumeEducation[0].institution ? true : false;
+                            let hasEducationProgram = resumeEducation && resumeEducation[0] && resumeEducation[0].programme ? true : false;
+
                             return res.view('cv/update', {
                                 resume: resume,
                                 me: me,
@@ -359,7 +364,8 @@ module.exports = {
                                 result: _result,
                                 test_title: test_title,
                                 canEditResume: true,
-                                showContactInfo: true
+                                showContactInfo: true,
+                                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram
                             });
                         }).catch(function(err) {
                             console.log(err);
@@ -374,18 +380,14 @@ module.exports = {
         var sections = [], status; // for profile complete status
         let resumeId = q('resume_id');
 
-        updateResumeEducation(req.param, resumeId);
-
         updateResumeQualifications(req.param, resumeId);
 
         updateResumeEmploymentHistory(req.param, resumeId);
 
         updateReferences(req.param, resumeId);
 
+        updateResumeEducation(req.param, resumeId)
         // lets handle associative data
-
-
-
 
         if ((q('video_status') == true) && (q('test_status') == true)) {
             status = 'Complete';
@@ -404,7 +406,7 @@ module.exports = {
             employment_status: q('employment_status'),
             available_date: new Date(Date.parse(q('available_date'))).toISOString(),
             expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
-            // profile_status: sections.education,
+            // profile_status: ,
             profile_status: true, // TODO: (Maybe) Have this be dependant on whether there is one educational field
             status: status
         };
