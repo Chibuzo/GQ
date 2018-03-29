@@ -80,6 +80,10 @@ module.exports = {
                         req.session.userId = user[0].id;
                         req.session.user_type = user[0].user_type;
                         req.session.fname = user[0].fullname;
+                        req.session.userEmail = user[0].email;
+
+                        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+
                         var me = {
                             fname: user[0].fullname.split(' ')[0],
                             lname: user[0].fullname.split(' ')[1]
@@ -88,7 +92,12 @@ module.exports = {
                             // create their resume
                             Resume.create({ email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
                             sendMail.welcomeNewCandidate(user[0]);
-                            return res.view('applicant/profile', { user: user[0], me: me });
+                            return res.view('applicant/profile', {
+                                user: user[0],
+                                me: me,
+                                enableAmplitude: enableAmplitude,
+                                userEmail: user[0].email
+                            });
                         } else if (user[0].user_type == 'company') {
                             return res.view('company/users/profile', { user: user[0], me: me });
                         }
@@ -137,6 +146,7 @@ module.exports = {
                     req.session.userId = foundUser.id;
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
+                    req.session.userEmail = foundUser.email;
                     if (req.param('return_url').length > 1) {
                         return res.json(200, { status: 'success', url: '/' + new Buffer(req.param('return_url'), 'base64').toString() });
                     } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
@@ -151,11 +161,17 @@ module.exports = {
     },
 
     dashboard: function(req, res) {
-        if (!req.session.userId) {
+      const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+      const userEmail = req.session.userEmail;
+
+      if (!req.session.userId) {
             return res.view ('user/signin');
         }
         if (req.session.user_type == 'Applicant') {
-            return res.view('applicant/dashboard');
+            return res.view('applicant/dashboard', {
+              userEmail: userEmail,
+              enableAmplitude: enableAmplitude
+            });
         }
     },
 
@@ -178,6 +194,9 @@ module.exports = {
     },
 
     profile: function(req, res) {
+        const userEmail = req.session.userEmail;
+        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+
         User.findOne(req.session.userId, function(err, _user) {
             if (err) return res.negotiate(err);
             var me = {
@@ -185,7 +204,13 @@ module.exports = {
                 lname: _user.fullname.split(' ')[1]
             };
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                return res.view('applicant/profile', { user: _user, me: me, passport: resume[0].photo });
+                return res.view('applicant/profile', {
+                    user: _user,
+                    me: me,
+                    passport: resume[0].photo,
+                    userEmail: userEmail,
+                    enableAmplitude: enableAmplitude
+                });
             });
         });
     },
@@ -291,4 +316,3 @@ module.exports = {
         return res.view('login', { return_url: return_url });
     }
 };
-

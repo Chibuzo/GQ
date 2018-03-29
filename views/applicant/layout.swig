@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="en">
-<head>
+{% block head %}
+
     <meta charset="utf-8" />
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
@@ -42,7 +43,7 @@
             margin: 2px 4px;
         }
     </style>
-</head>
+{% endblock %}
 <!--Start of Tawk.to Script-->
 <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();

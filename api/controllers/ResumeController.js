@@ -333,6 +333,9 @@ function updateReferences(q, resumeId) {
 
 module.exports = {
 	editView: function(req, res) {
+        const userEmail = req.session.userEmail;
+        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
             .exec(function(err, resume) {
@@ -365,7 +368,9 @@ module.exports = {
                                 test_title: test_title,
                                 canEditResume: true,
                                 showContactInfo: true,
-                                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram
+                                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                                userEmail: userEmail,
+                                enableAmplitude: enableAmplitude
                             });
                         }).catch(function(err) {
                             console.log(err);
