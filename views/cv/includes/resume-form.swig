@@ -137,91 +137,91 @@
 		<fieldset id="institutions">
 			<legend>Education</legend>
 			<div class="form-group">
-				{% for edu in resume.educations %}
-					<div class="row inst-row">
-						<div class="col-md-3">
-							<label>Institution</label>
-							<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
-						</div>
-						<div class="col-md-1">
-							<label>Honour</label>
-							{% set selected = 'selected' %}
-							<select name="honour[]" class="form-control">
-								<option value=""></option>
-								{% for honor in honours %}
-									{% if honor.honour == edu.honour %}
-										<option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
-									{% else %}
-										<option value="{{ honor.honour }}">{{ honor.honour }}</option>
-									{% endif %}
-								{% endfor %}
-							</select>
-						</div>
-						<div class="col-md-3">
-							<label>Programme</label>
-							<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}" required>
-						</div>
-						<div class="col-md-2">
-							<label>start Date</label>
-							{% if edu.start_date %}
-								<input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started" value="{{ edu.start_date | date('Y-m-d') }}" required>
-							{% else %}
-								<input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started" required>
-							{% endif %}
-						</div>
-						<div class="col-md-2">
-							<label>End Date</label>
-							{% if edu.end_date %}
-								<input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended" value="{{ edu.end_date | date('Y-m-d') }}" required>
-							{% else %}
-								<input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended">
-							{% endif %}
-						</div>
-						<input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
-						<div class="col-md-1">
-							<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
-						</div>
-					</div>
-				{% endfor %}
+                {% for edu in resume.educations %}
+                    <div class="row inst-row">
+                        <div class="col-md-3">
+                            <label>Institution</label>
+                            <input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
+                        </div>
+                        <div class="col-md-1">
+                            <label>Honour</label>
+                            {% set selected = 'selected' %}
+                            <select name="honour[]" class="form-control">
+                                <option value=""></option>
+                                {% for honor in honours %}
+                                    {% if honor.honour == edu.honour %}
+                                        <option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
+                                    {% else %}
+                                        <option value="{{ honor.honour }}">{{ honor.honour }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Programme</label>
+                            <input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}">
+                        </div>
+                        <div class="col-md-2">
+                            <label>start Date</label>
+                            {% if edu.start_date %}
+                                <input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started" value="{{ edu.start_date | date('Y-m-d') }}" required>
+                            {% else %}
+                                <input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started" required>
+                            {% endif %}
+                        </div>
+                        <div class="col-md-2">
+                            <label>End Date</label>
+                            {% if edu.end_date %}
+                                <input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended" value="{{ edu.end_date | date('Y-m-d') }}" required>
+                            {% else %}
+                                <input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended" required>
+                            {% endif %}
+                        </div>
+                        <input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
+                        <div class="col-md-1">
+                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
+                        </div>
+                    </div>
+                {% endfor %}
 
-				{% if resume.educations.length < 1 %}
-					<div class="row inst-row">
-						<div class="col-md-3">
-							<label>Institution</label> <span class="red">*</span>
-							<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" required>
-						</div>
-						<div class="col-md-1">
-							<label>Honour</label> <span class="red">*</span>
-							<select name="honour[]" class="form-control">
-								<option value=""></option>
-								{% for honor in honours %}
-									<option value="{{ honor.honour }}">{{ honor.honour }}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<div class="col-md-3">
-							<label>Programme</label> <span class="red">*</span>
-							<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" required>
-						</div>
-						<div class="col-md-2">
-							<label>start Date</label> <span class="red">*</span>
-							<input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started" required>
-						</div>
-						<div class="col-md-2">
-							<label>End Date</label> <span class="red">*</span>
-							<input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended" required>
-						</div>
-						<input type="hidden" name="inst_id[]" />
-						<div class="col-md-1">
-							<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
-						</div>
-					</div>
-				{% endif %}
+
+                {% if resume.educations.length < 1 %}
+                    <div class="row inst-row"">
+                        <div class="col-md-3">
+                            <label>Institution</label>
+                            <input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution" required>
+                        </div>
+                        <div class="col-md-1">
+                            <label>Honour</label>
+                            <select name="honour[]" class="form-control">
+                                <option value=""></option>
+                                {% for honor in honours %}
+                                    <option value="{{ honor.honour }}">{{ honor.honour }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Programme</label>
+                            <input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label>start Date</label>
+                            <input type="text" name="inst_start_date[]" class="form-control datep is-required" readonly placeholder="Date started" required>
+                        </div>
+                        <div class="col-md-2">
+                            <label>End Date</label>
+                            <input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended" required>
+                        </div>
+                        <div class="col-md-1">
+                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
+                        </div>
+                    </div>
+                {% endif %}
 
 				<div class="row inst-row addable" id="another-inst">
 					<div class="col-md-3">
 						<label>Institution</label>
-						<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution">
+						<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution">
 					</div>
 					<div class="col-md-1">
 						<label>Honour</label>
@@ -234,21 +234,29 @@
 					</div>
 					<div class="col-md-3">
 						<label>Programme</label>
-						<input type="text" name="programme[]" class="form-control" placeholder="Field of Study">
+						<input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study">
 					</div>
 					<div class="col-md-2">
 						<label>start Date</label>
-						<input type="text" name="inst_start_date[]" class="form-control datep" readonly placeholder="Date started">
+						<input type="text" name="inst_start_date[]" class="form-control datep is-required" readonly placeholder="Date started">
 					</div>
 					<div class="col-md-2">
 						<label>End Date</label>
-						<input type="text" name="inst_end_date[]" class="form-control datep" readonly placeholder="Date ended">
+						<input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended">
 					</div>
 					<div class="col-md-1">
-						<a href="" class="plus-btn add-institution"><i class="fa fa-plus fa-lg"></i></a>
+                        <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
 					</div>
 				</div>
-			</div>
+
+                <div class="row">
+                    <div class="col-sm-1 col-sm-offset-5">
+                        <a href="" class="add-institution">
+                            <i class="fa fa-plus fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
 		</fieldset>
 
 		<fieldset id="qualifications">
@@ -276,21 +284,23 @@
 					</div>
 				{% endfor %}
 
-					<div class="row qual-row">
-						<div class="col-md-9">
-							<label>Qualification</label>
-							<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
-						</div>
+                {% if resume.educations.length < 1 %}
+                    <div class="row qual-row">
+    					<div class="col-md-9">
+    						<label>Qualification</label>
+    						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
+    					</div>
 
-						<div class="col-md-2">
-							<label>Date Obtained</label>
-							<input type="text" name="qualification_date[]" class="form-control datep" readonly placeholder="Date Obtained">
-						</div>
-						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
-						<div class="col-md-1">
-							<a href="" class="plus-btn add-qualification"><i class="fa fa-plus fa-lg"></i></a>
-						</div>
-					</div>
+    					<div class="col-md-2">
+    						<label>Date Obtained</label>
+    						<input type="text" name="qualification_date[]" class="form-control datep" readonly placeholder="Date Obtained">
+    					</div>
+    					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
+    					<div class="col-md-1">
+                            <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
+    					</div>
+    				</div>
+                {% endif %}
 
 				<div class="row qual-row addable" id="another-qualification">
 					<div class="col-md-9">
@@ -304,9 +314,18 @@
 					</div>
 
 					<div class="col-md-1">
-						<a href="" class="plus-btn add-qualification"><i class="fa fa-plus fa-lg"></i></a>
+                        <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
 					</div>
 				</div>
+
+                <div class="row">
+                    <div class="col-sm-1 col-sm-offset-5">
+                        <a href="" class="add-qualification">
+                            <i class="fa fa-plus fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
+
 			</div>
 		</fieldset>
 
@@ -358,7 +377,7 @@
 							</div>
 							<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
 							<div class="col-md-1">
-								<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+                                <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -400,7 +419,7 @@
 								<input type="text" name="employment_end_date[]" class="form-control datep" readonly placeholder="Date ended">
 							</div>
 							<div class="col-md-1">
-								<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+								<a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -441,10 +460,18 @@
 							<input type="text" name="employment_end_date[]" class="form-control datep" readonly placeholder="Date ended">
 						</div>
 						<div class="col-md-1">
-							<a href="" class="plus-btn add-employment"><i class="fa fa-plus fa-lg"></i></a>
+                            <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
+
+                <div class="row">
+                    <div class="col-sm-1 col-sm-offset-5">
+                        <a href="" class="add-employment">
+                            <i class="fa fa-plus fa-lg"></i>
+                        </a>
+                    </div>
+                </div>
 			</div>
 		</fieldset>
 
@@ -489,7 +516,7 @@
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 							<div class="col-md-1">
-								<a href="" class="plus-btn add-reference"><i class="fa fa-plus fa-lg"></i></a>
+                                <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -531,7 +558,7 @@
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 							<div class="col-md-1">
-								<a href="" class="plus-btn add-reference"><i class="fa fa-plus fa-lg"></i></a>
+								<a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -576,11 +603,19 @@
 							<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's Name">
 						</div>
 						<div class="col-md-1">
-							<a href="" class="plus-btn add-reference"><i class="fa fa-plus fa-lg"></i></a>
+                            <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
 			</div>
+
+            <div class="row">
+                <div class="col-sm-1 col-sm-offset-5">
+                    <a href="" class="add-reference">
+                        <i class="fa fa-plus fa-lg"></i>
+                    </a>
+                </div>
+            </div>
 		</fieldset>
 
 		<input type="hidden" name="resume_id" value="{{ resume.id }}" />

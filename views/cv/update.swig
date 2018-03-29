@@ -136,7 +136,7 @@
 									{% set status = status + 1 %}
 									{% set test_status = 1 %}
 								{% endif %}
-								{% if resume.profile_status %}
+								{% if resume.profile_status && completeResumeEducation %}
 									{% set status = status + 1 %}
 									{% set profile_status = 1 %}
 								{% endif %}
@@ -183,7 +183,7 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								{% if resume.photo_status === true && resume.profile_status === true %}
+								{% if resume.photo_status === true && resume.profile_status === true && completeResumeEducation === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
 											<h3 class="test-title">{{ test_title }} Result</h3><br>
@@ -402,7 +402,17 @@
 										<!-- test row end -->
 									</div>
 								{% else %}
-									<div><div class="alert alert-warning">Your GQ profile is not yet complete. Please fill in your personal details and upload a profile photo before you continue with the test</div></div>
+                                    {% if resume.profile_status !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please ensure your name, email address, name of institutions you have attended, and your field of study is filled in before you take the assessment test.</div></div>
+                                    {% endif %}
+
+                                    {% if resume.photo_status !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please upload a profile picture.</div></div>
+                                    {% endif %}
+
+                                    {% if completeResumeEducation !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please provide us with the name of institutions you have attended, and your field of study.</div></div>
+                                    {% endif %}
 								{% endif %}
 							</div>
 
@@ -544,12 +554,14 @@
 				}
 			});
 
-
 			// add one row to institution
 			$("#institutions").on("click", ".add-institution", function(e) {
 				e.preventDefault();
-				$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
-				$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+				var institutionsClone =  $("#another-inst").clone();
+                institutionsClone.insertBefore("#another-inst").slideDown().removeAttr("id");
+
+                $('.is-required', institutionsClone).prop('required', true);
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -558,8 +570,7 @@
 				$(".school").easyAutocomplete(options);
 			});
 
-
-			// remove one row from institutiob
+			// remove one row from institution
 			$("#institutions").on("click", ".remove-institution-btn", function(e) {
 				e.preventDefault();
 				$(this).parents(".inst-row").slideUp(function() {
@@ -570,8 +581,10 @@
 			// add one row to qualifications
 			$("#qualifications").on("click", ".add-qualification", function(e) {
 				e.preventDefault();
-				$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
-				$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+
+				let qualificationClone = $("#another-qualification").clone();
+                qualificationClone.insertBefore("#another-qualification").slideDown().removeAttr("id");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -591,7 +604,7 @@
 			$("#employments").on("click", ".add-employment", function(e) {
 				e.preventDefault();
 				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
-				$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -612,7 +625,6 @@
 			$("#referenceContacts").on("click", ".add-reference", function(e) {
 				e.preventDefault();
 				$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
-				$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
 			});
 
 
@@ -648,11 +660,12 @@
 
 				// Hide the Resume presentation View
 				$("#resume").addClass('hidden');
+
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
+                // easyAutocomplete sometimes has a width of 0px. Makes input field look small
+                $('.easy-autocomplete .school').parent().css('min-width', '200px');
 			});
-
-
 
 			// video handlers
 			$("#add-video, #change-video").click(function(e) {
