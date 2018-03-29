@@ -4,6 +4,12 @@
   <i class="pe-7s-user"></i> &nbsp;My Settings
 {% endblock %}
 
+{% block head %}
+  {% parent %}
+  {% set location = "Profile" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 <style>
 .avatar {
@@ -116,7 +122,7 @@
                 </div>
             </div>
         </div>
-	
+
 {% endblock %}
 
 {% block scriptTag %}

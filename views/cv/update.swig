@@ -4,6 +4,12 @@
 	<i class="pe-7s-user"></i> &nbsp;My Resume
 {% endblock %}
 
+{% block head %}
+  {% parent %}
+  {% set location = "My Resume" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
 <style>

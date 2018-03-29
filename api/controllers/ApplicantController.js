@@ -7,6 +7,9 @@
 
 module.exports = {
     dashboard: function(req, res) {
+        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         // find GQ Test results
         GQTestResult.find({candidate: req.session.userId}).populate('test').exec(function (err, test_result) {
             //if (err) console.log(err)
@@ -36,10 +39,10 @@ module.exports = {
                             });
                         },
                         function() {
-                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results});
+                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude});
                         });
                     } else {
-                        return res.view('applicant/dashboard', { gq_results: gq_results });
+                        return res.view('applicant/dashboard', { gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude });
                     }
                 });
             });
@@ -300,4 +303,3 @@ module.exports = {
         }
     }
 };
-

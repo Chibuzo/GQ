@@ -4,6 +4,12 @@
 	<i class="pe-7s-graph"></i> Dashboard
 {% endblock %}
 
+{% block head %}
+  {% parent %}
+  {% set location = "Dashboard" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 
 
 {% block body %}
