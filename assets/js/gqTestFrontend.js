@@ -65,6 +65,7 @@ $("#start-test").click(function() {
 	proctorCanvas.mount();
 
     // start test proctoring
+    console.log('Calling Start Proctor');
     PROCTOR = startProctor();
 
     // register proctor session
@@ -247,7 +248,6 @@ $("#submit-test").click(function(e) {
         // hide the damn video canvas
 		proctorCanvas.remove();
 
-        stopProctor();
 
         saveAnswer();
 
@@ -263,6 +263,7 @@ $("#submit-test").click(function(e) {
         }
         // remove windows close event
         removeWindowsCloseEvent();
+        stopProctor();
     }
 });
 
@@ -441,6 +442,8 @@ function blockTest() {
 }
 
 function startTest() {
+    console.log('Starting Test');
+
     if (GQTestStatus.isInProgress()) {
         console.warn("Attempted to start test when a test already in progress ");
         return;
@@ -638,6 +641,7 @@ var updateIntegrityBar = function(integrityScore) {
 // ----- END INTEGRITY SCORE FUNCTIONS ---- //
 
 function startProctor() {
+    console.log('Starting Proctor');
     return new Proctor({
         detectionLapse: 60, // detection lapse (seconds)
 
@@ -750,6 +754,7 @@ function startProctor() {
         },
 
         proctorReady: () => {
+            console.log('proctorReady');
             // console.log('Proctor is ready.');
             startTest();
             // Make proctor visible for 60s
@@ -770,5 +775,7 @@ function stopProctor() {
     } catch (err) {
         console.error("Proctor threw an error when attempting to stop...");
         console.error(err);
+    } finally {
+        PROCTOR =  null;
     }
 }
