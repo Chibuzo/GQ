@@ -7,7 +7,7 @@
 
 module.exports = {
     dashboard: function(req, res) {
-        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
         const userEmail = req.session.userEmail;
 
         // find GQ Test results

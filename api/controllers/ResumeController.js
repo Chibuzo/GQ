@@ -334,7 +334,7 @@ function updateReferences(q, resumeId) {
 module.exports = {
 	editView: function(req, res) {
         const userEmail = req.session.userEmail;
-        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
         Resume.findOne({ user: req.session.userId })
             .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')

@@ -82,7 +82,7 @@ module.exports = {
                         req.session.fname = user[0].fullname;
                         req.session.userEmail = user[0].email;
 
-                        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+                        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
                         var me = {
                             fname: user[0].fullname.split(' ')[0],
@@ -161,10 +161,10 @@ module.exports = {
     },
 
     dashboard: function(req, res) {
-      const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
-      const userEmail = req.session.userEmail;
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
 
-      if (!req.session.userId) {
+        if (!req.session.userId) {
             return res.view ('user/signin');
         }
         if (req.session.user_type == 'Applicant') {
@@ -195,7 +195,7 @@ module.exports = {
 
     profile: function(req, res) {
         const userEmail = req.session.userEmail;
-        const enableAmplitude = process.env.ENABLE_AMPLITUDE ? true : false;
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
         User.findOne(req.session.userId, function(err, _user) {
             if (err) return res.negotiate(err);
