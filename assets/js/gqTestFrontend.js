@@ -246,9 +246,7 @@ $("#submit-test").click(function(e) {
         destroyCountdownTimer();
 
         // hide the damn video canvas
-		proctorCanvas.remove();
-
-
+        proctorCanvas.remove();
         saveAnswer();
 
 
@@ -261,9 +259,9 @@ $("#submit-test").click(function(e) {
         } else {
             submitTest();
         }
+
         // remove windows close event
         removeWindowsCloseEvent();
-        stopProctor();
     }
 });
 
@@ -289,6 +287,7 @@ function submitTest() {
     }
 
     var proctorFeedback = PROCTOR.getFeedback();
+    stopProctor();
 
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
@@ -336,6 +335,7 @@ function submitAndLoadNext(next) {
     $('.load-test').data('test_id', next);
 
 	var proctorFeedback = PROCTOR.getFeedback();
+    stopProctor();
 
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
@@ -375,6 +375,7 @@ function submitGQAptitudeTest() {
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
     var proctorFeedback = PROCTOR.getFeedback();
+    stopProctor();
 
     var invigilationTracking = {
         noFace: proctorFeedback.video.counter.noFace,
@@ -495,6 +496,12 @@ function addNoticfication(msg, opts) {
     if (!msg) {
         return;
     }
+
+    if (!GQTestStatus.isInProgress()) {
+        console.warn("Attempted to dislay proctor notification when no test in progress");
+        return;
+    }
+
     opts = opts || {};
     var overlay = opts.overlay || false;
 
@@ -532,6 +539,7 @@ function addWindowsCloseEvent() {
 }
 
 window.addEventListener('online', () => {
+    // TODO: this is going to create another proctor session
     PROCTOR = startProctor();
 
     removeNotification();
@@ -605,10 +613,12 @@ function resumeCountdownTimer() {
 
 // ------- SHOW CANDIDATE'S FACE BRIEFLY ------//
 var proctorCanvas = (function() {
+    var canvasTimer;
+
     return {
 		makeVisible: function(time) {
 			$(".cell").css('opacity', 1);
-			setTimeout(this.makeInvisible, time);
+			canvasTimer = setTimeout(this.makeInvisible, time);
 		},
 
 		makeInvisible: function() {
@@ -617,6 +627,7 @@ var proctorCanvas = (function() {
 
 		remove: function() {
 			$(".cell").addClass("hidden");
+            clearTimeout(canvasTimer);
 		},
 
 		mount: function() {
