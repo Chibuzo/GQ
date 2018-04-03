@@ -45,6 +45,8 @@ module.exports.routes = {
 
     'POST /applicant/add-profilephoto': 'ApplicantController.uploadPhoto',
 
+    'DELETE /applicant/test/:userId': 'ApplicantController.deleteTestScoreAndFiles',
+
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
     'GET /applicant/resume-user/:user_id': 'ResumeController.viewResumeByUser',

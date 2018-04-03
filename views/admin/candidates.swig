@@ -40,6 +40,10 @@
 		margin-bottom: 5px;
 	}
 
+    .trash-can {
+        color: red;
+    }
+
 </style>
 
 <div class="col-md-12">
@@ -76,7 +80,11 @@
 					{% for user in candidates %}
 						<tr id="{{ user.id }}">
 							<td>{{ user.test_date | date('d/m/Y') }}</td>
-							<td>{{ user.fullname }}</td>
+							<td>
+                                <a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume">
+                                    {{ user.fullname }}
+                                </a>
+                            </td>
 							{#<td>{{ user.employment_status }}</td>#}
 							<td>{{ user.generalAbilityTest.score }}%</td>
 							<td>
@@ -100,8 +108,8 @@
 							<td>{{ user.rank }}</td>
 							<td class="text-center">{{ user.integrity_score }}</td>
 							<td>{{ user.status }}</td>
-							<td class="opt-icons text-center">
-								<a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
+							<td data-user-id="{{ user.id }}" data-user-name="{{ user.fullname }}" class="trash-can opt-icons text-center">
+								<i  class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
 							</td>
 						</tr>
 					{% endfor %}

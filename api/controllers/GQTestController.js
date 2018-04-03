@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing Gqtests
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const fs = require('fs');
 
 module.exports = {
 	manageTest: function(req, res) {
@@ -359,10 +360,9 @@ module.exports = {
         var filename = '/aud_' + hr[1] + '.wav';
         path += filename;
         var audio = req.param('data').split(';base64,').pop();
-
         var buff = new Buffer(audio, 'base64');
-        const fs = require('fs');
         fs.writeFileSync(path, buff);
+
         // save audio filename
         var data = {
             filename: filename,
@@ -381,8 +381,8 @@ module.exports = {
         path += filename;
         var photo = req.param('imgBase64').split(';base64,').pop();
         var buff = new Buffer(photo, 'base64');
-        const fs = require('fs');
         fs.writeFileSync(path, buff);
+
         // save photo filename
         var data = {
             filename: filename,
