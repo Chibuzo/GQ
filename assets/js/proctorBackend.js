@@ -98,3 +98,22 @@ $("#reject-test").click(function() {
         $("tr#" + candidate_id).find("td:nth-child(8)").html('Rejected');
     }
 });
+
+$(".trash-can").click(function() {
+    var candidateId = $(this).attr('data-user-id');
+    var candidateName = $(this).attr('data-user-name');
+
+    if (confirm("Delete " + candidateName + "'s test score. This will permenantly delete all their test scores and proctor files.")) {
+      $.ajax({
+        url: '/applicant/test/' + candidateId,
+        method: 'DELETE',
+        error: function(jqXHR, textStatus, errorThrown) {
+          // console.error(jqXHR);
+          alert('Error Attempting to delete test score: ' + textStatus + ', ' + errorThrown);
+        },
+        success: function() {
+            location.reload();
+        }
+      });
+    }
+});

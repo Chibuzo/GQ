@@ -4,6 +4,27 @@
  * @description :: Server-side logic for managing Applicants
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
+const fs = require('fs');
+const path = require('path');
+
+function deleteProctorFiles(proctorSessionId) {
+    const assetPath = path.resolve(sails.config.appPath + '/assets/proctorFiles');
+
+    return ProctorRecord.find({proctor: proctorSessionId}).then(function(proctorRecords) {
+        proctorRecords.forEach(record => {
+            let path = `${assetPath}${record.filename}`;
+            if (fs.existsSync(path)) {
+                fs.unlinkSync(path);
+            }
+        });
+
+        return Promise.resolve();
+    })
+    .catch(function(err) {
+        console.error(err);
+        return Promise.reject(err);
+    });
+};
 
 module.exports = {
     dashboard: function(req, res) {
@@ -301,5 +322,47 @@ module.exports = {
                 console.log(err);
             });
         }
+    },
+
+    deleteTestScoreAndFiles: function(req, res) {
+        const userId = parseInt(req.param('userId') || "");
+
+        if (!userId) {
+            return res.badRequest('Missing/invalid user id');
+        }
+
+        return GQAptitudeTestResult.destroy({user: userId}).then(function() {
+            return GQTestResult.destroy({candidate: userId}).then(function(destroyedRecords) {
+
+                let proctorSessionIds = destroyedRecords.map(function(gqTestResult) {
+                    return gqTestResult.proctor;
+                });
+
+
+                let destorySessionPromise = ProctorSession.destroy({id: proctorSessionIds}).then(function() {
+                    return Promise.resolve();
+                }).catch(err => {
+                    console.err(err);
+                    return Promise.reject(err);
+                });
+
+                let deleteProctorPromises = [];
+
+                deleteProctorPromises.push(destorySessionPromise);
+
+                proctorSessionIds.forEach(function(proctorSessionId) {
+                    deleteProctorPromises.push(deleteProctorFiles(proctorSessionId));
+                });
+
+                return Promise.all(deleteProctorPromises);
+            })
+
+        }).then(function() {
+            return res.ok();
+        }).catch(function(err) {
+            console.log(err);
+            return res.serverError(err);
+        })
     }
+
 };
