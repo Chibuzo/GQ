@@ -42,6 +42,7 @@
 
     .trash-can {
         color: red;
+        cursor: pointer;
     }
 
 </style>
