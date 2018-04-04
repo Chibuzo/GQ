@@ -82,7 +82,7 @@
 						<tr id="{{ user.id }}">
 							<td>{{ user.test_date | date('d/m/Y') }}</td>
 							<td>
-                                <a href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume">
+                                <a target="_blank" href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume">
                                     {{ user.fullname }}
                                 </a>
                             </td>

@@ -332,7 +332,8 @@ module.exports = {
                                         applicants: applications,
                                         results: all_text_result,
                                         selected_candidates: selected_candidates_test_result,
-                                        job_id: job_id
+                                        job_id: job_id,
+                                        folder: folder
                                     });
                                 }).catch(function (err) {
                                     console.log(err);
@@ -341,7 +342,8 @@ module.exports = {
                                 return res.view(folder + '/applicants-view.swig', {
                                     applicants: applications,
                                     results: all_text_result,
-                                    job_id: job_id
+                                    job_id: job_id,
+                                    folder: folder
                                 });
                             }
                         });

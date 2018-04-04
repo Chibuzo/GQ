@@ -59,7 +59,7 @@
                                             <td>{{ applicant.applicant.status }}</td>
                                             {% if applicant.applicant.status == 'Active' %}
                                                 <td class="opt-icons text-center">
-                                                    <a href="/applicant/resume-user/{{ applicant.applicant.id }}" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
+                                                    <a target="_blank" href="/applicant/resume-user/{{ applicant.applicant.id }}" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
                                                 </td>
                                             {% else %}
                                                 <td></td>
