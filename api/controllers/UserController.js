@@ -90,7 +90,7 @@ module.exports = {
                         };
                         if (user[0].user_type == 'Applicant') {
                             // create their resume
-                            Resume.create({ email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
+                            Resume.findOrCreate({ email: email}, { email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
                             sendMail.welcomeNewCandidate(user[0]);
                             return res.view('applicant/profile', {
                                 user: user[0],
@@ -103,7 +103,7 @@ module.exports = {
                         }
                     });
                 } else {
-                    return res.badRequest('Incorrect activation code')
+                    return res.badRequest('Incorrect activation code');
                 }
             }
         });
@@ -223,9 +223,10 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
+            let new_pswd = req.param('new_password');
             if(req.param('current_password') && req.param('new_password')) {
                 Passwords.checkPassword({
-                    passwordAttempt: req.param('current_password'),
+                    passwordAttempt: new_pswd,
                     encryptedPassword: user[0].password
                 }).exec({
                     error: function (err) {
@@ -241,7 +242,7 @@ module.exports = {
                         }).exec({
                             error: function (err) {
                                 console.log(err);
-                                //return res.serverError(err);
+                                return res.json(200, { status: 'Err', msg: err });
                             },
                             success: function (newPassword) {
                                 User.update({ id: req.session.userId }, { password: newPassword }).exec(function (err) {
@@ -253,7 +254,20 @@ module.exports = {
                     }
                 });
             } else {
-                return res.json(200, { status: 'success' });
+                Passwords.encryptPassword({
+                    password: req.param('new_password'),
+                }).exec({
+                    error: function (err) {
+                        console.log(err);
+                        return res.json(200, { status: 'error', msg: err });
+                    },
+                    success: function (newPassword) {
+                        User.update({ id: req.session.userId }, { password: newPassword }).exec(function (err) {
+                            if (err) return res.json(200, { status: 'error', msg: err });
+                            return res.json(200, { status: 'success' });
+                        });
+                    }
+                });
             }
         });
     },
