@@ -482,7 +482,8 @@ module.exports = {
                     me: me,
                     result: response.result ? response.result : null,
                     test_title: response.test_title ? response.test_title : null,
-                    folder: folder
+                    folder: folder,
+                    showContactInfo: folder === 'admin' ? true : false
                 });
             }).catch(function(err) {
                 console.log(err);

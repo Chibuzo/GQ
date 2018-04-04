@@ -85,7 +85,7 @@
                                             {#<td class="">{{ result.average_score }}</td>#}
                                             <td>{{ result.test_result }}</td>
 											<td class="opt-icons text-center">
-                                                <a href="/applicant/resume-user/{{ result.applicant.id }}" class="btn btn-success btn-fill btn-xs" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
+                                                <a target="_blank" href="/applicant/resume-user/{{ result.applicant.id }}" class="btn btn-success btn-fill btn-xs" rel="tooltip" title="View Resume"><i class="fa fa-newspaper-o fa-lg"></i> </a>
                                             </td>
                                         </tr>
                                     {% endfor %}
