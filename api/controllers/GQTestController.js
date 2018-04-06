@@ -315,9 +315,18 @@ module.exports = {
         let integrity_score = req.param('integrity_score');
         let userAnswers = req.param("userAnswers") || [];
 		let invigilationTracking = req.param('invigilationTracking') || {};
+        let proctorSessId = req.param('proctorSessId');
 
         let score = 0;
 
+        if (proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (Test)', req.session.userEmail, {
+                location: 'GQTestController.markGQ()',
+                testId: test_id,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
         // update integrity score and invigilationTracking data
         ProctorSession.update({ id: req.session.proctor },
             {
@@ -440,6 +449,16 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         fs.writeFileSync(path, buff);
 
+        let proctorSessId = req.param('proctorSessId');
+        if (proctorSessId && proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+                location: 'GQTestController.uploadProctorAudio()',
+                filename: filename,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
+
         // save audio filename
         var data = {
             filename: filename,
@@ -459,6 +478,16 @@ module.exports = {
         var photo = req.param('imgBase64').split(';base64,').pop();
         var buff = new Buffer(photo, 'base64');
         fs.writeFileSync(path, buff);
+
+        let proctorSessId = req.param('proctorSessId');
+        if (proctorSessId && proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+                location: 'GQTestController.uploadProctorPicture()',
+                filename: filename,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
 
         // save photo filename
         var data = {

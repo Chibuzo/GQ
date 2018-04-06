@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [], PROCTOR;
+var TEST_ID, duration, questions = [], PROCTOR, proctorSessId;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -264,7 +264,8 @@ function sendAnswers(proctorFeedback) {
         no_of_questions: questions.length,
         integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
+        invigilationTracking: invigilationTracking,
+        proctorSessId: proctorSessId
     }, function (d) {
         if (d.status.trim() == 'success') {
             if (loadNextTest) {
@@ -341,8 +342,16 @@ function mobileCheck() {
 }
 
 function createProctorSession() {
-    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(d) {
-    }); // that'a all
+    $.post('/gqtest/createProctorSession',
+        {
+            test_id: TEST_ID
+        },
+        function(response) {
+            if (response.status && response.status.trim() === 'success') {
+                proctorSessId = parseInt(response.proctor_id);
+            }
+        }
+    );
 }
 
 function blockTest() {
@@ -608,7 +617,8 @@ function startProctor() {
                  url: "/gqtest/uploadProctorPicture",
                  data: {
                      imgBase64: data64,
-                     eventName: eventName
+                     eventName: eventName,
+                     proctorSessId: proctorSessId
                  }, success: function(data) {
                      // Some success ish blah blah
                  }, error: function() {
@@ -625,7 +635,8 @@ function startProctor() {
                 type: "POST",
                 url: "/gqtest/uploadProctorAudio",
                 data: {
-                    data: data64
+                    data: data64,
+                    proctorSessId: proctorSessId
                 }, success: function(data){
                     // Some success ish blah blah
                 }, error: function() {
