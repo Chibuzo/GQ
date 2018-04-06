@@ -207,33 +207,31 @@ module.exports = {
                     noiseCount: invigilationTracking.noise,
                     multipleFacesCount: invigilationTracking.multipleFaces
                 }
-            ).exec(function() {});
+            ).exec(function() {
+                req.session.proctor = false;
+            });
 
             // save or update candidate's test score
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 // destroy stored test answers
-
-            GQTestService.prepareCandidateResult(test_id, score, no_of_questions)
-            .then(function(resp) {
-                return res.json(200, { status: 'success', result: resp});
-            }).catch(function(err) {
-                console.log(err)
-            });
-
                 // update application
-                Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
-                    req.session.job_id = null;
+                if (req.session.job_id) {
+                    Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
+                        req.session.job_id = null;
+                    });
+                }
+
+                GQTestService.prepareCandidateResult(test_id, score, no_of_questions)
+                .then(function(resp) {
+                    return res.json(200, { status: 'success', result: resp});
+                }).catch(function(err) {
+                    console.log(err)
                 });
             });
-
-            // end protor session for all tests except the three aptitude tests with ids (1,2,3)
-            if (parseInt(test_id) > 2) {
-                console.log('Proctor ended');
-                req.session.proctor = false;
-            }
         });
     },
 
+    // Deprecated
     // called when the last section of GQ aptitude test gets submitted
     markGQTest: function(req, res) {
         var test_id = req.param('test_id');
@@ -309,6 +307,94 @@ module.exports = {
         });
     },
 
+    markGQ: function(req, res) {
+        let test_id = req.param('test_id');
+        test_id = parseInt(test_id);
+
+        let no_of_questions = req.param('no_of_questions');
+        let integrity_score = req.param('integrity_score');
+        let userAnswers = req.param("userAnswers") || [];
+		let invigilationTracking = req.param('invigilationTracking') || {};
+        let proctorSessId = req.param('proctorSessId');
+
+        let score = 0;
+
+        if (proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (Test)', req.session.userEmail, {
+                location: 'GQTestController.markGQ()',
+                testId: test_id,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
+        // update integrity score and invigilationTracking data
+        ProctorSession.update({ id: req.session.proctor },
+            {
+                integrity_score: integrity_score,
+                noFaceCount: invigilationTracking.noFace,
+                noiseCount: invigilationTracking.noise,
+                multipleFacesCount: invigilationTracking.multipleFaces
+            }
+        ).exec(function() {
+            req.session.proctor = false;
+        });
+
+        // Get all the answers for the test and mark user's answers
+        GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
+            if (err) {
+                console.error(err);
+                return res.serverError(err);
+            }
+
+            userAnswers.forEach(function(userAnswer) {
+                var question = _.find(questions, function(q) {
+                    return q.id == userAnswer.quest_id;
+                });
+
+                if (!question) {
+                    // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
+                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                    return;
+                }
+
+                if (question.answer === userAnswer.ans) {
+                    score++;
+                }
+            });
+
+            // save or update candidate's test score
+            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                if (test_id === 3) {
+                    CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+
+                        // update candidate's resume
+                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                            if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                                Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                            }
+                        });
+
+                        CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                            return res.json(200, { status: 'success', result: result });
+                        }).catch(function(err) {
+                            console.log(err);
+                            return res.serverError(err);
+                        });
+                    }).catch(function(err) {
+                        console.log(err);
+                        return res.serverError(err);
+                    });
+                } else {
+                    return res.json(200, { status: 'success'});
+                }
+
+            }).catch(function(err) {
+                console.error(err);
+                return res.serverError(err);
+            });
+        });
+    },
+
     viewResults: function(req, res) {
         var test_id = req.param('test_id');
         GQTestResult.find({ test: test_id }).populate('candidate').populate('test').limit(100).exec(function(err, results) {
@@ -363,6 +449,16 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         fs.writeFileSync(path, buff);
 
+        let proctorSessId = req.param('proctorSessId');
+        if (proctorSessId && proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+                location: 'GQTestController.uploadProctorAudio()',
+                filename: filename,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
+
         // save audio filename
         var data = {
             filename: filename,
@@ -382,6 +478,16 @@ module.exports = {
         var photo = req.param('imgBase64').split(';base64,').pop();
         var buff = new Buffer(photo, 'base64');
         fs.writeFileSync(path, buff);
+
+        let proctorSessId = req.param('proctorSessId');
+        if (proctorSessId && proctorSessId != req.session.proctor) {
+            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+                location: 'GQTestController.uploadProctorPicture()',
+                filename: filename,
+                sessionProctor: req.session.proctor,
+                requestProctor: proctorSessId
+            });
+        }
 
         // save photo filename
         var data = {

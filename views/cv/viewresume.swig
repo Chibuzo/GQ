@@ -56,7 +56,10 @@
 						</ul>
 						<div class="tab-content">
 							<!-- Resume -->
-							{% include 'includes/resume.swig' %}
+							<div class="tab-pane fade in active" id="resume">
+								{% include 'includes/resume.swig' %}
+							</div>
+
 							<div class="tab-pane fade in" id="test">
 
 								<div class="col-md-7 col-md-offset-2" id="result-div">

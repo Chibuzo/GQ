@@ -98,6 +98,8 @@ module.exports.routes = {
 
     'POST /gqtest/marktest': 'GQTestController.markTest',
 
+    'POST /gqtest/mark/gq': 'GQTestController.markGQ',
+
     'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
