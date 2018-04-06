@@ -2,14 +2,22 @@ $("#form-profile").submit(function(e) {
     e.preventDefault();
 
     // check password match
-    if ($("#new_password").val() != $("#verify_password").val()) {
+    if ($("#new_password").val().length < 6 || ($("#new_password").val() != $("#verify_password").val())) {
         showNotification('bottom', 'center', 'danger', "Password doesn't match", 'pe-7s-bell');
+        return false;
+    }
+    if ($("#current_password") !== undefined && $("#current_password").val().length < 6) {
+        showNotification('bottom', 'center', 'danger', "Enter your current password to continue", 'pe-7s-bell');
         return false;
     }
     $.post('/user/update', $(this).serialize(), function(d) {
         if (d.status.trim() == 'success') {
+            var msg = "Your profile has been successfully updated! You will be redirected within 6 seconds";
+            showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
             if ($("#btn-submit").data('opt') == 'update-job-profile') {
-                location.replace('/applicant/resume-page');
+                setInterval(function() {
+                    location.href = '/applicant/resume-page';
+                }, 6000);
             } else {
                 var msg = "Your profile has been successfully updated!";
                 showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
