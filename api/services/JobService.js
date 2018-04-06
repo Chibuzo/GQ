@@ -1,7 +1,6 @@
 module.exports = {
 	apply: function(job_id, applicant_id) {
-        return new Promise(function(resolve, reject)
-        {
+        return new Promise(function(resolve, reject) {
             // let's make sure no one applies more than once
             Application.find({ job: job_id, applicant: applicant_id }).exec(function (err, result) {
                 if (err) return reject(err);
@@ -22,5 +21,54 @@ module.exports = {
                 });
             });
         });
-	}
+	},
+
+
+    fetchCompanyJobs: function(coy_id) {
+        return new Promise(function (resolve, reject) {
+            Job.find({
+                company: coy_id,
+                status: 'Active'
+            }).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
+                if (err) return;
+                var _jobs = [], today = new Date();
+                async.eachSeries(jobs, function (job, cb) {
+                    JobTest.count({
+                        job_level: job.job_level,
+                        job_category_id: job.category
+                    }).exec(function (err, assessed) {
+                        job.assessed = assessed;
+
+                        if (Date.parse(job.closing_date) >= Date.parse(today)) {
+                            SelectedCandidate.count({job_id: job.id}).populate('candidate').exec(function (err, selected_candidates) {
+                                job.shortlisted = selected_candidates;
+                                _jobs.push(job);
+                                cb();
+                            });
+                        } else {
+                            job.shortlisted = '-';
+                            _jobs.push(job);
+                            cb();
+                        }
+                    });
+                }, function (err) {
+                    return resolve(_jobs);
+                });
+            });
+        });
+    },
+
+
+    fetchShortlistedCandidates: function(job_id, coy_id) {
+        return new Promise(function(resolve, reject) {
+            // Companies can only view shortlist for their jobs
+            Job.find({ id: job_id, company: coy_id }).exec(function(err, job) {
+                if (job.length > 0) {
+                    SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
+                        return resolve(selected_candidates);
+                    });
+                }
+            });
+        });
+    }
 }

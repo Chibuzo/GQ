@@ -80,36 +80,38 @@
                 {{ req.session.fname }}
             </div>
 
-            <ul class="nav">
-                <li class="dashboard">
-                    <a href="/applicant/dashboard">
-                        <i class="pe-7s-graph"></i>
-                        <p>Dashboard</p>
-                    </a>
-                </li>
+            {% if user.password.length < 30 %}
+                <ul class="nav">
+                    <li class="dashboard">
+                        <a href="/applicant/dashboard">
+                            <i class="pe-7s-graph"></i>
+                            <p>Dashboard</p>
+                        </a>
+                    </li>
 
-                <li class="jobs">
-                    <a href="/applicant/view-applications">
-                        <i class="pe-7s-timer"></i>
-                        <p>Manage Applications</p>
-                    </a>
-                </li>
+                    <li class="jobs">
+                        <a href="/applicant/view-applications">
+                            <i class="pe-7s-timer"></i>
+                            <p>Manage Applications</p>
+                        </a>
+                    </li>
 
 
-                <li class="resume">
-                    <a href="/applicant/resume-page">
-                        <i class="pe-7s-id"></i>
-                        <p>My Resume</p>
-                    </a>
-                </li>
+                    <li class="resume">
+                        <a href="/applicant/resume-page">
+                            <i class="pe-7s-id"></i>
+                            <p>My Resume</p>
+                        </a>
+                    </li>
 
-                <li class="setting">
-                    <a href="/applicant/profile">
-                        <i class="pe-7s-tools"></i>
-                        <p>Settings</p>
-                    </a>
-                </li>
-            </ul>
+                    <li class="setting">
+                        <a href="/applicant/profile">
+                            <i class="pe-7s-tools"></i>
+                            <p>Settings</p>
+                        </a>
+                    </li>
+                </ul>
+            {% endif %}
         </div>
     </div>
 
@@ -133,20 +135,21 @@
                             </a>
                         </li>
                     </ul>-->
-
-                    <ul class="nav navbar-nav navbar-right">
-                        <li>
-                            <a href="/jobs">Jobs</a>
-                        </li>
-                        <li>
-                            <a href="/courses">Courses</a>
-                        </li>
-                        <li>
-                            <a href="/signout">
-                                <i class="fa fa-sign-out"></i> Logout
-                            </a>
-                        </li>
-                    </ul>
+                    {% if user.password.length < 30 %}
+                        <ul class="nav navbar-nav navbar-right">
+                            <li>
+                                <a href="/jobs">Jobs</a>
+                            </li>
+                            <li>
+                                <a href="/courses">Courses</a>
+                            </li>
+                            <li>
+                                <a href="/signout">
+                                    <i class="fa fa-sign-out"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    {% endif %}
                 </div>
             </div>
         </nav>

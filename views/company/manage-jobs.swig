@@ -43,13 +43,15 @@
 					<table class="table table-striped tablebordered">
 						<thead>
 						<tr>
-							<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
+							{#<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>#}
 							<th>Date Added</th>
 							<th>Job Title</th>
 							<th>Job Level</th>
 							<th class="hidden">Job Category</th>
 							<th>Contract Type</th>
-							<th style="width: 60px">Applications</th>
+							<th>Applied</th>
+							<th>Assessed</th>
+							<th style="width: 60px">Shortlisted</th>
 							{#<th>Candidates</th>#}
 							<th>Posted By</th>
 							{#<th>Status</th>#}
@@ -61,16 +63,16 @@
 						{% for job in jobs %}
 							{% set applications = job.applications.length %}
 							<tr id="{{ job.id }}">
-								<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
+								{#<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>#}
 								<td>{{ job.createdAt | date('d-m-Y') }}</td>
 								<td>{{ job.job_title }}</td>
 								<td class="hidden">{{ job.category.category }}</td>
 								<td>{{ job.job_level }}</td>
 								<td>{{ job.contract_type }}</td>
 								<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
-								{#<td><a href=""></a></td>#}
+								<td class="text-center">{{ job.assessed }}</td>
+								<td class="text-center"><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
 								<td>{{ job.poster.fullname }}</td>
-								{#<td>{{ job.status }}</td>#}
 								<td>{{ job.closing_date | date('d-m-Y') }}</td>
 								<td class="opt-icons text-center">
 									<div class="button-group" role="group">

@@ -199,6 +199,32 @@ module.exports = {
         });
     },
 
+
+    fetchStatisticsPage: function(req, res) {
+        ApplicantService.getApplicantStatistics().then(function(stat) {
+            switch (req.param('query')) {
+                case 'all':
+                    ApplicantService.fetchAll().then(function(all) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: all, filter: req.param('query')  });
+                    });
+                    break;
+                case 'incomplete':
+                    ApplicantService.fetchIncomplete().then(function(incomplete) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: incomplete, filter: req.param('query') });
+                    });
+                    break;
+                case 'inactive':
+                    ApplicantService.fetchInactive().then(function(inactive) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: inactive, filter: req.param('query')  });
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+    },
+
+
     // consider refactoring this method
     search: function(req, res) {
         var q = req.param;
@@ -363,6 +389,13 @@ module.exports = {
             console.log(err);
             return res.serverError(err);
         })
+    },
+
+
+    sendEmail: function(req, res) {
+        var emails = req.param('users');
+        sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
+        return res.json(200, { status: 'success' });
     }
 
 };

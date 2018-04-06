@@ -149,6 +149,13 @@
                     </a>
                 </li>
 
+                <li class="candidate-filter">
+                    <a href="/admin/candidates/all">
+                        <i class="pe-7s-users"></i>
+                        <p>Candidate Filter</p>
+                    </a>
+                </li>
+
                 <li class="setting">
                     <a href="/admin/setup">
                         <i class="pe-7s-tools"></i>

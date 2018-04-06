@@ -95,6 +95,7 @@ module.exports = {
                             return res.view('applicant/profile', {
                                 user: user[0],
                                 me: me,
+                                first_time: 'true',
                                 enableAmplitude: enableAmplitude,
                                 userEmail: user[0].email
                             });
