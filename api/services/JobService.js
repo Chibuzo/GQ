@@ -24,6 +24,30 @@ module.exports = {
 	},
 
 
+    // this function will delete ALL the jobs the applicant applied to
+    removeApplicantJobs: function(applicant_id) {
+        Application.destroy({ applicant: applicant_id }).exec(function(err, applications) {
+            // remove competency tests if any
+            applications.forEach(function(app) {
+                Job.find({id: app.job}).exec(function (err, job) {
+                    JobTest.find({
+                        job_level: job[0].job_level,
+                        job_category_id: job[0].category
+                    }).exec(function (err, test) {
+                        if (test[0].test_source == 'gq') {
+                            GQTestResult({candidate: applicant_id}).exec(function (err, deleted_test) {
+                                ProctorService.deleteProctorSession(deleted_test.proctor);
+                            });
+                        } else {
+                            TestResult({applicant: applicant_id}).exec(function () {});
+                        }
+                    });
+                });
+            });
+        });
+    },
+
+
     fetchCompanyJobs: function(coy_id) {
         return new Promise(function (resolve, reject) {
             Job.find({

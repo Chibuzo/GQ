@@ -56,15 +56,15 @@
 </style>
 
 <div class="" style="margin-bottom: 20px; overflow: auto;">
-	<div class="col-md-4">
-		<a href="/admin/candidates/all" class="btn btn-lg btn-default">All Applicants: {{ statistics.applicants }}</a>
+	<div class="col-md-12">
+		<a href="/admin/candidates/all" class="btn btnlg btn-info btn-fill">All Applicants: {{ statistics.applicants }}</a>
+		<a href="/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive Applicants: {{ statistics.inactive }}</a>
+		<a href="/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete Profile: {{ statistics.incomplete }}</a>
 	</div>
-	<div class="col-md-4">
-		<a href="/admin/candidates/inactive" class="btn btn-lg btn-danger">Inactive Applicants: {{ statistics.inactive }}</a>
-	</div>
-	<div class="col-md-4">
-		<a href="/admin/candidates/incomplete" class="btn btn-lg btn-danger">Incomplete Profile: {{ statistics.incomplete }}</a>
-	</div>
+	{#<div class="col-md-4">#}
+	{#</div>#}
+	{#<div class="col-md-4">#}
+	{#</div>#}
 </div>
 
 
@@ -80,6 +80,19 @@
 		<div class="content table-responsive table-full-width">
 			<table class="table table-striped dataTable">
 				<thead>
+				<tr>
+					<td class="">
+						<div class="btn-group">
+							<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+								Action &nbsp;<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+								<li><a href="" class="delete-candidates"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Applicant(s)</a></li>
+							</ul>
+						</div>
+					</td>
+				</tr>
 					<tr>
 						<th style="width:10px"><label class=" group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
@@ -89,9 +102,14 @@
 						<th class="text-center">Action</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="tb-users">
 					{% for user in all_applicant %}
-						<tr id="{{ user.id }}">
+						{% if filter == 'incomplete' %}
+							{% set user_id = user.user %}
+						{% else %}
+							{% set user_id = user.id %}
+						{% endif %}
+						<tr id="{{ user_id }}">
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
 							<td>{{ user.createdAt | date('d.m.Y') }}</td>
 							<td class="name">{{ user.fullname }}</td>
@@ -104,11 +122,12 @@
 				<tfoot>
 					<tr><td class="">
 							<div class="btn-group">
-								<button type="button" class="btn btn-success btn-fill dropdown-toggle" id="action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+								<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
 									Action &nbsp;<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
-									<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope"></i> &nbsp;Send Email</a></li>
+									<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+									<li><a href="" class="delete-candidates"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Applicant(s)</a></li>
 								</ul>
 							</div>
 						</td>
@@ -153,7 +172,7 @@ $(document).ready(function() {
 	});
 
 
-	$(".user-checkbox").click(function() {
+	$("#tb-users").on('click', ".user-checkbox", function() {
 		controlActionBtn();
 	});
 
@@ -165,7 +184,6 @@ $(document).ready(function() {
 		users = [];
 		$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').find('td.email').text());
-				//fullname: $(this).parents('tr').find('td.name').text()
 		});
 
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
@@ -173,15 +191,30 @@ $(document).ready(function() {
 				$(".alert-success").removeClass('hidden');
 				$(this).find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
 			}
-		});
+		}, 'JSON');
+	});
+
+
+	$(".delete-candidates").click(function(e) {
+		e.preventDefault();
+		if (confirm("Are you sure you want to delete the selected candidates? This action cannot be undone")) {
+			users = [];
+			$(".user-checkbox:checked").each(function() {
+				users.push($(this).parents('tr').attr('id'));
+			});
+
+			var filter = {{ filter | json | safe }};
+			$.post('/admin/deleteCandidates', { users: users, filter: filter });
+			location.reload(true);
+		}
 	});
 });
 
 function controlActionBtn() {
 	if ($(".user-checkbox:checked").size() > 0) {
-		$("#action-btn").prop("disabled", false);
+		$(".action-btn").prop("disabled", false);
 	} else {
-		$("#action-btn").prop("disabled", true);
+		$(".action-btn").prop("disabled", true);
 	}
 }
 </script>
