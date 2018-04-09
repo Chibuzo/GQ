@@ -4,27 +4,6 @@
  * @description :: Server-side logic for managing Applicants
  * @help        :: See http://sailsjs.org/#!/documentation/concepts/Controllers
  */
-const fs = require('fs');
-const path = require('path');
-
-function deleteProctorFiles(proctorSessionId) {
-    const assetPath = path.resolve(sails.config.appPath + '/assets/proctorFiles');
-
-    return ProctorRecord.find({proctor: proctorSessionId}).then(function(proctorRecords) {
-        proctorRecords.forEach(record => {
-            let path = `${assetPath}${record.filename}`;
-            if (fs.existsSync(path)) {
-                fs.unlinkSync(path);
-            }
-        });
-
-        return Promise.resolve();
-    })
-    .catch(function(err) {
-        console.error(err);
-        return Promise.reject(err);
-    });
-};
 
 module.exports = {
     dashboard: function(req, res) {
@@ -199,6 +178,32 @@ module.exports = {
         });
     },
 
+
+    fetchStatisticsPage: function(req, res) {
+        ApplicantService.getApplicantStatistics().then(function(stat) {
+            switch (req.param('query')) {
+                case 'all':
+                    ApplicantService.fetchAll().then(function(all) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: all, filter: req.param('query')  });
+                    });
+                    break;
+                case 'incomplete':
+                    ApplicantService.fetchIncomplete().then(function(incomplete) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: incomplete, filter: req.param('query') });
+                    });
+                    break;
+                case 'inactive':
+                    ApplicantService.fetchInactive().then(function(inactive) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: inactive, filter: req.param('query')  });
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+    },
+
+
     // consider refactoring this method
     search: function(req, res) {
         var q = req.param;
@@ -330,39 +335,21 @@ module.exports = {
         if (!userId) {
             return res.badRequest('Missing/invalid user id');
         }
-
-        return GQAptitudeTestResult.destroy({user: userId}).then(function() {
-            return GQTestResult.destroy({candidate: userId}).then(function(destroyedRecords) {
-
-                let proctorSessionIds = destroyedRecords.map(function(gqTestResult) {
-                    return gqTestResult.proctor;
-                });
+        CBTService.cancelGQApptitudeTest(userId);
+        return res.ok();
+    },
 
 
-                let destorySessionPromise = ProctorSession.destroy({id: proctorSessionIds}).then(function() {
-                    return Promise.resolve();
-                }).catch(err => {
-                    console.err(err);
-                    return Promise.reject(err);
-                });
+    sendEmail: function(req, res) {
+        var emails = req.param('users');
+        sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
+        return res.json(200, { status: 'success' });
+    },
 
-                let deleteProctorPromises = [];
 
-                deleteProctorPromises.push(destorySessionPromise);
-
-                proctorSessionIds.forEach(function(proctorSessionId) {
-                    deleteProctorPromises.push(deleteProctorFiles(proctorSessionId));
-                });
-
-                return Promise.all(deleteProctorPromises);
-            })
-
-        }).then(function() {
-            return res.ok();
-        }).catch(function(err) {
-            console.log(err);
-            return res.serverError(err);
-        })
+    deleteApplicants: function(req, res) {
+        var users = req.param['users'].join();
+        ApplicantService.deleteApplicant(users);
     }
 
 };

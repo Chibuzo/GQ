@@ -47,12 +47,8 @@ module.exports = {
 
     // for companies
 	viewJobs: function(req, res) {
-        var coy_id = req.session.coy_id;
-        Job.find({ company: coy_id, status: 'Active' }).populate('category').populate('applications').populate('poster').exec(function(err, jobs) {
-            if (err) return;
-            JobCategory.find().exec(function (err, categories) {
-                return res.view('company/manage-jobs', { jobs: jobs, jobcategories: categories });
-            });
+        JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
+            return res.view('company/manage-jobs', { jobs: jobs });
         });
     },
 
@@ -289,6 +285,14 @@ module.exports = {
             return res.json(200, { status: 'login' });
         }
     },
+
+
+    fetchShortlisted: function(req, res) {
+        JobService.fetchShortlistedCandidates(req.param('job_id'), session.coy_id).then(function(slist) {
+            return res.view('company/shortlist', { list: slist });
+        });
+    },
+
 
     // fetches all candidates that applied for the job
     // fetches the test results

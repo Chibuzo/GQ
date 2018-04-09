@@ -26,6 +26,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12" style="padding: 40px">
+                                    {% if first_time == 'true' %}
+                                        <div class="alert alert-warning">NOTICE: Remember to set a password for this account before you leave this page.</div>
+                                    {% endif %}
                                     <form action="/user/update" method="post" id="form-profile">
                                        <div class="form-group">
                                            <div class="row">
@@ -56,7 +59,7 @@
                                                 {% if user.password.length > 30 %}
                                                     <div class="col-md-4">
                                                         <label>Current Password</label>
-                                                        <input type="password" name="current_password" class="form-control" placeholder="Enter your current password">
+                                                        <input type="password" name="current_password" id="current_password" class="form-control" placeholder="Enter your current password">
                                                     </div>
                                                 {% endif %}
 
@@ -126,7 +129,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/profile-photo.js"></script>
+<script type="text/javascript" src="/js/profile-photo.js?v=1"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

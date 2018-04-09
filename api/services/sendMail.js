@@ -206,6 +206,15 @@ module.exports = {
     },
 
 
+    emailCandidates: function(emails, subject, message) {
+        var data = {
+            message: message
+        };
+
+        var template = 'emailCandidates';
+        module.exports.sendMail(emails, subject, template, data);
+    },
+
     sendMail: function(to, subject, template, data) {
         let mailOptions = {
             from: '"Get Qualified" <noreply@getqualified.work>',
