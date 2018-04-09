@@ -42,5 +42,26 @@ module.exports = {
                 return resolve(incomplete);
             });
         });
+    },
+
+
+    // ATTENTION: This is a destructive function, one must not use it
+    deleteApplicant: function(users) {
+        return new Promise(function(resolve, reject) {
+            User.destroy({ id: [ users ]}).exec(function(err, deleted_users) {
+                deleted_users.forEach(function(user) {
+                    if (user.status == 'Active') {
+                        Resume.destroy({user: users}).exec(function (err, resume) {
+                            if (resume[0].status == 'Complete') {
+                                JobService.removeApplicantJobs(user.id);
+                            }
+                        });
+                        // delete profile photo
+                        // delete video profile
+                        // spit on his grave
+                    }
+                });
+            });
+        });
     }
 }

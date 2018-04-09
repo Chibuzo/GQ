@@ -129,7 +129,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/profile-photo.js"></script>
+<script type="text/javascript" src="/js/profile-photo.js?v=1"></script>
 
 <script type="text/javascript">
 $(document).ready(function() {

@@ -83,6 +83,8 @@ module.exports.routes = {
 
     'POST /admin/sendemail': 'ApplicantController.sendEmail',
 
+    'POST /admin/deleteCandidates': 'ApplicantController.deleteApplicants',
+
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 
     'POST /gqtest/savetest': 'GQTestController.saveTest',
