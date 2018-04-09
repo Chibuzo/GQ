@@ -94,7 +94,7 @@
 					</td>
 				</tr>
 					<tr>
-						<th style="width:10px"><label class=" group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+						<th style="width:10px"><label class=" group-check" rel="tooltip" title="Note that this will check/uncheck for all the records on the pages"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						<th>Email</th>
@@ -111,7 +111,7 @@
 						{% endif %}
 						<tr id="{{ user_id }}">
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
-							<td>{{ user.createdAt | date('d.m.Y') }}</td>
+							<td data-order="{{ user.createdAt | date('Y/m/d') }}">{{ user.createdAt | date('d.m.Y') }}</td>
 							<td class="name">{{ user.fullname }}</td>
 							<td class="email">{{ user.email }}</td>
 							<td>{{ user.phone }}</td>
@@ -150,7 +150,7 @@ $(document).ready(function() {
 	$('.candidate-filter').addClass('active');
 
 
-	$('.dataTable').DataTable({
+	var dTable = $('.dataTable').DataTable({
 		pageLength: 50,
 		responsive: true,
 		"aoColumnDefs": [
@@ -164,9 +164,9 @@ $(document).ready(function() {
 
 	$(".group-check").click(function() {
 		if ($(this).find('input[type=checkbox]').is(':checked')) {
-			$(".user-checkbox").prop('checked', true).parent('label').addClass('checked');
+			dTable.$(".user-checkbox").prop('checked', true);
 		} else {
-			$(".user-checkbox").prop('checked', false).parent('label').removeClass('checked');
+			dTable.$(".user-checkbox").prop('checked', false);
 		}
 		controlActionBtn();
 	});
@@ -185,6 +185,10 @@ $(document).ready(function() {
 		$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
+
+		for ( instance in tinymce.instances ) {
+			tinymce.instances[instance].updateElement();
+		}
 
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
 			if (d.status.trim() == 'success') {

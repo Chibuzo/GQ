@@ -16,7 +16,7 @@
 					</div>
 					<div class="form-group">
 						<label>Message</label>
-						<textarea name="message" class="form-control"></textarea>
+						<textarea name="message" class="form-control editor"></textarea>
 					</div>
 					<div class="alert alert-success hidden">Message sent!</div>
 				</div>
