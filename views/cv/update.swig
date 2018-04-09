@@ -519,22 +519,21 @@
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-new.js"></script>
-	<script src="/js/proctor/face-min.js"></script>
-	<script src="/js/proctor/eye-min.js"></script>
-	<script src="/js/proctor/mouth-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js"></script>
 
 	<!-- Audio Volume metering -->
-	<script src="/js/proctor/volume-meter.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js"></script>
 
 	<!-- Audio tracking -->
-	<script src="/js/proctor/recorder-new.js"></script>
+    <script type="text/javascript" src="/js/proctor/recorder-new.js"></script>
+	<!-- <script type="text/javascript" src="https://api.neon.ventures/proctor/js/recorder-new.js"></script>  -->
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup-new.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js"></script>
 
-	{#<script src="/js/proctorSetup.js"></script>#}
 	<script type="text/javascript" src="/js/gqTestFrontend.js?v=11"></script>
-
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
