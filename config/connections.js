@@ -51,6 +51,17 @@ module.exports.connections = {
     collation : 'utf8_swedish_ci'
    },
 
+   MysqlServerDemo: {
+         adapter: 'sails-mysql',
+         host: 'localhost',
+         user: 'gq_demo', //optional
+         password: 'gqdemopswd', //optional
+         database: 'gq_demo', //optional
+
+        charset   : 'utf8',
+        collation : 'utf8_swedish_ci'
+    } ,
+
   /***************************************************************************
   *                                                                          *
   * MongoDB is the leading NoSQL database.                                   *
