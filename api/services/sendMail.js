@@ -212,7 +212,22 @@ module.exports = {
         };
 
         var template = 'emailCandidates';
-        module.exports.sendMail(emails, subject, template, data);
+        let mailOptions = {
+            from: '"Get Qualified" <noreply@getqualified.work>',
+            //to: to,
+            subject: subject,
+            bcc: emails,
+            template: template,
+            context: data
+        };
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            //console.log('Message sent: %s', info.messageId);
+        });
+        //module.exports.sendMail(emails, subject, template, data);
     },
 
     sendMail: function(to, subject, template, data) {
