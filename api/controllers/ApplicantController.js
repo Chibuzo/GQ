@@ -7,6 +7,9 @@
 
 module.exports = {
     dashboard: function(req, res) {
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         // find GQ Test results
         GQTestResult.find({candidate: req.session.userId}).populate('test').exec(function (err, test_result) {
             //if (err) console.log(err)
@@ -36,10 +39,10 @@ module.exports = {
                             });
                         },
                         function() {
-                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results});
+                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude});
                         });
                     } else {
-                        return res.view('applicant/dashboard', { gq_results: gq_results });
+                        return res.view('applicant/dashboard', { gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude });
                     }
                 });
             });
@@ -175,6 +178,32 @@ module.exports = {
         });
     },
 
+
+    fetchStatisticsPage: function(req, res) {
+        ApplicantService.getApplicantStatistics().then(function(stat) {
+            switch (req.param('query')) {
+                case 'all':
+                    ApplicantService.fetchAll().then(function(all) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: all, filter: req.param('query')  });
+                    });
+                    break;
+                case 'incomplete':
+                    ApplicantService.fetchIncomplete().then(function(incomplete) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: incomplete, filter: req.param('query') });
+                    });
+                    break;
+                case 'inactive':
+                    ApplicantService.fetchInactive().then(function(inactive) {
+                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: inactive, filter: req.param('query')  });
+                    });
+                    break;
+                default:
+                    break;
+            }
+        });
+    },
+
+
     // consider refactoring this method
     search: function(req, res) {
         var q = req.param;
@@ -298,6 +327,29 @@ module.exports = {
                 console.log(err);
             });
         }
-    }
-};
+    },
 
+    deleteTestScoreAndFiles: function(req, res) {
+        const userId = parseInt(req.param('userId') || "");
+
+        if (!userId) {
+            return res.badRequest('Missing/invalid user id');
+        }
+        CBTService.cancelGQApptitudeTest(userId);
+        return res.ok();
+    },
+
+
+    sendEmail: function(req, res) {
+        var emails = req.param('users');
+        sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
+        return res.json(200, { status: 'success' });
+    },
+
+
+    deleteApplicants: function(req, res) {
+        var users = req.param['users'].join();
+        ApplicantService.deleteApplicant(users);
+    }
+
+};

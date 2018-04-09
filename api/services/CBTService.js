@@ -206,5 +206,33 @@ module.exports = {
                 });
             });
         });
+    },
+
+
+    cancelGQApptitudeTest: function(userId) {
+        return GQAptitudeTestResult.destroy({user: userId}).then(function() {
+            return GQTestResult.destroy({candidate: userId}).then(function(destroyedRecords) {
+
+                let proctorSessionIds = destroyedRecords.map(function(gqTestResult) {
+                    return gqTestResult.proctor;
+                });
+
+                let destorySessionPromise = ProctorSession.destroy({id: proctorSessionIds}).then(function() {
+                    return Promise.resolve();
+                }).catch(err => {
+                    console.err(err);
+                    return Promise.reject(err);
+                });
+
+                let deleteProctorPromises = [];
+
+                deleteProctorPromises.push(destorySessionPromise);
+
+                proctorSessionIds.forEach(function(proctorSessionId) {
+                    deleteProctorPromises.push(ProctorService.deleteProctorFiles(proctorSessionId));
+                });
+                return Promise.all(deleteProctorPromises);
+            });
+        });
     }
 }

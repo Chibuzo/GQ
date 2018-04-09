@@ -99,7 +99,7 @@
                     </a>
                 </li>
 
-                <li class="assessment">
+                <li class="assessment hidden">
                     <a href="/assessments">
                         <i class="pe-7s-news-paper"></i>
                         <p>Assessments</p>
@@ -146,6 +146,13 @@
                     <a href="/admin/applicants">
                         <i class="pe-7s-users"></i>
                         <p>Applicants</p>
+                    </a>
+                </li>
+
+                <li class="candidate-filter">
+                    <a href="/admin/candidates/all">
+                        <i class="pe-7s-users"></i>
+                        <p>Candidate Filter</p>
                     </a>
                 </li>
 

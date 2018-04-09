@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<head>
+{% block head %}
 	<meta charset="utf-8" />
 	<link rel="icon" type="image/png" href="assets/img/favicon.ico">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -31,12 +31,13 @@
       .ok-header {
         margin-top: 10px;
       }
-      
+
       .opt-icons {
           text-align: center;
       }
     </style>
-</head>
+{% endblock %}
+
 <body>
 
 <div class="wrapper">
@@ -92,14 +93,14 @@
                         <p>Manage Users</p>
                     </a>
                 </li>
-                
+
                 <li>
                     <a href="/user/profile">
                         <i class="pe-7s-user"></i>
                         <p>User Profile</p>
                     </a>
                 </li>
-                
+
                 <li>
                     <a href="/admin/setup">
                         <i class="pe-7s-tools"></i>
@@ -107,7 +108,7 @@
                     </a>
                 </li>
             </ul>
-          {% else %}  
+          {% else %}
             <ul class="nav">
                 <li clas="active">
                     <a href="/user/dashboard">
@@ -145,8 +146,8 @@
                     </a>
                 </li>
             </ul>
-          {% endif %}  
-    	</div>  
+          {% endif %}
+    	</div>
     </div>
 
     <div class="main-panel">
@@ -197,7 +198,7 @@
                     <ul>
                         <li>
                             <a href="#">
-                              
+
                             </a>
                         </li>
 
@@ -228,8 +229,8 @@
 <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 <script src="/js/light-bootstrap-dashboard.js"></script>
   <script src="/js/datepicker.min.js"></script>
-  
-{% block scriptTag %} {% endblock %} 
+
+{% block scriptTag %} {% endblock %}
 <script>
  $(document).ready(function() {
      $('.datep').datepicker({

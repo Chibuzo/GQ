@@ -24,10 +24,18 @@
 						</div>
 					</div>
 					<div class="tab-pane fade in" id="photo">
+						<div class="row">
+							<div class="col-md-12 stats-info">
+							</div>
+						</div>
 						<div class="row" id="photos"></div>
 					</div>
 
 					<div class="tab-pane fade in" id="audio">
+						<div class="row">
+							<div class="col-md-12 stats-info">
+							</div>
+						</div>
 						<div class="row" id="audios"></div>
 					</div>
 				</div>

@@ -3,18 +3,17 @@
 	view #}
 	{% set className = '' %}
 {% else %}
-{% set className = 'hidden' %}
+	{% set className = 'hidden' %}
 {% endif %}
 
-<div class="{{ className }}tab-pane fade active in" id="resume">
-
-		{% if canEditResume == true %}
-			<div class="row">
-				<div id="candidate-editResumeBtn" class="col-md-2 col-md-offset-5 btn btn-primary">
-					Edit Resume
-				</div>
+<div class="{{ className }} tab-pane fade active in" id="resume">
+	{% if canEditResume == true %}
+		<div class="row">
+			<div id="candidate-editResumeBtn" class="col-md-2 col-md-offset-5 btn btn-primary">
+				Edit Resume
 			</div>
-		{% endif %}
+		</div>
+	{% endif %}
 	<hr/>
 	<div class="row">
 		<div class="col-md-12" style="padding: 50px; padding-top: 10px">

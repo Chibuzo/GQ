@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [],PROCTOR;
+var TEST_ID, duration, questions = [], PROCTOR, proctorSessId;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -25,7 +25,6 @@ var GQTestStatus = (function() {
     }
 })();
 
-// retake test
 $("#retake-test").click(function() {
     $("#result-div").fadeOut('fast', function() {
         $("#test-div").hide().removeClass('hidden').fadeIn('fast');
@@ -37,8 +36,10 @@ $(".load-test").click(function() {
         blockTest();
         return false;
     }
+
     TEST_ID = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);
+
     $.get('/gqtest/load-test-instruction/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             $("#test-notice").fadeOut(function() {
@@ -57,26 +58,26 @@ $(".load-test").click(function() {
     }, 'JSON');
 });
 
-
 $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
-
-    // start test proctoring
-    PROCTOR = startProctor();
 
     // register proctor session
     createProctorSession();
 
-    // register window onclose/leave event
-    addWindowsCloseEvent();
+    // make sure proctor canvas is showing
+	proctorCanvas.mount();
 
-    // startTest is called when ProctorReady callback executed
-    // startTest();
-
-    // reset/initialize invigilation bar
-    $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success').css('width', "100%");
+    // start test proctoring
+    PROCTOR = startProctor();
 });
 
+$("#submit-test").click(function(e) {
+    e.preventDefault();
+
+    if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
+        submitTest();
+    }
+});
 
 $("#next-question").click(function() {
     var cur_question = $("#current_quest").text();
@@ -102,7 +103,6 @@ $("#prev-question").click(function() {
     fetchNextQuestion(questions, currQuestionInt - 2);
 })
 
-
 // load question from question numbers
 $(".question-nums").on('click', '.question-num', function() {
     var question = parseInt($(this).text());
@@ -112,7 +112,6 @@ $(".question-nums").on('click', '.question-num', function() {
         $(this).removeClass('skipped_q answered_q').addClass('active_q');
     }
 });
-
 
 function fetchNextQuestion(questions, next_quest) {
     var next_question, cur_question = $("#current_quest").text();
@@ -145,7 +144,6 @@ function fetchNextQuestion(questions, next_quest) {
     $("#quest-" + cur_question).removeClass('skipped_q answered_q').addClass('active_q');
     $("#current_quest").text(cur_question).data('quest-id', questions[next_question].id);
     if (questions[next_question].image_file) {
-        // TODO: have the URL be environment dependant
         var img = $("<img />").attr('src', '/cbt-images/' + questions[next_question].image_file).on('load', function() {
             $(".question-image").append(img);
         });
@@ -178,7 +176,6 @@ function fetchNextQuestion(questions, next_quest) {
 
 function disableButtons(currQuestion, totalQuestions) {
     if (parseInt(currQuestion) == parseInt(totalQuestions)) {
-        //submitTest();
         $("#next-question").addClass('disabled');
     } else {
         $("#next-question").removeClass('disabled');
@@ -220,11 +217,7 @@ function saveAnswer() {
     } else {
         $("#quest-" + cur_question).addClass('skipped_q');
     }
-
-    // save test state
-    localStorage.setItem('integrity_score', IntegrityScore.get());
 }
-
 
 function restoreQuestionState(quest_id) {
     var ans = localStorage.getItem('questID-' + quest_id);
@@ -233,156 +226,102 @@ function restoreQuestionState(quest_id) {
     }
 }
 
-
-// submit test
-$("#submit-test").click(function(e) {
-    e.preventDefault();
-
-
-
-    if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
-        removeNotification();
-        // prevent further [auto] submit
-        stopCountdownTimer();
-        destroyCountdownTimer();
-
-        try {
-            // stop proctor
-            PROCTOR.stop();
-        } catch (err) {
-            console.error("Proctor failed to stop");
-            console.error(err);
-        }
-
-        saveAnswer();
-
-        SingleFaceTracker.clearTimer();
-
-        if (parseInt(TEST_ID) < 3) { // strictly for multiple test in a session
-            submitAndLoadNext();
-            return false;
-        } else if (parseInt(TEST_ID) == 3) {
-            submitGQAptitudeTest();
-            return false;
-        } else {
-            submitTest();
-        }
-        // remove windows close event
-        removeWindowsCloseEvent();
-    }
-});
-
-
 function submitTest() {
-    GQTestStatus.stopProgress();
-    removeNotification();
+    saveAnswer();
 
-    if (TEST_ID == 1 || TEST_ID == 2) {
-        submitAndLoadNext();
-        return false;
-    } else if (TEST_ID == 3) {
-        submitGQAptitudeTest();
-        return false;
-    }
-    var integrity_score = IntegrityScore.get();
+    var proctorFeedback = PROCTOR.getFeedback();
+    sendAnswers(proctorFeedback);
 
-    var invigilationTracking = InvigilationTracker.getAll();
-
-    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-    //proctor.stop();
-    $.post('/gqtest/marktest', {
-        test_id: TEST_ID,
-        no_of_questions: questions.length,
-        integrity_score: integrity_score,
-        userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
-    }, function (d) {
-        if (d.status.trim() == 'success') {
-            $("#score").text(d.result.score + '/' + questions.length);
-            $("#percentage").text(d.result.percentage + '%');
-            $("#average").text(d.result.average);
-
-            $("#test-div").fadeOut('fast', function() {
-                $("#result-div").hide().removeClass('hidden').fadeIn('fast');
-            });
-        }
-    });
-    // clear local storage
-    localStorage.clear();
+    // cleanupTest must be called after getting proctor feedback
+    cleanupTest();
 }
 
-
-//function submitOnTimeOut() {
-//    $("#submit-test").click();
-//}
-
-
-// NOTE! This function is a very dirty hack!
-// strictly for GQ Aptitude test page.
-// It might just work with a little work around for taking a series of tests as one test session, Hallelujah!
-function submitAndLoadNext(next) {
+function sendAnswers(proctorFeedback) {
+    // Dont send anwsers if there is not a test in progress
+    if (!GQTestStatus.isInProgress()) {
+        return;
+    }
     GQTestStatus.stopProgress();
 
-    var next = parseInt(TEST_ID) + 1;
-    $('.load-test').data('test_id', next);
-    var integrity_score = IntegrityScore.get();
-    var invigilationTracking = InvigilationTracker.getAll();
+    TEST_ID = parseInt(TEST_ID);
+    $('.load-test').data('test_id', TEST_ID + 1);
+
+    var markUrl = TEST_ID == 1 || TEST_ID == 2 || TEST_ID == 3 ? 'mark/gq' : 'markTest';
+    var loadNextTest = TEST_ID == 1 || TEST_ID == 2 ? true : false;
+    var aptitudeTest = TEST_ID == 3 ? true : false;
+
+    var invigilationTracking = {
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace
+    };
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
 
-    $.post('/gqtest/marktest', {
+    $.post('/gqtest/' + markUrl, {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: integrity_score,
+        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
+        invigilationTracking: invigilationTracking,
+        proctorSessId: proctorSessId
     }, function (d) {
-        if (next <= 3) $(".load-test").click();
+        if (d.status.trim() == 'success') {
+            if (loadNextTest) {
+                //TODO Call a function that does this
+                $(".load-test").click();
+            } else if (aptitudeTest) {
+                $("#general").find('td:nth-child(2)').text(d.result.general_ability);
+                $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
+
+                $("#verbal").find('td:nth-child(2)').text(d.result.verbal);
+                $("#verbal").find('td:nth-child(3)').text(d.result.verbal_percentage + '%');
+
+                $("#maths").find('td:nth-child(2)').text(d.result.maths);
+                $("#maths").find('td:nth-child(3)').text(d.result.maths_percentage + '%');
+
+                $("#total").find('td:nth-child(2)').text(d.result.score);
+                $("#total").find('td:nth-child(3)').text(d.result.percentage + '%');
+                $("#total").find('td:nth-child(4)').text(d.result.rank);
+
+                $("#test-div").fadeOut('fast', function() {
+                    $(".test-title").text("General Aptitude Test Result");
+                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
+                });
+            } else {
+                $("#score").text(d.result.score + '/' + questions.length);
+                $("#percentage").text(d.result.percentage + '%');
+                $("#average").text(d.result.average);
+
+                $("#test-div").fadeOut('fast', function() {
+                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
+                });
+            }
+        }
     });
-    // reset some elememts
+
+}
+
+function cleanupTest() {
+    stopProctor();
+
+    removeWindowsCloseEvent();
+
+    removeNotification();
+
+    // prevent further [auto] submit
+    stopCountdownTimer();
+
+    destroyCountdownTimer();
+
+    // hide the video canvas
+    proctorCanvas.remove();
+
     localStorage.clear();
     $(".question-nums").empty();
     $("#current_quest").empty();
+    $(".inner-test-div").addClass('hidden');
 }
-
-
-// NOTE! Another terrible hack
-// for GQ Aptitude test submit
-// should be modified to handle section submit for test with more than one section
-function submitGQAptitudeTest() {
-    GQTestStatus.stopProgress();
-
-    var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-    var integrity_score = IntegrityScore.get();
-
-    var invigilationTracking = InvigilationTracker.getAll();
-
-    $.post('/gqtest/markGQAptitude', {
-        test_id: TEST_ID,
-        no_of_questions: questions.length,
-        integrity_score: integrity_score,
-        userAnswers: userAnswers,
-        invigilationTracking: invigilationTracking
-    }, function (d) {
-        $("#general").find('td:nth-child(2)').text(d.result.general_ability);
-        $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
-
-        $("#verbal").find('td:nth-child(2)').text(d.result.verbal);
-        $("#verbal").find('td:nth-child(3)').text(d.result.verbal_percentage + '%');
-
-        $("#maths").find('td:nth-child(2)').text(d.result.maths);
-        $("#maths").find('td:nth-child(3)').text(d.result.maths_percentage + '%');
-
-        $("#total").find('td:nth-child(2)').text(d.result.score);
-        $("#total").find('td:nth-child(3)').text(d.result.percentage + '%');
-        $("#total").find('td:nth-child(4)').text(d.result.rank);
-
-        $("#test-div").fadeOut('fast', function() {
-            $("#result-div").hide().removeClass('hidden').fadeIn('fast');
-        });
-    });
-}
-
 
 function shuffleArray(array) {
     for (var i = array.length - 1; i > 0; i--) {
@@ -401,10 +340,17 @@ function mobileCheck() {
     return isMobile;
 }
 
-
 function createProctorSession() {
-    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(d) {
-    }); // that'a all
+    $.post('/gqtest/createProctorSession',
+        {
+            test_id: TEST_ID
+        },
+        function(response) {
+            if (response.status && response.status.trim() === 'success') {
+                proctorSessId = parseInt(response.proctor_id);
+            }
+        }
+    );
 }
 
 function blockTest() {
@@ -416,6 +362,8 @@ function blockTest() {
 }
 
 function startTest() {
+    console.log('Starting Test');
+
     if (GQTestStatus.isInProgress()) {
         console.warn("Attempted to start test when a test already in progress ");
         return;
@@ -438,6 +386,7 @@ function startTest() {
             $(".test-blocked-screen").addClass('hidden');
 
             $("#instructions").fadeOut('fast', function() {
+                $(".inner-test-div").removeClass('hidden')
                 $(".inner-test-div").fadeIn('fast');
             });
 
@@ -451,6 +400,9 @@ function startTest() {
 
             fetchNextQuestion(questions);
             startTimer();
+            updateIntegrityBar(100);
+            // register window onclose/leave event
+            addWindowsCloseEvent();
 
             // set/reset controls
             $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
@@ -460,18 +412,6 @@ function startTest() {
     }, 'JSON');
 }
 
-
-
-
-
-//function warnCandidate(e) {
-//    var confirmationMessage = "\o/";
-//
-//	(e || window.event).returnValue = confirmationMessage; //Gecko + IE
-//	return confirmationMessage;
-//    //$.post('/pushajax', { msg: 'Window Closed'});
-//}
-
 // ------- START NOTIFICATIONS ------ //
 
 var notificationTimer;
@@ -479,6 +419,12 @@ function addNoticfication(msg, opts) {
     if (!msg) {
         return;
     }
+
+    if (!GQTestStatus.isInProgress()) {
+        console.warn("Attempted to dislay proctor notification when no test in progress");
+        return;
+    }
+
     opts = opts || {};
     var overlay = opts.overlay || false;
 
@@ -516,14 +462,13 @@ function addWindowsCloseEvent() {
 }
 
 window.addEventListener('online', () => {
+    // TODO: this is going to create another proctor session
     PROCTOR = startProctor();
 
     removeNotification();
 
     resumeCountdownTimer();
     GQTestStatus.startProgress();
-    SingleFaceTracker.setCounter();
-    SingleFaceTracker.startTimer();
 });
 
 window.addEventListener('offline', () => {
@@ -533,9 +478,7 @@ window.addEventListener('offline', () => {
         overlay: true
     });
 
-    PROCTOR.stop();
-    GQTestStatus.stopProgress();
-    SingleFaceTracker.clearTimer();
+    stopProctor();
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
@@ -562,13 +505,6 @@ function startTimer() {
         format: "%H:%M:%S", // Format to show time in,
         callback: submitTest // If duration is set, this function is called after `duration` has elapsed
     });
-    //$("#hms_timer").countdowntimer({
-    //    hours : hrs,
-    //    minutes : mins,
-    //    seconds: 0,
-    //    size : "md",
-    //    timeUp: submitTest
-    //});
 }
 
 function destroyCountdownTimer() {
@@ -594,121 +530,190 @@ function pauseCountdownTimer() {
 function resumeCountdownTimer() {
     countdownTimer.timer('resume');
 }
-
 // ------- END TIMER FUNCTIONS ------ //
 
-// ----- START FACE DETECTION FUNCTIONS ---- //
-
-var SingleFaceTracker = (function() {
-    var faceTrackedCount;
-    var timerId
-
-    var self = this;
+// ------- SHOW CANDIDATE'S FACE BRIEFLY ------//
+var proctorCanvas = (function() {
+    var canvasTimer;
 
     return {
-        setCounter: function() {
-            faceTrackedCount = 0;
-        },
+		makeVisible: function(time) {
+			$(".cell").css('opacity', 1);
+			canvasTimer = setTimeout(this.makeInvisible, time);
+		},
 
-        incrementCounter: function() {
-            faceTrackedCount++;
-        },
+		makeInvisible: function() {
+			$(".cell").css('opacity', 0);
+		},
 
-        ensureFaceTracked: function() {
-            var _faceTrackedCount = faceTrackedCount;
-            faceTrackedCount = 0;
+		remove: function() {
+			$(".cell").addClass("hidden");
+            clearTimeout(canvasTimer);
+		},
 
-            if (_faceTrackedCount <= 0) {
-                addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
-                    timer: 10000
-                });
-                IntegrityScore.update(-5);
-                InvigilationTracker.incrementNoFaceCount();
-                return;
-            }
-        },
-
-        startTimer: function() {
-            timerId = setInterval(this.ensureFaceTracked, 60000);
-        },
-
-        clearTimer: function() {
-            clearInterval(timerId);
-        }
+		mount: function() {
+			$(".cell").removeClass("hidden");
+		}
     };
 })();
 
-// ----- END FACE DETECTION FUNCTIONS ---- //
 
 // ----- START INTEGRITY SCORE FUNCTIONS ---- //
-
-var IntegrityScore = (function() {
-    var integrityScore = 100;
-
-    var updateIntegrityBar = function() {
-        $("#integrity-score").text(integrityScore);
-        if (integrityScore < 70 && integrityScore > 55) {
-            $(".progress-bar").removeClass('progress-bar-success').addClass('progress-bar-warning');
-        }
-        else if (integrityScore < 55) {
-            $(".progress-bar").removeClass('progress-bar-warning').addClass('progress-bar-danger');
-        }
-        $('.progress-bar').css('width', integrityScore + "%"); //animate({ width: integrityScore + "%" }, 1500);
+var updateIntegrityBar = function(integrityScore) {
+    if (integrityScore >= 70) {
+        $(".progress-bar").removeClass('progress-bar-warning progress-bar-danger').addClass('progress-bar-success');
+    } else if (integrityScore < 70 && integrityScore >= 55) {
+        $(".progress-bar").removeClass('progress-bar-success progress-bar-danger').addClass('progress-bar-warning');
+    }
+    else if (integrityScore < 55) {
+        $(".progress-bar").removeClass('progress-bar-warning progress-bar-success').addClass('progress-bar-danger');
     }
 
-    return {
-        update: function(value) {
-            integrityScore = integrityScore + value;
-            integrityScore  = integrityScore < 0 ? 0 : integrityScore;
-            updateIntegrityBar();
-        },
-
-        reset: function() {
-            integrityScore = 100;
-        },
-
-        get: function() {
-            return integrityScore;
-        }
-    };
-})();
+    $("#integrity-score").text(integrityScore);
+    $('.progress-bar').css('width', integrityScore + "%");
+    //animate({ width: integrityScore + "%" }, 1500);
+}
 
 // ----- END INTEGRITY SCORE FUNCTIONS ---- //
 
-// ----- START INVIGILATION COUNT/TRACK FUNCTIONS ---- //
+function startProctor() {
+    console.log('Starting Proctor');
+    return new Proctor({
+        detectionLapse: 60, // detection lapse (seconds)
 
-var InvigilationTracker = (function() {
-    var noFace = 0;
-    var noise = 0;
-    var multipleFaces = 0;
-
-    return {
-        incrementNoFaceCount: function() {
-            noFace++;
+        scores: {
+            noFace: -3,
+            multiFace: -10,
+            ambientNoise: -2,
+            integrityScore: 100,
         },
 
-        incrementNoiseCount: function() {
-            noise++;
+        audio: {
+            fps: 2, // from 0(maximum cpu available fps) 60hz max (1)
+            sensitivity: 95, // from 0 - 100
+            ignoreRecording: false,
+			recordingDuration: 15000
         },
 
-        incrementMultipleFacesCount: function() {
-            multipleFaces++;
+        video: {
+            element: '#proctor-video',
+            canvas: '#proctor-canvas',
+            fps: 20, // from 0(maximum cpu available fps) 60hz max (2)
+            streamWidth: 320,
+            streamHeight: 240,
+            ignoreTrack: false,
+            takeInitialSnapshot: true
         },
 
-        reset: function() {
-            noFace = 0;
-            noise = 0;
-            multipleFaces = 0;
+        handleOutdatedBrowser: () => {
+            alert('Please update your browser to the latest version.');
         },
 
-        getAll: function() {
-            return {
-                noFace: noFace,
-                noise: noise,
-                multipleFaces: multipleFaces
-            }
-        }
+        handleSnapshotUpload: (data64, eventName) => {
+            console.log("Proctor: Upload Snapshot");
+            $.ajax({
+                 type: "POST",
+                 url: "/gqtest/uploadProctorPicture",
+                 data: {
+                     imgBase64: data64,
+                     eventName: eventName,
+                     proctorSessId: proctorSessId
+                 }, success: function(data) {
+                     // Some success ish blah blah
+                 }, error: function() {
+                     // some error handling blah nlah
+                 }
+             }).done(function(msg) {
+                 // Some message blah blah
+             });
+        },
+
+        handleAudioUpload: (data64) => {
+            console.log("Proctor: Upload Audio");
+            $.ajax({
+                type: "POST",
+                url: "/gqtest/uploadProctorAudio",
+                data: {
+                    data: data64,
+                    proctorSessId: proctorSessId
+                }, success: function(data){
+                    // Some success ish blah blah
+                }, error: function() {
+                    // some error handling blah nlah
+                }
+            }).done(function(msg) {
+                // Some message blah blah
+            });
+        },
+
+        onNoFaceTracked: (feedback) => {
+            console.log('No face detected...');
+            updateIntegrityBar(feedback.integrityScore);
+            addNoticfication("We couldn't detect your face. Please ensure the camera is unobstructed and pointed directly towards your face.", {
+                timer: 10000
+            });
+            proctorCanvas.makeVisible(30000);
+        },
+
+        onMultiFaceTracked: (feedback) => {
+            console.log('Multiple faces detected...');
+            updateIntegrityBar(feedback.integrityScore);
+            addNoticfication("We detected multiple faces. You must ensure that you are taking this test alone.", {
+                timer: 10000
+             });
+        },
+
+        onAmbientNoiseDetection: (feedback, pitch, meter) => {
+            console.log('Noise detected...');
+            updateIntegrityBar(feedback.integrityScore);
+            addNoticfication("Ambient noise detected. Please make sure you are in a quiet environment", {
+                timer: 10000
+            });
+        },
+
+        onMicPermissionDenied: () => {
+            // console.warn('Proctor (Perms): Microphone needed for this test');
+            blockTest();
+        },
+
+        onCamPermissionDenied: () => {
+            // console.warn('Proctor (Perms): Webcam needed for this test');
+            blockTest();
+        },
+
+        onCamNotDetected: () => {
+            // console.warn('Proctor: This device does not have a webcam');
+            blockTest();
+        },
+
+        onMicNotDetected: () => {
+            // console.warn('Proctor: This device does not have a microphone');
+            blockTest();
+        },
+
+        proctorReady: () => {
+            console.log('proctorReady');
+            // console.log('Proctor is ready.');
+            startTest();
+            // Make proctor visible for 60s
+            proctorCanvas.makeVisible(60000);
+        },
+
+        feedback: () => {
+        },
+
+        showLogs: true
+    });
+}
+
+function stopProctor() {
+    try {
+		proctorCanvas.remove();
+        PROCTOR.stop();
+    } catch (err) {
+        console.error("Proctor threw an error when attempting to stop...");
+        console.error(err);
+    } finally {
+        PROCTOR =  null;
     }
-})();
-
-// ----- END INVIGILATION COUNT/TRACK  FUNCTIONS ---- //
+}

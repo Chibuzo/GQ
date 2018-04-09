@@ -45,6 +45,8 @@ module.exports.routes = {
 
     'POST /applicant/add-profilephoto': 'ApplicantController.uploadPhoto',
 
+    'DELETE /applicant/test/:userId': 'ApplicantController.deleteTestScoreAndFiles',
+
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
     'GET /applicant/resume-user/:user_id': 'ResumeController.viewResumeByUser',
@@ -77,6 +79,12 @@ module.exports.routes = {
 
     'GET /admin/coy-jobs/:coy_id': 'CompanyController.viewCompanyJobs',
 
+    'GET /admin/candidates/:query': 'ApplicantController.fetchStatisticsPage',
+
+    'POST /admin/sendemail': 'ApplicantController.sendEmail',
+
+    'POST /admin/deleteCandidates': 'ApplicantController.deleteApplicants',
+
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 
     'POST /gqtest/savetest': 'GQTestController.saveTest',
@@ -96,6 +104,8 @@ module.exports.routes = {
 
     'POST /gqtest/marktest': 'GQTestController.markTest',
 
+    'POST /gqtest/mark/gq': 'GQTestController.markGQ',
+
     'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
@@ -113,6 +123,8 @@ module.exports.routes = {
     'POST /gqtest/createProctorSession': 'ProctorRecordController.startSession',
 
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',
+
+    'GET /proctor/session': 'ProctorSessionController.getProctorSession',
 
     'POST /proctor/accept-test': 'ProctorRecordController.acceptTest',
 
@@ -171,6 +183,8 @@ module.exports.routes = {
 
     'GET /job/manage': 'JobController.viewJobs',
 
+    'GET /job/addjob/:coy_id': 'JobController.newJobForm',
+
     'GET /job/addjob': 'JobController.newJobForm',
 
     'POST /job/save': 'JobController.saveJob',
@@ -194,6 +208,8 @@ module.exports.routes = {
     'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 
     'GET /job/candidates/:job_id': 'JobController.getApplicantsResults',
+
+    'GET /job/view-shortlisted/:job_id': 'JobController.fetchShortlisted',
 
     'GET /job/:id/:title': 'JobController.showJob',
 

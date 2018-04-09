@@ -39,10 +39,11 @@
 					<div class="header">
 						<div class="row">
 							<div class="col-md-9">
-								<h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ resume.fullname }} - GQ Profile</h4>
-							</div>
-							<div class="col-md-3 text-right">
-								<a href="/admin/applicants" class="btn btn-info btn-fill"><i class="fa fa-caret-left"></i> Go Back</a>
+                                {% if showContactInfo == true  %}
+                                    <h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ resume.fullname }} - GQ Profile</h4>
+                                {% else %}
+                                    <h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ me.fname }} {{ me.lname|first }} - GQ Profile</h4>
+                                {% endif %}
 							</div>
 						</div>
 					</div><br>
@@ -55,7 +56,10 @@
 						</ul>
 						<div class="tab-content">
 							<!-- Resume -->
-							{% include 'includes/resume.swig' %}
+							<div class="tab-pane fade in active" id="resume">
+								{% include 'includes/resume.swig' %}
+							</div>
+
 							<div class="tab-pane fade in" id="test">
 
 								<div class="col-md-7 col-md-offset-2" id="result-div">

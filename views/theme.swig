@@ -101,7 +101,7 @@
 				<li><a href="/jobs">Jobs</a></li>
 				<li><a href="/courses">Courses</a></li>
 				{% if req.session.fname && req.session.user_type == 'Applicant' %}
-					<li><a href="/user/dashboard"><i class="fa fa-home"></i> {{ req.session.fname }}</a></li>
+					<li><a href="/applicant/dashboard"><i class="fa fa-home"></i> {{ req.session.fname }}</a></li>
 				{% else %}
 					<li><a href="/login"><i class="fa fa-user"></i> Sign In</a></li>
 				{% endif %}

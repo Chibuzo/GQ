@@ -4,6 +4,12 @@
 	<i class="pe-7s-user"></i> &nbsp;My Resume
 {% endblock %}
 
+{% block head %}
+  {% parent %}
+  {% set location = "My Resume" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 <link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
 <style>
@@ -50,9 +56,10 @@
 
 	.cell {
 		opacity: 0;
-		position: absolute !important;
-		/*right: -1500px;*/
-		/*z-index: -2;*/
+		position: fixed !important;
+		left:-60px;
+		top:122px;
+		z-index: 20000;
 	}
 
 	/* CBT Styles */
@@ -92,6 +99,14 @@
 		min-height: 40px;
 	}
 
+    .photo-instructions-title {
+        margin-bottom: 15px;
+    }
+
+    .photo-instructions-item {
+        margin-bottom: 5px;
+    }
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
@@ -102,6 +117,20 @@
 		}
 	}
 </style>
+	<div class="cell hidden">
+		<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
+			<video id="proctor-video" width="320" height="240" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
+			<canvas id="proctor-canvas" width="320" height="240" style="position: absolute; top: 0; left: 0"></canvas>
+		</div>
+	</div>
+
+	<div class="cell">
+		<div id="vol-meter"></div>
+
+		<div class="stats">
+
+		</div>
+	</div>
 <div class="content">
 	<div class="container-fluid">
 		<div class="row">
@@ -121,7 +150,7 @@
 									{% set status = status + 1 %}
 									{% set test_status = 1 %}
 								{% endif %}
-								{% if resume.profile_status %}
+								{% if resume.profile_status && completeResumeEducation %}
 									{% set status = status + 1 %}
 									{% set profile_status = 1 %}
 								{% endif %}
@@ -138,21 +167,6 @@
 						</div>
 					</div><br>
 
-					<div class="cell">
-						<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
-							<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-							<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
-						</div>
-					</div>
-
-					<div class="cell">
-						<div id="vol-meter"></div>
-
-						<div class="stats">
-
-						</div>
-					</div>
-
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
@@ -164,11 +178,15 @@
 						  	<div class="tab-pane fade active in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
-									{% include 'includes/resume.swig' %}
-									{% include 'includes/resume-form.swig' %}
-									<span id="candidate_fullname">{{ resume.fullname }}</span>
+										{% include 'includes/resume.swig' %}
+										{% include 'includes/resume-form.swig' %}
+										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
 									</div>
 								</div>
+							</div>
+
+							<div class="tab-pane fade in" id="photo" style="padding-top: 30px">
+								{% include '../applicant/includes/profile-photo.swig' %}
 							</div>
 
 							<div class="tab-pane fade in" id="test">
@@ -179,10 +197,10 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								{% if resume.photo_status === true %}
+								{% if resume.photo_status === true && resume.profile_status === true && completeResumeEducation === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
-											<h3 class="test-title">{{ test_title }}</h3><br>
+											<h3 class="test-title">{{ test_title }} Result</h3><br>
 											<table class="table table-striped">
 												<thead>
 													<tr>
@@ -219,24 +237,11 @@
 													</tr>
 												</tbody>
 											</table>
-											{#<div class="panel panel-default">#}
-												{#<div class="panel-heading">#}
-													{#{{ test_title }}#}
-												{#</div>#}
 
-												{#<ul class="list-group">#}
-													{#<li class="list-group-item">Score: <span id="score">{{ result.score }}/60</span></li>#}
-													{#<li class="list-group-item">Percentage: <span id="percentage">{{ result.percentage }}%</span></li>#}
-													{#<li class="list-group-item">Rank: <span id="rank">{{ result.rank }} of {{ result.candidates }} candidates</span></li>#}
-												{#</ul>#}
-												{#<div class="panel-body">#}
-													{#&#123;&#35;<strong>Note: </strong>You can always pay and retake the test to improve your score...&#35;&#125;#}
-												{#</div>#}
-											{#</div>#}
-
-										<div class="text-center">
-											<div class="col-md-12"><br>
-												<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+											<div class="text-center ">
+												<div class="col-md-12"><br>
+													<button class="btn btn-info hidden" id="retake-test">Retake Test</button>
+												</div>
 											</div>
 										</div>
 									</div>
@@ -304,26 +309,17 @@
 													</div>
 
 													<div class="col-md-5">
-
 														<!-- Timer -->
 														<div class="row test-panel-text text-center">
 															<span><strong>Time Remaining: </strong></span>
 															<div id="countdowntimer"></div>
 														</div>
-
 														<hr>
-
 														<!-- Invigilation Score -->
 														<div class="row">
 															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
 																<div class="invigilation-report test-panel-text">
 																	<div><strong>Invigilation Score:</strong></div>
-
-																	<!-- TODO: Invigilation Score Number
-																	<span>Invigilation Score: </span>
-																	<span id="invigilation-score">100%</span>
-
-																	-->
 																</div>
 
 																<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
@@ -417,9 +413,20 @@
 												<span id="integrity-score" class="hidden"></span>
 											</div>
 										</div>
+										<!-- test row end -->
 									</div>
 								{% else %}
-									<div><div class="alert alert-warning">We've detected that you don't have a profile photo yet. Please upload a profile photo to continue with the test</div></div>
+                                    {% if resume.profile_status !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please ensure your name, email address, name of institutions you have attended, and your field of study is filled in before you take the assessment test.</div></div>
+                                    {% endif %}
+
+                                    {% if resume.photo_status !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please upload a profile picture.</div></div>
+                                    {% endif %}
+
+                                    {% if completeResumeEducation !== true %}
+                                        <div><div class="alert alert-warning">Your GQ profile not complete. Please provide us with the name of institutions you have attended, and your field of study.</div></div>
+                                    {% endif %}
 								{% endif %}
 							</div>
 
@@ -448,7 +455,7 @@
 									{% if resume.video_status == true %}
 										<div class="col-md-5">
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
-												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
+											{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
 											{#</video>#}
 											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
@@ -472,20 +479,9 @@
 										</div>
 									{% endif %}
 									<input id="select-file" type="file" style="display:none">
-									</div>
 								</div>
-
-							<div class="tab-pane fade in" id="photo" style="padding-top: 30px">
-								{% include '../applicant/includes/profile-photo.swig' %}
 							</div>
 
-
-							{#<form action="/applicant/add-video" method="post" id="form-video-upload" enctype="multipart/form-data">#}
-									{#<input type="hidden" name="video_title" value="{{ me.fname }}-{{ me.lname }}" />#}
-									{#<input type="hidden" name="video_file" value="{{ resume.video_file }}">#}
-									{#<input type="hidden" name="resume_id" value="{{ resume.id }}">#}
-									{#<input type="file" name="video_file" style="display: none" id="file-control" />#}
-								{#</form>#}
 						</div>
 					</div>
 				</div>
@@ -520,11 +516,10 @@
 
 {% block scriptTag %}
 	<script type="text/javascript" src="/js/profile-photo.js"></script>
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=4"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-min.js"></script>
+	<script src="/js/proctor/tracking-new.js"></script>
 	<script src="/js/proctor/face-min.js"></script>
 	<script src="/js/proctor/eye-min.js"></script>
 	<script src="/js/proctor/mouth-min.js"></script>
@@ -533,9 +528,13 @@
 	<script src="/js/proctor/volume-meter.js"></script>
 
 	<!-- Audio tracking -->
-	<script src="/js/proctor/recorder.min.js"></script>
+	<script src="/js/proctor/recorder-new.js"></script>
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup.js?v=2"></script>
+	<script src="/js/proctor/setup-new.js?v=2"></script>
+
+	{#<script src="/js/proctorSetup.js"></script>#}
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=11"></script>
+
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
@@ -569,12 +568,14 @@
 				}
 			});
 
-
 			// add one row to institution
 			$("#institutions").on("click", ".add-institution", function(e) {
 				e.preventDefault();
-				$("#another-inst").clone().insertBefore("#another-inst").slideDown().removeAttr("id");
-				$(this).removeClass("add-institution").html("<i class='fa fa-minus'></i>").addClass("remove-institution-btn");
+				var institutionsClone =  $("#another-inst").clone();
+                institutionsClone.insertBefore("#another-inst").slideDown().removeAttr("id");
+
+                $('.is-required', institutionsClone).prop('required', true);
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -583,8 +584,7 @@
 				$(".school").easyAutocomplete(options);
 			});
 
-
-			// remove one row from institutiob
+			// remove one row from institution
 			$("#institutions").on("click", ".remove-institution-btn", function(e) {
 				e.preventDefault();
 				$(this).parents(".inst-row").slideUp(function() {
@@ -595,8 +595,10 @@
 			// add one row to qualifications
 			$("#qualifications").on("click", ".add-qualification", function(e) {
 				e.preventDefault();
-				$("#another-qualification").clone().insertBefore("#another-qualification").slideDown().removeAttr("id");
-				$(this).removeClass("add-qualification").html("<i class='fa fa-minus'></i>").addClass("remove-qualification-btn");
+
+				let qualificationClone = $("#another-qualification").clone();
+                qualificationClone.insertBefore("#another-qualification").slideDown().removeAttr("id");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -616,7 +618,7 @@
 			$("#employments").on("click", ".add-employment", function(e) {
 				e.preventDefault();
 				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
-				$(this).removeClass("add-employment").html("<i class='fa fa-minus'></i>").addClass("remove-employment-btn");
+
 				$('.datep').datepicker({
 					format: 'yyyy-mm-dd',
 					autoHide: true
@@ -637,7 +639,6 @@
 			$("#referenceContacts").on("click", ".add-reference", function(e) {
 				e.preventDefault();
 				$("#another-reference").clone().insertBefore("#another-reference").slideDown().removeAttr("id");
-				$(this).removeClass("add-reference").html("<i class='fa fa-minus'></i>").addClass("remove-reference-btn");
 			});
 
 
@@ -672,12 +673,13 @@
 				e.preventDefault();
 
 				// Hide the Resume presentation View
-				$("#resume" ).addClass('hidden');
+				$("#resume").addClass('hidden');
+
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
+                // easyAutocomplete sometimes has a width of 0px. Makes input field look small
+                $('.easy-autocomplete .school').parent().css('min-width', '200px');
 			});
-
-
 
 			// video handlers
 			$("#add-video, #change-video").click(function(e) {

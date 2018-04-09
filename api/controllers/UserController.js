@@ -10,11 +10,11 @@ var Passwords = require('machinepack-passwords');
 module.exports = {
     signup: function(req, res) {
         if (_.isUndefined(req.param('email'))) {
-            return res.badRequest('An email address is required!');
+            return res.json(200, { status: 'error', msg: 'An email address is required!' });
         }
 
         if (_.isUndefined(req.param('password')) || req.param('password').length < 6) {
-            return res.badRequest('A password is required, and must be aleast 6 characters');
+            return res.json(200, { status: 'error', msg: 'A password is required, and must be at least 6 characters' });
         }
         // validate email
         Emailaddresses.validate({
@@ -24,7 +24,7 @@ module.exports = {
                 return res.serverError(err);
             },
             invalid: function() {
-                return res.badRequest('Doesn\'t look like an email address to me!');
+                return res.json(200, { status: 'error', msg: 'Doesn\'t look like an email address to me!' });
             },
             success: function() {
                 // collect ALL signup data
@@ -80,21 +80,31 @@ module.exports = {
                         req.session.userId = user[0].id;
                         req.session.user_type = user[0].user_type;
                         req.session.fname = user[0].fullname;
+                        req.session.userEmail = user[0].email;
+
+                        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+
                         var me = {
                             fname: user[0].fullname.split(' ')[0],
                             lname: user[0].fullname.split(' ')[1]
                         };
                         if (user[0].user_type == 'Applicant') {
                             // create their resume
-                            Resume.create({ email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
+                            Resume.findOrCreate({ email: email}, { email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
                             sendMail.welcomeNewCandidate(user[0]);
-                            return res.view('applicant/profile', { user: user[0], me: me });
+                            return res.view('applicant/profile', {
+                                user: user[0],
+                                me: me,
+                                first_time: 'true',
+                                enableAmplitude: enableAmplitude,
+                                userEmail: user[0].email
+                            });
                         } else if (user[0].user_type == 'company') {
                             return res.view('company/users/profile', { user: user[0], me: me });
                         }
                     });
                 } else {
-                    return res.badRequest('Incorrect activation code')
+                    return res.badRequest('Incorrect activation code');
                 }
             }
         });
@@ -137,6 +147,7 @@ module.exports = {
                     req.session.userId = foundUser.id;
                     req.session.fname = foundUser.fullname;
                     req.session.user_type = foundUser.user_type;
+                    req.session.userEmail = foundUser.email;
                     if (req.param('return_url').length > 1) {
                         return res.json(200, { status: 'success', url: '/' + new Buffer(req.param('return_url'), 'base64').toString() });
                     } else if (foundUser.user_type == 'company-admin' || foundUser.user_type == 'company') {
@@ -151,11 +162,17 @@ module.exports = {
     },
 
     dashboard: function(req, res) {
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         if (!req.session.userId) {
             return res.view ('user/signin');
         }
         if (req.session.user_type == 'Applicant') {
-            return res.view('applicant/dashboard');
+            return res.view('applicant/dashboard', {
+              userEmail: userEmail,
+              enableAmplitude: enableAmplitude
+            });
         }
     },
 
@@ -178,6 +195,9 @@ module.exports = {
     },
 
     profile: function(req, res) {
+        const userEmail = req.session.userEmail;
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+
         User.findOne(req.session.userId, function(err, _user) {
             if (err) return res.negotiate(err);
             var me = {
@@ -185,7 +205,13 @@ module.exports = {
                 lname: _user.fullname.split(' ')[1]
             };
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                return res.view('applicant/profile', { user: _user, me: me, passport: resume[0].passport });
+                return res.view('applicant/profile', {
+                    user: _user,
+                    me: me,
+                    passport: resume[0].photo,
+                    userEmail: userEmail,
+                    enableAmplitude: enableAmplitude
+                });
             });
         });
     },
@@ -198,9 +224,10 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
+            let new_pswd = req.param('new_password');
             if(req.param('current_password') && req.param('new_password')) {
                 Passwords.checkPassword({
-                    passwordAttempt: req.param('current_password'),
+                    passwordAttempt: new_pswd,
                     encryptedPassword: user[0].password
                 }).exec({
                     error: function (err) {
@@ -216,7 +243,7 @@ module.exports = {
                         }).exec({
                             error: function (err) {
                                 console.log(err);
-                                //return res.serverError(err);
+                                return res.json(200, { status: 'Err', msg: err });
                             },
                             success: function (newPassword) {
                                 User.update({ id: req.session.userId }, { password: newPassword }).exec(function (err) {
@@ -228,7 +255,20 @@ module.exports = {
                     }
                 });
             } else {
-                return res.json(200, { status: 'success' });
+                Passwords.encryptPassword({
+                    password: req.param('new_password'),
+                }).exec({
+                    error: function (err) {
+                        console.log(err);
+                        return res.json(200, { status: 'error', msg: err });
+                    },
+                    success: function (newPassword) {
+                        User.update({ id: req.session.userId }, { password: newPassword }).exec(function (err) {
+                            if (err) return res.json(200, { status: 'error', msg: err });
+                            return res.json(200, { status: 'success' });
+                        });
+                    }
+                });
             }
         });
     },
@@ -291,4 +331,3 @@ module.exports = {
         return res.view('login', { return_url: return_url });
     }
 };
-
