@@ -144,8 +144,8 @@
 
                 <li class="applicants">
                     <a href="/admin/applicants">
-                        <i class="pe-7s-users"></i>
-                        <p>Applicants</p>
+                        <i class="pe-7s-graph2"></i>
+                        <p>Test Results</p>
                     </a>
                 </li>
 

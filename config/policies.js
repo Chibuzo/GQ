@@ -78,7 +78,10 @@ module.exports.policies = {
         '*': 'isAdmin'
     },
 
-    CompanyRequest: {
-        '*': 'isAdmin'
+    CompanyRequestController: {
+        submitRequest: true,
+        viewPendingRequests: 'isAdmin',
+        approve: 'isAdmin',
+        cancel: 'isAdmin',
     }
 };

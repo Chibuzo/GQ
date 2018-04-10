@@ -60,7 +60,7 @@ module.exports = {
         var template = 'verifyAccount';
         module.exports.sendMail(user.email, subject, template, data);
     },
-    
+
     sendCompanyInviteEmail: function(user, coy) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
@@ -75,7 +75,7 @@ module.exports = {
         var template = 'companyUserVerification';
         module.exports.sendMail(user.email, subject, template, data);
     },
-    
+
     sendAppliedJobNotice: function(job, user, msg_type) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
@@ -128,7 +128,8 @@ module.exports = {
         };
         var subject = "Hello, from GetQualified";
         var template = 'companySignUp';
-        module.exports.sendMail(coy.email, subject, template, data);
+
+        module.exports.sendMail(coy.contact_email, subject, template, data);
     },
 
     // company new job
@@ -212,7 +213,22 @@ module.exports = {
         };
 
         var template = 'emailCandidates';
-        module.exports.sendMail(emails, subject, template, data);
+        let mailOptions = {
+            from: '"Get Qualified" <noreply@getqualified.work>',
+            //to: to,
+            subject: subject,
+            bcc: emails,
+            template: template,
+            context: data
+        };
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            //console.log('Message sent: %s', info.messageId);
+        });
+        //module.exports.sendMail(emails, subject, template, data);
     },
 
     sendMail: function(to, subject, template, data) {
