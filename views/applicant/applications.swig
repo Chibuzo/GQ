@@ -4,6 +4,12 @@
 	<i class="pe-7s-timer"></i> Manage Applications
 {% endblock %}
 
+{% block head %}
+  {% parent %}
+  {% set location = "My Resume" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 	<style>
 		.tests-alert {
