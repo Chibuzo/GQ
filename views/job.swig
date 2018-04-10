@@ -1,5 +1,12 @@
 {% extends 'theme.swig' %}
 {% set title = job.title %}
+
+{% block head %}
+  {% parent %}
+  {% set location = "Job View: " + job.company.company_name  + "--" + job.job_title %}
+  {% include "./externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 <style>
 	@media screen and (min-width: 1200px) and (max-width: 2000px) {

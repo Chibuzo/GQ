@@ -238,6 +238,9 @@ module.exports = {
         var job_id = req.param('id');
         var today = new Date().toISOString();
 
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
@@ -259,7 +262,12 @@ module.exports = {
                         });
                     }
                 });
-                return res.view('job', { job: job, job_categories: jobCategories });
+                return res.view('job', {
+                    job: job,
+                    job_categories: jobCategories,
+                    enableAmplitude: enableAmplitude,
+                    userEmail: userEmail
+                });
             });
         });
     },
@@ -270,10 +278,21 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
+                    AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
+                        jobId: job_id,
+                        resumeStatus: resume[0].status,
+                        profileStatus: resume[0].profile_status,
+                        photoStatus: resume[0].photo_status,
+                        videoStatus: resume[0].video_status,
+                        testStatus: resume[0].test_status
+                    });
                     return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {
+                        AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                            jobId: job_id
+                        });
                         return res.json(200, { status: 'success' });
                     } else {
                         // your village people don't want you to be great
@@ -281,6 +300,9 @@ module.exports = {
                 });
             });
         } else {
+            AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
+                jobId: job_id
+            });
             req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
