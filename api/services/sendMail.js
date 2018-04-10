@@ -60,7 +60,7 @@ module.exports = {
         var template = 'verifyAccount';
         module.exports.sendMail(user.email, subject, template, data);
     },
-    
+
     sendCompanyInviteEmail: function(user, coy) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
@@ -75,7 +75,7 @@ module.exports = {
         var template = 'companyUserVerification';
         module.exports.sendMail(user.email, subject, template, data);
     },
-    
+
     sendAppliedJobNotice: function(job, user, msg_type) {
         var email_b64 = new Buffer(user.email).toString('base64');
         var crypto = require('crypto');
@@ -128,7 +128,8 @@ module.exports = {
         };
         var subject = "Hello, from GetQualified";
         var template = 'companySignUp';
-        module.exports.sendMail(coy.email, subject, template, data);
+
+        module.exports.sendMail(coy.contact_email, subject, template, data);
     },
 
     // company new job
