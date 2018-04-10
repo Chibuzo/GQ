@@ -711,6 +711,12 @@
 				// sets it back to the correct link so that it reloads immediately on the next window open
 				$frame.attr('src', vidsrc);
 			});
+
+            $('.nav.nav-tabs a').on('click', function(evt) {
+                var href = $(this).attr('href');
+                href = href.substr(1);
+                amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
+            });
 		});
 	</script>
 
