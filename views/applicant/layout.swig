@@ -45,8 +45,21 @@
     </style>
 {% endblock %}
 <!--Start of Tawk.to Script-->
+{% if userEmail %}
+    <script type="text/javascript">
+        tawkVistor = {
+            name : "{{ userEmail }}",
+            email : "{{ userEmail }}"
+        };
+    </script>
+{% endif %}
+
 <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    if (tawkVistor) {
+        Tawk_API.visitor = tawkVistor;
+    }
+
     (function(){
         var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
         s1.async=true;
