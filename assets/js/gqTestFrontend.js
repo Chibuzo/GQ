@@ -504,7 +504,6 @@ window.addEventListener('offline', () => {
     });
 
     stopProctor();
-    amplitude.getInstance().logEvent("Lost WiFi Connection");
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
