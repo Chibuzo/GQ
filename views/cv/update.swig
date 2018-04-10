@@ -454,9 +454,6 @@
 									</div>
 									{% if resume.video_status == true %}
 										<div class="col-md-5">
-											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
-											{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
-											{#</video>#}
 											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
@@ -658,11 +655,15 @@
 					if (d.status.trim() == 'success') {
 						var msg = "Your GetQualified profile has been successfully updated!";
 						showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+                        amplitude.getInstance().logEvent('Update Resume: Successful');
 						window.setTimeout(function() {
 							window.location.reload();
 						}, 1000);
 					} else {
 						showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
+                        amplitude.getInstance().logEvent('Update Resume: Failed', {
+                            msg: d.msg
+                        });
 					}
 					$("#btn-submit").html("Update Profile").prop('disabled', false);
 				}, 'JSON');
@@ -680,17 +681,6 @@
                 $('.easy-autocomplete .school').parent().css('min-width', '200px');
 			});
 
-			// video handlers
-			$("#add-video, #change-video").click(function(e) {
-				e.preventDefault();
-				$("#file-control").click();
-			});
-
-			$("#file-control").change(function() {
-				$("#form-video-upload").submit();
-				$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
-			});
-
 
 			$(".question-title").click(function() {
 				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
@@ -705,6 +695,8 @@
 				$( '#' + $(this).data('modal-id') ).modal({
 					keyboard: true
 				});
+
+                amplitude.getInstance().logEvent("Sample Video Link Clicked");
 			});
 
 			$('#modal-sample-video').on('hide.bs.modal', function(e) {
@@ -719,6 +711,12 @@
 				// sets it back to the correct link so that it reloads immediately on the next window open
 				$frame.attr('src', vidsrc);
 			});
+
+            $('.nav.nav-tabs a').on('click', function(evt) {
+                var href = $(this).attr('href');
+                href = href.substr(1);
+                amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
+            });
 		});
 	</script>
 

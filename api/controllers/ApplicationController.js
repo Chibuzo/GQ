@@ -7,6 +7,9 @@
 
 module.exports = {
     viewApplications: function(req, res) {
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         Application.find({ applicant: req.session.userId }).populate('job').populate('company').exec(function(err, applications) {
             if (err) return;
             // we need to fetch the tests for each application
@@ -20,9 +23,12 @@ module.exports = {
             },
             function (err) {
                 if (err) console.log(err);
-                return res.view('applicant/applications', { jobs: _applications });
+                return res.view('applicant/applications', {
+                    jobs: _applications,
+                    enableAmplitude: enableAmplitude,
+                    userEmail: userEmail
+                });
             });
         });
     }
 };
-

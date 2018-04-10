@@ -157,6 +157,7 @@ module.exports = {
             fs.createReadStream(uploadedpic).pipe(fs.createWriteStream(temp_pic));
 
             Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
+                AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
                 return res.redirect('/applicant/resume-page');
             });
         });

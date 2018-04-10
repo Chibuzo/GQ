@@ -410,6 +410,10 @@ function defineRequest() {
             var message = data;
 
             try {
+                amplitude.getInstance().logEvent("User Upload Video Error", {
+                    data: JSON.stringify(data)
+                });
+
                 var errorResponse = JSON.parse(data);
                 console.log(errorResponse);
                 message = errorResponse.error.message;
@@ -427,7 +431,12 @@ function defineRequest() {
         }.bind(this),
         onComplete: function (data) {
             var uploadResponse = JSON.parse(data);
-            console.log(uploadResponse)
+            console.log(uploadResponse);
+
+            amplitude.getInstance().logEvent("User Uploaded Video", {
+                videoId: uploadResponse.id
+            });
+
             $.post('/applicant/updateYoutubeId', { video_id: uploadResponse.id }, function() {
                 location.reload(true);
             });

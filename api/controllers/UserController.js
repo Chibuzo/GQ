@@ -52,6 +52,10 @@ module.exports = {
                                 }
                                 return res.json(501, {status: 'error', msg: err}); // couldn't be completed
                             }
+                            AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
+                                userType: data.userType,
+                                signUpDate: new Date(Date.now())
+                            });
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });

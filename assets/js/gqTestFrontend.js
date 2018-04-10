@@ -26,6 +26,7 @@ var GQTestStatus = (function() {
 })();
 
 $("#retake-test").click(function() {
+    amplitude.getInstance().logEvent("Retake Test");
     $("#result-div").fadeOut('fast', function() {
         $("#test-div").hide().removeClass('hidden').fadeIn('fast');
     });
@@ -33,7 +34,8 @@ $("#retake-test").click(function() {
 
 $(".load-test").click(function() {
     if (mobileCheck() === true) {
-        blockTest();
+        amplitude.getInstance().logEvent("Failed Mobile Check");
+        blockTest("mobileCheck");
         return false;
     }
 
@@ -50,6 +52,9 @@ $(".load-test").click(function() {
             $("#instructions").fadeIn('fast', function() {
                 $(".test-title").text(d.test_name);
                 $(".instruction").html(d.instructions);
+                amplitude.getInstance().logEvent("Loaded Instructions for Test " + TEST_ID, {
+                    testName: d.test_name
+                });
             });
             // update test_id for the resuming section test (GQ aptitude test)
             TEST_ID = d.test_id;
@@ -59,6 +64,8 @@ $(".load-test").click(function() {
 });
 
 $("#start-test").click(function() {
+    amplitude.getInstance().logEvent("Start Test Clicked");
+
     $(this).text('Loading test...').prop('disabled', true);
 
     // register proctor session
@@ -73,9 +80,10 @@ $("#start-test").click(function() {
 
 $("#submit-test").click(function(e) {
     e.preventDefault();
+    amplitude.getInstance().logEvent("Submit Test Clicked");
 
     if (confirm("Are you sure want to submit this test? You won't be able to come back and review or modify your answers")) {
-        submitTest();
+        submitTest(true);
     }
 });
 
@@ -226,7 +234,10 @@ function restoreQuestionState(quest_id) {
     }
 }
 
-function submitTest() {
+function submitTest(notTimer) {
+    if (!notTimer) {
+        amplitude.getInstance().logEvent("Test Submitted via Timer");
+    }
     saveAnswer();
 
     var proctorFeedback = PROCTOR.getFeedback();
@@ -267,6 +278,11 @@ function sendAnswers(proctorFeedback) {
         proctorSessId: proctorSessId
     }, function (d) {
         if (d.status.trim() == 'success') {
+            amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
+                loadNextTest: loadNextTest,
+                aptitudeTest: aptitudeTest
+            });
+
             if (loadNextTest) {
                 //TODO Call a function that does this
                 $(".load-test").click();
@@ -348,12 +364,19 @@ function createProctorSession() {
         function(response) {
             if (response.status && response.status.trim() === 'success') {
                 proctorSessId = parseInt(response.proctor_id);
+                amplitude.getInstance().logEvent("Created Proctor Session", {
+                    proctorSessId: proctorSessId,
+                    testId: TEST_ID
+                });
             }
         }
     );
 }
 
-function blockTest() {
+function blockTest(reason) {
+    amplitude.getInstance().logEvent("Test Blocked", {
+        reason: reason
+    });
     $(".inner-test-div").fadeOut('fast', function() {
         $(".test-blocked-screen").removeClass('hidden');
     });
@@ -388,6 +411,7 @@ function startTest() {
             $("#instructions").fadeOut('fast', function() {
                 $(".inner-test-div").removeClass('hidden')
                 $(".inner-test-div").fadeIn('fast');
+                amplitude.getInstance().logEvent("Started Test " + TEST_ID);
             });
 
             // display question numbers
@@ -469,6 +493,7 @@ window.addEventListener('online', () => {
 
     resumeCountdownTimer();
     GQTestStatus.startProgress();
+    amplitude.getInstance().logEvent("Gained WiFi Connection");
 });
 
 window.addEventListener('offline', () => {
@@ -577,7 +602,8 @@ var updateIntegrityBar = function(integrityScore) {
 // ----- END INTEGRITY SCORE FUNCTIONS ---- //
 
 function startProctor() {
-    console.log('Starting Proctor');
+    amplitude.getInstance().logEvent("Starting Proctor");
+
     return new Proctor({
         detectionLapse: 60, // detection lapse (seconds)
 
@@ -606,6 +632,7 @@ function startProctor() {
         },
 
         handleOutdatedBrowser: () => {
+            amplitude.getInstance().logEvent("Outdated Broswer");
             alert('Please update your browser to the latest version.');
         },
 
@@ -673,28 +700,29 @@ function startProctor() {
 
         onMicPermissionDenied: () => {
             // console.warn('Proctor (Perms): Microphone needed for this test');
-            blockTest();
+            blockTest("MicPermissionDenied");
         },
 
         onCamPermissionDenied: () => {
             // console.warn('Proctor (Perms): Webcam needed for this test');
-            blockTest();
+            blockTest("CamPermissionDenied");
         },
 
         onCamNotDetected: () => {
             // console.warn('Proctor: This device does not have a webcam');
-            blockTest();
+            blockTest("CamNotDetected");
         },
 
         onMicNotDetected: () => {
             // console.warn('Proctor: This device does not have a microphone');
-            blockTest();
+            blockTest("MicNotDetected");
         },
 
         proctorReady: () => {
-            console.log('proctorReady');
-            // console.log('Proctor is ready.');
+            amplitude.getInstance().logEvent("Proctor Ready");
+
             startTest();
+
             // Make proctor visible for 60s
             proctorCanvas.makeVisible(60000);
         },
@@ -707,13 +735,19 @@ function startProctor() {
 }
 
 function stopProctor() {
+    amplitude.getInstance().logEvent("Stop Proctor");
+
     try {
 		proctorCanvas.remove();
         PROCTOR.stop();
     } catch (err) {
         console.error("Proctor threw an error when attempting to stop...");
         console.error(err);
+        amplitude.getInstance().logEvent("Stop Proctor Error", {
+            error: JSON.stringify(err)
+        });
     } finally {
+
         PROCTOR =  null;
     }
 }
