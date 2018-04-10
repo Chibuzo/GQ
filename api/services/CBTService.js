@@ -30,7 +30,7 @@ module.exports = {
                 async.eachSeries(candidates, function(candidate_id, cb) {
                     // get their BEST aptitude test score
                     GQAptitudeTestResult.find({user: candidate_id}).populate('user').sort('score desc').limit(1).exec(function (err, apt_score) {
-                        try {
+                        if (apt_score.length > 0) {
                             var percentage = ((apt_score[0].score / 60) * 100).toFixed(1);
                             aptitude_test_results.push(apt_score[0].score);
                             gq_results.push({
@@ -48,9 +48,8 @@ module.exports = {
                                 createdAt: apt_score[0].createdAt
                             });
                             cb();
-                        } catch(err) {
-                            cb(err);
-                            return reject(err);
+                        } else {
+                            cb();
                         }
                     });
                 }, function(err) {
