@@ -6,7 +6,7 @@
 
 {% block head %}
   {% parent %}
-  {% set location = "My Resume" %}
+  {% set location = "My Applications" %}
   {% include "../externalApplications/amplified.swig" %}
 {% endblock %}
 
