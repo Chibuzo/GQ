@@ -48,11 +48,11 @@ module.exports = {
     // ATTENTION: This is a destructive function, one must not use it
     deleteApplicant: function(users) {
         return new Promise(function(resolve, reject) {
-            User.destroy({ id: [ users ]}).exec(function(err, deleted_users) {
+            User.destroy({ id: users }).exec(function(err, deleted_users) {
                 deleted_users.forEach(function(user) {
                     if (user.status == 'Active') {
-                        Resume.destroy({user: users}).exec(function (err, resume) {
-                            if (resume[0].status == 'Complete') {
+                        Resume.destroy({user: user.id}).exec(function (err, resume) {
+                            if (resume && resume.length > 0 && resume[0].status == 'Complete') {
                                 JobService.removeApplicantJobs(user.id);
                             }
                         });

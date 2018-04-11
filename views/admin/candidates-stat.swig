@@ -186,9 +186,10 @@ $(document).ready(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
 
-		for ( instance in tinymce.instances ) {
-			tinymce.instances[instance].updateElement();
-		}
+//		for ( instance in tinymce.instances ) {
+//			tinymce.instances[instance].updateElement();
+//		}
+		tinymce.triggerSave();
 
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
 			if (d.status.trim() == 'success') {
@@ -208,8 +209,9 @@ $(document).ready(function() {
 			});
 
 			var filter = {{ filter | json | safe }};
-			$.post('/admin/deleteCandidates', { users: users, filter: filter });
-			location.reload(true);
+			$.post('/admin/deleteCandidates', { users: users, filter: filter }, function() {
+				location.reload(true);
+			});
 		}
 	});
 });
