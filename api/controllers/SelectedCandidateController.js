@@ -10,7 +10,10 @@ module.exports = {
         SelectedCandidate.findOrCreate({
             job_id: req.param('job_id'),
             candidate: req.param('candidate_id')
-        }, {job_id: req.param('job_id'), candidate: req.param('candidate_id')}).exec(function () {
+        }, {
+            job_id: req.param('job_id'),
+            candidate: req.param('candidate_id')
+        }).exec(function () {
             return res.ok();
         });
     },
@@ -21,4 +24,3 @@ module.exports = {
         });
     }
 };
-

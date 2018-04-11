@@ -20,16 +20,18 @@
 					<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
 					<th stle="width: 95%"><i class="fa fa-user"></i> Candidate</th>
 					<th>Email</th>
-					<th>Phone</th>
 				</tr>
 				</thead>
 				<tbody id="tb-selected">
-				{% for sel in selected_candidates %}
-					<tr id="{{ sel.applicant.id }}">
+				{% for candidate in selected_candidates %}
+					<tr id="{{ candidate.id }}">
 						<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-						<td>{{ sel.applicant.fullname }}</td>
-						<td>{{ sel.applicant.email }}</td>
-						<td>{{ sel.applicant.phone }}</td>
+						<td>
+                            <a target="_blank" href="/applicant/resume-user/{{candidate.id}}" class="view-resume" rel="tooltip" title="" data-original-title="View Resume">
+                                {{ candidate.fullname }}
+                            </a>
+                        </td>
+						<td>{{ candidate.email }}</td>
 						<td><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
 					</tr>
 				{% endfor %}

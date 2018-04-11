@@ -54,8 +54,14 @@ module.exports = {
                 company: coy_id,
                 status: 'Active'
             }).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
-                if (err) return;
-                var _jobs = [], today = new Date();
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                var _jobs = [];
+                var today = new Date();
+
                 async.eachSeries(jobs, function (job, cb) {
                     JobTest.count({
                         job_level: job.job_level,
@@ -63,14 +69,14 @@ module.exports = {
                     }).exec(function (err, assessed) {
                         job.assessed = assessed;
 
-                        if (Date.parse(job.closing_date) >= Date.parse(today)) {
+                        if (Date.parse(job.closing_date) <= Date.parse(today)) {
                             SelectedCandidate.count({job_id: job.id}).populate('candidate').exec(function (err, selected_candidates) {
                                 job.shortlisted = selected_candidates;
                                 _jobs.push(job);
                                 cb();
                             });
                         } else {
-                            job.shortlisted = '-';
+                            job.shortlisted = false;
                             _jobs.push(job);
                             cb();
                         }
@@ -86,10 +92,16 @@ module.exports = {
     fetchShortlistedCandidates: function(job_id, coy_id) {
         return new Promise(function(resolve, reject) {
             // Companies can only view shortlist for their jobs
-            Job.find({ id: job_id, company: coy_id }).exec(function(err, job) {
-                if (job.length > 0) {
+            Job.find({ id: job_id, company: coy_id }).exec(function(err, jobArr) {
+                if (err) {
+                    return reject(err);
+                }
+
+                if (jobArr.length > 0) {
                     SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
-                        return resolve(selected_candidates);
+                        return resolve(selected_candidates.map(function(selected_candidate) {
+                            return selected_candidate.candidate;
+                        }));
                     });
                 }
             });
