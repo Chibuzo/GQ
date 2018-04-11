@@ -152,7 +152,7 @@
                 <li class="candidate-filter">
                     <a href="/admin/candidates/all">
                         <i class="pe-7s-users"></i>
-                        <p>Candidate Filter</p>
+                        <p>All Candidates</p>
                     </a>
                 </li>
 
