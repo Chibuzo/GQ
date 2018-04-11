@@ -6,7 +6,7 @@ $("#form-profile").submit(function(e) {
         showNotification('bottom', 'center', 'danger', "Password doesn't match", 'pe-7s-bell');
         return false;
     }
-    if ($("#current_password") !== undefined && $("#current_password").val().length < 6) {
+    if ($("#current_password").length !== 0 && $("#current_password").val().length < 6) {
         showNotification('bottom', 'center', 'danger', "Enter your current password to continue", 'pe-7s-bell');
         return false;
     }

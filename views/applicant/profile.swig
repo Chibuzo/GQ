@@ -26,7 +26,7 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12" style="padding: 40px">
-                                    {% if first_time == 'true' %}
+                                    {% if !passwordSet  %}
                                         <div class="alert alert-warning">NOTICE: Remember to set a password for this account before you leave this page.</div>
                                     {% endif %}
                                     <form action="/user/update" method="post" id="form-profile">

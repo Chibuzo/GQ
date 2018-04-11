@@ -93,7 +93,7 @@
                 {{ req.session.fname }}
             </div>
 
-            {% if user.password.length < 30 %}
+            {% if !profilePage || passwordSet %}
                 <ul class="nav">
                     <li class="dashboard">
                         <a href="/applicant/dashboard">
@@ -148,7 +148,7 @@
                             </a>
                         </li>
                     </ul>-->
-                    {% if user.password.length < 30 %}
+                    {% if !profilePage || passwordSet %}
                         <ul class="nav navbar-nav navbar-right">
                             <li>
                                 <a href="/jobs">Jobs</a>
