@@ -49,6 +49,10 @@ module.exports = {
 	viewJobs: function(req, res) {
         JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
             return res.view('company/manage-jobs', { jobs: jobs });
+        })
+        .catch(function(err) {
+            console.error(err);
+            return res.serverError(err);
         });
     },
 
@@ -308,13 +312,15 @@ module.exports = {
         }
     },
 
-
     fetchShortlisted: function(req, res) {
-        JobService.fetchShortlistedCandidates(req.param('job_id'), session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { list: slist });
+        JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
+            return res.view('company/shortlist', { selected_candidates: slist });
+        })
+        .catch(function(error) {
+            console.error(error);
+            return res.serverError(error);
         });
     },
-
 
     // fetches all candidates that applied for the job
     // fetches the test results
@@ -338,6 +344,7 @@ module.exports = {
             if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
                 return res.view('company/applicants-view.swig', { job_active: true });
             }
+
             JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
                 // find those who applied for this job
                 Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
@@ -380,7 +387,6 @@ module.exports = {
             });
         });
     },
-
 
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');

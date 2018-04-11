@@ -349,8 +349,9 @@ module.exports = {
 
 
     deleteApplicants: function(req, res) {
-        var users = req.param['users'].join();
+        var users = req.param('users');
         ApplicantService.deleteApplicant(users);
+        return res.ok();
     }
 
 };

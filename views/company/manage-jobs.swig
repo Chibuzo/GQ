@@ -69,9 +69,13 @@
 								<td class="hidden">{{ job.category.category }}</td>
 								<td>{{ job.job_level }}</td>
 								<td>{{ job.contract_type }}</td>
-								<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+								<td class="text-center">{{ applications }}</td>
 								<td class="text-center">{{ job.assessed }}</td>
-								<td class="text-center"><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
+                                {% if job.shortlisted == false %}
+                                    <td class="text-center"> - </td>
+                                {% else %}
+                                    <td class="text-center"><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
+                                {% endif %}
 								<td>{{ job.poster.fullname }}</td>
 								<td>{{ job.closing_date | date('d-m-Y') }}</td>
 								<td class="opt-icons text-center">
