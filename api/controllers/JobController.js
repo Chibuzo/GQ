@@ -349,12 +349,16 @@ module.exports = {
 					// fetch candidate ids for use in finding/computing their test result
 					let candidatesIds = [];
 					applications.forEach(function (application) {
-						candidatesIds.push(application.applicant.id);
+						if (application.applicant) {
+							candidatesIds.push(application.applicant.id)
+						}
 					});
 
 					let shortlistedIds = [];
 					selected_candidates.forEach(function (shortlisted) {
-						shortlistedIds.push(shortlisted.candidate.id);
+						if (shortlisted.candidate) {
+							shortlistedIds.push(shortlisted.candidate.id);
+						}
 					});
 
 
