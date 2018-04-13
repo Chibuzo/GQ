@@ -333,7 +333,7 @@ module.exports = {
 			return res.badRequest();
 		}
 
-		return Job.findOne({ id: job_id, status: 'Active' })
+		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
 			.then(job => {
 
 				return Promise.all([
@@ -367,6 +367,8 @@ module.exports = {
 						let shortlistedCandidates = jobTestResults[1];
 
 						return res.view('admin/applicants-view.swig', {
+							jobTitle: job.job_title,
+							companyName: job.company.company_name,
 							results: allCandidates,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id

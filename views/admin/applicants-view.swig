@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Candidates' %}
 {% block page_title %}
-    <i class="pe-7s-timer"></i> Candidates' Results
+    <i class="pe-7s-timer"></i> Job Candidates
 {% endblock %}
 
 {% block body %}
@@ -23,8 +23,8 @@
         <div class="card">
             <div class="header row">
                 <div class="col-md-6">
-                    <h4 class="title">Test Results</h4>
-                    <p class="category">Candidates that took the test</p>
+                    <h4 class="title">{{ companyName }}</h4>
+                    <p class="category">{{ jobTitle }}</p>
                 </div>
             </div>
             <div class="content">
