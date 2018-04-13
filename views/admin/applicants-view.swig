@@ -90,7 +90,7 @@
 												{% else %}
 													<td class="text-center">N/A</td>
 												{% endif %}
-												<td class="text-center">{{ result.aptitude_test }}</td>
+												<td class="text-center">{{ result.percentage }}%</td>
 												{#<td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ result.proctor_id }}">{{ result.integrity_score }}</a></td>#}
 												<td class="text-center"> {{ result.integrity_score }} %</td>
 												<td class="text-center">{{ result.proctor_status }}</td>
