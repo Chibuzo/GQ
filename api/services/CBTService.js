@@ -29,29 +29,61 @@ module.exports = {
                 var aptitude_test_results = []; // for computing aptitude test ranking
                 async.eachSeries(candidates, function(candidate_id, cb) {
                     // get their BEST aptitude test score
-                    GQAptitudeTestResult.find({user: candidate_id}).populate('user').sort('score desc').limit(1).exec(function (err, apt_score) {
-                        if (apt_score.length > 0) {
-                            var percentage = ((apt_score[0].score / 60) * 100).toFixed(1);
-                            aptitude_test_results.push(apt_score[0].score);
+
+					Promise.all([
+						GQAptitudeTestResult.find({user: candidate_id}).populate('user').sort('score desc').limit(1),
+						GQTestResult.find({test: [1, 2, 3], candidate: candidate_id}).populate('proctor')
+					]).then(results => {
+						let apt_score = results[0];
+						let gqTestResults = results[1];
+
+						let proctorSessions = gqTestResults.map(gqTestResult => {
+							return gqTestResult.proctor;
+						});
+
+						let integrityScoreSum = _.sum(gqTestResults, (gqTestResult) => {
+							return gqTestResult.proctor.integrity_score;
+						});
+
+						let integrityScore = (integrityScoreSum / 3).toFixed(1)
+
+						let integrityStatuses = _.map(gqTestResults, (gqTestResult) => {
+							return gqTestResult.proctor.status;
+						});
+
+						let proctorStatus = 'Pending';
+
+						if (integrityStatuses.includes('Accepted')) {
+							proctorStatus = 'Accepted'
+						} else if (integrityStatuses.includes('Rejected')) {
+							proctorStatus = 'Rejected'
+						}
+
+						if (apt_score.length > 0) {
+							let aptScore = apt_score[0];
+
+                            let percentage = ((aptScore.score / 60) * 100).toFixed(1);
+                            aptitude_test_results.push(aptScore.score);
+
                             gq_results.push({
-                                test_id: apt_score[0].id,
-                                applicant: apt_score[0].user,
-                                score: 'NA',
-                                percentage: 'NA',
-                                percentile: '-',
+                                test_id: aptScore.id,
+                                applicant: aptScore.user,
+                                score: aptScore.score,
+                                percentage: percentage,
                                 test_result: percentage > 59 ? 'Passed' : 'Failed',
                                 composite_score: 'NA',
-                                //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                                //integrity_score: result.proctor.integrity_score,
-                                //proctor_status: result.proctor.status,
+								job_score: false,
+                                aptitude_test: aptScore.score,
+                                integrity_score: integrityScore,
+                                proctor_status: proctorStatus,
                                 proctor_id: 0,
-                                createdAt: apt_score[0].createdAt
+                                createdAt: aptScore.createdAt
                             });
                             cb();
                         } else {
                             cb();
                         }
-                    });
+					})
                 }, function(err) {
                     if (err) return reject(err);
                     gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b; });

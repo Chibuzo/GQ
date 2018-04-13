@@ -322,6 +322,68 @@ module.exports = {
         });
     },
 
+	viewApplicantsforAdmin: function(req, res) {
+		if (req.session.user_type !== 'admin') {
+			return res.forbidden();
+		}
+
+		const job_id =  req.param('job_id');
+
+		if (!job_id) {
+			return res.badRequest();
+		}
+
+		return Job.findOne({ id: job_id, status: 'Active' })
+			.then(job => {
+
+				return Promise.all([
+					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
+					Application.find({ job: job_id }).populate('applicant'),
+					SelectedCandidate.find({job_id: job_id}).populate('candidate')
+				]).then(results => {
+
+					let jobTest = results[0];
+					let applications = results[1];
+					let selected_candidates = results[2];
+
+					// fetch candidate ids for use in finding/computing their test result
+					let candidatesIds = [];
+					applications.forEach(function (application) {
+						candidatesIds.push(application.applicant.id);
+					});
+
+					let shortlistedIds = [];
+					selected_candidates.forEach(function (shortlisted) {
+						shortlistedIds.push(shortlisted.candidate.id);
+					});
+
+
+					return Promise.all([
+						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
+						CBTService.getJobTestResults(shortlistedIds, jobTest)
+					]).then(jobTestResults => {
+
+						let allCandidates = jobTestResults[0];
+						let shortlistedCandidates = jobTestResults[1];
+
+						return res.view('admin/applicants-view.swig', {
+							results: allCandidates,
+							selected_candidates: shortlistedCandidates,
+							job_id: job_id
+						});
+					}).catch(err => {
+						return res.serverError(err);
+					})
+				})
+				.catch(err => {
+					return res.serverError(err);
+				});
+			})
+			.catch(err => {
+				return res.serverError(err);
+			});
+	},
+
     // fetches all candidates that applied for the job
     // fetches the test results
     // fetches shortlisted candidates

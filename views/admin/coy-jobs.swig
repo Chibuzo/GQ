@@ -43,7 +43,7 @@
 							<td>{{ job.job_title }}</td>
 							<td>{{ job.job_level }}</td>
 							<td>{{ job.contract_type }}</td>
-							<td class="text-center"><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+							<td class="text-center"><a href="/job/admin/view-applicants/{{ job.id }}">{{ applications }}</a></td>
 							<td>{{ job.poster.fullname }}</td>
 							<td>{{ job.closing_date | date('d M, Y') }}</td>
 							<td class="opt-icons text-center">
