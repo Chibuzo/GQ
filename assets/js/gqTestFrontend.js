@@ -295,7 +295,6 @@ function sendAnswers(proctorFeedback) {
 
                 $("#total").find('td:nth-child(2)').text(d.result.score);
                 $("#total").find('td:nth-child(3)').text(d.result.percentage + '%');
-                $("#total").find('td:nth-child(4)').text(d.result.rank);
 
                 $("#test-div").fadeOut('fast', function() {
                     $(".test-title").text("General Aptitude Test Result");
