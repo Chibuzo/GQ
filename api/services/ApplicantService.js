@@ -10,16 +10,6 @@ module.exports = {
 
 				let checklist = [];
 
-				// Profile Picture
-				checklist.push({
-					title: 'Upload Profile Photo',
-					text: 'Companies are much more likely to hire applicants with a quality profile picture.',
-					iconClass: userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-user-circle',
-					action: '/applicant/resume-page#photo',
-					completed: userResume.photo_status == true,
-					disbaledClass: ""
-				});
-
 				// Resume/CV
 				checklist.push({
 					title: 'Fill Out Resume/CV',
@@ -27,6 +17,16 @@ module.exports = {
 					iconClass: userResume.profile_status == true ? 'fa fa-check-circle': 'fa fa-certificate',
 					action: '/applicant/resume-page#resume-tab',
 					completed: userResume.profile_status == true,
+					disbaledClass: ""
+				});
+
+				// Profile Picture
+				checklist.push({
+					title: 'Upload Profile Photo',
+					text: 'Companies are much more likely to hire applicants with a quality profile picture.',
+					iconClass: userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-user-circle',
+					action: '/applicant/resume-page#photo',
+					completed: userResume.photo_status == true,
 					disbaledClass: ""
 				});
 
@@ -45,7 +45,7 @@ module.exports = {
 
 				// Video Profile
 				checklist.push({
-					title: 'Upload Introduction Profile',
+					title: 'Upload Introduction Video',
 					text: 'A video profile gives companies the ability to assess your professional presentation and demeanor.',
 					iconClass: userResume.video_status == true ? 'fa fa-check-circle': 'fa fa-file-video-o',
 					action: '/applicant/resume-page#video',
