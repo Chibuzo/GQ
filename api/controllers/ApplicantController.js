@@ -10,43 +10,17 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
         const userEmail = req.session.userEmail;
 
-        // find GQ Test results
-        GQTestResult.find({candidate: req.session.userId}).populate('test').exec(function (err, test_result) {
-            //if (err) console.log(err)
-            var gq_results = [];
-            async.eachSeries(test_result, function(test, cb) {
-                GQTestService.prepareCandidateResult(test.test.id, test.score, test.no_of_questions).then(function(result) {
-                    result.test_title = test.test.test_name;
-                    gq_results.push(result);
-                    cb();
-                }).catch(function(err) {
-                    console.log('Catch:' + err);
-                    cb(err);
-                })
-            },
-            function() {
-                // check for expertrating test result
-                TestResult.find({ applicant: req.session.userId }).populate('applicant').exec(function(err, results) {
-                    var xpr_results = [];
-                    if (results.length > 0) {
-                        //results.forEach(function(result) {
-                        async.eachSeries(results, function(result, cb) {
-                            CBTTest.find({ test_id: result.test_id }).populate('category').exec(function(err, test) {
-                                if (test.length < 1) return cb();
-                                result.test_title = test[0].test_name;
-                                xpr_results.push(result);
-                                cb();
-                            });
-                        },
-                        function() {
-                            return res.view('applicant/dashboard', {xpr_results: xpr_results, gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude});
-                        });
-                    } else {
-                        return res.view('applicant/dashboard', { gq_results: gq_results, userEmail: userEmail, enableAmplitude: enableAmplitude });
-                    }
-                });
-            });
-        });
+		return ApplicantService.getChecklistData(req.session.userId)
+			.then(userChecklist => {
+				return res.view('applicant/dashboard', {
+					userChecklist: userChecklist,
+					enableAmplitude: enableAmplitude,
+					userEmail: userEmail
+				});
+			}).catch(err => {
+				console.error(err);
+				return res.serverError();
+			});
     },
 
     videoPage: function(req, res) {

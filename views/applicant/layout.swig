@@ -22,7 +22,7 @@
     <link href="/styles/light-bootstrap-dashboard.css" rel="stylesheet"/>
 
     <!--     Fonts and icons     -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
@@ -102,18 +102,17 @@
                         </a>
                     </li>
 
-                    <li class="jobs">
-                        <a href="/applicant/view-applications">
-                            <i class="pe-7s-timer"></i>
-                            <p>Manage Applications</p>
+					<li class="resume">
+                        <a href="/applicant/resume-page">
+                            <i class="pe-7s-id"></i>
+                            <p>My Profile</p>
                         </a>
                     </li>
 
-
-                    <li class="resume">
-                        <a href="/applicant/resume-page">
-                            <i class="pe-7s-id"></i>
-                            <p>My Resume</p>
+                    <li class="jobs">
+                        <a href="/applicant/view-applications">
+                            <i class="pe-7s-timer"></i>
+                            <p>Job Applications</p>
                         </a>
                     </li>
 
@@ -202,8 +201,6 @@
 </body>
 
 <!--   Core JS Files   -->
-{#<script src="/js/jquery-1.10.2.js" type="text/javascript"></script>#}
-<script src="/js/jquery-3.min.js" type="text/javascript"></script>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
