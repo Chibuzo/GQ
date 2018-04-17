@@ -54,13 +54,13 @@ module.exports = {
 				});
 
 				// Apply to a job
-				let disableJob = !userResume.video_status || !userResume.test_status || userResume.profile_status;
+				let disableJob = !userResume.video_status || !userResume.test_status || !userResume.profile_status;
 				checklist.push({
 					title: 'Apply to a Job',
 					text: applications.length < 1 && disableJob ? 'Please complete your GQ Profile before applying to a job' :
 						'Look through our job postings and apply.',
 					iconClass: applications.length > 0 ? 'fa fa-check-circle': 'fa fa-briefcase',
-					action: disableJob ? "" : '/jobs',
+					action: applications.length < 1 && disableJob ? "" : '/jobs',
 					completed: applications.length > 0,
 					disbaledClass: applications.length < 1 && disableJob ? "disabled" : ""
 				});
