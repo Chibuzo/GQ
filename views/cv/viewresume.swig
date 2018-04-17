@@ -72,7 +72,6 @@
 													<th></th>
 													<th>Score</th>
 													<th>Percentage</th>
-													<th>Rank</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -80,25 +79,21 @@
 													<td>General Ability</td>
 													<td>{{ result.general_ability }}</td>
 													<td>{{ result.general_percentage }}%</td>
-													<td>-</td>
 												</tr>
 												<tr id="verbal">
 													<td>Verbal Reasoning</td>
 													<td>{{ result.verbal }}</td>
 													<td>{{ result.verbal_percentage }}%</td>
-													<td>-</td>
 												</tr>
 												<tr id="maths">
 													<td>Numerical Reasoning</td>
 													<td>{{ result.maths }}</td>
 													<td>{{ result.maths_percentage }}%</td>
-													<td></td>
 												</tr>
 												<tr id="total">
 													<td>Total Score</td>
 													<td>{{ result.score }}/60</td>
 													<td>{{ result.percentage }}%</td>
-													<td>{{ result.rank }}</td>
 												</tr>
 											</tbody>
 										</table>
