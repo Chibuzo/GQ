@@ -260,7 +260,7 @@
 		</fieldset>
 
 		<fieldset id="qualifications">
-			<legend>Qualification</legend>
+			<legend>Professional Certifications</legend>
 			<div class="form-group">
 				{% for qual in resume.qualifications %}
 					<div class="row qual-row">

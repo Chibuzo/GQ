@@ -107,6 +107,25 @@
         margin-bottom: 5px;
     }
 
+	.loader-text {
+		text-align: center;
+	}
+
+	.loader {
+		margin: auto;
+	    border: 16px solid #f3f3f3; /* Light grey */
+	    border-top: 16px solid #3498db; /* Blue */
+	    border-radius: 50%;
+	    width: 120px;
+	    height: 120px;
+	    animation: spin 2s linear infinite;
+	}
+
+	@keyframes spin {
+	    0% { transform: rotate(0deg); }
+	    100% { transform: rotate(360deg); }
+	}
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
@@ -169,13 +188,21 @@
 
 					<div class="content">
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
-							<li><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
-							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
-							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
+							<li id="resume-tab-header"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
+							<li id="photo-tab-header"><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
+							<li id="test-tab-header"><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
+							<li id="video-tab-header"><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-						  	<div class="tab-pane fade active in" id="resume-tab">
+							<div class="row loader-container-row">
+								<div class="col-xs-2 col-xs-offset-5">
+									<p class="loader-text">Loading...</p>
+									<div class="loader">
+									</div>
+								</div>
+							</div>
+
+						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
 										{% include 'includes/resume.swig' %}
@@ -207,7 +234,6 @@
 														<th></th>
 														<th>Score</th>
 														<th>Percentage</th>
-														<th>Rank</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -215,25 +241,21 @@
 														<td>General Ability</td>
 														<td>{{ result.general_ability }}</td>
 														<td>{{ result.general_percentage }}%</td>
-														<td>-</td>
 													</tr>
 													<tr id="verbal">
 														<td>Verbal Reasoning</td>
 														<td>{{ result.verbal }}</td>
 														<td>{{ result.verbal_percentage }}%</td>
-														<td>-</td>
 													</tr>
 													<tr id="maths">
 														<td>Numerical Reasoning</td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
-														<td></td>
 													</tr>
 													<tr id="total">
 														<td>Total Score</td>
 														<td>{{ result.score }}/60</td>
 														<td>{{ result.percentage }}%</td>
-														<td>{{ result.rank }}</td>
 													</tr>
 												</tbody>
 											</table>
@@ -510,8 +532,36 @@
 	</div>
 {% endblock %}
 
-
 {% block scriptTag %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".resume").addClass('active');
+
+		var urlHash = location.hash;
+
+		$(".loader-container-row").hide();
+
+		if (urlHash == "" || urlHash == "#resume-tab") {
+			$("#resume-tab-header").addClass('active');
+			$("#resume-tab").addClass('active');
+		} else if(urlHash == "#photo") {
+			$("#photo-tab-header").addClass('active');
+			$("#photo").addClass('active');
+		} else if(urlHash == "#test") {
+			$("#test-tab-header").addClass('active');
+			$("#test").addClass('active');
+		} else if(urlHash == "#video") {
+			$("#video-tab-header").addClass('active');
+			$("#video").addClass('active');
+		} else {
+			$("#resume-tab-header").addClass('active');
+			$("#resume-tab").addClass('active');
+		}
+	});
+</script>
+
+
 	<script type="text/javascript" src="/js/profile-photo.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
@@ -534,13 +584,9 @@
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$(".resume").addClass('active');
-
-			//$.getScript('/js/proctor/tracking-min.js');
-
-
 			$("select[name=country]").find('option').filter(function(i) {
 				return 'Nigeria' == $(this).val();
 			}).attr("selected", "selected");

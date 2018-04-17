@@ -71,9 +71,6 @@ $("#start-test").click(function() {
     // register proctor session
     createProctorSession();
 
-    // make sure proctor canvas is showing
-	proctorCanvas.mount();
-
     // start test proctoring
     PROCTOR = startProctor();
 });
@@ -458,6 +455,7 @@ function addNoticfication(msg, opts) {
         $(".test-overlay").fadeIn('fast');
     }
 
+	clearInterval(notificationTimer);
     if (opts.timer) {
         clearInterval(notificationTimer);
         notificationTimer = setTimeout(function() {
@@ -485,25 +483,36 @@ function addWindowsCloseEvent() {
     window.addEventListener("beforeunload", submitTest);
 }
 
+var wentOffline = false;
 window.addEventListener('online', () => {
     // TODO: this is going to create another proctor session
-    PROCTOR = startProctor();
+	if (GQTestStatus.isInProgress()) {
+		PROCTOR = startProctor();
 
-    removeNotification();
+	    removeNotification();
 
-    resumeCountdownTimer();
-    GQTestStatus.startProgress();
+	    resumeCountdownTimer();
+	}
+    if (wentOffline) {
+		wentOffline = false;
+		amplitude.getInstance().logEvent("Lost WiFi Connection");
+	}
+
     amplitude.getInstance().logEvent("Gained WiFi Connection");
 });
 
 window.addEventListener('offline', () => {
-    pauseCountdownTimer();
+	wentOffline = true;
+	if (GQTestStatus.isInProgress()) {
+		pauseCountdownTimer();
 
-    addNoticfication("You are currently disconnected from the internet. You need to be connected on the internet to continue this test", {
-        overlay: true
-    });
+	    addNoticfication("You are currently disconnected from the internet. You need to be connected on the internet to continue this test", {
+	        overlay: true
+	    });
 
-    stopProctor();
+	    stopProctor();
+	}
+
 });
 
 // ------- END WINDOW EVENT HANDLERS ------ //
@@ -603,6 +612,9 @@ var updateIntegrityBar = function(integrityScore) {
 
 function startProctor() {
     amplitude.getInstance().logEvent("Starting Proctor");
+
+	// make sure proctor canvas is showing
+	proctorCanvas.mount();
 
     return new Proctor({
         detectionLapse: 60, // detection lapse (seconds)

@@ -48,7 +48,7 @@
 				<br>
 			{% endfor %}
 
-			<h4><strong>Qualifications</strong></h4><hr>
+			<h4><strong>Professional Certifications</strong></h4><hr>
 			{% for qual in resume.qualifications %}
 				<div class="row">
 					<div class="col-md-8">{{ qual.qualification }}</div>
