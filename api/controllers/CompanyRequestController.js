@@ -22,9 +22,12 @@ module.exports = {
     },
 
     viewPendingRequests: function(req, res) {
-        CompanyRequest.find({ status: 'Pending' }).exec(function(err, reqs) {
-            if (err) return console.log(err);
+        return CompanyRequest.find({ status: 'Pending' })
+        .then(reqs => {
             return res.view('admin/coy-requests', { requests: reqs });
+        })
+        .catch(err => {
+            return res.serverError(err);
         });
     },
 

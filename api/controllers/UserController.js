@@ -205,26 +205,32 @@ module.exports = {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
-        User.findOne(req.session.userId, function(err, _user) {
-            if (err) return res.negotiate(err);
+        return Promise.all([
+            User.findOne(req.session.userId),
+            Resume.findOne({ user: req.session.userId })
+        ]).then(results => {
+            let user = results[0];
+            let resume = results[1];
+
             var me = {
-                fname: _user.fullname.split(' ')[0],
-                lname: _user.fullname.split(' ')[1]
+                fname: user.fullname.split(' ')[0],
+                lname: user.fullname.split(' ')[1]
             };
 
-            const passwordSet = _user.password ? _user.password.length > 1 : false;
+            const passwordSet = user.password ? user.password.length > 1 : false;
 
-            Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                return res.view('applicant/profile', {
-                    user: _user,
-                    me: me,
-                    passport: resume[0].photo,
-                    userEmail: userEmail,
-                    enableAmplitude: enableAmplitude,
-                    profilePage: true,
-                    passwordSet: passwordSet
-                });
+            return res.view('applicant/profile', {
+                user: user,
+                me: me,
+                passport: resume.photo,
+                userEmail: userEmail,
+                enableAmplitude: enableAmplitude,
+                profilePage: true,
+                passwordSet: passwordSet
             });
+
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 

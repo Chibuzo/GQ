@@ -95,24 +95,7 @@ module.exports = {
         if (!req.session.admin_id) {
             return res.view('admin/login');
         }
-        //Admin.findOne(req.session.admin_id, function(err, user) {
-        //    if (err) {
-        //        return res.negotiate(err);
-        //    }
-        //    Order.find().populate('user').sort({ createdAt: 'desc'}).limit(10).exec(function(err, orders) {
-        //        if (err) return console.log(err);
-        //        Payment.find().populate('user').sort({ createdAt: 'desc'}).limit(10).exec(function(err, payments) {
-        //            if (err) return console.log(err);
-        //            return res.view('admin/dashboard', {
-        //                me: {
-        //                    id: user.id,
-        //                    fname: user.fullname,
-        //                    email: user.email,
-        //                }, orders: orders, payments: payments
-        //            });
-        //        });
-        //    });
-        //});
+
         return res.view('admin/dashboard');
     },
 
@@ -154,21 +137,17 @@ module.exports = {
     },
 
     setup: function(req, res) {
-        JobCategory.find({ removed: 'false' }).exec(function(err, cat) {
-            if (err) {
-                return res.badRequest(err);
-            }
-            Sector.find({ removed: 'false' }).sort('title asc').exec(function(err, sectors) {
-                if (err) {
-                    return res.badRequest(err);
-                }
-                return res.view('admin/settings', { categories: cat, sectors: sectors });
-            });
+        return Promise.all([
+            JobCategory.find({ removed: 'false' }),
+            Sector.find({ removed: 'false' }).sort('title asc')
+        ]).then(results => {
+            let cat = results[0];
+            let sectors = results[1];
+
+            return res.view('admin/settings', { categories: cat, sectors: sectors });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
-
-    //showLogin: function(req, res) {
-    //    return res.view('admin/login');
-    //}
 };
 
