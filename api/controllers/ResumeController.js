@@ -451,23 +451,29 @@ module.exports = {
         } else if (req.session.user_type == 'admin') {
             folder = 'admin';
         }
-        Resume.find({ user: req.param('user_id') }).exec(function(err, resume) {
-            ResumeService.viewResume(resume[0].id).then(function(response) {
-                var me = {
-                    fname: response.resume.user.fullname.split(' ')[0],
-                    lname: response.resume.user.fullname.split(' ')[1]
-                };
-                return res.view(folder + '/gqprofileview', {
-                    resume: response.resume,
-                    me: me,
-                    result: response.result ? response.result : null,
-                    test_title: response.test_title ? response.test_title : null,
-                    folder: folder,
-                    showContactInfo: folder === 'admin' ? true : false
+
+        return Resume.find({ user: req.param('user_id') })
+            .then(resume => {
+                ResumeService.viewResume(resume[0].id).then(function(response) {
+                    var me = {
+                        fname: response.resume.user.fullname.split(' ')[0],
+                        lname: response.resume.user.fullname.split(' ')[1]
+                    };
+                    return res.view(folder + '/gqprofileview', {
+                        resume: response.resume,
+                        me: me,
+                        result: response.result ? response.result : null,
+                        test_title: response.test_title ? response.test_title : null,
+                        folder: folder,
+                        showContactInfo: folder === 'admin' ? true : false
+                    });
+                }).catch(function(err) {
+                    return res.serverError(err);
                 });
-            }).catch(function(err) {
-                console.log(err);
-            });
-        });
+
+            })
+            .catch(err => {
+                return res.serverError(err);
+            })
     }
 };

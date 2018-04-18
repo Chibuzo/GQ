@@ -57,54 +57,69 @@ module.exports = {
     },
 
     saveJob: function (req, res) {
-        var q = req.param;
-        var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
-        if (publish) publish_date = new Date().toISOString();
-        var data = {
-            job_title: q('title'),
-            job_description: q('description'),
-            job_requirements: q('requirements'),
-            qualifications: q('qualifications'),
-            job_level: q('job_level'),
-            contract_type: q('contract_type'),
-            category: q('category'),
-            country: q('country'),
-            location: q('location'),
-            nice_to_have: q('nice_to_have'),
-            salary_currency: q('currency'),
-            min_salary_budget: q('min_salary_budget') ? q('min_salary_budget') : 0.0,
-            max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
-            published: publish,
-            date_published: publish_date,
-            closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
-        };
+        try {
+            var q = req.param;
+            var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
+            if (publish) publish_date = new Date().toISOString();
 
+            var data = {
+                job_title: q('title'),
+                job_description: q('description'),
+                job_requirements: q('requirements'),
+                qualifications: q('qualifications'),
+                job_level: q('job_level'),
+                contract_type: q('contract_type'),
+                category: q('category'),
+                country: q('country'),
+                location: q('location'),
+                nice_to_have: q('nice_to_have'),
+                salary_currency: q('currency'),
+                min_salary_budget: q('min_salary_budget') ? q('min_salary_budget') : 0.0,
+                max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
+                published: publish,
+                date_published: publish_date,
+                closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
+            };
+        } catch(err) {
+            return res.serverError(err);
+        }
+        
         if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
-            Job.update({ id: q('job_id') }, data).exec(function(err, job) {
-                if (err) console.log(err);
-                if (req.session.admin) {
-                    return res.redirect('/admin/coy-jobs/' + job[0].company);
-                } else {
-                    return res.redirect('/job/manage');
-                }
-            });
+            return Job.update({ id: q('job_id') }, data)
+                .then(job => {
+                    if (req.session.admin) {
+                        return res.redirect('/admin/coy-jobs/' + job[0].company);
+                    } else {
+                        return res.redirect('/job/manage');
+                    }
+                }).catch(err => {
+                    return res.serverError(err);
+                })
         } else {
             data.poster = req.session.userId,
             data.company = req.session.coy_id ? req.session.coy_id : q('coy_id');
-            Job.create(data).exec(function (err, job) {
-                if (err) return console.log(err);
-                User.find({ id: req.session.userId }).populate('company').exec(function(err, user) {
-                    sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
-                    if (req.session.coy_id) {
-                        sendMail.GQnewJobAlert(user[0].company.company_name);
-                    }
-                });
-                if (req.session.admin) {
-                    return res.redirect('/admin/coy-jobs/' + job.company);
-                } else {
-                    return res.redirect('/job/manage');
-                }
-            });
+            return Job.create(data)
+                .then(job => {
+                    return User.find({ id: req.session.userId }).populate('company')
+                        .then(user => {
+                            sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
+                            if (req.session.coy_id) {
+                                sendMail.GQnewJobAlert(user[0].company.company_name);
+                            }
+
+                            if (req.session.admin) {
+                                return res.redirect('/admin/coy-jobs/' + job.company);
+                            } else {
+                                return res.redirect('/job/manage');
+                            }
+                        })
+                        .catch(err => {
+                            return res.serverError(err);
+                        })
+                })
+                .catch(err => {
+                    return res.serverError(err);
+                })
         }
     },
 

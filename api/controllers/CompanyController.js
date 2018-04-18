@@ -287,28 +287,33 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-        Company.find({ status: 'Active' }).exec(function(err, coys) {
-            var companies = [];
-            async.eachSeries(coys, function(coy, cb) {
-                Job.find({company: coy.id}).exec(function (err, jobs) {
-                    coy.jobs = jobs.length < 1 ? 0 : jobs.length
-                    companies.push(coy);
-                    cb();
+        return  Company.find({ status: 'Active' })
+            .then(coys => {
+                var companies = [];
+                async.eachSeries(coys, function(coy, cb) {
+                    Job.find({company: coy.id}).exec(function (err, jobs) {
+                        coy.jobs = jobs.length < 1 ? 0 : jobs.length
+                        companies.push(coy);
+                        cb();
+                    });
+                }, function(err) {
+                    return res.view('admin/list-companies', { companies: coys });
                 });
-            }, function(err) {
-                return res.view('admin/list-companies', { companies: coys });
-            });
-        });
+            })
     },
 
 
     // admin view
     viewCompanyJobs: function(req, res) {
         var coy_id = req.param('coy_id');
-        Job.find({ company: coy_id }).populate('applications').populate('poster').exec(function(err, jobs) {
-            if (err) return;
-            return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
-        });
+
+        return Job.find({ company: coy_id }).populate('applications').populate('poster')
+            .then(jobs => {
+                return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
+            })
+            .catch(err => {
+                return res.serverError(err);
+            });    
     }
 };
 
