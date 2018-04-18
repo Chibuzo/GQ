@@ -18,8 +18,7 @@ module.exports = {
 					userEmail: userEmail
 				});
 			}).catch(err => {
-				console.error(err);
-				return res.serverError();
+				return res.serverError(err);
 			});
     },
 

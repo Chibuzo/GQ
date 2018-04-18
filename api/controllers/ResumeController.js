@@ -49,7 +49,7 @@ function updateResumeQualifications(q, resumeId) {
         };
     });
 
-    Qualification.find({resume: resumeId})
+    return Qualification.find({resume: resumeId})
     .then(function(qualificationsArr) {
         let currentQualificationsIDs = _.map(qualificationsArr, function(qualificationObject) {
             return qualificationObject.id
@@ -87,10 +87,7 @@ function updateResumeQualifications(q, resumeId) {
                 console.error(err);
             });
         }
-    }).catch(function(error) {
-        console.error(error);
-    });
-
+    })
 }
 
 function updateResumeEducation(q, resumeId) {
@@ -124,7 +121,7 @@ function updateResumeEducation(q, resumeId) {
         };
     });
 
-    Education.find({resume: resumeId}).then(function(institutionsArr) {
+    return Education.find({resume: resumeId}).then(function(institutionsArr) {
 
         let currentInstitutionsObject = _.map(institutionsArr, function(institutionsObject) {
             return institutionsObject.id
@@ -160,9 +157,6 @@ function updateResumeEducation(q, resumeId) {
             });
         }
 
-    })
-    .catch(function(err) {
-        console.error(err);
     });
 }
 
@@ -198,7 +192,7 @@ function updateResumeEmploymentHistory(q, resumeId) {
     });
 
 
-    Employment.find({resume: resumeId}).then(function(employmentHistoryArr) {
+    return Employment.find({resume: resumeId}).then(function(employmentHistoryArr) {
         let currentEmploymentIds = _.map(employmentHistoryArr, function(employmentObject) {
             return employmentObject.id
         });
@@ -233,9 +227,7 @@ function updateResumeEmploymentHistory(q, resumeId) {
           });
       }
 
-    }).catch(function(err) {
-        console.error(err);
-    })
+    });
 }
 
 function updateReferences(q, resumeId) {
@@ -269,7 +261,7 @@ function updateReferences(q, resumeId) {
         };
     });
 
-    ReferenceContact.find({resume: resumeId}).then(function(referencesArr) {
+    return ReferenceContact.find({resume: resumeId}).then(function(referencesArr) {
         let currentReferencesIds = _.map(referencesArr, function(referenceObj) {
             return referenceObj.id
         });
@@ -305,29 +297,7 @@ function updateReferences(q, resumeId) {
             console.error(err);
           });
       }
-    }).catch(function(err) {
-        console.error(err);
-    });
-
-    // Reference Contact, not compulsory
-    for (var i = 0; i < q('reference_fname').length; i++) {
-        if (q('reference_fname')[i].length < 1) continue;
-
-        var reference = {
-            name: q('reference_fname')[i] + ' ' + q('reference_lname')[i],
-            company: q('reference_company')[i],
-            job_title: q('reference_job_title')[i],
-            email: q('reference_email')[i],
-            phone: q('reference_phone')[i],
-            resume: q('resume_id')
-        };
-
-        if (q('reference_id')[i] && q('reference_id')[i] > 0) {
-            ReferenceContact.update({ id: q('reference_id')[i] }, reference).exec(function() {});
-        } else {
-            ReferenceContact.create(reference).exec(function() {});
-        }
-    }
+    })
 }
 
 
@@ -335,49 +305,52 @@ module.exports = {
 	editView: function(req, res) {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+                
 
-        Resume.findOne({ user: req.session.userId })
-            .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
-            .exec(function(err, resume) {
-                if (err) return;
-                var me = {
-                    fname: resume.user.fullname.split(' ')[0],
-                    lname: resume.user.fullname.split(' ')[1]
-                };
-                CountryStateService.getCountries().then(function(resp) {
-                    Honour.find().exec(function(err, honours) {
-                        // check for test result
-                        CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                            var _result, test_title;
-                            if (result) {
-                                _result = result;
-                                test_title = 'General Aptitude Test';
-                            }
-                            let resumeEducation = resume.educations;
+       return Promise.all([
+            CountryStateService.getCountries(),
+            Honour.find(),
+            CBTService.candidateGeneralTestResult(req.session.userId),
+            Resume.findOne({ user: req.session.userId }).populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
+        ]).then(results => {
+            let resp = results[0];
+            let honours = results[1];
+            let result = results[2];
+            let resume = results[3];
 
-                            let hasEducationName = resumeEducation && resumeEducation[0] && resumeEducation[0].institution ? true : false;
-                            let hasEducationProgram = resumeEducation && resumeEducation[0] && resumeEducation[0].programme ? true : false;
+            var me = {
+                fname: resume.user.fullname.split(' ')[0],
+                lname: resume.user.fullname.split(' ')[1]
+            };
 
-                            return res.view('cv/update', {
-                                resume: resume,
-                                me: me,
-                                honours: honours,
-                                countries: resp.countries,
-                                states: resp.states,
-                                result: _result,
-                                test_title: test_title,
-                                canEditResume: true,
-                                showContactInfo: true,
-                                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
-                                userEmail: userEmail,
-                                enableAmplitude: enableAmplitude
-                            });
-                        }).catch(function(err) {
-                            console.log(err);
-                        });
-                    });
-                });
+            var _result, test_title;
+            if (result) {
+                _result = result;
+                test_title = 'General Aptitude Test';
+            }
+            let resumeEducation = resume.educations;
+
+            let hasEducationName = resumeEducation && resumeEducation[0] && resumeEducation[0].institution ? true : false;
+            let hasEducationProgram = resumeEducation && resumeEducation[0] && resumeEducation[0].programme ? true : false;
+
+            return res.view('cv/update', {
+                resume: resume,
+                me: me,
+                honours: honours,
+                countries: resp.countries,
+                states: resp.states,
+                result: _result,
+                test_title: test_title,
+                canEditResume: true,
+                showContactInfo: true,
+                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                userEmail: userEmail,
+                enableAmplitude: enableAmplitude
             });
+
+        }).catch(err => {
+            return res.serverError(err);
+        })
     },
 
     save: function(req, res) {
@@ -385,40 +358,44 @@ module.exports = {
         var sections = [], status; // for profile complete status
         let resumeId = q('resume_id');
 
-        updateResumeQualifications(req.param, resumeId);
+        return Promise.all([
+            updateResumeQualifications(req.param, resumeId),
+            updateResumeEmploymentHistory(req.param, resumeId),
+            updateReferences(req.param, resumeId),
+            updateResumeEducation(req.param, resumeId)
+        ])
+        .then(() => {
+            // lets handle associative data
 
-        updateResumeEmploymentHistory(req.param, resumeId);
+            if ((q('video_status') == true) && (q('test_status') == true)) {
+                status = 'Complete';
+            } else {
+                status = 'Incomplete';
+            }
 
-        updateReferences(req.param, resumeId);
+            var data = {
+                gender: q('gender'),
+                dob: new Date(Date.parse(q('dob'))).toISOString(),
+                phone: q('phone'),
+                country: q('country'),
+                r_state: q('state'),
+                city: q('city'),
+                address: q('address'),
+                introduction: q('introduction'),
+                employment_status: q('employment_status'),
+                available_date: new Date(Date.parse(q('available_date'))).toISOString(),
+                expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
+                // profile_status: ,
+                profile_status: true, // TODO: (Maybe) Have this be dependant on whether there is one educational field
+                status: status
+            };
 
-        updateResumeEducation(req.param, resumeId)
-        // lets handle associative data
+            return Resume.update({ id: q('resume_id') }, data)
+            .then(resume => {
+                return res.json(200, { status: 'success' });
+            }).catch(err => {
+                console.error(err);
 
-        if ((q('video_status') == true) && (q('test_status') == true)) {
-            status = 'Complete';
-        } else {
-            status = 'Incomplete';
-        }
-        var data = {
-            gender: q('gender'),
-            dob: new Date(Date.parse(q('dob'))).toISOString(),
-            phone: q('phone'),
-            country: q('country'),
-            r_state: q('state'),
-            city: q('city'),
-            address: q('address'),
-            introduction: q('introduction'),
-            employment_status: q('employment_status'),
-            available_date: new Date(Date.parse(q('available_date'))).toISOString(),
-            expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
-            // profile_status: ,
-            profile_status: true, // TODO: (Maybe) Have this be dependant on whether there is one educational field
-            status: status
-        };
-
-        Resume.update({ id: q('resume_id') }, data).exec(function(err, resume) {
-            if (err) {
-              console.log(err);
                 if (err.invalidAttributes && err.invalidAttributes.phone && err.invalidAttributes.phone[0] && err.invalidAttributes.phone[0].rule === 'unique') {
                     return res.json(200, {
                         status: 'error',
@@ -427,9 +404,12 @@ module.exports = {
                 } else {
                     return res.json(200, { status: 'error', msg: err });
                 }
-            }
-            return res.json(200, { status: 'success' });
+            })
+        })
+        .catch(err => {
+            return res.serverError(err);
         });
+        
     },
 
     getVideo: function(req, res) {
