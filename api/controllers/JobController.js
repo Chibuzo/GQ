@@ -351,8 +351,8 @@ module.exports = {
 
 		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
 			.then(job => {
-
-				return Promise.all([
+                
+                return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
 					Application.find({ job: job_id }).populate('applicant'),
 					SelectedCandidate.find({job_id: job_id}).populate('candidate')
@@ -490,19 +490,28 @@ module.exports = {
     },
 
     deleteJob: function (req, res) {
-        var id = req.param('id');
-        if (!req.session.coy_id) return;
-        Job.find({ id: id }).populate('applications').exec(function(err, job) {
-            if (job[0].applications.length < 1) {
-                // soft delete
-                Job.update({ id: id }, { status: 'Deleted' }).exec(function() {});
-                return res.json(200, { status: 'success', msg: "You can't delete this job at this time" });
-            } else {
-                Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
-                    if (err) return;
-                    return res.json(200, { status: 'success' });
-                });
-            }
-        });
+        if (!req.session.coy_id) {
+            return res.forbidden();;
+        }
+
+        const id = req.param('id');
+
+        return Job.findOne({id: id}).populate('applications')
+            .then(job => {
+                if (!job.applications || job.applications.length > 0) {
+                    return Job.update({id: id}, { status: 'Deleted' })
+                        .then(() => {
+                            return res.json(200, { status: 'success', msg: "You can't delete this job at this time"}); 
+                        })
+                } else {
+                    return Job.destroy({ id: id})
+                        .then(() => {
+                            return res.json(200, { status: 'success' }); 
+                        })
+                }
+            })
+            .catch(err => {
+                return res.serverError();
+            })
     }
 };
