@@ -24,24 +24,27 @@ module.exports = {
     },
 
     editJob: function (req, res) {
-        Job.findOne({ id: req.param('job_id') }).exec(function (err, job) {
-            JobCategory.find().exec(function (err, categories) {
-                CountryStateService.getCountries().then(function(resp) {
-                    var folder;
-                    if (req.session.admin) {
-                        folder = 'admin';
-                    } else {
-                        folder = 'company';
-                    }
-                    return res.view(folder + '/editjob', {
-                        job: job,
-                        jobcategories: categories,
-                        countries: resp.countries
-                    });
-                }).catch(function(err) {
-                    return res.ok();
-                });
+        return Promise.all([
+            Job.findOne({ id: req.param('job_id') }),
+            CountryStateService.getCountries()
+        ]).then(results => {
+            let job = results[0];
+            let resp = results[1];
+
+            var folder;
+            if (req.session.admin) {
+                folder = 'admin';
+            } else {
+                folder = 'company';
+            }
+            
+            return res.view(folder + '/editjob', {
+                job: job,
+                jobcategories: categories,
+                countries: resp.countries
             });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
@@ -51,7 +54,6 @@ module.exports = {
             return res.view('company/manage-jobs', { jobs: jobs });
         })
         .catch(function(err) {
-            console.error(err);
             return res.serverError(err);
         });
     },
@@ -332,7 +334,6 @@ module.exports = {
             return res.view('company/shortlist', { selected_candidates: slist });
         })
         .catch(function(error) {
-            console.error(error);
             return res.serverError(error);
         });
     },
