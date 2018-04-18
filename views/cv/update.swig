@@ -111,6 +111,10 @@
 		text-align: center;
 	}
 
+	.fa-trash {
+		color: red;
+	}
+
 	.loader {
 		margin: auto;
 	    border: 16px solid #f3f3f3; /* Light grey */

@@ -157,10 +157,12 @@
                                 {% endfor %}
                             </select>
                         </div>
+
                         <div class="col-md-3">
                             <label>Programme</label>
-                            <input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}">
+                            <input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}" required>
                         </div>
+
                         <div class="col-md-2">
                             <label>start Date</label>
                             {% if edu.start_date %}
@@ -178,9 +180,11 @@
                             {% endif %}
                         </div>
                         <input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
-                        <div class="col-md-1">
-                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
-                        </div>
+                        {% if loop.index != 1 %}
+	                        <div class="col-md-1">
+	                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-trash fa-lg"></i></a>
+	                        </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
 
@@ -212,9 +216,6 @@
                             <label>End Date</label>
                             <input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended" required>
                         </div>
-                        <div class="col-md-1">
-                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
-                        </div>
                     </div>
                 {% endif %}
 
@@ -245,7 +246,7 @@
 						<input type="text" name="inst_end_date[]" class="form-control datep is-required" readonly placeholder="Date ended">
 					</div>
 					<div class="col-md-1">
-                        <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-minus fa-lg"></i></a>
+                        <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-trash fa-lg"></i></a>
 					</div>
 				</div>
 
@@ -279,7 +280,7 @@
 						</div>
 						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
 						<div class="col-md-1">
-							<a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
+							<a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
 						</div>
 					</div>
 				{% endfor %}
@@ -297,7 +298,7 @@
     					</div>
     					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
     					<div class="col-md-1">
-                            <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
+                            <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
     					</div>
     				</div>
                 {% endif %}
@@ -314,7 +315,7 @@
 					</div>
 
 					<div class="col-md-1">
-                        <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-minus fa-lg"></i></a>
+                        <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
 					</div>
 				</div>
 
@@ -377,7 +378,7 @@
 							</div>
 							<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
 							<div class="col-md-1">
-                                <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
+                                <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -419,7 +420,7 @@
 								<input type="text" name="employment_end_date[]" class="form-control datep" readonly placeholder="Date ended">
 							</div>
 							<div class="col-md-1">
-								<a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
+								<a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -460,7 +461,7 @@
 							<input type="text" name="employment_end_date[]" class="form-control datep" readonly placeholder="Date ended">
 						</div>
 						<div class="col-md-1">
-                            <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-minus fa-lg"></i></a>
+                            <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
@@ -481,6 +482,7 @@
 				{% for ref in resume.referencecontacts %}
 					{% set fname = ref.name.split(' ')[0] %}
 					{% set lname = ref.name.split(' ')[1] %}
+
 					<div class="reference-row">
 						<div class="row">
 							<div class="col-md-6">
@@ -516,7 +518,7 @@
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 							<div class="col-md-1">
-                                <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
+                                <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -558,7 +560,7 @@
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 							<div class="col-md-1">
-								<a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
+								<a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
 							</div>
 						</div>
 					</div>
@@ -603,7 +605,7 @@
 							<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's Name">
 						</div>
 						<div class="col-md-1">
-                            <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-minus fa-lg"></i></a>
+                            <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
 						</div>
 					</div>
 				</div>
