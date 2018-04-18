@@ -26,10 +26,12 @@ module.exports = {
     editJob: function (req, res) {
         return Promise.all([
             Job.findOne({ id: req.param('job_id') }),
-            CountryStateService.getCountries()
+            CountryStateService.getCountries(),
+            JobCategory.find()
         ]).then(results => {
             let job = results[0];
             let resp = results[1];
+            let categories = results[2];
 
             var folder;
             if (req.session.admin) {
