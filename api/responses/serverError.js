@@ -36,7 +36,7 @@ module.exports = function serverError (data, options) {
 
 	if (req.session.user_type == 'Applicant') {
 		dashboardUrl = '/applicant/dashboard';
-	} else if(req.session.user_type == 'company' || 'company-admin')  {
+	} else if(req.session.user_type == 'company' || req.session.user_type == 'company-admin')  {
 		dashboardUrl = '/company/dashboard';
 	} else if(req.session.admin) {
 		dashboardUrl = '/admin/dashboard';
