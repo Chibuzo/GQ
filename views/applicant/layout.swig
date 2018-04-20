@@ -22,7 +22,7 @@
     <link href="/styles/light-bootstrap-dashboard.css" rel="stylesheet"/>
 
     <!--     Fonts and icons     -->
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
@@ -45,8 +45,21 @@
     </style>
 {% endblock %}
 <!--Start of Tawk.to Script-->
+{% if userEmail %}
+    <script type="text/javascript">
+        tawkVistor = {
+            name : "{{ userEmail }}",
+            email : "{{ userEmail }}"
+        };
+    </script>
+{% endif %}
+
 <script type="text/javascript">
     var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    if (tawkVistor) {
+        Tawk_API.visitor = tawkVistor;
+    }
+
     (function(){
         var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
         s1.async=true;
@@ -80,7 +93,7 @@
                 {{ req.session.fname }}
             </div>
 
-            {% if user.password.length < 30 %}
+            {% if !profilePage || passwordSet %}
                 <ul class="nav">
                     <li class="dashboard">
                         <a href="/applicant/dashboard">
@@ -89,18 +102,17 @@
                         </a>
                     </li>
 
-                    <li class="jobs">
-                        <a href="/applicant/view-applications">
-                            <i class="pe-7s-timer"></i>
-                            <p>Manage Applications</p>
+					<li class="resume">
+                        <a href="/applicant/resume-page">
+                            <i class="pe-7s-id"></i>
+                            <p>My Profile</p>
                         </a>
                     </li>
 
-
-                    <li class="resume">
-                        <a href="/applicant/resume-page">
-                            <i class="pe-7s-id"></i>
-                            <p>My Resume</p>
+                    <li class="jobs">
+                        <a href="/applicant/view-applications">
+                            <i class="pe-7s-timer"></i>
+                            <p>Job Applications</p>
                         </a>
                     </li>
 
@@ -135,7 +147,7 @@
                             </a>
                         </li>
                     </ul>-->
-                    {% if user.password.length < 30 %}
+                    {% if !profilePage || passwordSet %}
                         <ul class="nav navbar-nav navbar-right">
                             <li>
                                 <a href="/jobs">Jobs</a>
@@ -189,8 +201,6 @@
 </body>
 
 <!--   Core JS Files   -->
-{#<script src="/js/jquery-1.10.2.js" type="text/javascript"></script>#}
-<script src="/js/jquery-3.min.js" type="text/javascript"></script>
 <script
         src="https://code.jquery.com/jquery-3.3.1.min.js"
         integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="

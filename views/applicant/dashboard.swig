@@ -10,82 +10,105 @@
   {% include "../externalApplications/amplified.swig" %}
 {% endblock %}
 
-
-
 {% block body %}
 	<style>
-		.tests-alert {
-			width: 90%;
-			margin: 0 auto;
-			text-align: center;
+		.header-text {
+			font-family: Arial, Helvetica, sans-serif;
 		}
+
+		.checklist-item-row {
+			margin-left: 0px;
+			display: flex;
+		}
+
+		.checklist-panel-row {
+			display: flex;
+		}
+
+		.panel-text-heading {
+			font-weight: bold;
+			color: #495057;
+		}
+
+		.panel-text {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
+		.panel-text-body {
+			color: grey;
+		}
+
+		.fa-chevron-right {
+			color: black;
+		}
+
+		.checklist-icon {
+			font-size: 4em;
+		}
+
+		.panel-checklist-icon {
+			align-self: center;
+		}
+
+		.panel-body {
+			padding: 10px;
+		}
+
+		.pointer {
+			cursor: pointer;
+		}
+
+		.completed-true {
+			color: #7cbb52;
+		}
+
+		.completed-false {
+			color: #0085ba;
+		}
+
+		.disabled .completed-false {
+			color: gray;
+		}
+
+		.disabled {
+			opacity: 0.5;
+			cursor: default;
+		}
+
+		.header-text {
+			font-family: Arial, Helvetica, sans-serif;
+		}
+
 	</style>
 	<div class="row">
-		<div class="col-md-6">
-			<div class="card">
-				<div class="header">
-					<h4 class="title">Recent Test Results</h4>
-					<p class="category"></p>
-				</div>
-				<div class="content table-responsive table-full-width">
-					<table class="table table-striped">
-						<thead>
-							<tr>
-								<th>TEST TITLE</th>
-								<th>SCORE</th>
-								<th>PERCENTAGE</th>
-								<th class="text-center">AVERAGE</th>
-								{#<th>RESULT</th>#}
-							</tr>
-						</thead>
-						<tbody>
-						{% set n = 0 %}
-						{% for result in gq_results %}
-							{% set n = n + 1 %}
-							<tr>
-								<td>{{ result.test_title }}</td>
-								<td>{{ result.score }}</td>
-								<td>{{ result.percentage }}%</td>
-								<td class="text-center">{{ result.average | toFixed(1) }}</td>
-								{#<td>{{ result.result }}</td>#}
-							</tr>
-						{% endfor %}
-
-						{% for result in xpr_results %}
-							{% set n = n + 1 %}
-							<tr>
-								<td>{{ result.test_title }}</td>
-								{#<td>{{ result.percentile }}</td>#}
-								<td></td>
-								<td>{{ result.percentage }}%</td>
-								<td>{{ result.average_score }}</td>
-								<td>{{ result.test_result }}</td>
-							</tr>
-						{% endfor %}
-						</tbody>
-					</table>
-					{% if n == 0 %}
-						<div class="alert alert-warning tests-alert" role="alert">
-							You have not taken any test(s)
-						</div>
-					{% endif %}
-				</div>
-			</div>
-		</div>
-
-		<div class="col-md-6 hidden">
-			<div class="card">
-				<div class="header">
-					<h4 class="title">Recent Jobs</h4>
-					<p class="category">Recent Jobs you might be interested in</p>
-				</div>
-				<hr>
-				<div class="content table-responsive table-full-width">
-
-				</div>
-			</div>
+		<div class="col-md-12">
+			<h3 class="header-text">Get started with Get Qualified</h3>
+			<h4 class="header-text">Complete your profile and start applying for jobs.</h4>
 		</div>
 	</div>
+
+	{% for item in userChecklist %}
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="row checklist-item-row">
+					<div class="col-sm-7 col-xs-12 ">
+						<a href="{{ item.action }}" class="panel panel-default row checklist-panel-row pointer {{ item.disbaledClass}}">
+							<div class="panel-body col-xs-3 col-sm-2 panel-checklist-icon">
+								<i class="{{ item.iconClass }} completed-{{item.completed}} checklist-icon" aria-hidden="true"></i>
+							</div>
+							<div class="panel-body col-xs-8 col-sm-9">
+								<p class="panel-text panel-text-heading">{{ item.title }}</p>
+								<p class="panel-text panel-text-body">{{item.text}}</p>
+							</div>
+							<div class="panel-body col-xs-1 col-sm-1 panel-checklist-icon">
+								<i class="fa fa-chevron-right" aria-hidden="true"></i>
+							</div>
+						</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endfor %}
 
 {% endblock %}
 
@@ -93,5 +116,9 @@
 <script>
 $(document).ready(function() {
 	$(".dashboard").addClass('active');
+
+	$("a.disabled").click(function() {
+		return false;
+   });
 });
 </script>

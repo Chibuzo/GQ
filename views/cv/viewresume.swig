@@ -72,7 +72,6 @@
 													<th></th>
 													<th>Score</th>
 													<th>Percentage</th>
-													<th>Rank</th>
 												</tr>
 											</thead>
 											<tbody>
@@ -80,25 +79,21 @@
 													<td>General Ability</td>
 													<td>{{ result.general_ability }}</td>
 													<td>{{ result.general_percentage }}%</td>
-													<td>-</td>
 												</tr>
 												<tr id="verbal">
 													<td>Verbal Reasoning</td>
 													<td>{{ result.verbal }}</td>
 													<td>{{ result.verbal_percentage }}%</td>
-													<td>-</td>
 												</tr>
 												<tr id="maths">
 													<td>Numerical Reasoning</td>
 													<td>{{ result.maths }}</td>
 													<td>{{ result.maths_percentage }}%</td>
-													<td></td>
 												</tr>
 												<tr id="total">
 													<td>Total Score</td>
 													<td>{{ result.score }}/60</td>
 													<td>{{ result.percentage }}%</td>
-													<td>{{ result.rank }}</td>
 												</tr>
 											</tbody>
 										</table>
@@ -113,7 +108,7 @@
 							<div class="tab-pane fade in" id="video">
 								<div class="row" style="margin-top: 40px">
 									{% if resume.video_status == true %}
-										<div class="col-md-5 col-md-offset-3">
+										<div class="col-md-6 col-md-offset-2">
 											<h4>Video Profile</h4>
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
 												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}

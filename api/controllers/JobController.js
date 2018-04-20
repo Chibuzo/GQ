@@ -24,24 +24,29 @@ module.exports = {
     },
 
     editJob: function (req, res) {
-        Job.findOne({ id: req.param('job_id') }).exec(function (err, job) {
-            JobCategory.find().exec(function (err, categories) {
-                CountryStateService.getCountries().then(function(resp) {
-                    var folder;
-                    if (req.session.admin) {
-                        folder = 'admin';
-                    } else {
-                        folder = 'company';
-                    }
-                    return res.view(folder + '/editjob', {
-                        job: job,
-                        jobcategories: categories,
-                        countries: resp.countries
-                    });
-                }).catch(function(err) {
-                    return res.ok();
-                });
+        return Promise.all([
+            Job.findOne({ id: req.param('job_id') }),
+            CountryStateService.getCountries(),
+            JobCategory.find()
+        ]).then(results => {
+            let job = results[0];
+            let resp = results[1];
+            let categories = results[2];
+
+            var folder;
+            if (req.session.admin) {
+                folder = 'admin';
+            } else {
+                folder = 'company';
+            }
+            
+            return res.view(folder + '/editjob', {
+                job: job,
+                jobcategories: categories,
+                countries: resp.countries
             });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
@@ -49,58 +54,76 @@ module.exports = {
 	viewJobs: function(req, res) {
         JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
             return res.view('company/manage-jobs', { jobs: jobs });
+        })
+        .catch(function(err) {
+            return res.serverError(err);
         });
     },
 
     saveJob: function (req, res) {
-        var q = req.param;
-        var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
-        if (publish) publish_date = new Date().toISOString();
-        var data = {
-            job_title: q('title'),
-            job_description: q('description'),
-            job_requirements: q('requirements'),
-            qualifications: q('qualifications'),
-            job_level: q('job_level'),
-            contract_type: q('contract_type'),
-            category: q('category'),
-            country: q('country'),
-            location: q('location'),
-            nice_to_have: q('nice_to_have'),
-            salary_currency: q('currency'),
-            min_salary_budget: q('min_salary_budget') ? q('min_salary_budget') : 0.0,
-            max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
-            published: publish,
-            date_published: publish_date,
-            closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
-        };
+        try {
+            var q = req.param;
+            var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
+            if (publish) publish_date = new Date().toISOString();
 
+            var data = {
+                job_title: q('title'),
+                job_description: q('description'),
+                job_requirements: q('requirements'),
+                qualifications: q('qualifications'),
+                job_level: q('job_level'),
+                contract_type: q('contract_type'),
+                category: q('category'),
+                country: q('country'),
+                location: q('location'),
+                nice_to_have: q('nice_to_have'),
+                salary_currency: q('currency'),
+                min_salary_budget: q('min_salary_budget') ? q('min_salary_budget') : 0.0,
+                max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
+                published: publish,
+                date_published: publish_date,
+                closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
+            };
+        } catch(err) {
+            return res.serverError(err);
+        }
+        
         if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
-            Job.update({ id: q('job_id') }, data).exec(function(err, job) {
-                if (err) console.log(err);
-                if (req.session.admin) {
-                    return res.redirect('/admin/coy-jobs/' + job[0].company);
-                } else {
-                    return res.redirect('/job/manage');
-                }
-            });
+            return Job.update({ id: q('job_id') }, data)
+                .then(job => {
+                    if (req.session.admin) {
+                        return res.redirect('/admin/coy-jobs/' + job[0].company);
+                    } else {
+                        return res.redirect('/job/manage');
+                    }
+                }).catch(err => {
+                    return res.serverError(err);
+                })
         } else {
             data.poster = req.session.userId,
             data.company = req.session.coy_id ? req.session.coy_id : q('coy_id');
-            Job.create(data).exec(function (err, job) {
-                if (err) return console.log(err);
-                User.find({ id: req.session.userId }).populate('company').exec(function(err, user) {
-                    sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
-                    if (req.session.coy_id) {
-                        sendMail.GQnewJobAlert(user[0].company.company_name);
-                    }
-                });
-                if (req.session.admin) {
-                    return res.redirect('/admin/coy-jobs/' + job.company);
-                } else {
-                    return res.redirect('/job/manage');
-                }
-            });
+            return Job.create(data)
+                .then(job => {
+                    return User.find({ id: req.session.userId }).populate('company')
+                        .then(user => {
+                            sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
+                            if (req.session.coy_id) {
+                                sendMail.GQnewJobAlert(user[0].company.company_name);
+                            }
+
+                            if (req.session.admin) {
+                                return res.redirect('/admin/coy-jobs/' + job.company);
+                            } else {
+                                return res.redirect('/job/manage');
+                            }
+                        })
+                        .catch(err => {
+                            return res.serverError(err);
+                        })
+                })
+                .catch(err => {
+                    return res.serverError(err);
+                })
         }
     },
 
@@ -238,6 +261,9 @@ module.exports = {
         var job_id = req.param('id');
         var today = new Date().toISOString();
 
+        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+        const userEmail = req.session.userEmail;
+
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
@@ -259,7 +285,12 @@ module.exports = {
                         });
                     }
                 });
-                return res.view('job', { job: job, job_categories: jobCategories });
+                return res.view('job', {
+                    job: job,
+                    job_categories: jobCategories,
+                    enableAmplitude: enableAmplitude,
+                    userEmail: userEmail
+                });
             });
         });
     },
@@ -270,10 +301,21 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
+                    AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
+                        jobId: job_id,
+                        resumeStatus: resume[0].status,
+                        profileStatus: resume[0].profile_status,
+                        photoStatus: resume[0].photo_status,
+                        videoStatus: resume[0].video_status,
+                        testStatus: resume[0].test_status
+                    });
                     return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {
+                        AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                            jobId: job_id
+                        });
                         return res.json(200, { status: 'success' });
                     } else {
                         // your village people don't want you to be great
@@ -281,18 +323,90 @@ module.exports = {
                 });
             });
         } else {
+            AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
+                jobId: job_id
+            });
             req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
     },
 
-
     fetchShortlisted: function(req, res) {
-        JobService.fetchShortlistedCandidates(req.param('job_id'), session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { list: slist });
+        JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
+            return res.view('company/shortlist', { selected_candidates: slist });
+        })
+        .catch(function(error) {
+            return res.serverError(error);
         });
     },
 
+	viewApplicantsforAdmin: function(req, res) {
+		if (req.session.user_type !== 'admin') {
+			return res.forbidden();
+		}
+
+		const job_id =  req.param('job_id');
+
+		if (!job_id) {
+			return res.badRequest();
+		}
+
+		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
+			.then(job => {
+                
+                return Promise.all([
+					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
+					Application.find({ job: job_id }).populate('applicant'),
+					SelectedCandidate.find({job_id: job_id}).populate('candidate')
+				]).then(results => {
+
+					let jobTest = results[0];
+					let applications = results[1];
+					let selected_candidates = results[2];
+
+					// fetch candidate ids for use in finding/computing their test result
+					let candidatesIds = [];
+					applications.forEach(function (application) {
+						if (application.applicant) {
+							candidatesIds.push(application.applicant.id)
+						}
+					});
+
+					let shortlistedIds = [];
+					selected_candidates.forEach(function (shortlisted) {
+						if (shortlisted.candidate) {
+							shortlistedIds.push(shortlisted.candidate.id);
+						}
+					});
+
+
+					return Promise.all([
+						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
+						CBTService.getJobTestResults(shortlistedIds, jobTest)
+					]).then(jobTestResults => {
+
+						let allCandidates = jobTestResults[0];
+						let shortlistedCandidates = jobTestResults[1];
+
+						return res.view('admin/applicants-view.swig', {
+							jobTitle: job.job_title,
+							companyName: job.company.company_name,
+							results: allCandidates,
+							selected_candidates: shortlistedCandidates,
+							job_id: job_id
+						});
+					}).catch(err => {
+						return res.serverError(err);
+					})
+				})
+				.catch(err => {
+					return res.serverError(err);
+				});
+			})
+			.catch(err => {
+				return res.serverError(err);
+			});
+	},
 
     // fetches all candidates that applied for the job
     // fetches the test results
@@ -316,6 +430,7 @@ module.exports = {
             if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
                 return res.view('company/applicants-view.swig', { job_active: true });
             }
+
             JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
                 // find those who applied for this job
                 Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
@@ -358,7 +473,6 @@ module.exports = {
             });
         });
     },
-
 
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');
@@ -410,8 +524,29 @@ module.exports = {
         });
     },
 
-    dopostBack: function (req, res) {
-        JobScraperService.returnAddedScrapedJobsUrl();
-        res.ok()
-    }
+
+    //    if (!req.session.coy_id) {
+    //        return res.forbidden();;
+    //    }
+    //
+    //    const id = req.param('id');
+    //
+    //    return Job.findOne({id: id}).populate('applications')
+    //        .then(job => {
+    //            if (!job.applications || job.applications.length > 0) {
+    //                return Job.update({id: id}, { status: 'Deleted' })
+    //                    .then(() => {
+    //                        return res.json(200, { status: 'success', msg: "You can't delete this job at this time"});
+    //                    })
+    //            } else {
+    //                return Job.destroy({ id: id})
+    //                    .then(() => {
+    //                        return res.json(200, { status: 'success' });
+    //                    })
+    //            }
+    //        })
+    //        .catch(err => {
+    //            return res.serverError();
+    //        })
+    //}
 };

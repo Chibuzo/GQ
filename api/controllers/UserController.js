@@ -52,6 +52,10 @@ module.exports = {
                                 }
                                 return res.json(501, {status: 'error', msg: err}); // couldn't be completed
                             }
+                            AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
+                                userType: data.userType,
+                                signUpDate: new Date(Date.now())
+                            });
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });
@@ -64,43 +68,46 @@ module.exports = {
     activateAccount: function(req, res) {
         var email = new Buffer(req.param('email'), 'base64').toString('ascii');
         var hash = req.param('hash');
-        User.findOne({ email : email }).exec(function(err, user) {
+        User.findOne({ email : email }).exec(function(err, foundUser) {
             if (err) return;
-            //if (user.status == 'Active') {
-            //    return res.view('login', { msg: 'Your email has already been confirmed. Just go ahead and login' });
-            //}
-            if (user) {
+
+            if (foundUser) {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
                 if (hash == confirm_hash) {
-                    User.update({ id: user.id }, { status: 'Active' }).exec(function(err, user) {
+                    User.update({ id: foundUser.id }, { status: 'Active' }).exec(function(err, userArr) {
+                        let user = userArr[0];
                         if (err) {
                             console.log(err);
                         }
-                        req.session.userId = user[0].id;
-                        req.session.user_type = user[0].user_type;
-                        req.session.fname = user[0].fullname;
-                        req.session.userEmail = user[0].email;
+                        req.session.userId = user.id;
+                        req.session.user_type = user.user_type;
+                        req.session.fname = user.fullname;
+                        req.session.userEmail = user.email;
 
                         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
                         var me = {
-                            fname: user[0].fullname.split(' ')[0],
-                            lname: user[0].fullname.split(' ')[1]
+                            fname: user.fullname.split(' ')[0],
+                            lname: user.fullname.split(' ')[1]
                         };
-                        if (user[0].user_type == 'Applicant') {
+
+                        const passwordSet = user.password ? user.password.length > 1 : false;
+
+                        if (user.user_type == 'Applicant') {
                             // create their resume
-                            Resume.findOrCreate({ email: email}, { email: email, fullname: user[0].fullname, user: user[0].id }).exec(function() {});
-                            sendMail.welcomeNewCandidate(user[0]);
+                            Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id }).exec(function() {});
+                            sendMail.welcomeNewCandidate(user);
                             return res.view('applicant/profile', {
-                                user: user[0],
+                                user: user,
                                 me: me,
-                                first_time: 'true',
                                 enableAmplitude: enableAmplitude,
-                                userEmail: user[0].email
+                                userEmail: user.email,
+                                profilePage: true,
+                                passwordSet: passwordSet
                             });
-                        } else if (user[0].user_type == 'company') {
-                            return res.view('company/users/profile', { user: user[0], me: me });
+                        } else if (user.user_type == 'company') {
+                            return res.view('company/users/profile', { user: user, me: me });
                         }
                     });
                 } else {
@@ -198,21 +205,32 @@ module.exports = {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
-        User.findOne(req.session.userId, function(err, _user) {
-            if (err) return res.negotiate(err);
+        return Promise.all([
+            User.findOne(req.session.userId),
+            Resume.findOne({ user: req.session.userId })
+        ]).then(results => {
+            let user = results[0];
+            let resume = results[1];
+
             var me = {
-                fname: _user.fullname.split(' ')[0],
-                lname: _user.fullname.split(' ')[1]
+                fname: user.fullname.split(' ')[0],
+                lname: user.fullname.split(' ')[1]
             };
-            Resume.find({ user: req.session.userId }).exec(function(err, resume) {
-                return res.view('applicant/profile', {
-                    user: _user,
-                    me: me,
-                    passport: resume[0].photo,
-                    userEmail: userEmail,
-                    enableAmplitude: enableAmplitude
-                });
+
+            const passwordSet = user.password ? user.password.length > 1 : false;
+
+            return res.view('applicant/profile', {
+                user: user,
+                me: me,
+                passport: resume.photo,
+                userEmail: userEmail,
+                enableAmplitude: enableAmplitude,
+                profilePage: true,
+                passwordSet: passwordSet
             });
+
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 

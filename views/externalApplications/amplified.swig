@@ -39,6 +39,18 @@
         console.log("Enabled: {{ enableAmplitude }}");
         console.log("Email: {{ userEmail }}");
 
+        var amplitude = {};
+        amplitude.getInstance = function() {
+            return {
+                logEvent: function(eventName, eventProps) {
+                    eventProps = eventProps || {};
+                    console.info("Amplitude: " + eventName + ", " + JSON.stringify(eventProps));
+                }
+            }
+        }
+
+        amplitude.getInstance().logEvent("GQ {{ location }}");
+
     </script>
 
 {% endif %}

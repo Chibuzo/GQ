@@ -107,6 +107,29 @@
         margin-bottom: 5px;
     }
 
+	.loader-text {
+		text-align: center;
+	}
+
+	.fa-trash {
+		color: red;
+	}
+
+	.loader {
+		margin: auto;
+	    border: 16px solid #f3f3f3; /* Light grey */
+	    border-top: 16px solid #3498db; /* Blue */
+	    border-radius: 50%;
+	    width: 120px;
+	    height: 120px;
+	    animation: spin 2s linear infinite;
+	}
+
+	@keyframes spin {
+	    0% { transform: rotate(0deg); }
+	    100% { transform: rotate(360deg); }
+	}
+
 	@media screen and (min-width: 200px) and (max-width: 600px) {
 		#test-notice {
 			padding: 10px 5px;
@@ -169,13 +192,21 @@
 
 					<div class="content">
 						<ul class="nav nav-tabs">
-							<li class="active"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
-							<li><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
-							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
-							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
+							<li id="resume-tab-header"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
+							<li id="photo-tab-header"><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
+							<li id="test-tab-header"><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
+							<li id="video-tab-header"><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-						  	<div class="tab-pane fade active in" id="resume-tab">
+							<div class="row loader-container-row">
+								<div class="col-xs-2 col-xs-offset-5">
+									<p class="loader-text">Loading...</p>
+									<div class="loader">
+									</div>
+								</div>
+							</div>
+
+						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
 										{% include 'includes/resume.swig' %}
@@ -207,7 +238,6 @@
 														<th></th>
 														<th>Score</th>
 														<th>Percentage</th>
-														<th>Rank</th>
 													</tr>
 												</thead>
 												<tbody>
@@ -215,25 +245,21 @@
 														<td>General Ability</td>
 														<td>{{ result.general_ability }}</td>
 														<td>{{ result.general_percentage }}%</td>
-														<td>-</td>
 													</tr>
 													<tr id="verbal">
 														<td>Verbal Reasoning</td>
 														<td>{{ result.verbal }}</td>
 														<td>{{ result.verbal_percentage }}%</td>
-														<td>-</td>
 													</tr>
 													<tr id="maths">
 														<td>Numerical Reasoning</td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
-														<td></td>
 													</tr>
 													<tr id="total">
 														<td>Total Score</td>
 														<td>{{ result.score }}/60</td>
 														<td>{{ result.percentage }}%</td>
-														<td>{{ result.rank }}</td>
 													</tr>
 												</tbody>
 											</table>
@@ -454,9 +480,6 @@
 									</div>
 									{% if resume.video_status == true %}
 										<div class="col-md-5">
-											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
-											{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
-											{#</video>#}
 											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
@@ -513,38 +536,61 @@
 	</div>
 {% endblock %}
 
-
 {% block scriptTag %}
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".resume").addClass('active');
+
+		var urlHash = location.hash;
+
+		$(".loader-container-row").hide();
+
+		if (urlHash == "" || urlHash == "#resume-tab") {
+			$("#resume-tab-header").addClass('active');
+			$("#resume-tab").addClass('active');
+		} else if(urlHash == "#photo") {
+			$("#photo-tab-header").addClass('active');
+			$("#photo").addClass('active');
+		} else if(urlHash == "#test") {
+			$("#test-tab-header").addClass('active');
+			$("#test").addClass('active');
+		} else if(urlHash == "#video") {
+			$("#video-tab-header").addClass('active');
+			$("#video").addClass('active');
+		} else {
+			$("#resume-tab-header").addClass('active');
+			$("#resume-tab").addClass('active');
+		}
+	});
+</script>
+
+
 	<script type="text/javascript" src="/js/profile-photo.js"></script>
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script src="/js/proctor/tracking-new.js"></script>
-	<script src="/js/proctor/face-min.js"></script>
-	<script src="/js/proctor/eye-min.js"></script>
-	<script src="/js/proctor/mouth-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js"></script>
 
 	<!-- Audio Volume metering -->
-	<script src="/js/proctor/volume-meter.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js"></script>
 
 	<!-- Audio tracking -->
-	<script src="/js/proctor/recorder-new.js"></script>
+    <script type="text/javascript" src="/js/proctor/recorder-new.js"></script>
+	<!-- <script type="text/javascript" src="https://api.neon.ventures/proctor/js/recorder-new.js"></script>  -->
 	<!-- Main Setup -->
-	<script src="/js/proctor/setup-new.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js"></script>
 
-	{#<script src="/js/proctorSetup.js"></script>#}
 	<script type="text/javascript" src="/js/gqTestFrontend.js?v=11"></script>
-
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
+
 	<script type="text/javascript">
 		$(document).ready(function() {
-			$(".resume").addClass('active');
-
-			//$.getScript('/js/proctor/tracking-min.js');
-
-
 			$("select[name=country]").find('option').filter(function(i) {
 				return 'Nigeria' == $(this).val();
 			}).attr("selected", "selected");
@@ -659,11 +705,15 @@
 					if (d.status.trim() == 'success') {
 						var msg = "Your GetQualified profile has been successfully updated!";
 						showNotification('top', 'right', 'success', msg, 'pe-7s-bell');
+                        amplitude.getInstance().logEvent('Update Resume: Successful');
 						window.setTimeout(function() {
 							window.location.reload();
 						}, 1000);
 					} else {
 						showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
+                        amplitude.getInstance().logEvent('Update Resume: Failed', {
+                            msg: d.msg
+                        });
 					}
 					$("#btn-submit").html("Update Profile").prop('disabled', false);
 				}, 'JSON');
@@ -681,17 +731,6 @@
                 $('.easy-autocomplete .school').parent().css('min-width', '200px');
 			});
 
-			// video handlers
-			$("#add-video, #change-video").click(function(e) {
-				e.preventDefault();
-				$("#file-control").click();
-			});
-
-			$("#file-control").change(function() {
-				$("#form-video-upload").submit();
-				$("#add-video").html("<i class='fa fa-cog fa-spin'></i> Uploading").prop("disabled", true);
-			});
-
 
 			$(".question-title").click(function() {
 				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
@@ -706,6 +745,8 @@
 				$( '#' + $(this).data('modal-id') ).modal({
 					keyboard: true
 				});
+
+                amplitude.getInstance().logEvent("Sample Video Link Clicked");
 			});
 
 			$('#modal-sample-video').on('hide.bs.modal', function(e) {
@@ -720,6 +761,12 @@
 				// sets it back to the correct link so that it reloads immediately on the next window open
 				$frame.attr('src', vidsrc);
 			});
+
+            $('.nav.nav-tabs a').on('click', function(evt) {
+                var href = $(this).attr('href');
+                href = href.substr(1);
+                amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
+            });
 		});
 	</script>
 

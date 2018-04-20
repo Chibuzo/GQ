@@ -10,9 +10,10 @@ os.tmpDir = os.tmpdir;
 
 module.exports = {
     dashboard: function(req, res) {
-        Job.find({ company: req.session.coy_id }).populate('applications').exec(function(err, jobs) {
-            if (err) return res.badRequest(err);
+        return Job.find({ company: req.session.coy_id }).populate('applications').then(function(jobs) {
             return res.view('company/dashboard', { jobs: jobs });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
@@ -155,14 +156,23 @@ module.exports = {
     },
 
     profile: function(req, res) {
-        Company.findOne({ id: req.session.coy_id }).exec(function (err, com) {
-            if (err) return console.log(err);
-            Sector.find({ removed: 'false'}).exec(function(err, sectors) {
-                CountryStateService.getCountries().then(function(resp) {
-                    return res.view('company/setup', {company: com, sectors: sectors, countries: resp.countries, states: resp.states});
+        return Promise.all([
+                Company.findOne({ id: req.session.coy_id }),
+                Sector.find({ removed: 'false'}),
+                CountryStateService.getCountries()
+            ]).then(results => {
+                let com = results[0];
+                let sectors = results[1];
+                let resp = results[2];
+                return res.view('company/setup', {
+                    company: com,
+                    sectors: sectors,
+                    countries: resp.countries,
+                    states: resp.states
                 });
-            });
-        });
+            }).catch(err => {
+                return res.serverError(err);
+            })
     },
 
     addUser: function(req, res) {
@@ -271,9 +281,10 @@ module.exports = {
     },
 
     getUsers: function(req, res) {
-        CompanyUser.find({ company: req.session.coy_id }).exec(function(err, users) {
-            if (err) return;
+        CompanyUser.find({ company: req.session.coy_id }).then(function(users) {
             return res.view('company/users', { users: users });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
@@ -287,28 +298,33 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-        Company.find({ status: 'Active' }).exec(function(err, coys) {
-            var companies = [];
-            async.eachSeries(coys, function(coy, cb) {
-                Job.find({company: coy.id}).exec(function (err, jobs) {
-                    coy.jobs = jobs.length < 1 ? 0 : jobs.length
-                    companies.push(coy);
-                    cb();
+        return  Company.find({ status: 'Active' })
+            .then(coys => {
+                var companies = [];
+                async.eachSeries(coys, function(coy, cb) {
+                    Job.find({company: coy.id}).exec(function (err, jobs) {
+                        coy.jobs = jobs.length < 1 ? 0 : jobs.length
+                        companies.push(coy);
+                        cb();
+                    });
+                }, function(err) {
+                    return res.view('admin/list-companies', { companies: coys });
                 });
-            }, function(err) {
-                return res.view('admin/list-companies', { companies: coys });
-            });
-        });
+            })
     },
 
 
     // admin view
     viewCompanyJobs: function(req, res) {
         var coy_id = req.param('coy_id');
-        Job.find({ company: coy_id }).populate('applications').populate('poster').exec(function(err, jobs) {
-            if (err) return;
-            return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
-        });
+
+        return Job.find({ company: coy_id }).populate('applications').populate('poster')
+            .then(jobs => {
+                return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
+            })
+            .catch(err => {
+                return res.serverError(err);
+            });    
     }
 };
 
