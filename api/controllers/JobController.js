@@ -333,7 +333,7 @@ module.exports = {
 
     fetchShortlisted: function(req, res) {
         JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { selected_candidates: slist });
+            return res.view('company/shortlist', { selected_candidates: slist, job_id: req.param('job_id') });
         })
         .catch(function(error) {
             return res.serverError(error);
@@ -382,7 +382,8 @@ module.exports = {
 
 					return Promise.all([
 						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						CBTService.getJobTestResults(shortlistedIds, jobTest)
+						//CBTService.getJobTestResults(shortlistedIds, jobTest)
+                        JobService.fetchShortlistedCandidates(job_id, job.company.id)
 					]).then(jobTestResults => {
 
 						let allCandidates = jobTestResults[0];

@@ -181,7 +181,7 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		$(this).find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
-		users = [];
+		var users = [];
 		$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
@@ -203,7 +203,7 @@ $(document).ready(function() {
 	$(".delete-candidates").click(function(e) {
 		e.preventDefault();
 		if (confirm("Are you sure you want to delete the selected candidates? This action cannot be undone")) {
-			users = [];
+			var users = [];
 			$(".user-checkbox:checked").each(function() {
 				users.push($(this).parents('tr').attr('id'));
 			});
