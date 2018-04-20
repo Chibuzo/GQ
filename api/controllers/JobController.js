@@ -512,7 +512,7 @@ module.exports = {
     viewScrapedJobs: function(req, res) {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'] }).exec(function(err, jobs) {
-            return res.view('admin/scrapedjobs', { jobs: jobs });
+            return res.view('admin/scrapedJobs', { jobs: jobs });
         })
     },
 
