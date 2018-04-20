@@ -237,7 +237,11 @@ module.exports.routes = {
 
     'GET /getYoutubeAccessToken': 'ApplicantController.getYoutubeAccessToken',
 
-    'POST /deleteYoutubeVideo': 'ApplicantController.deleteYoutubeVideo'
+    'POST /deleteYoutubeVideo': 'ApplicantController.deleteYoutubeVideo',
+
+    'GET /fetchScrapedJobs': 'JobController.fetchScrapedJobs',
+
+    'GET /viewScrapedJobs': 'JobController.viewScrapedJobs',
 
     //'GET /email': { view: 'email' },
     //

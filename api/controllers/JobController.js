@@ -392,5 +392,26 @@ module.exports = {
                 });
             }
         });
+    },
+
+
+    viewScrapedJobs: function(req, res) {
+        //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
+        Job.find({ source: ['Jobberman', 'Ngcareers'] }).exec(function(err, jobs) {
+            return res.view('admin/scrapedjobs', { jobs: jobs });
+        })
+    },
+
+
+    fetchScrapedJobs: function(req, res) {
+        JobScraperService.fetchJobs().then(function(jobs) {
+            JobScraperService.saveScrapedJobs(jobs);
+            return res.redirect('/viewScrapedJobs');
+        });
+    },
+
+    dopostBack: function (req, res) {
+        JobScraperService.returnAddedScrapedJobsUrl();
+        res.ok()
     }
 };
