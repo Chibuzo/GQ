@@ -1,19 +1,19 @@
 {% extends 'layout.swig' %}
-{% set title = 'Company Jobs' %}
+{% set title = 'Scraped Jobs' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Company Jobs
+	<i class="pe-7s-timer"></i> Scraped Jobs
 {% endblock %}
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/job/addjob/{{ coy_id }}" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
+		<a href="/fetchScrapedJobs" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Fetch More Jobs</a>
 	</div>
 
 	<div class="col-md-12">
 		<div class="card">
 			<div class="header row">
 				<div class="col-md-6">
-					<h4 class="title">All Jobs</h4>
+					<h4 class="title">Scraped Jobs</h4>
 					<p class="category"></p>
 				</div>
 			</div>
@@ -33,32 +33,32 @@
 
 {% block scriptTag %}
 <script type="text/javascript">
-$(document).ready(function() {
-	$(".job-page").addClass('active');
-	$(".upload-csv").click(function(e) {
-		e.preventDefault();
-		var job_id = $(this).parents('tr').attr('id');
-		$("#job_id").val(job_id);
-		$("#csv").click();
-	});
+	$(document).ready(function() {
+		$(".scrapedjobs").addClass('active');
+		$(".upload-csv").click(function(e) {
+			e.preventDefault();
+			var job_id = $(this).parents('tr').attr('id');
+			$("#job_id").val(job_id);
+			$("#csv").click();
+		});
 
-	$("#csv").change(function() {
-		$("#form-csv").submit();
-	});
+		$("#csv").change(function() {
+			$("#form-csv").submit();
+		});
 
 
-	$(".del-job").click(function (e) {
-		e.preventDefault();
-		var $this = $(this);
-		if (confirm("Are you sure you want to delete this job?")) {
-			var id = $(this).parents('tr').attr('id');
-			$.get('/job/remove', { id: id }, function(d) {
-				if (d.status.trim() == 'success') {
-					$this.parents('tr').fadeOut();
-				}
-			}, 'JSON');
-		}
-	});
+		$(".del-job").click(function (e) {
+			e.preventDefault();
+			var $this = $(this);
+			if (confirm("Are you sure you want to delete this job?")) {
+				var id = $(this).parents('tr').attr('id');
+				$.get('/job/remove', { id: id }, function(d) {
+					if (d.status.trim() == 'success') {
+						$this.parents('tr').fadeOut();
+					}
+				}, 'JSON');
+			}
+		});
 
 //
 //	$('#save-rating').click(function() {
@@ -71,5 +71,5 @@ $(document).ready(function() {
 //		$.post('/job/set-test-rating', { job_id: $("#job_id").val(), gq_rating: gq_rating , job_test: jobtest_rating });
 //		$("#manageTestModal").find(".modal-body").find('.alert-success').hide().removeClass('hidden').fadeIn().fadeOut(12000);
 //	});
-});
+	});
 </script>

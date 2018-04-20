@@ -84,11 +84,17 @@ module.exports = {
         },
 
         min_salary_budget: {
-            type: 'float'
+            type: 'float',
+            defaultsTo: 0.0
         },
 
         max_salary_budget: {
-            type: 'float'
+            type: 'float',
+            defaultsTo: 0.0
+        },
+
+        salary: {
+            type: 'string'
         },
 
         poster: {
@@ -110,6 +116,23 @@ module.exports = {
 
         company: {
             model: 'company'
+        },
+
+        company_name: {
+            type: 'string'
+        },
+
+        job_url: {
+            type: 'string'
+        },
+
+        source: {
+            type: 'string',
+            defaultsTo: 'gq'
+        },
+
+        job_id: {
+            type: 'string'
         },
 
         status: {

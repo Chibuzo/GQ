@@ -493,28 +493,61 @@ module.exports = {
     },
 
     deleteJob: function (req, res) {
-        if (!req.session.coy_id) {
-            return res.forbidden();;
-        }
+        var id = req.param('id');
+        if (!req.session.coy_id) return;
+        Job.find({ id: id }).populate('applications').exec(function(err, job) {
+            if (job[0].applications.length < 1) {
+                // soft delete
+                Job.update({ id: id }, { status: 'Deleted' }).exec(function() {});
+                return res.json(200, { status: 'success', msg: "You can't delete this job at this time" });
+            } else {
+                Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
+                    if (err) return;
+                    return res.json(200, { status: 'success' });
+                });
+            }
+        });
+    },
 
-        const id = req.param('id');
 
-        return Job.findOne({id: id}).populate('applications')
-            .then(job => {
-                if (!job.applications || job.applications.length > 0) {
-                    return Job.update({id: id}, { status: 'Deleted' })
-                        .then(() => {
-                            return res.json(200, { status: 'success', msg: "You can't delete this job at this time"}); 
-                        })
-                } else {
-                    return Job.destroy({ id: id})
-                        .then(() => {
-                            return res.json(200, { status: 'success' }); 
-                        })
-                }
-            })
-            .catch(err => {
-                return res.serverError();
-            })
-    }
+    viewScrapedJobs: function(req, res) {
+        //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
+        Job.find({ source: ['Jobberman', 'Ngcareers'] }).exec(function(err, jobs) {
+            return res.view('admin/scrapedjobs', { jobs: jobs });
+        })
+    },
+
+
+    fetchScrapedJobs: function(req, res) {
+        JobScraperService.fetchJobs().then(function(jobs) {
+            JobScraperService.saveScrapedJobs(jobs);
+            return res.redirect('/viewScrapedJobs');
+        });
+    },
+
+
+    //    if (!req.session.coy_id) {
+    //        return res.forbidden();;
+    //    }
+    //
+    //    const id = req.param('id');
+    //
+    //    return Job.findOne({id: id}).populate('applications')
+    //        .then(job => {
+    //            if (!job.applications || job.applications.length > 0) {
+    //                return Job.update({id: id}, { status: 'Deleted' })
+    //                    .then(() => {
+    //                        return res.json(200, { status: 'success', msg: "You can't delete this job at this time"});
+    //                    })
+    //            } else {
+    //                return Job.destroy({ id: id})
+    //                    .then(() => {
+    //                        return res.json(200, { status: 'success' });
+    //                    })
+    //            }
+    //        })
+    //        .catch(err => {
+    //            return res.serverError();
+    //        })
+    //}
 };

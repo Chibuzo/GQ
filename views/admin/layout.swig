@@ -114,6 +114,13 @@
                     </a>
                 </li>
 
+                <li class="scrapedjobs">
+                    <a href="/viewScrapedJobs">
+                        <i class="pe-7s-helm"></i>
+                        <p>Scraped Jobs</p>
+                    </a>
+                </li>
+
                 <li class="courses">
                     <a href="/admin/manage-courses">
                         <i class="pe-7s-notebook"></i>

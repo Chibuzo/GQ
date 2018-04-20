@@ -113,7 +113,7 @@
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
 												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
 											{#</video>#}
-											<iframe width="700" height="540" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<iframe width="800" height="740" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 										</div>
 									{% endif %}
 									</div>
