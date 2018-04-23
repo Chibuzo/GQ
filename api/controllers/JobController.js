@@ -110,7 +110,6 @@ module.exports = {
                             if (req.session.coy_id) {
                                 sendMail.GQnewJobAlert(user[0].company.company_name);
                             }
-
                             if (req.session.admin) {
                                 return res.redirect('/admin/coy-jobs/' + job.company);
                             } else {
@@ -203,7 +202,7 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date(); //.toISOString();
-        Job.find({ closing_date: { '>=': today }, status: 'Active' }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ closing_date: { '>=': today }, status: 'Active', source: ['', 'gq'] }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
@@ -285,6 +284,11 @@ module.exports = {
                         });
                     }
                 });
+                // process job details if scraped...
+                //if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
+                //    job.job_description = JSON.parse(job.job_description);
+                //    job.job_requirements = JSON.parse(job.job_requirements);
+                //}
                 return res.view('job', {
                     job: job,
                     job_categories: jobCategories,
@@ -492,28 +496,32 @@ module.exports = {
         });
     },
 
+    //TODO: Make this function capable of deleting more than one job at a time
     deleteJob: function (req, res) {
         var id = req.param('id');
-        if (!req.session.coy_id) return;
-        Job.find({ id: id }).populate('applications').exec(function(err, job) {
-            if (job[0].applications.length < 1) {
-                // soft delete
-                Job.update({ id: id }, { status: 'Deleted' }).exec(function() {});
-                return res.json(200, { status: 'success', msg: "You can't delete this job at this time" });
-            } else {
-                Job.destroy({ id: id, company: req.session.coy_id }).exec(function(err) {
-                    if (err) return;
-                    return res.json(200, { status: 'success' });
-                });
-            }
+        if (!req.session.coy_id && !req.session.admin) return;
+        Job.find({ id: id }).populate('applications').exec(function(err, jobs) {
+            //jobs.forEach(function(job) {
+                if (job[0].applications.length > 0) {
+                    // soft delete
+                    Job.update({id: id}, {status: 'Deleted'}).exec(function () {
+                    });
+                    return res.json(200, {status: 'success', msg: "You can't delete this job at this time"});
+                } else {
+                    Job.destroy({id: id}).exec(function (err) {
+                        if (err) return;
+                        return res.json(200, {status: 'success'});
+                    });
+                }
+            //});
         });
     },
 
 
     viewScrapedJobs: function(req, res) {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
-        Job.find({ source: ['Jobberman', 'Ngcareers'] }).exec(function(err, jobs) {
-            return res.view('admin/scrapedjobs', { jobs: jobs });
+        Job.find({ source: ['Jobberman', 'Ngcareers'] }).sort('company_name asc').exec(function(err, jobs) {
+            return res.view('admin/scrapedJobs', { jobs: jobs });
         })
     },
 
@@ -524,6 +532,12 @@ module.exports = {
             return res.redirect('/viewScrapedJobs');
         });
     },
+
+
+    moveToJobBoard: function(req, res) {
+        Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function() {});
+        return res.ok();
+    }
 
 
     //    if (!req.session.coy_id) {

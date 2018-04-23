@@ -132,24 +132,50 @@ input[type="text"] {
 </div>
 </header>
 
-	<div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
+<div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
+
+	{% if job.source == 'Jobberman' || job.source == 'Ngcareers' %}
+		{% set scrapedJob = true %}
+	{% endif %}
+
 	<div class="row">
 		<div class="col-md-8">
 			<div class="job">
 				<h2 id="job-title">{{ job.job_title }}</h2>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
-						<li><i class="fa fa-institution"></i> {{ job.company.company_name }} </li>
+						<li><i class="fa fa-institution"></i>{% if scrapedJob === true %} GQ Direct {% else %} {{ job.company.company_name }} {% endif %} </li>
 						<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
 						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
 						<li><i class="fa fa-calendar"></i> Closes On: {{ job.closing_date | date('d.m.Y') }} </li>
 					</ul>
 				</div>
-				<div class="job-desc">
-					{{ job.job_description }}
 
-					<h3>Requirements</h3>
-					{{ job.job_requirements | safe }}
+				<div class="job-desc">
+					<br>
+					{#{% if job.job_description %}#}
+						<h3>Description</h3>
+						{#{% if scrapedJob === true %}#}
+							{#{% set job_desc = job.job_description %}#}
+							{#{% for desc in job_desc %}#}
+								{#<p>{{ desc }}</p>#}
+							{#{% endfor %}#}
+						{#{% else %}#}
+							{{ job.job_description | safe }}
+						{#{% endif %}#}
+					{#{% endif %}#}
+
+					{% if job.job_requirements %}
+						<h3>Requirements</h3>
+						{#{% if scrapedJob === true %}#}
+							{#{% set job_desc = job.job_requirements %}#}
+							{#{% for desc in job_desc %}#}
+								{#<p>{{ desc }}</p>#}
+							{#{% endfor %}#}
+						{#{% else %}#}
+							{{ job.job_requirements | safe }}
+						{#{% endif %}#}
+					{% endif %}
 
 					{% if job.qualifications.length > 3 %}
 						<h3>Qualifications</h3>

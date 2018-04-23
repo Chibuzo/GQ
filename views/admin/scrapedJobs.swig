@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="col-md-5 pull-right">
-		<a href="/fetchScrapedJobs" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Fetch More Jobs</a>
+		<a href="#fetchJobModal" class="btn btn-success btn-fill pull-right" data-toggle="modal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Fetch More Jobs</a>
 	</div>
 
 	<div class="col-md-12">
@@ -17,6 +17,7 @@
 					<p class="category"></p>
 				</div>
 			</div>
+			{% set scrapedJob = true %}
 			{% include 'includes/jobs-view.swig' %}
 		</div>
 	</div>
@@ -28,7 +29,7 @@
 {% endblock %}
 
 {% block modals %}
-
+	{% include 'includes/fetchJob-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
@@ -60,6 +61,51 @@
 			}
 		});
 
+
+		$(".card").on("click", ".group-check", function() {
+			if ($(this).is(':checked')) {
+				$(".user-checkbox").prop('checked', true);
+			} else {
+				$(".user-checkbox").prop('checked', false);
+			}
+			controlActionBtn();
+		});
+
+
+		$("#tb-jobs").on('click', ".user-checkbox", function() {
+			controlActionBtn();
+		});
+
+
+		$(".card").on("click", ".move-to-jobBoard", function(e) {
+			e.preventDefault();
+
+			var jobs = [];
+			$(".user-checkbox:checked").each(function() {
+				jobs.push($(this).parents('tr').attr('id'));
+			});
+
+			$.post('/scrapedJobs/moveToJobBoard', { jobs: jobs });
+			$(".user-checkbox:checked").each(function() {
+				$(this).parents('tr').fadeOut();
+			});
+		});
+
+
+		$(".card").on('click', ".delete-jobs", function(e) {
+			e.preventDefault();
+
+			var jobs = [];
+			$(".user-checkbox:checked").each(function() {
+				jobs.push($(this).parents('tr').attr('id'));
+			});
+
+			$.post('/job/remove', { jobs: jobs });
+			$(".user-checkbox:checked").each(function() {
+				$(this).parents('tr').fadeOut();
+			});
+		});
+
 //
 //	$('#save-rating').click(function() {
 //		var gq_rating = parseInt($("#gq_assessment").val());
@@ -71,5 +117,14 @@
 //		$.post('/job/set-test-rating', { job_id: $("#job_id").val(), gq_rating: gq_rating , job_test: jobtest_rating });
 //		$("#manageTestModal").find(".modal-body").find('.alert-success').hide().removeClass('hidden').fadeIn().fadeOut(12000);
 //	});
-	});
+});
+
+
+function controlActionBtn() {
+	if ($(".user-checkbox:checked").size() > 0) {
+		$(".action-btn").prop("disabled", false);
+	} else {
+		$(".action-btn").prop("disabled", true);
+	}
+}
 </script>

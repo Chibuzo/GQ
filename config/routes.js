@@ -247,6 +247,8 @@ module.exports.routes = {
 
     'GET /viewScrapedJobs': 'JobController.viewScrapedJobs',
 
+    'POST /scrapedJobs/moveToJobBoard': 'JobController.moveToJobBoard',
+
     //'GET /email': { view: 'email' },
     //
     //'POST /pushajax': 'TestController.ajaxTest',
