@@ -147,15 +147,16 @@
 				</thead>
 				<tbody id="tb-users">
 					{% for user in users %}
-						{% if filter == 'incomplete' %}
-							{% set user_id = user.user %}
-						{% else %}
-							{% set user_id = user.id %}
-						{% endif %}
-						<tr id="{{ user_id }}">
+						<tr id="{{ user.id }}">
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
 							<td data-order="{{ user.createdAt | date('Y/m/d') }}">{{ user.createdAt | date('d.m.Y') }}</td>
-							<td class="name">{{ user.fullname }}</td>
+							{% if resume == true %}
+								<td class="name">
+									<a href='/applicant/resume-user/{{user.user}}' target="_blank">{{ user.fullname }} </a>
+								</td>
+							{% else %}
+								<td class="name">{{ user.fullname }}</td>
+							{% endif %}
 							<td class="email">{{ user.email }}</td>
 							<td>{{ user.phone }}</td>
 							<td></td>
@@ -253,8 +254,7 @@ $(document).ready(function() {
 				users.push($(this).parents('tr').attr('id'));
 			});
 
-			var filter = {{ filter | json | safe }};
-			$.post('/admin/deleteCandidates', { users: users, filter: filter }, function() {
+			$.post('/admin/deleteCandidates', { users: users}, function() {
 				location.reload(true);
 			});
 		}

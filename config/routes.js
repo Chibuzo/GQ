@@ -80,8 +80,6 @@ module.exports.routes = {
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
 
     'GET /admin/coy-jobs/:coy_id': 'CompanyController.viewCompanyJobs',
-    
-    'GET /admin/candidates-2': 'ApplicantController.fetchStatisticsPage2',
 
     'GET /admin/candidates/:query': 'ApplicantController.fetchStatisticsPage',
 

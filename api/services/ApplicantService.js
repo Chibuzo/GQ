@@ -208,64 +208,6 @@ module.exports = {
             });
     },
 
-    getAllApplicantStatistics: function() {
-
-    	return Promise.all([
-    			User.find({user_type: 'Applicant'}),
-    			Resume.find(),
-    		]).then(results => {
-    			let applicantUserRecords = results[0];
-    			let resumeRecords = results[1];
-
-    			let inactiveCount = 0;
-    			let incompleteCount = 0;
-    			let applicantCount = applicantUserRecords.length;
-
-    			let applicants =  applicantUserRecords.map(applicantUser => {
-    				let isInactive = applicantUser.status == 'Inactive';
-    				let cssClasses = "";
-    				if (isInactive) {
-    					inactiveCount++;
-    					cssClasses += 'isInactive';
-    				}
-
-    				let applicantResume = _.find(resumeRecords, (resume) => {
-    					return resume.user == applicantUser.id || !resume.user && resume.email == applicantUser.email
-    				});
-
-    				let isIncomplete = applicantResume && applicantResume.status == 'Incomplete';
-    				if (isIncomplete) {
-    					incompleteCount++;
-    					cssClasses += 'isIncomplete';
-    				}
-
-    				return {
-    					id: applicantUser.id,
-    					createdAt: applicantUser.createdAt,
-    					fullname: applicantUser.fullname,
-    					email: applicantUser.email,
-    					phone: applicantUser.phone,
-    					isInactive,
-    					isIncomplete,
-    					cssClasses
-    				}
-    			});
-
-    			return {
-    				applicants,
-    				stats: {
-    					applicantCount,
-	    				inactiveCount,
-	    				incompleteCount
-    				}
-    			}
-
-    		}).catch(err => {
-    			throw error
-    		})
-    },
-
-
     fetchAll: function() {
         return new Promise(function(resolve) {
             User.find({user_type: 'Applicant'}).exec(function (err, applicants) {
