@@ -170,24 +170,24 @@ module.exports = {
                     break;
 
                 case 'incomplete':
-                    ApplicantService.fetchResumeStatusByQuery({status: "Incomplete"}).then(function(incomplete) {
+                    ApplicantService.fetchResumeStatusByQuery({profile_status: false}).then(function(incomplete) {
                         return res.view('admin/candidates-stat', {
                             statistics: stats,
                             users: incomplete,
                             filter: 'Incomplete Resumes',
-                            info: 'All the user with an incomplete resume.',
+                            info: 'All the user with an incomplete resume/cv.',
                             resume: true
                         });
                     });
                     break;
 
                 case 'complete':
-                    ApplicantService.fetchResumeStatusByQuery({status: "Complete"}).then(function(incomplete) {
+                    ApplicantService.fetchResumeStatusByQuery({profile_status: true}).then(function(incomplete) {
                         return res.view('admin/candidates-stat', {
                             statistics: stats,
                             users: incomplete,
                              filter: 'Complete Resumes',
-                            info: 'All the user with a complete resume.',
+                            info: 'All the user with a complete resume/cv.',
                             resume: true
                         });
                     });
