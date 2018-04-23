@@ -52,13 +52,26 @@ module.exports = {
 
 
     addYoutubeVideoID: function(req, res) {
+
         if (req.session.userId) {
-            Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id'), video_status: 'true' }).exec(function(err, resume) {
-                if (resume[0].status != 'Complete' && resume[0].test_status == true && resume[0].profile_status == true) {
-                    Resume.update({id: req.param('resume_id')}, {status: 'Complete'}).exec(function () {});
-                }
-                return res.ok();
-            });
+            return Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id'), video_status: 'true' })
+                .then(resumes => {
+                    if (resumes[0].status != 'Complete' && resumes[0].test_status == true && resumes[0].profile_status == true) {
+                        return Resume.update({id: resumes[0].id}, {status: 'Complete'})
+                            .then(() => {
+                                return res.ok();
+                            })
+                            .catch(err => {
+                                return res.serverError(err);
+                            });
+                    }
+
+                    return res.ok();
+                }).catch(err => {
+                    return res.serverError(err);
+                })
+        } else {
+            return res.forbidden();
         }
     },
 
@@ -118,33 +131,180 @@ module.exports = {
         });
     },
 
-
     fetchStatisticsPage: function(req, res) {
-        return ApplicantService.getApplicantStatistics().then(function(stat) {
+
+        return ApplicantService.getApplicantStatistics().then(function(stats) {
             switch (req.param('query')) {
                 case 'all':
                     ApplicantService.fetchAll().then(function(all) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: all, filter: req.param('query')  });
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: all,
+                            filter: 'All Users',
+                            info: 'All the user who have signed up with Get Qualified.'
+                        });
                     });
                     break;
-                case 'incomplete':
-                    ApplicantService.fetchIncomplete().then(function(incomplete) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: incomplete, filter: req.param('query') });
+                
+                case 'active':
+                    ApplicantService.fectchActiveStatus("Active").then(function(active) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: active,
+                            filter: 'Active Users',
+                            info: 'All the user who have signed up with Get Qualified and have activated thier account via the activate email.'
+
+                        });
                     });
                     break;
+
                 case 'inactive':
-                    ApplicantService.fetchInactive().then(function(inactive) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: inactive, filter: req.param('query')  });
+                    ApplicantService.fectchActiveStatus("Inactive").then(function(inactive) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: inactive,
+                            filter: 'Inactive Users',
+                            info: 'All the user who have signed up with Get Qualified and have not activated thier account via the activate email.'
+                        });
                     });
                     break;
+
+                case 'incomplete':
+                    ApplicantService.fetchResumeStatusByQuery({status: "Incomplete"}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: 'Incomplete Resumes',
+                            info: 'All the user with an incomplete resume.',
+                            resume: true
+                        });
+                    });
+                    break;
+
+                case 'complete':
+                    ApplicantService.fetchResumeStatusByQuery({status: "Complete"}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                             filter: 'Complete Resumes',
+                            info: 'All the user with a complete resume.',
+                            resume: true
+                        });
+                    });
+                    break;
+                
+
+                case 'photos':
+                    ApplicantService.fetchResumeStatusByQuery({photo_status: true}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: 'Profile Photos',
+                            info: 'All the user with a profile photo.',
+                            resume: true
+                        });
+                    });
+                    break;
+
+
+                case 'nophotos':
+                    ApplicantService.fetchResumeStatusByQuery({photo_status: false}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                             filter: 'No Profile Photos',
+                            info: 'All the user with no profile photo.',
+                            resume: true
+                        });
+                    });
+                    break;
+
+                case 'videos':
+                    ApplicantService.fetchResumeStatusByQuery({video_status: true}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: 'Profile Videos',
+                            info: 'All the user with a profile video.',
+                            resume: true
+                        });
+                    });
+                    break;
+
+            case 'novideos':
+                    ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: 'No Profile Videos',
+                            info: 'All the user with no profile video.',
+                            resume: true
+                        });
+                    });
+                    break;
+            case 'notests':
+                    ApplicantService.fetchNoTestsApplicants().then(noTests => {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: noTests,
+                            filter: 'No Test Results',
+                            info: 'All the user who can take a test, but have not.',
+                            resume: true
+                        });
+                    })
+                    break;
+            case 'sometests':
+                    ApplicantService.fetchSomeTestsApplicants().then(someTests => {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: someTests,
+                            filter: 'Some Test Results',
+                            info: 'All the user who have taken a test, but have not completed all 3 GQ tests.',
+                            resume: true
+                        });
+                    })
+                    break;
+            case 'tests':
+                    ApplicantService.fetchCompleteTestsApplicants().then(allTests => {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: allTests,
+                            filter: 'Complete Test Results',
+                            info: 'All the user who have completed all 3 GQ tests.',
+                            resume: true
+                        });
+                    })
+                    break;
+            case 'jobs':
+                    ApplicantService.fetchJobApplicants().then(jobApplicants => {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: jobApplicants,
+                            filter: 'Job Applicants',
+                            info: 'All the user have applied to a job.',
+                            resume: true
+                        });
+                    })
+                    break;
+            case 'nojobs':
+                ApplicantService.fetchNoJobApplicants().then(noJobUsers => {
+                    return res.view('admin/candidates-stat', {
+                        statistics: stats,
+                        users: noJobUsers,
+                        filter: 'No Job Applications',
+                        info: 'All the user who can apply to a job, but have not.',
+                        resume: true
+                    });
+                })
+                break;
                 default:
+                    return res.notFound();
                     break;
             }
         }).catch(err => {
-            return serverError(err);
+            return res.serverError(err);
         });
     },
-
 
     // consider refactoring this method
     search: function(req, res) {
@@ -169,7 +329,6 @@ module.exports = {
         }
         else if (q('school') && q('course'))
         {
-            console.log('Sola')
             var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution = ? AND programme like ?";
 
             var data = [ q('school').trim(), '%' + q('course').trim() + '%' ];
