@@ -222,15 +222,19 @@ input[type="text"] {
 				</div>
 
 				<div class="modal-body">
-					<div class="alert alert-info">Your resume is incomplete.<br>You must complete your resume before you can apply for this job.</div>
+					<div class="alert alert-info">
+						Your profile is incomplete.
+						<br>
+						Please complete the steps on your dashboard before applying to a job.
+					</div>
 				</div>
 				<span id="course_id" class="hidden"></span>
 				<div class="modal-footer">
-					<button type="button" class="btn btn-default" data-dismiss="modal">
-						<i class="fa fa-times"></i> Close
+					<button type="button" class="btn btn-danger" data-dismiss="modal">
+						<i class="fa fa-times"></i> Cancel
 					</button>
-					<a href="/applicant/resume-page" class="btn btn-info">
-						Continue
+					<a href="/applicant/dashboard" class="btn btn-info">
+						Go To Dashboard
 					</a>
 				</div>
 			</div>
