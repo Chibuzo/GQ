@@ -33,7 +33,7 @@ module.exports = {
 				// Test
 				let disabledTest = userResume.profile_status != true || userResume.photo_status != true;
 				checklist.push({
-					title: 'Take Apptitude Test',
+					title: 'Take Aptitude Test',
 					text: disabledTest ? 'Please upload a profile photo and complete your CV before taking the apptitude test':
 						'Aptitude tests afford companies an opportunity to make a more informed decision when it comes to hiring.',
 					iconClass: userResume.test_status == true ? 'fa fa-check-circle': 'fa fa-calculator',
