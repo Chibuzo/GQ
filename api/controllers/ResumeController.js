@@ -385,8 +385,7 @@ module.exports = {
                 employment_status: q('employment_status'),
                 available_date: new Date(Date.parse(q('available_date'))).toISOString(),
                 expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
-                // profile_status: ,
-                profile_status: true, // TODO: (Maybe) Have this be dependant on whether there is one educational field
+                profile_status: true,
                 status: status
             };
 
