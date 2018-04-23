@@ -131,19 +131,6 @@ module.exports = {
         });
     },
 
-    fetchStatisticsPage2: function(req, res) {
-        return ApplicantService.getAllApplicantStatistics()
-            .then(data => {
-                return res.view('admin/candidates-stat-2', {
-                    applicants: data.applicants,
-                    stats: data.stats
-                });
-            }).catch(err => {
-                return res.serverError(err);
-            })
-    },
-
-
     fetchStatisticsPage: function(req, res) {
 
         return ApplicantService.getApplicantStatistics().then(function(stats) {
@@ -188,7 +175,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                             filter: 'Incomplete Resumes',
-                            info: 'All the user with an incomplete resume.'
+                            info: 'All the user with an incomplete resume.',
+                            resume: true
                         });
                     });
                     break;
@@ -199,7 +187,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                              filter: 'Complete Resumes',
-                            info: 'All the user with a complete resume.'
+                            info: 'All the user with a complete resume.',
+                            resume: true
                         });
                     });
                     break;
@@ -211,7 +200,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                             filter: 'Profile Photos',
-                            info: 'All the user with a profile photo.'
+                            info: 'All the user with a profile photo.',
+                            resume: true
                         });
                     });
                     break;
@@ -223,7 +213,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                              filter: 'No Profile Photos',
-                            info: 'All the user with no profile photo.'
+                            info: 'All the user with no profile photo.',
+                            resume: true
                         });
                     });
                     break;
@@ -234,7 +225,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                             filter: 'Profile Videos',
-                            info: 'All the user with a profile video.'
+                            info: 'All the user with a profile video.',
+                            resume: true
                         });
                     });
                     break;
@@ -245,7 +237,8 @@ module.exports = {
                             statistics: stats,
                             users: incomplete,
                             filter: 'No Profile Videos',
-                            info: 'All the user with no profile video.'
+                            info: 'All the user with no profile video.',
+                            resume: true
                         });
                     });
                     break;
@@ -255,7 +248,8 @@ module.exports = {
                             statistics: stats,
                             users: noTests,
                             filter: 'No Test Results',
-                            info: 'All the user who can take a test, but have not.'
+                            info: 'All the user who can take a test, but have not.',
+                            resume: true
                         });
                     })
                     break;
@@ -265,7 +259,8 @@ module.exports = {
                             statistics: stats,
                             users: someTests,
                             filter: 'Some Test Results',
-                            info: 'All the user who have taken a test, but have not completed all 3 GQ tests.'
+                            info: 'All the user who have taken a test, but have not completed all 3 GQ tests.',
+                            resume: true
                         });
                     })
                     break;
@@ -275,7 +270,8 @@ module.exports = {
                             statistics: stats,
                             users: allTests,
                             filter: 'Complete Test Results',
-                            info: 'All the user who have completed all 3 GQ tests.'
+                            info: 'All the user who have completed all 3 GQ tests.',
+                            resume: true
                         });
                     })
                     break;
@@ -285,7 +281,8 @@ module.exports = {
                             statistics: stats,
                             users: jobApplicants,
                             filter: 'Job Applicants',
-                            info: 'All the user have applied to a job.'
+                            info: 'All the user have applied to a job.',
+                            resume: true
                         });
                     })
                     break;
@@ -295,7 +292,8 @@ module.exports = {
                         statistics: stats,
                         users: noJobUsers,
                         filter: 'No Job Applications',
-                        info: 'All the user who can apply to a job, but have not.'
+                        info: 'All the user who can apply to a job, but have not.',
+                        resume: true
                     });
                 })
                 break;
