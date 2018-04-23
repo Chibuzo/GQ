@@ -438,7 +438,13 @@ module.exports = {
                     // fetch candidate ids for use in finding/computing their test result
                     var candidates = [];
                     applications.forEach(function (application) {
-                        candidates.push(application.applicant.id);
+                        if (application.applicant) {
+                            candidates.push(application.applicant.id);
+                        } else {
+                            // this shouldn't happen
+                            console.log('Problem');
+                            console.log(application);
+                        }
                     });
                     CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
                         SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
@@ -513,7 +519,7 @@ module.exports = {
     viewScrapedJobs: function(req, res) {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'] }).exec(function(err, jobs) {
-            return res.view('admin/scrapedjobs', { jobs: jobs });
+            return res.view('admin/scrapedJobs', { jobs: jobs });
         })
     },
 
