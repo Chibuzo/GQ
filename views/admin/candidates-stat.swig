@@ -53,27 +53,70 @@
 		height: 12px;
 	}
 
+	.controls .btn {
+		width: 100%;
+		margin-bottom: 5px;
+	}
+
+	.funnel-item {
+		height: 165px;
+	}
+
 </style>
 
-<div class="" style="margin-bottom: 20px; overflow: auto;">
-	<div class="col-md-12">
-		<a href="/admin/candidates/all" class="btn btnlg btn-info btn-fill">All Applicants: {{ statistics.applicants }}</a>
-		<a href="/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive Applicants: {{ statistics.inactive }}</a>
-		<a href="/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete Profile: {{ statistics.incomplete }}</a>
+<div class="row">
+	<div class="controls col-xs-12" style="overflow: auto; margin-bottom: 20px;">
+
+		<div class="row">
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Applicants </p>
+					<a href="/admin/candidates/all" class="btn btnlg btn-info btn-fill">All : {{ statistics.applicants }}</a>
+					<a href="/admin/candidates/active" class="btn btnlg btn-info btn-fill">Active: {{ statistics.active }}</a>
+					<a href="/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive: {{ statistics.inactive }}</a>
+				</div>
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Resumes </p>
+					<a href="/admin/candidates/complete" class="btn btnlg btn-info btn-fill">Complete: {{ statistics.complete }}</a>
+					<a href="/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete: {{ statistics.incomplete }}</a>
+				</div>
+
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Photos </p>
+					<a href="/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill">No Photo: {{ statistics.nophotos }}</a>
+					<a href="/admin/candidates/photos" class="btn btnlg btn-info btn-fill">Photo: {{ statistics.photos }}</a>
+				</div>
+
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Videos </p>
+					<a href="/admin/candidates/novideos" class="btn btnlg btn-info btn-fill">No Videos: {{ statistics.novideos }}</a>
+					<a href="/admin/candidates/videos" class="btn btnlg btn-info btn-fill">Videos: {{ statistics.videos }}</a>
+				</div>
+
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Test </p>
+					<a href="/admin/candidates/notests" class="btn btnlg btn-info btn-fill">No Tests: {{ statistics.notests }}</a>
+					<a href="/admin/candidates/sometests" class="btn btnlg btn-info btn-fill">In Progress: {{ statistics.sometests }}</a>
+					<a href="/admin/candidates/tests" class="btn btnlg btn-info btn-fill">Completed: {{ statistics.tests }}</a>
+				</div>
+
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Job Applications </p>
+					<a href="/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill">No Applications: {{ statistics.nojobs }}</a>
+					<a href="/admin/candidates/jobs" class="btn btnlg btn-info btn-fill">With Applications: {{ statistics.jobs }}</a>
+				</div>
+		</div>
 	</div>
-	{#<div class="col-md-4">#}
-	{#</div>#}
-	{#<div class="col-md-4">#}
-	{#</div>#}
 </div>
 
+</div>
 
-<div class="col-md-12">
+<div class="row">
+	<div class="col-md-12">
 	<div class="card">
 		<div class="header row">
 			<div class="col-md-6">
 				<h4 class="title">{{ filter | capitalize }} Candidates</h4>
-				<p class="category">You can filter candidates</p>
+				<p class="category">{{ info }}</p>
 			</div>
 		</div>
 
@@ -103,16 +146,17 @@
 					</tr>
 				</thead>
 				<tbody id="tb-users">
-					{% for user in all_applicant %}
-						{% if filter == 'incomplete' %}
-							{% set user_id = user.user %}
-						{% else %}
-							{% set user_id = user.id %}
-						{% endif %}
-						<tr id="{{ user_id }}">
+					{% for user in users %}
+						<tr id="{{ user.id }}">
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
 							<td data-order="{{ user.createdAt | date('Y/m/d') }}">{{ user.createdAt | date('d.m.Y') }}</td>
-							<td class="name">{{ user.fullname }}</td>
+							{% if resume == true %}
+								<td class="name">
+									<a href='/applicant/resume-user/{{user.user}}' target="_blank">{{ user.fullname }} </a>
+								</td>
+							{% else %}
+								<td class="name">{{ user.fullname }}</td>
+							{% endif %}
 							<td class="email">{{ user.email }}</td>
 							<td>{{ user.phone }}</td>
 							<td></td>
@@ -137,6 +181,8 @@
 		</div>
 	</div>
 </div>
+</div>
+
 {% endblock %}
 
 {% block modals %}
@@ -208,8 +254,7 @@ $(document).ready(function() {
 				users.push($(this).parents('tr').attr('id'));
 			});
 
-			var filter = {{ filter | json | safe }};
-			$.post('/admin/deleteCandidates', { users: users, filter: filter }, function() {
+			$.post('/admin/deleteCandidates', { users: users}, function() {
 				location.reload(true);
 			});
 		}

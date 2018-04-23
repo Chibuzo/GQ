@@ -15,13 +15,13 @@
                       <input type="text" name="fullname" id="fullname" class="form-control" placeholder="User's full name..." required />
                     </div>
                 </div>
-                
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">
 						<i class="fa fa-times"></i> Cancel
 					</button>
 					<button type="submit" class="btn btn-info">
-						<i class="fa fa-save"></i> Add User 
+						<i class="fa fa-save"></i> Shall We?
 					</button>
 				</div>
 			</form>

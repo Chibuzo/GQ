@@ -80,44 +80,36 @@
 		$(".card").on("click", ".move-to-jobBoard", function(e) {
 			e.preventDefault();
 
-			var jobs = [];
-			$(".user-checkbox:checked").each(function() {
-				jobs.push($(this).parents('tr').attr('id'));
-			});
+			if (confirm("Are you sure you want to move the selected jobs to the Job Board?")) {
+				var jobs = [];
+				$(".user-checkbox:checked").each(function () {
+					jobs.push($(this).parents('tr').attr('id'));
+				});
 
-			$.post('/scrapedJobs/moveToJobBoard', { jobs: jobs });
-			$(".user-checkbox:checked").each(function() {
-				$(this).parents('tr').fadeOut();
-			});
+				$.post('/scrapedJobs/moveToJobBoard', {jobs: jobs});
+				$(".user-checkbox:checked").each(function () {
+					$(this).parents('tr').fadeOut();
+				});
+			}
 		});
 
 
 		$(".card").on('click', ".delete-jobs", function(e) {
 			e.preventDefault();
 
-			var jobs = [];
-			$(".user-checkbox:checked").each(function() {
-				jobs.push($(this).parents('tr').attr('id'));
-			});
+			if (confirm("Are you sure you want to delete the selected Jobs?")) {
+				var jobs = [];
+				$(".user-checkbox:checked").each(function() {
+					jobs.push($(this).parents('tr').attr('id'));
+				});
 
-			$.post('/job/remove', { jobs: jobs });
-			$(".user-checkbox:checked").each(function() {
-				$(this).parents('tr').fadeOut();
-			});
+				$.post('/job/remove', { jobs: jobs });
+				$(".user-checkbox:checked").each(function() {
+					$(this).parents('tr').fadeOut();
+				});
+			}
 		});
-
-//
-//	$('#save-rating').click(function() {
-//		var gq_rating = parseInt($("#gq_assessment").val());
-//		var jobtest_rating = parseInt($("#job_assessment").val());
-//		if (gq_rating + jobtest_rating != 100) {
-//			alert("The contribution of both tests must equal 100");
-//			return false;
-//		}
-//		$.post('/job/set-test-rating', { job_id: $("#job_id").val(), gq_rating: gq_rating , job_test: jobtest_rating });
-//		$("#manageTestModal").find(".modal-body").find('.alert-success').hide().removeClass('hidden').fadeIn().fadeOut(12000);
-//	});
-});
+	});
 
 
 function controlActionBtn() {
