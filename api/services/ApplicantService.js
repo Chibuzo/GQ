@@ -1,3 +1,98 @@
+function fetchNoTestsApplicants() {
+    // Find all the applicants who have a photo and complete resume
+    // Find all the applicants who have taken a GQ Test
+    // Remove applicants who have taken a GQ Test from applicants with complete resume and photo
+
+    return Promise.all([
+        Resume.find({photo_status: true, profile_status: true}),
+        GQTestResult.find({test: [1, 2, 3]})
+    ]).then(results => {
+        let userCompleteResumes = results[0];
+        let usersWithTests = results[1];
+
+       let testsByUsersId = _(usersWithTests).groupBy((test) => {
+            return test.candidate;
+        }).map((value, key) => {
+            return parseInt(key)
+        }).value();
+
+        return _.filter(userCompleteResumes, (resume) => {
+            return !testsByUsersId.includes(parseInt(resume.user))
+        });
+    })
+}
+
+function fetchSomeTestsApplicants() {
+    // Find all the applicants who have taken test 1, 2, or 3
+    // Group by Candidate
+    // Remove candidates who have < 3 tests
+
+    return GQTestResult.find({test: [1, 2, 3]})
+    .then(gqTestResults => {
+        let usersWithTests = _.groupBy(gqTestResults, (testResult) => {
+            return testResult.candidate;
+        });
+
+        let usersWithSomeTests = _.filter(usersWithTests, (tests, candidateId) => {
+            return tests.length < 3
+        });
+
+        let usersWithSomeTestsIds = _.map(usersWithSomeTests, (testsArr, candidateId) => {
+            return parseInt(testsArr[0].candidate);
+        });
+
+        return Resume.find({user: usersWithSomeTestsIds});
+    });
+}
+
+function fetchCompleteTestsApplicants() {
+    // Find all the applicants who have taken test 1, 2, or 3
+    // Group by Candidate
+    // Remove candidates who have < 3 tests
+
+    return GQAptitudeTestResult.find()
+    .then(gqAptitudeTestResults => {
+        let userIds = _.map(gqAptitudeTestResults, (testResult) => {
+            return testResult.user;
+        });
+
+        return Resume.find({user: userIds});
+    })
+}
+
+function fetchJobApplicants() {
+    return Application.find()
+        .then(jobApplicants => {
+            let userIds = jobApplicants.map(jobApplicant => {
+                return jobApplicant.applicant;
+            });
+
+            return Resume.find({user: userIds})
+        })
+}
+
+function fetchNoJobApplicants() {
+    // Find all Candidates who have a complete profile (CV, Photo, Video, Test)
+    // Find all the Candidates who have applied for a job
+    // Difference of the two
+
+    return Promise.all([
+            Resume.find({status: 'Complete'}),
+            Application.find()
+        ]).then(results => {
+            let resumes = results[0];
+            let applicants = results[1];
+
+            let applicantIds = _.map(applicants, applicant => {
+                return parseInt(applicant.applicant);
+            });
+
+            return _.filter(resumes, resume => {
+                return !_.includes(applicantIds, parseInt(resume.user));
+            });
+        })
+}
+
 module.exports = {
 	getChecklistData: function(userId) {
 		return new Promise(function(resolve, reject) {
@@ -85,7 +180,12 @@ module.exports = {
                 Resume.count({photo_status: true}),
                 Resume.count({photo_status: false}),
                 Resume.count({video_status: true}),
-                Resume.count({video_status: false})
+                Resume.count({video_status: false}),
+                fetchNoTestsApplicants(),
+                fetchSomeTestsApplicants(),
+                fetchCompleteTestsApplicants(),
+                fetchJobApplicants(),
+                fetchNoJobApplicants()
             ]).then(results => {
                 return {
                     applicants: results[0],
@@ -96,7 +196,12 @@ module.exports = {
                     photos: results[5],
                     nophotos: results[6],
                     videos: results[7],
-                    novideos: results[8]
+                    novideos: results[8],
+                    notests: results[9].length,
+                    sometests: results[10].length,
+                    tests: results[11].length,
+                    jobs: results[12].length,
+                    nojobs: results[13].length
                 }
             }).catch(err => {
                 throw err;
@@ -191,17 +296,15 @@ module.exports = {
         return Resume.find({photo_status: status});
     },
 
-    fetchNoTestsApplicants: function() {
-        // Find all the applicants who have a photo and complete resume
-        // Find all the applicants who have taken a GQ Test
-        // Remove applicants who have taken a GQ Test from applicants with complete resume and photo
+    fetchNoTestsApplicants: fetchNoTestsApplicants,
 
-        Promise.all([
-            Resume.find({photo_status: true, profile_status: true}),
-            GQTestResult.find({test: [1, 2, 3]})
-        ])
-    }
+    fetchSomeTestsApplicants: fetchSomeTestsApplicants,
 
+    fetchCompleteTestsApplicants: fetchCompleteTestsApplicants,
+
+    fetchJobApplicants: fetchJobApplicants,
+
+    fetchNoJobApplicants: fetchNoJobApplicants,
 
     // ATTENTION: This is a destructive function, one must not use it
     deleteApplicant: function(users) {
