@@ -333,7 +333,7 @@ module.exports = {
 
     fetchShortlisted: function(req, res) {
         JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { selected_candidates: slist });
+            return res.view('company/shortlist', { selected_candidates: slist, job_id: req.param('job_id') });
         })
         .catch(function(error) {
             return res.serverError(error);
@@ -382,7 +382,8 @@ module.exports = {
 
 					return Promise.all([
 						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						CBTService.getJobTestResults(shortlistedIds, jobTest)
+						//CBTService.getJobTestResults(shortlistedIds, jobTest)
+                        JobService.fetchShortlistedCandidates(job_id, job.company.id)
 					]).then(jobTestResults => {
 
 						let allCandidates = jobTestResults[0];
@@ -437,7 +438,13 @@ module.exports = {
                     // fetch candidate ids for use in finding/computing their test result
                     var candidates = [];
                     applications.forEach(function (application) {
-                        candidates.push(application.applicant.id);
+                        if (application.applicant) {
+                            candidates.push(application.applicant.id);
+                        } else {
+                            // this shouldn't happen
+                            console.log('Problem');
+                            console.log(application);
+                        }
                     });
                     CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
                         SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {

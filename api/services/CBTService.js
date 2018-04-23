@@ -68,7 +68,7 @@ module.exports = {
                             gq_results.push({
                                 test_id: aptScore.id,
                                 applicant: aptScore.user,
-                                score: aptScore.score,
+                                score: 'NA',
                                 percentage: percentage,
                                 test_result: percentage > 59 ? 'Passed' : 'Failed',
                                 composite_score: 'NA',
@@ -142,7 +142,7 @@ module.exports = {
                         percentile: '-',
                         test_result: percentage > 59 ? 'Passed' : 'Failed',
                         composite_score: composite_score,
-                        //aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                        aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
                         integrity_score: result.proctor.integrity_score,
                         proctor_status: result.proctor.status,
                         proctor_id: result.proctor.id,

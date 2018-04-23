@@ -14,30 +14,67 @@
 			</div>
 		</div>
 		<div class="content">
-			<table class="table table-striped tablebordered">
-				<thead>
-				<tr>
-					<th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
-					<th stle="width: 95%"><i class="fa fa-user"></i> Candidate</th>
-					<th>Email</th>
-				</tr>
-				</thead>
-				<tbody id="tb-selected">
-				{% for candidate in selected_candidates %}
-					<tr id="{{ candidate.id }}">
-						<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-						<td>
-                            <a target="_blank" href="/applicant/resume-user/{{candidate.id}}" class="view-resume" rel="tooltip" title="" data-original-title="View Resume">
-                                {{ candidate.fullname }}
-                            </a>
-                        </td>
-						<td>{{ candidate.email }}</td>
-						<td><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
-					</tr>
-				{% endfor %}
-				</tbody>
-			</table>
+			{% include '../admin/includes/shortlist-view.swig' %}
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block scriptTag %}
+{#<script src="/js/plugins/datatables.min.js"></script>#}
+<script>
+$(document).ready(function() {
+	$('.candidate-filter').addClass('active');
+
+
+//	var dTable = $('.dataTable').DataTable({
+//		pageLength: 50,
+//		responsive: true,
+//		"aoColumnDefs": [
+//			{'bSortable': false, 'aTargets': [0, 3, 4, 5]}
+//		],
+//		"columnDefs": [
+//			{"width": "590px", "targets": 0}
+//		]
+//	});
+
+
+	$(".group-check").click(function () {
+		if ($(this).is(":checked")) {
+			$(".user-checkbox").prop('checked', true);//.parent().removeClass("checked");
+		} else {
+			$(".user-checkbox").prop('checked', false);//.parent().addClass("checked");
+		}
+		controlActionBtn();
+	});
+
+
+	$("#tb-users").on('click', ".user-checkbox", function () {
+		controlActionBtn();
+	});
+
+
+	$(".action-btn").click(function() {
+		if (confirm("Are you sure you want to accept these candidates?")) {
+			var users = [];
+			$(".user-checkbox:checked").each(function () {
+				users.push($(this).parents('tr').data('candidate_id'));
+			});
+			var job_id = {{ job_id | json | safe }};
+			$.post('/selectedCandidates/accept', {users: users, job_id: job_id}, function () {
+				location.reload(true);
+			});
+		}
+	});
+});
+
+
+function controlActionBtn() {
+	if ($(".user-checkbox:checked").size() > 0) {
+		$(".action-btn").prop("disabled", false);
+	} else {
+		$(".action-btn").prop("disabled", true);
+	}
+}
+</script>
 {% endblock %}

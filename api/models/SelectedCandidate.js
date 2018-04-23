@@ -14,6 +14,11 @@ module.exports = {
 
       candidate: {
           model: 'user'
+      },
+
+      status: {
+          type: 'string',
+          defaultsTo: 'Pending Review'
       }
   }
 };

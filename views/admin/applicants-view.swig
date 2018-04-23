@@ -109,25 +109,8 @@
 
                     <div class="tab-pane in fade" id="selected">
                         <div class="row">
-                            <div class="col-md-12 table-responsive table-full-width" style="padding: 50px">
-                                <table class="table table-striped tablebordered">
-                                    <thead>
-                                    <tr>
-                                        <th style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></th>
-                                        <th style="width: 95%">Candidate</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody id="tb-selected">
-                                    {% for sel in selected_candidates %}
-                                        <tr data-candidate_id="{{ sel.applicant.id }}">
-                                            <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
-                                            <td>{{ sel.applicant.fullname }}</td>
-                                            <td><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
-                                        </tr>
-                                    {% endfor %}
-                                    </tbody>
-                                </table>
+                            <div class="col-md-12 table-responsive table-full-width" stle="padding: 50px">
+                                {% include './includes/shortlist-view.swig' %}
                             </div>
                         </div>
                     </div>
@@ -152,6 +135,9 @@ $(document).ready(function() {
         e.preventDefault();
         if (confirm("Are you sure you want to shortlist this candidate?")) {
             var fullname = $(this).parents('tr').find('.name').text();
+            var score = $(this).parents('tr').find('td:nth-child(2)').text();
+            var gqtest = $(this).parents('tr').find('td:nth-child(3)').text();
+
             var job_id = {{ job_id | json | safe }};
             var candidate_id = $(this).parents('tr').attr('id');
 
@@ -160,18 +146,21 @@ $(document).ready(function() {
             var tr = "<tr data-candidate_id='" + candidate_id + "'>" +
                  "<td style='width: 30px'><label class='checkbox'><input type='checkbox' class='form-control' data-toggle='checkbox' /></label></td>" +
                  "<td>" + fullname + "</td>" +
+                 "<td>" + score + "</td>" +
+                 "<td>" + gqtest + "</td>" +
+                 "<td>Pending Review</td>"
                  "<td><a href='' class='btn btn-danger btn-xs btn-fill unselect-candidate' rel='tooltip' title='Remove Candidate'><i class='fa fa-times fa-lg'></i></a></td>" +
             "</tr>";
 
-			var html = $("#tb-selected").html();
-            $("#tb-selected").html(html + tr);
+			//var html = $("#tb-selected").html();
+            $("#tb-users").append(tr);
 
             showNotification('top', 'center', 'success', 'The candidate has been short-listed', 'pe-7s-bell');
         }
     });
 
 
-    $("#tb-selected").on('click', '.unselect-candidate', function(e) {
+    $("#tb-users").on('click', '.unselect-candidate', function(e) {
         e.preventDefault();
         if (confirm("Are you sure you want to remove this candidate?")) {
             var job_id = {{ job_id | json | safe }};

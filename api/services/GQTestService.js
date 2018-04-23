@@ -95,7 +95,7 @@ module.exports = {
                     score: candidate_score, // really don't need this
                     percentage: percentage,
                     average: test_ave[0].score,
-                    result: percentage > 69 ? 'Passed' : 'Failed',
+                    result: percentage > 60 ? 'Passed' : 'Failed',
                     no_of_questions: no_of_questions
                 };
                 return resolve(result);
