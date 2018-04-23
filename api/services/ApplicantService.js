@@ -75,21 +75,89 @@ module.exports = {
 	},
 
     getApplicantStatistics: function() {
-        return new Promise(function(resolve, reject) {
-            User.count({user_type: 'Applicant'}).exec(function (err, applicant) {
-                User.count({status: 'Inactive'}).exec(function (err, inactive) {
-                    Resume.count().exec(function (err, active) {
-                        Resume.count({status: 'Incomplete'}).exec(function (err, incomplete) {
-                            return resolve({
-                                applicants: applicant,
-                                inactive: inactive,
-                                incomplete: incomplete
-                            });
-                        });
-                    });
-                });
+
+        return Promise.all([
+                User.count({user_type: 'Applicant'}),
+                User.count({user_type: 'Applicant', status: 'Active'}),
+                User.count({user_type: 'Applicant', status: 'Inactive'}),
+                Resume.count({status: 'Complete'}),
+                Resume.count({status: 'Incomplete'}),
+                Resume.count({photo_status: true}),
+                Resume.count({photo_status: false}),
+                Resume.count({video_status: true}),
+                Resume.count({video_status: false})
+            ]).then(results => {
+                return {
+                    applicants: results[0],
+                    active: results[1],
+                    inactive: results[2],
+                    complete: results[3],
+                    incomplete: results[4],
+                    photos: results[5],
+                    nophotos: results[6],
+                    videos: results[7],
+                    novideos: results[8]
+                }
+            }).catch(err => {
+                throw err;
             });
-        });
+    },
+
+    getAllApplicantStatistics: function() {
+
+    	return Promise.all([
+    			User.find({user_type: 'Applicant'}),
+    			Resume.find(),
+    		]).then(results => {
+    			let applicantUserRecords = results[0];
+    			let resumeRecords = results[1];
+
+    			let inactiveCount = 0;
+    			let incompleteCount = 0;
+    			let applicantCount = applicantUserRecords.length;
+
+    			let applicants =  applicantUserRecords.map(applicantUser => {
+    				let isInactive = applicantUser.status == 'Inactive';
+    				let cssClasses = "";
+    				if (isInactive) {
+    					inactiveCount++;
+    					cssClasses += 'isInactive';
+    				}
+
+    				let applicantResume = _.find(resumeRecords, (resume) => {
+    					return resume.user == applicantUser.id || !resume.user && resume.email == applicantUser.email
+    				});
+
+    				let isIncomplete = applicantResume && applicantResume.status == 'Incomplete';
+    				if (isIncomplete) {
+    					incompleteCount++;
+    					cssClasses += 'isIncomplete';
+    				}
+
+    				return {
+    					id: applicantUser.id,
+    					createdAt: applicantUser.createdAt,
+    					fullname: applicantUser.fullname,
+    					email: applicantUser.email,
+    					phone: applicantUser.phone,
+    					isInactive,
+    					isIncomplete,
+    					cssClasses
+    				}
+    			});
+
+    			return {
+    				applicants,
+    				stats: {
+    					applicantCount,
+	    				inactiveCount,
+	    				incompleteCount
+    				}
+    			}
+
+    		}).catch(err => {
+    			throw error
+    		})
     },
 
 
@@ -102,22 +170,37 @@ module.exports = {
     },
 
 
-    fetchInactive: function() {
+    fectchActiveStatus: function(status) {
         return new Promise(function(resolve) {
-            User.find({user_type: 'Applicant', status: 'Inactive'}).exec(function (err, inactive) {
+            User.find({user_type: 'Applicant', status: status}).exec(function (err, inactive) {
                 return resolve(inactive);
             });
         });
     },
 
-
-    fetchIncomplete: function() {
-        return new Promise(function(resolve) {
-            Resume.find({ status: 'Incomplete' }).exec(function(err, incomplete) {
-                return resolve(incomplete);
-            });
-        });
+    fetchResumeStatusByQuery: function(statusQuery) {
+        return Resume.find(statusQuery);
     },
+
+
+    fetchResumeStatus: function(status) {
+        return Resume.find({status: status});
+    },
+
+    fetchPhotoStatus: function(status) {
+        return Resume.find({photo_status: status});
+    },
+
+    fetchNoTestsApplicants: function() {
+        // Find all the applicants who have a photo and complete resume
+        // Find all the applicants who have taken a GQ Test
+        // Remove applicants who have taken a GQ Test from applicants with complete resume and photo
+
+        Promise.all([
+            Resume.find({photo_status: true, profile_status: true}),
+            GQTestResult.find({test: [1, 2, 3]})
+        ])
+    }
 
 
     // ATTENTION: This is a destructive function, one must not use it

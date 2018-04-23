@@ -118,26 +118,134 @@ module.exports = {
         });
     },
 
+    fetchStatisticsPage2: function(req, res) {
+        return ApplicantService.getAllApplicantStatistics()
+            .then(data => {
+                return res.view('admin/candidates-stat-2', {
+                    applicants: data.applicants,
+                    stats: data.stats
+                });
+            }).catch(err => {
+                return res.serverError(err);
+            })
+    },
+
 
     fetchStatisticsPage: function(req, res) {
-        return ApplicantService.getApplicantStatistics().then(function(stat) {
+
+        return ApplicantService.getApplicantStatistics().then(function(stats) {
             switch (req.param('query')) {
                 case 'all':
                     ApplicantService.fetchAll().then(function(all) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: all, filter: req.param('query')  });
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: all,
+                            filter: req.param('query')
+                        });
                     });
                     break;
-                case 'incomplete':
-                    ApplicantService.fetchIncomplete().then(function(incomplete) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: incomplete, filter: req.param('query') });
+                
+                case 'active':
+                    ApplicantService.fectchActiveStatus("Active").then(function(inactive) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: inactive,
+                            filter: req.param('query')
+                        });
                     });
                     break;
+
                 case 'inactive':
-                    ApplicantService.fetchInactive().then(function(inactive) {
-                        return res.view('admin/candidates-stat', { statistics: stat, all_applicant: inactive, filter: req.param('query')  });
+                    ApplicantService.fectchActiveStatus("Inactive").then(function(inactive) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: inactive,
+                            filter: req.param('query')
+                        });
                     });
                     break;
+
+                case 'incomplete':
+                    ApplicantService.fetchResumeStatusByQuery({status: "Incomplete"}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+
+                case 'complete':
+                    ApplicantService.fetchResumeStatusByQuery({status: "Complete"}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+                
+
+                case 'photos':
+                    ApplicantService.fetchResumeStatusByQuery({photo_status: true}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+
+
+                case 'nophotos':
+                    ApplicantService.fetchResumeStatusByQuery({photo_status: false}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+
+                case 'videos':
+                    ApplicantService.fetchResumeStatusByQuery({video_status: true}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+
+            case 'novideos':
+                    ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+            case 'notests':
+                    ApplicantService.fetchNoTestsApplicants().then(noTests => {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: noTests,
+                            filter: req.param('query')
+                        });
+                    })
+
+                    ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: incomplete,
+                            filter: req.param('query')
+                        });
+                    });
+                    break;
+                
                 default:
+                    return res.notFound();
                     break;
             }
         }).catch(err => {
