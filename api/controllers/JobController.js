@@ -442,7 +442,13 @@ module.exports = {
                     // fetch candidate ids for use in finding/computing their test result
                     var candidates = [];
                     applications.forEach(function (application) {
-                        candidates.push(application.applicant.id);
+                        if (application.applicant) {
+                            candidates.push(application.applicant.id);
+                        } else {
+                            // this shouldn't happen
+                            console.log('Problem');
+                            console.log(application);
+                        }
                     });
                     CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
                         SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {

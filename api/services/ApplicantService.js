@@ -175,8 +175,8 @@ module.exports = {
                 User.count({user_type: 'Applicant'}),
                 User.count({user_type: 'Applicant', status: 'Active'}),
                 User.count({user_type: 'Applicant', status: 'Inactive'}),
-                Resume.count({status: 'Complete'}),
-                Resume.count({status: 'Incomplete'}),
+                Resume.count({profile_status: true}),
+                Resume.count({profile_status: false}),
                 Resume.count({photo_status: true}),
                 Resume.count({photo_status: false}),
                 Resume.count({video_status: true}),
@@ -248,23 +248,33 @@ module.exports = {
 
     fetchNoJobApplicants: fetchNoJobApplicants,
 
-    // ATTENTION: This is a destructive function, one must not use it
-    deleteApplicant: function(users) {
-        return new Promise(function(resolve, reject) {
-            User.destroy({ id: users }).exec(function(err, deleted_users) {
-                deleted_users.forEach(function(user) {
-                    if (user.status == 'Active') {
-                        Resume.destroy({user: user.id}).exec(function (err, resume) {
-                            if (resume && resume.length > 0 && resume[0].status == 'Complete') {
-                                JobService.removeApplicantJobs(user.id);
-                            }
-                        });
-                        // delete profile photo
-                        // delete video profile
-                        // spit on his grave
-                    }
-                });
-            });
-        });
-    }
+	deleteApplicant: function(users) {
+		let destroyPromises = [
+			User.destroy({ id: users }),
+			Resume.destroy({user: users}),
+			Application.destroy({applicant: users})
+		];
+
+		_.each(users, (user) => {
+			destroyPromises.push(CBTService.cancelGQApptitudeTest(user));
+		});
+
+		return Promise.all(destroyPromises)
+			.then(results => {
+				let destroyedResumes = results[1];
+
+				// Get the resume Ids
+				resumeIds = _.map(destroyedResumes, (resume) => {
+					return parseInt(resume.id);
+				});
+
+				return Promise.all([
+					Education.destroy({resume: resumeIds}),
+					Qualification.destroy({resume: resumeIds}),
+					ReferenceContact.destroy({resume: resumeIds})
+				]);
+			}).catch(err => {
+				throw err;
+			});
+	}
 }

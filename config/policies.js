@@ -32,6 +32,12 @@ module.exports.policies = {
         updateProfile: 'isLoggedIn'
     },
 
+    ApplicantController: {
+        deleteApplicants: 'isAdmin',
+        deleteTestScoreAndFiles: 'isAdmin',
+        fetchApplicants: 'isAdmin'
+    },
+
     JobController: {
         'viewJobs': 'isLoggedIn',
         'newJobForm':'isLoggedIn',

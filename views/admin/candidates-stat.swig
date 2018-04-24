@@ -147,7 +147,11 @@
 				</thead>
 				<tbody id="tb-users">
 					{% for user in users %}
+					{% if resume == true %}
+						<tr id="{{ user.user }}">
+					{% else %}
 						<tr id="{{ user.id }}">
+					{% endif %}
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
 							<td data-order="{{ user.createdAt | date('Y/m/d') }}">{{ user.createdAt | date('d.m.Y') }}</td>
 							{% if resume == true %}
@@ -163,20 +167,6 @@
 						</tr>
 					{% endfor %}
 				</tbody>
-				<tfoot>
-					<tr><td class="">
-							<div class="btn-group">
-								<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
-									Action &nbsp;<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
-									<li><a href="" class="delete-candidates"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Applicant(s)</a></li>
-								</ul>
-							</div>
-						</td>
-					</tr>
-				</tfoot>
 			</table>
 		</div>
 	</div>
@@ -248,14 +238,26 @@ $(document).ready(function() {
 
 	$(".delete-candidates").click(function(e) {
 		e.preventDefault();
-		if (confirm("Are you sure you want to delete the selected candidates? This action cannot be undone")) {
-			var users = [];
-			$(".user-checkbox:checked").each(function() {
-				users.push($(this).parents('tr').attr('id'));
-			});
 
-			$.post('/admin/deleteCandidates', { users: users}, function() {
-				location.reload(true);
+		var users = [];
+		$(".user-checkbox:checked").each(function() {
+			users.push($(this).parents('tr').attr('id'));
+		});
+
+		if (confirm("Are you sure you want to delete the selected " + users.length +" user(s)? This will remove all the resume information associated with the users, their job applications, their test scores, and any proctor files. This action is permanent and cannot be undone.")) {
+
+			$.ajax({
+				url: '/admin/deleteCandidates',
+				data: {
+					users: users
+				},
+				method: 'DELETE',
+				error: function(jqXHR, textStatus, errorThrown) {
+					alert('Error Attempting to delete user(s): ' + textStatus + ', ' + errorThrown);
+				},
+				success: function() {
+					location.reload(true);
+				}
 			});
 		}
 	});

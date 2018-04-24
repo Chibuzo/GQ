@@ -302,8 +302,8 @@ module.exports = {
             .then(coys => {
                 var companies = [];
                 async.eachSeries(coys, function(coy, cb) {
-                    Job.find({company: coy.id}).exec(function (err, jobs) {
-                        coy.jobs = jobs.length < 1 ? 0 : jobs.length
+                    Job.count({company: coy.id}).exec(function (err, jobs) {
+                        coy.jobs = jobs;
                         companies.push(coy);
                         cb();
                     });
