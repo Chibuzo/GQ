@@ -117,7 +117,7 @@
                 <li class="scrapedjobs">
                     <a href="/viewScrapedJobs">
                         <i class="pe-7s-helm"></i>
-                        <p>Scraped Jobs</p>
+                        <p>GQ Direct</p>
                     </a>
                 </li>
 

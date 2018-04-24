@@ -242,9 +242,13 @@ module.exports.routes = {
 
     'POST /deleteYoutubeVideo': 'ApplicantController.deleteYoutubeVideo',
 
-    'GET /fetchScrapedJobs': 'JobController.fetchScrapedJobs',
+    'POST /fetchScrapedJobs': 'JobController.fetchScrapedJobs',
 
     'GET /viewScrapedJobs': 'JobController.viewScrapedJobs',
+
+    'POST /scrapedJobs/moveToJobBoard': 'JobController.moveToJobBoard',
+
+    'POST /scrapedJob/claimJob': 'JobController.moveToCompany'
 
     //'GET /email': { view: 'email' },
     //
