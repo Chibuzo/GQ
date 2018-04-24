@@ -527,8 +527,14 @@ module.exports = {
 
 
     fetchScrapedJobs: function(req, res) {
+        var filter = {
+            entry: req.param('entry'),
+            experienced: req.param('experienced'),
+            manager: req.param('manager'),
+            executive: req.param('executive')
+        };
         JobScraperService.fetchJobs().then(function(jobs) {
-            JobScraperService.saveScrapedJobs(jobs);
+            JobScraperService.saveScrapedJobs(jobs, filter);
             return res.redirect('/viewScrapedJobs');
         });
     },
@@ -536,6 +542,12 @@ module.exports = {
 
     moveToJobBoard: function(req, res) {
         Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function() {});
+        return res.ok();
+    },
+
+
+    moveToCompany: function(req, res) {
+        JobScraperService.moveJobToCompany(req.param('job_id'), req.param('coy_id'));
         return res.ok();
     }
 

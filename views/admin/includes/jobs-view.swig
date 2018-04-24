@@ -3,15 +3,14 @@
 		<thead>
 		{% if scrapedJob === true %}
 		<tr>
-			<td class="">
+			<td class="" colspan="9">
 				<div class="btn-group">
 					<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
 						Action &nbsp;<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href=""><i class="fa fa-portfolio fa-fw"></i> &nbsp;Move to JobBoard</a></li>
+						<li><a href="" class="move-to-jobBoard"><i class="fa fa-briefcase fa-fw"></i> &nbsp;Move to JobBoard</a></li>
 						<li><a href="" class="delete-jobs"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Jobs(s)</a></li>
-						<li><a>Don't touch me</a></li>
 					</ul>
 				</div>
 			</td>
@@ -60,17 +59,20 @@
 				{#{% endif %}#}
 				<td>{{ job.closing_date | date('d.m.Y') }}</td>
 				<td class="opt-icons text-center">
-					<div class="button-group" role="group">
-						{% if scrapedJob === true %}
-							<a href="{{ job.job_url }}" class="btn btn-info btn-xs btn-fill"><i class="fa fa-eye"></i> </a>
-						{% endif %}
-							<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
-						{#{% endif %}#}
-						{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-						<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
-						{#<a href="/job/candidates/{{ job.id }}" class="btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>#}
-						{#<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>#}
+					<div class="btn-group">
+						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Menu &nbsp;<span class="caret"></span>
+						</button>
+						<ul class="dropdown-menu dropdown-menu-right">
+							{% if scrapedJob === true %}
+								<li><a href="{{ job.job_url }}" class=""><i class="fa fa-eye"></i> View Job</a></li>
+								<li><a href="#moveJobToCompanyModal" data-toggle="modal" class="move-to-company"><i class="fa fa-briefcase"></i>Transfer to Company</a></li>
+							{% endif %}
+							<li><a href="/job/editjob/{{ job.id }}" class="edit-job"><i class="fa fa-pencil"></i> Edit Job</a></li>
+							<li><a href="" class="upload-csv"><i class="fa fa-file-text-o"></i>Upload Applicants</a></li>
+						</ul>
 					</div>
+						{#<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>#}
 				</td>
 			</tr>
 		{% endfor %}
