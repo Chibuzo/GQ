@@ -10,10 +10,13 @@ module.exports = {
         var test_id = req.param('test_id');
 
         // Create a new proctor session for each test.
-        ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
+        return ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
+            if (err) {
+                return res.serverError(err);
+            }
+
             req.session.proctor = sess.id;
             req.session.save();
-            console.log('Started Proctor Session ' + req.session.proctor);
             return res.json(200, { status: 'success', proctor_id: sess.id });
         });
     },

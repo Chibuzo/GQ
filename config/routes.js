@@ -85,7 +85,7 @@ module.exports.routes = {
 
     'POST /admin/sendemail': 'ApplicantController.sendEmail',
 
-    'POST /admin/deleteCandidates': 'ApplicantController.deleteApplicants',
+    'DELETE /admin/deleteCandidates': 'ApplicantController.deleteApplicants',
 
     'GET /gqtest/createnew': 'GQTestController.createTestPage',
 
@@ -132,7 +132,6 @@ module.exports.routes = {
 
     'POST /proctor/reject-test': 'ProctorRecordController.rejectTest',
 
-    //'POST /gqtest/createProctorSession': 'ProctorRecordController.stopSession',
     'POST /courseCategory/save': 'CourseCategory.saveCategory',
 
     'GET /courseCategory/delete/:category_id': 'CourseCategory.deleteCategory',

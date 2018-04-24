@@ -241,8 +241,11 @@ module.exports = {
 
 
     cancelGQApptitudeTest: function(userId) {
-        return GQAptitudeTestResult.destroy({user: userId}).then(function() {
-            return GQTestResult.destroy({candidate: userId}).then(function(destroyedRecords) {
+        return Promise.all([
+                GQAptitudeTestResult.destroy({user: userId}),
+                GQTestResult.destroy({candidate: userId})
+            ]).then(results => {
+                let destroyedRecords = results[1];
 
                 let proctorSessionIds = destroyedRecords.map(function(gqTestResult) {
                     return gqTestResult.proctor;
@@ -262,8 +265,10 @@ module.exports = {
                 proctorSessionIds.forEach(function(proctorSessionId) {
                     deleteProctorPromises.push(ProctorService.deleteProctorFiles(proctorSessionId));
                 });
+
                 return Promise.all(deleteProctorPromises);
-            });
-        });
+            }).catch(err => {
+                throw err;
+            })
     }
 }

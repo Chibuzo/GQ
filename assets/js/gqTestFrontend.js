@@ -69,10 +69,12 @@ $("#start-test").click(function() {
     $(this).text('Loading test...').prop('disabled', true);
 
     // register proctor session
-    createProctorSession();
+    createProctorSession(function() {
+        // start test proctoring
+        PROCTOR = startProctor();
+    });
 
-    // start test proctoring
-    PROCTOR = startProctor();
+
 });
 
 $("#submit-test").click(function(e) {
@@ -352,7 +354,7 @@ function mobileCheck() {
     return isMobile;
 }
 
-function createProctorSession() {
+function createProctorSession(cb) {
     $.post('/gqtest/createProctorSession',
         {
             test_id: TEST_ID
@@ -360,13 +362,24 @@ function createProctorSession() {
         function(response) {
             if (response.status && response.status.trim() === 'success') {
                 proctorSessId = parseInt(response.proctor_id);
+
                 amplitude.getInstance().logEvent("Created Proctor Session", {
                     proctorSessId: proctorSessId,
                     testId: TEST_ID
                 });
+
             }
         }
-    );
+    )
+    .fail(function(response) {
+         amplitude.getInstance().logEvent("Failed to Create Proctor Session", {
+            testId: TEST_ID,
+            err: response.responseJSON.message
+        });
+    })
+    .always(function() {
+        cb();
+    })
 }
 
 function blockTest(reason) {

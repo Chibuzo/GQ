@@ -447,11 +447,19 @@ module.exports = {
         return res.json(200, { status: 'success' });
     },
 
-
     deleteApplicants: function(req, res) {
         var users = req.param('users');
-        ApplicantService.deleteApplicant(users);
-        return res.ok();
-    }
 
+        if (!users) {
+            return res.badRequest('Missing Users');
+        }
+
+        return ApplicantService.deleteApplicant(users)
+            .then(() => {
+                return res.ok();
+            })
+            .catch(err => {
+                return res.serverError(err);
+            });
+    }
 };
