@@ -50,16 +50,6 @@ module.exports = {
         });
     },
 
-    // for companies
-	viewJobs: function(req, res) {
-        JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
-            return res.view('company/manage-jobs', { jobs: jobs });
-        })
-        .catch(function(err) {
-            return res.serverError(err);
-        });
-    },
-
     saveJob: function (req, res) {
         try {
             var q = req.param;

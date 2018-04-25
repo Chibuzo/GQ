@@ -104,13 +104,6 @@
                         </a>
                     </li>
 
-                    <li class="job-page">
-                        <a href="/job/manage">
-                            <i class="pe-7s-timer"></i>
-                            <p>Job Board</p>
-                        </a>
-                    </li>
-
                     {% if req.session.user_type == 'company' %}
                         <li>
                             <a href="/company/user-profile">

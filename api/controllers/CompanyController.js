@@ -9,10 +9,12 @@ var os = require('os');
 os.tmpDir = os.tmpdir;
 
 module.exports = {
+
     dashboard: function(req, res) {
-        return Job.find({ company: req.session.coy_id }).populate('applications').then(function(jobs) {
+         return JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
             return res.view('company/dashboard', { jobs: jobs });
-        }).catch(err => {
+        })
+        .catch(function(err) {
             return res.serverError(err);
         });
     },

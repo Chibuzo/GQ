@@ -61,10 +61,6 @@ module.exports = {
             defaultsTo: 0
         },
 
-        //job_tests: {
-        //    collection: 'jobtest',
-        //    via: 'test'
-        //},
         job_test: {
             model: 'cbttest'
         },

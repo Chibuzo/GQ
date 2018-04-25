@@ -184,8 +184,6 @@ module.exports.routes = {
 
     'GET /coy/setup/:hash/:email': 'CompanyController.initialSetup',
 
-    'GET /job/manage': 'JobController.viewJobs',
-
     'GET /job/addjob/:coy_id': 'JobController.newJobForm',
 
     'GET /job/addjob': 'JobController.newJobForm',
