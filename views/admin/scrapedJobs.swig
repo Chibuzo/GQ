@@ -30,6 +30,7 @@
 
 {% block modals %}
 	{% include 'includes/fetchJob-modal.swig' %}
+	{% include 'includes/companyAutosuggest-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
