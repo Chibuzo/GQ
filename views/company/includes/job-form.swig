@@ -35,7 +35,7 @@
 	</div>
 	<div class="form-group">
 		<label>Job Description</label>
-		<textarea name="description" rows="7" class="form-control editor" required>{{ job.job_description }}</textarea>
+		<textarea name="description" rows="7" class="form-control editor">{{ job.job_description }}</textarea>
 	</div>
 
 	<div class="form-group">
