@@ -8,15 +8,15 @@
 				<h4 class="modal-title" id="myModalLabel">Select Company</h4>
 			</div>
 
-			<form action="/company/claimJob" method="post" id="">
+			<form action="/scrapedJob/claimJob" method="post" id="form-claimjob">
 				<div class="modal-body">
 					<div class="form-group">
-                        <label for="fullname">Company Name</label>
-                        <input type="text" name="company" id="fullname" class="form-control" placeholder="User's full name..." required />
+                        <label for="company">Company Name</label>
+                        <input type="text" name="company" id="company" class="form-control company" placeholder="Company name..." required />
                     </div>
-                    <input type="hidden" name="job_id" id="job_id" />
+                    <input type="hidden" name="job_id" id="job-id" />
                     <input type="hidden" name="coy_id" id="coy_id" />
-                    <div class="alert alert-danger hidden"></div>
+                    <div class="alert alert-success hidden"></div>
                 </div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">

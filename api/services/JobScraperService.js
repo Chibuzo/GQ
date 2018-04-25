@@ -3,7 +3,7 @@ module.exports = {
         var request = require('request');
         return new Promise(function(resolve, reject) {
             request({
-                url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/fetch/all",
+                url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/fetch/all?ignore_linkbacks=1&deadline_ts=1",
                 method: "GET",
                 json: true
             }, function (error, response, body) {
@@ -46,7 +46,11 @@ module.exports = {
             }
             jobberman_level = new RegExp(jobberman_level);
             ngcareer_level = new RegExp(ngcareer_level);
-            if (jobberman_level.test(job.job.level) || ngcareer_level.test(job.job.experience)) {
+
+            var deadline = new Date(job.job.deadline * 1000).toISOString();
+            var today = new Date();
+//(Date.parse(deadline) > Date.parse(today)) && 
+            if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
                 var description, requirements;
                 if (job.job.descriptions) {
                     job.job.descriptions.forEach(function (desc) {
@@ -75,7 +79,7 @@ module.exports = {
                     job_url: job.job.url,
                     job_id: job.id,
                     source: job.job.source,
-                    closing_date: new Date(job.job.deadline).toISOString()
+                    closing_date: new Date(job.job.deadline * 1000).toISOString()
                 };
                 Job.create(data).exec(function(err, new_job) {
                     if (err) console.log(err);
@@ -96,7 +100,7 @@ module.exports = {
 
 
     moveJobToCompany: function(job_id, coy_id) {
-        Job.update({ id: job_id }, { company: coy_id, source: 'gq' }).exec(function() {});
+        Job.update({ id: job_id }, { company: coy_id, source: 'gq' }).exec(function(err) { console.log(err)});
         return;
     },
 

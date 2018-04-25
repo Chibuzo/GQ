@@ -9,7 +9,7 @@
 						Action &nbsp;<span class="caret"></span>
 					</button>
 					<ul class="dropdown-menu">
-						<li><a href="" class="move-to-jobBoard"><i class="fa fa-briefcase fa-fw"></i> &nbsp;Move to JobBoard</a></li>
+						<li><a href="" class="move-to-jobBoard"><i class="fa fa-briefcase fa-fw"></i> &nbsp;Move to Job Board</a></li>
 						<li><a href="" class="delete-jobs"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Jobs(s)</a></li>
 					</ul>
 				</div>
@@ -66,7 +66,7 @@
 						<ul class="dropdown-menu dropdown-menu-right">
 							{% if scrapedJob === true %}
 								<li><a href="{{ job.job_url }}" class=""><i class="fa fa-eye"></i> View Job</a></li>
-								<li><a href="#moveJobToCompanyModal" data-toggle="modal" class="move-to-company"><i class="fa fa-briefcase"></i>Transfer to Company</a></li>
+								<li><a href="#moveJobToCompanyModal" data-toggle="modal" class="pick-job-id"><i class="fa fa-briefcase"></i>Transfer to Company</a></li>
 							{% endif %}
 							<li><a href="/job/editjob/{{ job.id }}" class="edit-job"><i class="fa fa-pencil"></i> Edit Job</a></li>
 							<li><a href="" class="upload-csv"><i class="fa fa-file-text-o"></i>Upload Applicants</a></li>
@@ -86,7 +86,7 @@
 								Action &nbsp;<span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a href="" class="move-to-jobBoard"><i class="fa fa-briefcase fa-fw"></i> &nbsp;Move to JobBoard</a></li>
+								<li><a href="" class="move-to-jobBoard"><i class="fa fa-briefcase fa-fw"></i> &nbsp;Move to Job Board</a></li>
 								<li><a href="" class="delete-jobs"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Jobs(s)</a></li>
 							</ul>
 						</div>

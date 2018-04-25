@@ -180,6 +180,8 @@ module.exports.routes = {
 
     'POST /company/remove-user': 'CompanyController.removeUser',
 
+    'GET /get-companies': 'CompanyController.fetchCompanies',
+
     'GET /coy/setup/:hash/:email': 'CompanyController.initialSetup',
 
     'GET /job/manage': 'JobController.viewJobs',

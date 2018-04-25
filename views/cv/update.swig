@@ -91,7 +91,7 @@
 		padding-left: 20px;
 	}
 
-	.datep {
+	.gq-datep {
 		cursor: default;
 	}
 
@@ -595,6 +595,15 @@
 				return 'Nigeria' == $(this).val();
 			}).attr("selected", "selected");
 
+			var initDatepickerField = function() {
+				$('.gq-datep').datepicker({
+					autoHide: true,
+					format: 'yyyy-mm-dd'
+				});
+			}
+
+			initDatepickerField();
+
 
 			//fetch universities
 			var schools = [], options = [];
@@ -620,12 +629,7 @@
 				var institutionsClone =  $("#another-inst").clone();
                 institutionsClone.insertBefore("#another-inst").slideDown().removeAttr("id");
 
-                $('.is-required', institutionsClone).prop('required', true);
-
-				$('.datep').datepicker({
-					format: 'yyyy-mm-dd',
-					autoHide: true
-				});
+				initDatepickerField();
 
 				$(".school").easyAutocomplete(options);
 			});
@@ -643,12 +647,9 @@
 				e.preventDefault();
 
 				let qualificationClone = $("#another-qualification").clone();
-                qualificationClone.insertBefore("#another-qualification").slideDown().removeAttr("id");
+				qualificationClone.insertBefore("#another-qualification").slideDown().removeAttr("id");
 
-				$('.datep').datepicker({
-					format: 'yyyy-mm-dd',
-					autoHide: true
-				});
+				initDatepickerField();
 			});
 
 
@@ -665,10 +666,7 @@
 				e.preventDefault();
 				$("#another-employment").clone().insertBefore("#another-employment").slideDown().removeAttr("id");
 
-				$('.datep').datepicker({
-					format: 'yyyy-mm-dd',
-					autoHide: true
-				});
+				initDatepickerField();
 			});
 
 
