@@ -505,28 +505,29 @@ module.exports = {
     //TODO: Make this function capable of deleting more than one job at a time
     deleteJob: function (req, res) {
         var id = req.param('id');
-        if (!req.session.coy_id && !req.session.admin) return;
-        Job.find({ id: id }).populate('applications').exec(function(err, jobs) {
-            //jobs.forEach(function(job) {
-                if (job[0].applications.length > 0) {
-                    // soft delete
-                    Job.update({id: id}, {status: 'Deleted'}).exec(function () {
-                    });
-                    return res.json(200, {status: 'success', msg: "You can't delete this job at this time"});
-                } else {
-                    Job.destroy({id: id}).exec(function (err) {
-                        if (err) return;
+        if (req.session.coy_id || req.session.admin) {
+            Job.find({ id: id }).populate('applications').exec(function(err, jobs) {
+                async.eachSeries(jobs, function(job, cb) {
+                    if (job.applications.length > 0) {
+                        Application.update({ job: job.id }, { status: 'Cancelled' }).exec(function() {});
+                    }
+                    cb();
+                }, function() {
+                    if (req.param('source') && req.param('source') == 'scraped') {
+                        Job.destroy({ id: id }).exec(function() {});
+                    } else {
+                        Job.update({id: id}, {status: 'Deleted'}).exec(function () {});
                         return res.json(200, {status: 'success'});
-                    });
-                }
-            //});
-        });
+                    }
+                });
+            });
+        }
     },
 
 
     viewScrapedJobs: function(req, res) {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
-        Job.find({ source: ['Jobberman', 'Ngcareers'] }).sort('company_name asc').exec(function(err, jobs) {
+        Job.find({ source: ['Jobberman', 'Ngcareers'], status: 'Active' }).sort('company_name asc').exec(function(err, jobs) {
             return res.view('admin/scrapedJobs', { jobs: jobs });
         })
     },
@@ -554,7 +555,7 @@ module.exports = {
 
     moveToCompany: function(req, res) {
         JobScraperService.moveJobToCompany(req.param('job_id'), req.param('coy_id'));
-        return res.ok();
+        return res.redirect('/viewScrapedJobs');
     }
 
 

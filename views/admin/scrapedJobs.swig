@@ -5,6 +5,10 @@
 {% endblock %}
 
 {% block body %}
+	<link rel="stylesheet" href="/styles/easy-autocomplete.min.css" />
+	<style>
+		.easy-autocomplete { width: 100% !important; }
+	</style>
 	<div class="col-md-5 pull-right">
 		<a href="#fetchJobModal" class="btn btn-success btn-fill pull-right" data-toggle="modal" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Fetch More Jobs</a>
 	</div>
@@ -30,9 +34,11 @@
 
 {% block modals %}
 	{% include 'includes/fetchJob-modal.swig' %}
+	{% include 'includes/companyAutosuggest-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
+<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".scrapedjobs").addClass('active');
@@ -103,10 +109,43 @@
 					jobs.push($(this).parents('tr').attr('id'));
 				});
 
-				$.post('/job/remove', { jobs: jobs });
+				$.get('/job/remove', { id: jobs, source: 'scraped' });
 				$(".user-checkbox:checked").each(function() {
 					$(this).parents('tr').fadeOut();
 				});
+			}
+		});
+
+
+		$(".pick-job-id").click(function() {
+			var job_id = $(this).parents('tr').attr('id');
+			$("#job-id").val(job_id);
+		});
+
+
+		// fetch companies
+		var companies = [], options = [];
+		$.get('/get-companies', function(d) {
+			if (d.status == 'success') {
+				d.companies.forEach(function(coy) {
+					companies.push({
+						'company_name': coy.company_name,
+						'id': coy.id
+					});
+				});
+
+				options = {
+					data: companies,
+					getValue: 'company_name',
+					list: {
+						match: { enabled: true },
+						onChooseEvent: function(d) {
+							var coy_id = $(".company").getSelectedItemData().id;
+							$("#coy_id").val(coy_id);
+						}
+					}
+				};
+				$(".company").easyAutocomplete(options);
 			}
 		});
 	});

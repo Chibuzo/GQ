@@ -22,7 +22,7 @@ module.exports = {
 
         status: {
             type: 'string',
-            defaultsTo: 'Take test'
+            defaultsTo: 'Take test' // Under Review, Cancelled (when job is deleted)
         }
     }
 };

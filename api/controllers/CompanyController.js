@@ -325,6 +325,13 @@ module.exports = {
             .catch(err => {
                 return res.serverError(err);
             });    
+    },
+
+
+    fetchCompanies: function(req, res) {
+        Company.find({ status: 'Active' }).exec(function(err, companies) {
+            return res.json({ status: 'success', companies: companies });
+        });
     }
 };
 
