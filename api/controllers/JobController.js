@@ -84,7 +84,7 @@ module.exports = {
                     if (req.session.admin) {
                         return res.redirect('/admin/coy-jobs/' + job[0].company);
                     } else {
-                        return res.redirect('/job/manage');
+                        return res.redirect('/company/dashboard');
                     }
                 }).catch(err => {
                     return res.serverError(err);
@@ -103,7 +103,7 @@ module.exports = {
                             if (req.session.admin) {
                                 return res.redirect('/admin/coy-jobs/' + job.company);
                             } else {
-                                return res.redirect('/job/manage');
+                                return res.redirect('/company/dashboard');
                             }
                         })
                         .catch(err => {
@@ -182,7 +182,7 @@ module.exports = {
                     },
                     function(err) {
                         if (err) console.log(err);
-                        return res.redirect('/job/manage');
+                            return res.redirect('/company/dashboard');
                     });
                 });
             });

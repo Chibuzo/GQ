@@ -82,9 +82,9 @@
 			<div class="col-md-4">
 				<label>Closing Date</label>
 				{% if job.closing_date %}
-					<input name="closing_date" id="closing_date" type="text" value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep" readonly required />
+					<input name="closing_date" id="closing_date" type="text" value="{{ job.closing_date | date('Y-m-d') }}" class="form-control datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required/>
 				{% else %}
-					<input name="closing_date" id="closing_date" type="text" class="form-control datep" readonly required />
+					<input name="closing_date" id="closing_date" type="text" class="form-control datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required />
 				{% endif %}
 			</div>
 		</div>
