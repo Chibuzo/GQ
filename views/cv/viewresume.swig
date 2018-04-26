@@ -16,6 +16,10 @@
 		color: #3f729b;
 	}
 
+	.profile-image {
+		width: 100%;
+	}
+
 	hr { margin-top: 0; border-color: #999; margin-bottom: 30px }
 
 	h4 { margin-bottom: 8px; font-weight: 600; font-family: 'Open Sans', SansSerif }
@@ -51,6 +55,7 @@
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li class="active"><a href="#resume" data-toggle="tab"><i class="fa fa-newspaper-o"></i> &nbsp;Resume</a></li>
+							<li><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i>Photo</a></li>
 							<li><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Assessment Score</a></li>
 							<li><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;Video</a></li>
 						</ul>
@@ -58,6 +63,14 @@
 							<!-- Resume -->
 							<div class="tab-pane fade in active" id="resume">
 								{% include 'includes/resume.swig' %}
+							</div>
+
+							<div class="tab-pane fade in" id="photo">
+								<div class='row'>
+									<div class='col-sm-10 col-sm-offset-1 col-md-offset-4 col-md-4'>
+										<img class="profile-image" src="/applicant_profilephoto/{{ resume.photo }}" alt="..."/>
+									</div>
+								</div>
 							</div>
 
 							<div class="tab-pane fade in" id="test">
