@@ -44,7 +44,8 @@ module.exports.policies = {
         'editJob': 'isLoggedIn',
         'viewJobs': 'isLoggedIn',
         'saveJob': 'isLoggedIn',
-        'deleteJob': 'isLoggedIn'
+        'deleteJob': 'isLoggedIn',
+        'viewApplicantsforAdmin': 'isAdmin'
     },
 
     ResumeController: {
@@ -82,6 +83,10 @@ module.exports.policies = {
 
     selectedCandidateController: {
         '*': 'isLoggedIn'
+    },
+
+    CompanyController: {
+        'viewCompanyJobs': 'isAdmin'
     },
 
     CompanyRequestController: {

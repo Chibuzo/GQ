@@ -208,13 +208,17 @@ module.exports.routes = {
 
     'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 
-	'GET /job/admin/view-applicants/:job_id': 'JobController.viewApplicantsforAdmin',
+	'GET /admin/job/:job_id/view-applicants': 'JobController.viewApplicantsforAdmin',
 
     'GET /job/candidates/:job_id': 'JobController.getApplicantsResults',
 
     'GET /job/view-shortlisted/:job_id': 'JobController.fetchShortlisted',
 
+    'GET /admin/job/:job_id/view-shortlisted': 'JobController.fetchShortlistedForAdmin',
+
     'GET /job/:id/:title': 'JobController.showJob',
+
+    'GET /job/:id': 'JobController.showJob',
 
     'GET /jobcategory/:id/*': 'JobController.findJobsByCategory',
 

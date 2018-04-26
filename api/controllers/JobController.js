@@ -326,12 +326,34 @@ module.exports = {
     },
 
     fetchShortlisted: function(req, res) {
-        JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { selected_candidates: slist, job_id: req.param('job_id') });
+        return JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(shortlistedData) {
+            return res.view('company/shortlist', {
+                selected_candidates: shortlistedData.results,
+                job_id: req.param('job_id'),
+                jobTitle: shortlistedData.jobTitle
+            });
         })
         .catch(function(error) {
             return res.serverError(error);
         });
+    },
+
+    fetchShortlistedForAdmin: function(req, res) {
+        return Job.findOne({id: req.param('job_id')})
+            .then(job => {
+                return JobService.fetchShortlistedCandidates(job.id, job.company).then(function(shortlistedData) {
+                    return res.view('admin/shortlist', {
+                        selected_candidates: shortlistedData.results,
+                        job_id: req.param('job_id'),
+                        companyName: shortlistedData.companyName,
+                        jobTitle: shortlistedData.jobTitle,
+                        disableEdits: true
+                    });
+                })
+            })
+            .catch(function(error) {
+                return res.serverError(error);
+            });
     },
 
 	viewApplicantsforAdmin: function(req, res) {
@@ -376,8 +398,8 @@ module.exports = {
 
 					return Promise.all([
 						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						//CBTService.getJobTestResults(shortlistedIds, jobTest)
-                        JobService.fetchShortlistedCandidates(job_id, job.company.id)
+						CBTService.getJobTestResults(shortlistedIds, jobTest)
+                        //JobService.fetchShortlistedCandidates(job_id, job.company.id)
 					]).then(jobTestResults => {
 
 						let allCandidates = jobTestResults[0];
@@ -386,6 +408,7 @@ module.exports = {
 						return res.view('admin/applicants-view.swig', {
 							jobTitle: job.job_title,
 							companyName: job.company.company_name,
+                            applicants: applications,
 							results: allCandidates,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id

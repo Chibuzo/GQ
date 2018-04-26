@@ -23,7 +23,8 @@ module.exports = {
 
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
-            if (!jobtest) { // use only GQ aptitude test
+            if (!jobtest) {
+                // use only GQ aptitude test
                 // get the average integrity score for the 3 proctor sessions
                 var gq_results = [];
                 var aptitude_test_results = []; // for computing aptitude test ranking
