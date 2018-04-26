@@ -67,9 +67,15 @@
 
 							<div class="tab-pane fade in" id="photo">
 								<div class='row'>
-									<div class='col-sm-10 col-sm-offset-1 col-md-offset-4 col-md-4'>
-										<img class="profile-image" src="/applicant_profilephoto/{{ resume.photo }}" alt="..."/>
-									</div>
+									{% if resume.photo_status == true %}
+										<div class='col-sm-10 col-sm-offset-1 col-md-offset-4 col-md-4'>
+											<img class="profile-image" src="/applicant_profilephoto/{{ resume.photo }}" alt="..."/>
+										</div>
+									{% else %}
+										<div class='col-xs-12'>
+											<p>User does not have a photo</p>
+										</div>
+									{% endif %}
 								</div>
 							</div>
 
