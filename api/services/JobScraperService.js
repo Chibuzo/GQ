@@ -51,7 +51,7 @@ module.exports = {
             var today = new Date();
 //(Date.parse(deadline) > Date.parse(today)) && 
             if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
-                var description, requirements;
+                var description = '', requirements = '';
                 if (job.job.descriptions) {
                     job.job.descriptions.forEach(function (desc) {
                         if (desc) description += '<p>' + desc + '</p>';
