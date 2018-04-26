@@ -369,6 +369,7 @@ module.exports = {
 
 		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
 			.then(job => {
+
                 
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
@@ -405,9 +406,18 @@ module.exports = {
 						let allCandidates = jobTestResults[0];
 						let shortlistedCandidates = jobTestResults[1];
 
+                        let companyName;
+                        if ((job.source === null || job.source === 'gq') && job.company) {
+                            companyName = job.company.company_name;
+                        } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
+                            companyName = job.company_name
+                        } else {
+                            companyName == 'Company'
+                        }
+
 						return res.view('admin/applicants-view.swig', {
 							jobTitle: job.job_title,
-							companyName: job.company.company_name,
+							companyName: companyName,
                             applicants: applications,
 							results: allCandidates,
 							selected_candidates: shortlistedCandidates,
