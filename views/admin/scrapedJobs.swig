@@ -39,10 +39,24 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/plugins/datatables.min.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".scrapedjobs").addClass('active');
+
+		var dTable = $('.dataTable').DataTable({
+			pageLength: 50,
+			responsive: true,
+			"aoColumnDefs": [
+				{ 'bSortable': false, 'aTargets': [ 0,1,2, 3, 4, 5, 6, 8 ] }
+			],
+			"columnDefs": [
+				{ "width": "590px", "targets": 0 }
+			]
+		});
+
+
 		$(".upload-csv").click(function(e) {
 			e.preventDefault();
 			var job_id = $(this).parents('tr').attr('id');
@@ -71,9 +85,9 @@
 
 		$(".card").on("click", ".group-check", function() {
 			if ($(this).is(':checked')) {
-				$(".user-checkbox").prop('checked', true);
+				dTable.$(".user-checkbox").prop('checked', true);
 			} else {
-				$(".user-checkbox").prop('checked', false);
+				dTable.$(".user-checkbox").prop('checked', false);
 			}
 			controlActionBtn();
 		});

@@ -1,5 +1,5 @@
 <div class="content table-responsive table-full-width">
-	<table class="table table-striped tablebordered">
+	<table class="table table-striped dataTable">
 		<thead>
 		{% if scrapedJob === true %}
 			<tr>
@@ -71,7 +71,7 @@
 				{#{% else %}#}
 					{#<td>{{ job.poster.fullname }}</td>#}
 				{#{% endif %}#}
-				<td>{{ job.closing_date | date('d.m.Y') }}</td>
+				<td data-order="{{ job.closing_date | date('Y/m/d') }}">{{ job.closing_date | date('d.m.Y') }}</td>
 				<td class="opt-icons text-center">
 					<div class="btn-group">
 						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
