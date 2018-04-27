@@ -45,7 +45,7 @@
 				<td style="width: 30px"><input type="checkbox" class="user-checkbox" /></td>
 				<td>{{ job.createdAt | date('d.m.Y') }}</td>
 				{% if scrapedJob === true %}
-					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></td>
+					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}" target="_blank">{{ job.job_title }}</a></td>
 					<td>{{ job.company_name }}</td>
 				{% else %}
 					<td>{{ job.job_title }}</td>
@@ -79,7 +79,7 @@
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							{% if scrapedJob === true %}
-								<li><a href="{{ job.job_url }}" class=""><i class="fa fa-eye"></i> View Job</a></li>
+								<li><a href="{{ job.job_url }}" target="_blank"><i class="fa fa-eye"></i> View Job</a></li>
 								<li><a href="#moveJobToCompanyModal" data-toggle="modal" class="pick-job-id"><i class="fa fa-briefcase"></i>Transfer to Company</a></li>
 							{% endif %}
 							<li><a href="/job/editjob/{{ job.id }}" class="edit-job"><i class="fa fa-pencil"></i> Edit Job</a></li>
