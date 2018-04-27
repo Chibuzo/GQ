@@ -74,7 +74,7 @@
 				<td>{{ job.closing_date | date('d.m.Y') }}</td>
 				<td class="opt-icons text-center">
 					<div class="btn-group">
-						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Menu &nbsp;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">

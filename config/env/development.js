@@ -21,5 +21,7 @@ module.exports = {
      connection: 'MysqlServer'
    },
 
+    port: 80,
+
 	ENABLE_AMPLITUDE: true
 };
