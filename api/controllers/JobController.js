@@ -192,7 +192,7 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date(); //.toISOString();
-        Job.find({ closing_date: { '>=': today }, status: 'Active', source: ['', 'gq'] }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ closing_date: { '>=': today }, status: 'Active', source: 'gq' }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
@@ -507,8 +507,8 @@ module.exports = {
                         Job.destroy({ id: id }).exec(function() {});
                     } else {
                         Job.update({id: id}, {status: 'Deleted'}).exec(function () {});
-                        return res.json(200, {status: 'success'});
                     }
+                    return res.json(200, {status: 'success'});
                 });
             });
         }
@@ -538,7 +538,16 @@ module.exports = {
 
 
     moveToJobBoard: function(req, res) {
-        Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function() {});
+        Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function(err, jobs) {
+            var job_urls = [];
+            jobs.forEach(function(job) {
+                job_urls.push({
+                    id: job.job_url,
+                    link: 'https://getqualified.work/job/' + job.id + '/' + job.job_title.split(' ').join('-')
+                });
+            });
+            JobScraperService.returnScrapedJobsUrl(job_urls);
+        });
         return res.ok();
     },
 

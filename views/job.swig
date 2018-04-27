@@ -153,28 +153,12 @@ input[type="text"] {
 
 				<div class="job-desc">
 					<br>
-					{#{% if job.job_description %}#}
-						<h3>Description</h3>
-						{#{% if scrapedJob === true %}#}
-							{#{% set job_desc = job.job_description %}#}
-							{#{% for desc in job_desc %}#}
-								{#<p>{{ desc }}</p>#}
-							{#{% endfor %}#}
-						{#{% else %}#}
-							{{ job.job_description | safe }}
-						{#{% endif %}#}
-					{#{% endif %}#}
+					<h3>Description</h3>
+					{{ job.job_description | safe }}
 
-					{% if job.job_requirements %}
+					{% if job.job_requirements.length > 3 %}
 						<h3>Requirements</h3>
-						{#{% if scrapedJob === true %}#}
-							{#{% set job_desc = job.job_requirements %}#}
-							{#{% for desc in job_desc %}#}
-								{#<p>{{ desc }}</p>#}
-							{#{% endfor %}#}
-						{#{% else %}#}
-							{{ job.job_requirements | safe }}
-						{#{% endif %}#}
+						{{ job.job_requirements | safe }}
 					{% endif %}
 
 					{% if job.qualifications.length > 3 %}

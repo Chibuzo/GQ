@@ -14,7 +14,6 @@ module.exports = {
 
 
     saveScrapedJobs: function(jobs, filter) {
-        var job_urls = [];
         async.each(jobs, function(job, cb) {
             // setup filter parameters
             var jobberman_level = '', ngcareer_level = '';
@@ -51,7 +50,7 @@ module.exports = {
             var today = new Date();
 //(Date.parse(deadline) > Date.parse(today)) && 
             if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
-                var description = '', requirements = '';
+                var description = ''; var requirements = '';
                 if (job.job.descriptions) {
                     job.job.descriptions.forEach(function (desc) {
                         if (desc) description += '<p>' + desc + '</p>';
@@ -59,14 +58,14 @@ module.exports = {
                 }
                 if (job.job.requirements) {
                     job.job.requirements.forEach(function (req) {
-                        if (req) requirements += '<p' + req + '</p>';
+                        if (req) requirements += '<p>' + req + '</p>';
                     });
                 }
                 var j_level = job.job.level.length > 0 ? job.job.level : job.job.experience;
                 var job_level = module.exports.findJobLevel(j_level, level);
                 var data = {
                     company_name: job.company.name,
-                    job_title: job.job.title,
+                    job_title: job.job.title.replace(/\/|,/g, ''),
                     job_description: description,
                     job_requirements: requirements,
                     qualifications: job.job.qualification,
@@ -83,10 +82,6 @@ module.exports = {
                 };
                 Job.create(data).exec(function(err, new_job) {
                     if (err) console.log(err);
-                    job_urls.push({
-                        id: job.id,
-                        link: 'https://getqualified.work/job/' + new_job.id + '/' + job.job.title.split(' ').join('-')
-                    });
                     cb();
                 });
             } else {
@@ -94,7 +89,7 @@ module.exports = {
             }
         }, function(err) {
             // send url back to scraper
-            module.exports.returnAddedScrapedJobsUrl(job_urls);
+            //module.exports.returnAddedScrapedJobsUrl(job_urls);
         });
     },
 
@@ -129,16 +124,15 @@ module.exports = {
     },
 
 
-    returnAddedScrapedJobsUrl: function(postback_data) {
-        //var request = require('request');
-        //var body = { 'data': postback_data };
-        //request({
-        //    url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/ingest/parse",
-        //    method: "POST",
-        //    json: body
-        //}, function (error, response, body) {
-        //    console.log(body);
-        //    //return resolve(body);
-        //});
+    returnScrapedJobsUrl: function(postback_data) {
+        var request = require('request');
+        var body = { 'data': postback_data };
+        request({
+            url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/ingest/parse",
+            method: "POST",
+            json: body
+        }, function (error, response, body) {
+            // haha
+        });
     }
 }
