@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Company Jobs' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Company Jobs
+	<i class="pe-7s-timer"></i>{{ company.company_name}} Jobs
 {% endblock %}
 
 {% block body %}
@@ -17,6 +17,7 @@
 					<p class="category"></p>
 				</div>
 			</div>
+			{% set isAdmin = true %}
 			{% include 'includes/jobs-view.swig' %}
 		</div>
 	</div>

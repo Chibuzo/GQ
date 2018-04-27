@@ -93,36 +93,44 @@ module.exports = {
     fetchShortlistedCandidates: function (job_id, coy_id) {
         return new Promise(function (resolve, reject) {
             // Companies can only view shortlist for their jobs
-            Job.find({id: job_id, company: coy_id}).exec(function (err, job) {
-                if (err) {
-                    return reject(err);
-                }
-                if (job.length > 0) {
-                    JobTest.find({
-                        job_level: job[0].job_level,
-                        job_category_id: job[0].category
-                    }).populate('test').exec(function (err, test) {
-                        SelectedCandidate.find({job_id: job_id}).exec(function (err, selected_candidates) {
-                            var candidates = [];
-                            selected_candidates.forEach(function (candidate) {
-                                candidates.push(candidate.candidate);
+            Job.findOne({id: job_id, company: coy_id}).populate('company').then(function (job) {
+                if (job) {
+                    return Promise.all([
+                        JobTest.findOne({ job_level: job.job_level, job_category_id: job.category}).populate('test'),
+                        SelectedCandidate.find({job_id: job_id})
+                    ]).then(testAndCandidates => {
+                        let test = testAndCandidates[0];
+                        let selected_candidates = testAndCandidates[1];
+
+                        var candidates = [];
+                        selected_candidates.forEach(function (candidate) {
+                            candidates.push(candidate.candidate);
+                        });
+
+                        return CBTService.getJobTestResults(candidates, test).then(function (results) {
+                            // add shortlisting status to the result
+                            var _results = [];
+                            results.forEach(function(result) {
+                                var status = selected_candidates.find(x => x.candidate == result.applicant.id).status;
+                                result.status = status;
+                                _results.push(result);
                             });
-                            CBTService.getJobTestResults(candidates, test[0]).then(function (results) {
-                                // add shortlisting status to the result
-                                var _results = [];
-                                results.forEach(function(result) {
-                                    var status = selected_candidates.find(x => x.candidate == result.applicant.id).status;
-                                    result.status = status;
-                                    _results.push(result);
-                                });
-                                return resolve(_results);
+                            return resolve({
+                                results: _results,
+                                jobTitle: job.job_title,
+                                companyName: job.company.company_name
                             });
                         });
-                    });
+                    })
                 } else {
-                    return resolve([]);
+                    return resolve({
+                        results: []
+                    });
                 }
-            });
+            }).catch(err => {
+                console.error(err);
+                reject(err);
+            })
         });
     }
 }

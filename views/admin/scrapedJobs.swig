@@ -22,6 +22,7 @@
 				</div>
 			</div>
 			{% set scrapedJob = true %}
+			{% set isAdmin = true %}
 			{% include 'includes/jobs-view.swig' %}
 		</div>
 	</div>

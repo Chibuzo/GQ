@@ -13,14 +13,18 @@
 		<th>Aptitude Test</th>
 		<th>Competency Test</th>
 		<th>Status</th>
-		<th class="text-center"><input type="checkbox" class="group-check" /></th>
+		{% if disableEdits %}
+			<th></th>
+		{% else %}
+			<th class="text-center"><input type="checkbox" class="group-check" /></th>
+		{% endif %}
 	</tr>
 	</thead>
 	<tbody id="tb-users">
 	{% for candidate in selected_candidates %}
 		<tr data-candidate_id="{{ candidate.applicant.id }}">
 			<td style="width: 30px"></td>
-			<td>&nbsp;
+			<td>&nbsp; 
 				<a target="_blank" href="/applicant/resume-user/{{candidate.applicant.id}}" class="view-resume" rel="tooltip" title="" data-original-title="View Resume">
 					{{ candidate.applicant.fullname }}
 				</a>
@@ -28,8 +32,13 @@
 			<td>{{ candidate.percentage }}%</td>
 			<td>{{ candidate.score }}</td>
 			<td>{{ candidate.status }}</td>
-			{% if req.session.admin %}
-				<td class="text-center"><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
+			{% if req.session.admin  %}
+				{% if disableEdits %}
+					<td></td>
+				{% else %}
+					<td class="text-center"><a href="" class="btn btn-danger btn-xs btn-fill unselect-candidate" rel="tooltip" title="Remove Candidate"><i class="fa fa-times fa-lg"></i></a></td>
+				{% endif %}
+				
 			{% else %}
 				<td class="text-center"><input type="checkbox" class="user-checkbox" /></td>
 			{% endif %}

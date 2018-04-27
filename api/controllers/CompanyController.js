@@ -320,13 +320,25 @@ module.exports = {
     viewCompanyJobs: function(req, res) {
         var coy_id = req.param('coy_id');
 
-        return Job.find({ company: coy_id }).populate('applications').populate('poster')
-            .then(jobs => {
-                return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
-            })
-            .catch(err => {
+        if (coy_id == undefined) {
+            return res.badRequest('Missing Company Param');
+        }
+
+        return Promise.all([
+                JobService.fetchCompanyJobs(coy_id),
+                Company.findOne({id: coy_id})
+            ]).then(results => {
+                let jobs = results[0];
+                let company = results[1];
+
+                return res.view('admin/coy-jobs', {
+                    jobs: jobs,
+                    company: company,
+                    coy_id: coy_id
+                });
+            }).catch(err => {
                 return res.serverError(err);
-            });    
+            });
     },
 
 
