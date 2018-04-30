@@ -122,7 +122,7 @@ module.exports = {
 					iconClass: userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-user-circle',
 					action: '/applicant/resume-page#photo',
 					completed: userResume.photo_status == true,
-					disbaledClass: ""
+					disbaledClass: userResume.profile_status == true ? '': 'disabled'
 				});
 
 				// Test
@@ -139,24 +139,25 @@ module.exports = {
 
 
 				// Video Profile
+				let disabledVideo = userResume.test_status != true || disabledTest;
 				checklist.push({
 					title: 'Upload Introduction Video',
 					text: 'A video profile gives companies the ability to assess your professional presentation and demeanor.',
 					iconClass: userResume.video_status == true ? 'fa fa-check-circle': 'fa fa-file-video-o',
 					action: '/applicant/resume-page#video',
 					completed: userResume.video_status == true,
-					disbaledClass: ""
+					disbaledClass: disabledVideo ? "disabled" : ""
 				});
 
 				// Apply to a job
-				let disableJob = !userResume.video_status || !userResume.test_status || !userResume.profile_status;
+				let disableJob = !userResume.video_status || disabledVideo || !userResume.profile_status;
 				checklist.push({
 					title: 'Apply to a Job',
 					text: applications.length < 1 && disableJob ? 'Please complete your GQ Profile before applying to a job' :
 						'Look through our job postings and apply.',
 					iconClass: applications.length > 0 ? 'fa fa-check-circle': 'fa fa-briefcase',
 					action: applications.length < 1 && disableJob ? "" : '/jobs',
-					completed: applications.length > 0,
+					completed: applications.length > 0 && !disableJob,
 					disbaledClass: applications.length < 1 && disableJob ? "disabled" : ""
 				});
 
