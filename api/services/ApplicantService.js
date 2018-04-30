@@ -131,9 +131,9 @@ module.exports = {
 					title: 'Take Aptitude Test',
 					text: disabledTest ? 'Please upload a profile photo and complete your CV before taking the apptitude test':
 						'Aptitude tests afford companies an opportunity to make a more informed decision when it comes to hiring.',
-					iconClass: userResume.test_status == true ? 'fa fa-check-circle': 'fa fa-calculator',
+					iconClass: userResume.test_status == true && userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-calculator',
 					action: disabledTest ? "" : '/applicant/resume-page#test',
-					completed: userResume.test_status == true,
+					completed: userResume.test_status == true && userResume.photo_status == true,
 					disbaledClass: disabledTest ? "disabled" : ""
 				});
 
@@ -143,9 +143,9 @@ module.exports = {
 				checklist.push({
 					title: 'Upload Introduction Video',
 					text: 'A video profile gives companies the ability to assess your professional presentation and demeanor.',
-					iconClass: userResume.video_status == true ? 'fa fa-check-circle': 'fa fa-file-video-o',
+					iconClass: userResume.video_status == true && !disabledVideo ? 'fa fa-check-circle': 'fa fa-file-video-o',
 					action: '/applicant/resume-page#video',
-					completed: userResume.video_status == true,
+					completed: userResume.video_status == true && !disabledVideo,
 					disbaledClass: disabledVideo ? "disabled" : ""
 				});
 

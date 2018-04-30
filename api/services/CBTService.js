@@ -244,7 +244,8 @@ module.exports = {
     cancelGQApptitudeTest: function(userId) {
         return Promise.all([
                 GQAptitudeTestResult.destroy({user: userId}),
-                GQTestResult.destroy({candidate: userId})
+                GQTestResult.destroy({candidate: userId}),
+                Resume.update({user: userId}, {test_status: false, status: 'Incomplete'})
             ]).then(results => {
                 let destroyedRecords = results[1];
 
