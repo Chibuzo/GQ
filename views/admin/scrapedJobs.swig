@@ -49,7 +49,7 @@
 			pageLength: 50,
 			responsive: true,
 			"aoColumnDefs": [
-				{ 'bSortable': false, 'aTargets': [ 0,1,2, 3, 4, 5, 6, 8 ] }
+				{ 'bSortable': false, 'aTargets': [ 0,1,2, 3, 4, 5, 6, 7, 9 ] }
 			],
 			"columnDefs": [
 				{ "width": "590px", "targets": 0 }
@@ -120,12 +120,12 @@
 
 			if (confirm("Are you sure you want to delete the selected Jobs?")) {
 				var jobs = [];
-				$(".user-checkbox:checked").each(function() {
+				dTable.$(".user-checkbox:checked").each(function() {
 					jobs.push($(this).parents('tr').attr('id'));
 				});
 
 				$.get('/job/remove', { id: jobs, source: 'scraped' });
-				$(".user-checkbox:checked").each(function() {
+				dTable.$(".user-checkbox:checked").each(function() {
 					$(this).parents('tr').fadeOut();
 				});
 			}

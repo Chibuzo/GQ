@@ -193,8 +193,8 @@
 					<div class="content">
 						<ul class="nav nav-tabs">
 							<li id="resume-tab-header"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
-							<li id="photo-tab-header"><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
-							<li id="test-tab-header"><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
+							<li id="photo-tab-header"><a href="#photo" data-toggle="tab" disabled=""> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
+							<li id="test-tab-header"><a href="#test" data-toggle="tab" disabled=""><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
 							<li id="video-tab-header"><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">

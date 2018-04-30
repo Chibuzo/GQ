@@ -77,6 +77,14 @@ input[type="text"] {
 	font-size: 14px;
 }
 
+ul {
+	list-style-type: disc;
+}
+
+ul li {
+	margin-left: 15px;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;

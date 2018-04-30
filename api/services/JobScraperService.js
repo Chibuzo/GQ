@@ -48,18 +48,23 @@ module.exports = {
 
             var deadline = new Date(job.job.deadline * 1000).toISOString();
             var today = new Date();
-//(Date.parse(deadline) > Date.parse(today)) && 
-            if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
-                var description = ''; var requirements = '';
+
+            if ((Date.parse(deadline) > Date.parse(today)) && jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
+                //var description = job.job.source == 'Ngcareers' ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
+                var description = job.job.details.length > 1 ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
+
+                var requirements = '<ul>';
                 if (job.job.descriptions) {
                     job.job.descriptions.forEach(function (desc) {
-                        if (desc) description += '<p>' + desc + '</p>';
+                        if (desc) description += '<li>' + desc + '</li>';
                     });
+                    description += "</ul>";
                 }
                 if (job.job.requirements) {
                     job.job.requirements.forEach(function (req) {
-                        if (req) requirements += '<p>' + req + '</p>';
+                        if (req) requirements += '<li>' + req + '</li>';
                     });
+                    requirements += "</ul>";
                 }
                 var j_level = job.job.level.length > 0 ? job.job.level : job.job.experience;
                 var job_level = module.exports.findJobLevel(j_level, level);

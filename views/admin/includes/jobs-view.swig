@@ -3,7 +3,7 @@
 		<thead>
 		{% if scrapedJob === true %}
 			<tr>
-				<td class="" colspan="9">
+				<td class="" colspan="10">
 					<div class="btn-group">
 						<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
 							Action &nbsp;<span class="caret"></span>
@@ -45,7 +45,7 @@
 				<td style="width: 30px"><input type="checkbox" class="user-checkbox" /></td>
 				<td>{{ job.createdAt | date('d.m.Y') }}</td>
 				{% if scrapedJob === true %}
-					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></td>
+					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}" target="_blank">{{ job.job_title }}</a></td>
 					<td>{{ job.company_name }}</td>
 				{% else %}
 					<td>{{ job.job_title }}</td>
@@ -74,12 +74,12 @@
 				<td data-order="{{ job.closing_date | date('Y/m/d') }}">{{ job.closing_date | date('d.m.Y') }}</td>
 				<td class="opt-icons text-center">
 					<div class="btn-group">
-						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							Menu &nbsp;<span class="caret"></span>
 						</button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							{% if scrapedJob === true %}
-								<li><a href="{{ job.job_url }}" class=""><i class="fa fa-eye"></i> View Job</a></li>
+								<li><a href="{{ job.job_url }}" target="_blank"><i class="fa fa-eye"></i> View Job</a></li>
 								<li><a href="#moveJobToCompanyModal" data-toggle="modal" class="pick-job-id"><i class="fa fa-briefcase"></i>Transfer to Company</a></li>
 							{% endif %}
 							<li><a href="/job/editjob/{{ job.id }}" class="edit-job"><i class="fa fa-pencil"></i> Edit Job</a></li>
@@ -94,7 +94,7 @@
 		{% if scrapedJob === true %}
 			<tfoot>
 				<tr>
-					<td class="" colspan="9">
+					<td class="" colspan="10">
 						<div class="btn-group">
 							<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
 								Action &nbsp;<span class="caret"></span>

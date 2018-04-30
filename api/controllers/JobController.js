@@ -82,7 +82,7 @@ module.exports = {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
                     if (req.session.admin) {
-                        return res.redirect('/admin/coy-jobs/' + job[0].company);
+                        return job[0].source == 'gq' ? res.redirect('/admin/coy-jobs/' + job[0].company) : res.redirect('/viewScrapedJobs');
                     } else {
                         return res.redirect('/company/dashboard');
                     }
@@ -571,7 +571,7 @@ module.exports = {
 
 
     moveToJobBoard: function(req, res) {
-        Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function(err, jobs) {
+        Job.update({ id: req.param('jobs') }, { company: '16', source: 'gq' }).exec(function(err, jobs) {
             var job_urls = [];
             jobs.forEach(function(job) {
                 job_urls.push({
