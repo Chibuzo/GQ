@@ -255,6 +255,9 @@ module.exports = {
 
         Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
             if (err) return res.negotiate(err);
+            if (!job) {
+                return res.view('job', { status: 'false' });
+            }
             var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {

@@ -149,6 +149,9 @@ ul li {
 	<div class="row">
 		<div class="col-md-8">
 			<div class="job">
+			{% if status == 'false' %}
+				<div class="alert alert-info">Job not Found</div>
+			{% else %}
 				<h2 id="job-title">{{ job.job_title }}</h2>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
@@ -186,6 +189,7 @@ ul li {
 				</div>
 				<br><br>
 				<button class="btn btn-info btn-lg apply" id="{{ job.id }}">Apply for this job</button>
+			{% endif %}
 			</div>
 		</div>
 
