@@ -253,42 +253,46 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
         const userEmail = req.session.userEmail;
 
-        Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
-            if (err) return res.negotiate(err);
+        return Promise.all([
+             Job.findOne({ id: job_id }).populate('company'),
+             JobCategory.find().populate('jobs').sort({ category: 'asc' })
+        ]).then(results => {
+            let job = results[0];
+            let job_categories = results[1];
+
             if (!job) {
                 return res.view('job', { status: 'false' });
             }
-            var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
+
+            let views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
-            JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
-                var jobCategories = [];
-                job_categories.forEach(function(jobcat) {
-                    if (jobcat.jobs.length > 0) {
-                        var active_jobs = 0;
-                        jobcat.jobs.forEach(function(job) {
-                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++
-                            }
-                        });
-                        jobCategories.push({
-                            category: jobcat.category,
-                            jobs: active_jobs,
-                            id: jobcat.id
-                        });
-                    }
-                });
-                // process job details if scraped...
-                //if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
-                //    job.job_description = JSON.parse(job.job_description);
-                //    job.job_requirements = JSON.parse(job.job_requirements);
-                //}
-                return res.view('job', {
-                    job: job,
-                    job_categories: jobCategories,
-                    enableAmplitude: enableAmplitude,
-                    userEmail: userEmail
-                });
+
+            let jobCategories = [];
+            job_categories.forEach(function(jobcat) {
+                if (jobcat.jobs.length > 0) {
+                    var active_jobs = 0;
+                    jobcat.jobs.forEach(function(job) {
+                        if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                            active_jobs++
+                        }
+                    });
+
+                    jobCategories.push({
+                        category: jobcat.category,
+                        jobs: active_jobs,
+                        id: jobcat.id
+                    });
+                }
             });
+
+            return res.view('job', {
+                job: job,
+                job_categories: jobCategories,
+                enableAmplitude: enableAmplitude,
+                userEmail: userEmail
+            });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
