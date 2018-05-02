@@ -142,7 +142,7 @@ ul li {
 
 <div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
 
-	{% if job.source == 'Jobberman' || job.source == 'Ngcareers' %}
+	{% if job.source == 'Jobberman' || job.source == 'Ngcareers' || job.job_id %}
 		{% set scrapedJob = true %}
 	{% endif %}
 
@@ -164,7 +164,12 @@ ul li {
 
 				<div class="job-desc">
 					<br>
-					<h3>Description</h3>
+					{% if !scrapedJob %}
+						<h3><strong>{{ job.company.company_name }}</strong></h3>
+						<p>{{job.company.description}}</p>
+					{% endif %}
+
+					<h3>Job Description</h3>
 					{{ job.job_description | safe }}
 
 					{% if job.job_requirements.length > 3 %}
