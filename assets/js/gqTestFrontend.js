@@ -286,22 +286,7 @@ function sendAnswers(proctorFeedback) {
                 //TODO Call a function that does this
                 $(".load-test").click();
             } else if (aptitudeTest) {
-                $("#general").find('td:nth-child(2)').text(d.result.general_ability);
-                $("#general").find('td:nth-child(3)').text(d.result.general_percentage + '%');
-
-                $("#verbal").find('td:nth-child(2)').text(d.result.verbal);
-                $("#verbal").find('td:nth-child(3)').text(d.result.verbal_percentage + '%');
-
-                $("#maths").find('td:nth-child(2)').text(d.result.maths);
-                $("#maths").find('td:nth-child(3)').text(d.result.maths_percentage + '%');
-
-                $("#total").find('td:nth-child(2)').text(d.result.score);
-                $("#total").find('td:nth-child(3)').text(d.result.percentage + '%');
-
-                $("#test-div").fadeOut('fast', function() {
-                    $(".test-title").text("General Aptitude Test Result");
-                    $("#result-div").hide().removeClass('hidden').fadeIn('fast');
-                });
+                window.location.reload(true);
             } else {
                 $("#score").text(d.result.score + '/' + questions.length);
                 $("#percentage").text(d.result.percentage + '%');

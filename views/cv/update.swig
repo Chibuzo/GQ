@@ -621,6 +621,12 @@
 				return false;
 			});
 
+
+			$('.profile-tabs a').on('click', function(evt) {
+				var href = $(this).attr('href');
+				window.location = href;
+			});
+
 			$("select[name=country]").find('option').filter(function(i) {
 				return 'Nigeria' == $(this).val();
 			}).attr("selected", "selected");
