@@ -39,7 +39,7 @@
 #
 ################################################
 
-config/connection.js
+config/connections.js
 # TODO: Create this file if it does not exist in YouTube service
 config/youtube_tokens.json
 config/env/development.js
