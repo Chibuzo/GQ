@@ -333,6 +333,10 @@ module.exports = {
             let hasEducationName = resumeEducation && resumeEducation[0] && resumeEducation[0].institution ? true : false;
             let hasEducationProgram = resumeEducation && resumeEducation[0] && resumeEducation[0].programme ? true : false;
 
+            let disablePhotoTabClass = !resume.profile_status ? 'disable-tab': '';
+            let disableTestTabClass = !resume.profile_status || !resume.photo_status ? 'disable-tab': '';
+            let disableVideoTabClass = !resume.profile_status || !resume.photo_status || !resume.test_status ? 'disable-tab': '';
+
             return res.view('cv/update', {
                 resume: resume,
                 me: me,
@@ -345,7 +349,10 @@ module.exports = {
                 showContactInfo: true,
                 completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
                 userEmail: userEmail,
-                enableAmplitude: enableAmplitude
+                enableAmplitude: enableAmplitude,
+                disablePhotoTabClass,
+                disableTestTabClass,
+                disableVideoTabClass
             });
 
         }).catch(err => {

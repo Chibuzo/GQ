@@ -68,6 +68,7 @@ module.exports = {
     activateAccount: function(req, res) {
         var email = new Buffer(req.param('email'), 'base64').toString('ascii');
         var hash = req.param('hash');
+
         User.findOne({ email : email }).exec(function(err, foundUser) {
             if (err) return;
 
@@ -96,16 +97,26 @@ module.exports = {
 
                         if (user.user_type == 'Applicant') {
                             // create their resume
-                            Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id }).exec(function() {});
-                            sendMail.welcomeNewCandidate(user);
-                            return res.view('applicant/profile', {
-                                user: user,
-                                me: me,
-                                enableAmplitude: enableAmplitude,
-                                userEmail: user.email,
-                                profilePage: true,
-                                passwordSet: passwordSet
-                            });
+
+							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id })
+								.then(() => {
+									sendMail.welcomeNewCandidate(user);
+
+									if (passwordSet) {
+										return res.redirect('/applicant/dashboard');
+									} else {
+										return res.view('applicant/profile', {
+											user: user,
+											me: me,
+											enableAmplitude: enableAmplitude,
+											userEmail: user.email,
+											profilePage: true,
+											passwordSet: passwordSet
+										});
+									}
+								})
+
+
                         } else if (user.user_type == 'company') {
                             return res.view('company/users/profile', { user: user, me: me });
                         }
@@ -166,21 +177,6 @@ module.exports = {
                 }
             });
         });
-    },
-
-    dashboard: function(req, res) {
-        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
-        const userEmail = req.session.userEmail;
-
-        if (!req.session.userId) {
-            return res.view ('user/signin');
-        }
-        if (req.session.user_type == 'Applicant') {
-            return res.view('applicant/dashboard', {
-              userEmail: userEmail,
-              enableAmplitude: enableAmplitude
-            });
-        }
     },
 
     signout: function (req, res) {

@@ -122,42 +122,41 @@ module.exports = {
 					iconClass: userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-user-circle',
 					action: '/applicant/resume-page#photo',
 					completed: userResume.photo_status == true,
-					disbaledClass: ""
+					disbaledClass: userResume.profile_status == true ? '': 'disabled'
 				});
 
 				// Test
 				let disabledTest = userResume.profile_status != true || userResume.photo_status != true;
 				checklist.push({
 					title: 'Take Aptitude Test',
-					text: disabledTest ? 'Please upload a profile photo and complete your CV before taking the apptitude test':
-						'Aptitude tests afford companies an opportunity to make a more informed decision when it comes to hiring.',
-					iconClass: userResume.test_status == true ? 'fa fa-check-circle': 'fa fa-calculator',
+					text: 'Aptitude tests afford companies an opportunity to make a more informed decision when it comes to hiring.',
+					iconClass: userResume.test_status == true && userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-calculator',
 					action: disabledTest ? "" : '/applicant/resume-page#test',
-					completed: userResume.test_status == true,
+					completed: userResume.test_status == true && userResume.photo_status == true,
 					disbaledClass: disabledTest ? "disabled" : ""
 				});
 
 
 				// Video Profile
+				let disabledVideo = userResume.test_status != true || disabledTest;
 				checklist.push({
 					title: 'Upload Introduction Video',
 					text: 'A video profile gives companies the ability to assess your professional presentation and demeanor.',
-					iconClass: userResume.video_status == true ? 'fa fa-check-circle': 'fa fa-file-video-o',
+					iconClass: userResume.video_status == true && !disabledVideo ? 'fa fa-check-circle': 'fa fa-file-video-o',
 					action: '/applicant/resume-page#video',
-					completed: userResume.video_status == true,
-					disbaledClass: ""
+					completed: userResume.video_status == true && !disabledVideo,
+					disbaledClass: disabledVideo ? "disabled" : ""
 				});
 
 				// Apply to a job
-				let disableJob = !userResume.video_status || !userResume.test_status || !userResume.profile_status;
+				let disableJob = !userResume.video_status || disabledVideo || !userResume.profile_status;
 				checklist.push({
 					title: 'Apply to a Job',
-					text: applications.length < 1 && disableJob ? 'Please complete your GQ Profile before applying to a job' :
-						'Look through our job postings and apply.',
-					iconClass: applications.length > 0 ? 'fa fa-check-circle': 'fa fa-briefcase',
+					text: 'Look through our job postings and apply.',
+					iconClass: applications.length > 0 && disableJob != true ? 'fa fa-check-circle': 'fa fa-briefcase',
 					action: applications.length < 1 && disableJob ? "" : '/jobs',
-					completed: applications.length > 0,
-					disbaledClass: applications.length < 1 && disableJob ? "disabled" : ""
+					completed: applications.length > 0 && disableJob != true,
+					disbaledClass: disableJob ? "disabled" : ""
 				});
 
 				return resolve(checklist);
