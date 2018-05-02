@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Scraped Jobs' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Scraped Jobs
+	<i class="pe-7s-timer"></i> GQ Direct
 {% endblock %}
 
 {% block body %}
@@ -17,7 +17,7 @@
 		<div class="card">
 			<div class="header row">
 				<div class="col-md-6">
-					<h4 class="title">Scraped Jobs</h4>
+					<h4 class="title">GQ Direct</h4>
 					<p class="category"></p>
 				</div>
 			</div>

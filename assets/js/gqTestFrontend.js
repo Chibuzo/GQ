@@ -34,8 +34,8 @@ $("#retake-test").click(function() {
 
 $(".load-test").click(function() {
     if (mobileCheck() === true) {
-        amplitude.getInstance().logEvent("Failed Mobile Check");
-        blockTest("mobileCheck");
+        //amplitude.getInstance().logEvent("Failed Mobile Check");
+        //blockTest("mobileCheck");
         return false;
     }
 

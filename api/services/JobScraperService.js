@@ -16,16 +16,16 @@ module.exports = {
     saveScrapedJobs: function(jobs, filter) {
         async.each(jobs, function(job, cb) {
             // setup filter parameters
-            var jobberman_level = '', ngcareer_level = '';
+            var jobberman_level = '', ngcareer_level = {};
             var level = {
                 jm_entry: 'Fresh|Graduate|Entry|Internship',
-                ng_entry: '1|2|one|two',
+                ng_entry: { min: 1, max: 2 },
                 jm_experienced: 'Experienced|Non-Manager',
-                ng_experienced: '[3-9]|15',
+                ng_experienced: { min: 5, max: 15 },
                 jm_manager: 'Staff Supervisor|Head of Department',
-                ng_manager: '1[5-9]|2[0-5]',
+                ng_manager: { min: 15, max: 25 },
                 jm_executive: 'Executive|Director|CEO|CFO|COO',
-                ng_executive: '2[5-9]|3[0-5]'
+                ng_executive: { min: 25, max: 100 }
             };
             if (filter.entry) {
                 jobberman_level = level.jm_entry;
@@ -33,23 +33,24 @@ module.exports = {
             }
             if (filter.experienced) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_experienced : level.jm_experienced;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_experienced : level.ng_experienced;
+                ngcareer_level = level.ng_experienced;
             }
             if (filter.manager) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_manager : level.jm_manager;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_manager : level.ng_manager;
+                ngcareer_level = level.ng_manager;
             }
             if (filter.executive) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_executive : level.jm_executive;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_executive :  level.ng_executive;
+                ngcareer_level = level.ng_executive;
             }
             jobberman_level = new RegExp(jobberman_level);
-            ngcareer_level = new RegExp(ngcareer_level);
 
             var deadline = new Date(job.job.deadline * 1000).toISOString();
             var today = new Date();
 
-            if ((Date.parse(deadline) > Date.parse(today)) && jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
+            // the following line is for ngcareers filtering. It extracts number of years from experience
+            var experience = job.job.source == 'Ngcareers' ? parseInt(job.job.experience.replace(/\D+$/g, "")) : 0;
+            if ((Date.parse(deadline) > Date.parse(today)) && jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && (experience >= ngcareer_level.min && experience <= ngcareer_level.max))) {
                 //var description = job.job.source == 'Ngcareers' ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
                 var description = job.job.details.length > 1 ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
 
@@ -85,7 +86,7 @@ module.exports = {
                     source: job.job.source,
                     closing_date: new Date(job.job.deadline * 1000).toISOString()
                 };
-                Job.create(data).exec(function(err, new_job) {
+                Job.findOrCreate({ job_id: job.id }, data).exec(function(err, new_job) {
                     if (err) console.log(err);
                     cb();
                 });
