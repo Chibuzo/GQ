@@ -114,8 +114,14 @@ module.exports = {
         },
         function(err, logo) {
             if (err) {
-                return res.ok();
+                return res.badRequest(err);
             }
+            // copy the uploaded logo to the public folder
+            const fs = require('fs');
+            const uploadedlogo = require('path').resolve(sails.config.appPath, 'assets/logos') + '/' + filename;
+            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/logos') + '/' + filename;
+            fs.createReadStream(uploadedlogo).pipe(fs.createWriteStream(temp_pic));
+
             if (logo) {
                 Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
             }
