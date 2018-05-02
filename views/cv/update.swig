@@ -609,7 +609,7 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=11"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=12"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
