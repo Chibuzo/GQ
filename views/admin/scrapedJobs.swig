@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Scraped Jobs' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Scraped Jobs
+	<i class="pe-7s-timer"></i> GQ Direct
 {% endblock %}
 
 {% block body %}
@@ -17,11 +17,12 @@
 		<div class="card">
 			<div class="header row">
 				<div class="col-md-6">
-					<h4 class="title">Scraped Jobs</h4>
+					<h4 class="title">GQ Direct</h4>
 					<p class="category"></p>
 				</div>
 			</div>
 			{% set scrapedJob = true %}
+			{% set isAdmin = true %}
 			{% include 'includes/jobs-view.swig' %}
 		</div>
 	</div>
@@ -38,10 +39,24 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/plugins/datatables.min.js"></script>
 <script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$(".scrapedjobs").addClass('active');
+
+		var dTable = $('.dataTable').DataTable({
+			pageLength: 50,
+			responsive: true,
+			"aoColumnDefs": [
+				{ 'bSortable': false, 'aTargets': [ 0,1,2, 3, 4, 5, 6, 7, 9 ] }
+			],
+			"columnDefs": [
+				{ "width": "590px", "targets": 0 }
+			]
+		});
+
+
 		$(".upload-csv").click(function(e) {
 			e.preventDefault();
 			var job_id = $(this).parents('tr').attr('id');
@@ -70,9 +85,9 @@
 
 		$(".card").on("click", ".group-check", function() {
 			if ($(this).is(':checked')) {
-				$(".user-checkbox").prop('checked', true);
+				dTable.$(".user-checkbox").prop('checked', true);
 			} else {
-				$(".user-checkbox").prop('checked', false);
+				dTable.$(".user-checkbox").prop('checked', false);
 			}
 			controlActionBtn();
 		});
@@ -105,12 +120,12 @@
 
 			if (confirm("Are you sure you want to delete the selected Jobs?")) {
 				var jobs = [];
-				$(".user-checkbox:checked").each(function() {
+				dTable.$(".user-checkbox:checked").each(function() {
 					jobs.push($(this).parents('tr').attr('id'));
 				});
 
 				$.get('/job/remove', { id: jobs, source: 'scraped' });
-				$(".user-checkbox:checked").each(function() {
+				dTable.$(".user-checkbox:checked").each(function() {
 					$(this).parents('tr').fadeOut();
 				});
 			}

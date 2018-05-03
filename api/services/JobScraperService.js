@@ -15,19 +15,18 @@ module.exports = {
 
 
     saveScrapedJobs: function(jobs, filter) {
-        var job_urls = [];
         async.each(jobs, function(job, cb) {
             // setup filter parameters
-            var jobberman_level = '', ngcareer_level = '';
+            var jobberman_level = '', ngcareer_level = {};
             var level = {
                 jm_entry: 'Fresh|Graduate|Entry|Internship',
-                ng_entry: '1|2|one|two',
+                ng_entry: { min: 1, max: 2 },
                 jm_experienced: 'Experienced|Non-Manager',
-                ng_experienced: '[3-9]|15',
+                ng_experienced: { min: 5, max: 15 },
                 jm_manager: 'Staff Supervisor|Head of Department',
-                ng_manager: '1[5-9]|2[0-5]',
+                ng_manager: { min: 15, max: 25 },
                 jm_executive: 'Executive|Director|CEO|CFO|COO',
-                ng_executive: '2[5-9]|3[0-5]'
+                ng_executive: { min: 25, max: 100 }
             };
             if (filter.entry) {
                 jobberman_level = level.jm_entry;
@@ -35,39 +34,45 @@ module.exports = {
             }
             if (filter.experienced) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_experienced : level.jm_experienced;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_experienced : level.ng_experienced;
+                ngcareer_level = level.ng_experienced;
             }
             if (filter.manager) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_manager : level.jm_manager;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_manager : level.ng_manager;
+                ngcareer_level = level.ng_manager;
             }
             if (filter.executive) {
                 jobberman_level += jobberman_level.length > 0 ? '|' + level.jm_executive : level.jm_executive;
-                ngcareer_level += ngcareer_level.length > 0 ? '|' + level.ng_executive :  level.ng_executive;
+                ngcareer_level = level.ng_executive;
             }
             jobberman_level = new RegExp(jobberman_level);
-            ngcareer_level = new RegExp(ngcareer_level);
 
             var deadline = new Date(job.job.deadline * 1000).toISOString();
             var today = new Date();
-//(Date.parse(deadline) > Date.parse(today)) &&
-            if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
-                var description, requirements;
+
+            // the following line is for ngcareers filtering. It extracts number of years from experience
+            var experience = job.job.source == 'Ngcareers' ? parseInt(job.job.experience.replace(/\D+$/g, "")) : 0;
+            if ((Date.parse(deadline) > Date.parse(today)) && jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && (experience >= ngcareer_level.min && experience <= ngcareer_level.max))) {
+                //var description = job.job.source == 'Ngcareers' ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
+                var description = job.job.details.length > 1 ? '<p>' + job.job.details + '</p><ul>' : '<ul>';
+
+                var requirements = '<ul>';
                 if (job.job.descriptions) {
                     job.job.descriptions.forEach(function (desc) {
-                        if (desc) description += '<p>' + desc + '</p>';
+                        if (desc) description += '<li>' + desc + '</li>';
                     });
+                    description += "</ul>";
                 }
                 if (job.job.requirements) {
                     job.job.requirements.forEach(function (req) {
-                        if (req) requirements += '<p' + req + '</p>';
+                        if (req) requirements += '<li>' + req + '</li>';
                     });
+                    requirements += "</ul>";
                 }
                 var j_level = job.job.level.length > 0 ? job.job.level : job.job.experience;
                 var job_level = module.exports.findJobLevel(j_level, level);
                 var data = {
                     company_name: job.company.name,
-                    job_title: job.job.title,
+                    job_title: job.job.title.replace(/\/|,/g, ''),
                     job_description: description,
                     job_requirements: requirements,
                     qualifications: job.job.qualification,
@@ -82,12 +87,8 @@ module.exports = {
                     source: job.job.source,
                     closing_date: new Date(job.job.deadline * 1000).toISOString()
                 };
-                Job.create(data).exec(function(err, new_job) {
+                Job.findOrCreate({ job_id: job.id }, data).exec(function(err, new_job) {
                     if (err) console.log(err);
-                    job_urls.push({
-                        id: job.id,
-                        link: 'https://getqualified.work/job/' + new_job.id + '/' + job.job.title.split(' ').join('-')
-                    });
                     cb();
                 });
             } else {
@@ -95,7 +96,7 @@ module.exports = {
             }
         }, function(err) {
             // send url back to scraper
-            module.exports.returnAddedScrapedJobsUrl(job_urls);
+            //module.exports.returnAddedScrapedJobsUrl(job_urls);
         });
     },
 
@@ -130,16 +131,16 @@ module.exports = {
     },
 
 
-    returnAddedScrapedJobsUrl: function(postback_data) {
-        //var request = require('request');
-        //var body = { 'data': postback_data };
-        //request({
-        //    url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/ingest/parse",
-        //    method: "POST",
-        //    json: body
-        //}, function (error, response, body) {
-        //    console.log(body);
-        //    //return resolve(body);
-        //});
+    returnScrapedJobsUrl: function(postback_data) {
+        var request = require('request');
+        var body = { 'data': postback_data };
+        request({
+            url: "http://ec2-18-222-14-140.us-east-2.compute.amazonaws.com:8080/api/jobs/ingest/parse",
+            method: "POST",
+            json: body
+        }, function (error, response, body) {
+            // haha
+            //console.log(body);
+        });
     }
 }

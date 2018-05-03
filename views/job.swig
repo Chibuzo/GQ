@@ -77,6 +77,14 @@ input[type="text"] {
 	font-size: 14px;
 }
 
+ul {
+	list-style-type: disc;
+}
+
+ul li {
+	margin-left: 15px;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;
@@ -134,13 +142,16 @@ input[type="text"] {
 
 <div class="clearfix container" style="margin-top: 60px; margin-bottom: 60px">
 
-	{% if job.source == 'Jobberman' || job.source == 'Ngcareers' %}
+	{% if job.source == 'Jobberman' || job.source == 'Ngcareers' || job.job_id %}
 		{% set scrapedJob = true %}
 	{% endif %}
 
 	<div class="row">
 		<div class="col-md-8">
 			<div class="job">
+			{% if status == 'false' %}
+				<div class="alert alert-info">Job not Found</div>
+			{% else %}
 				<h2 id="job-title">{{ job.job_title }}</h2>
 				<div class="info-thumb">
 					<ul class="info-thumb-ls">
@@ -153,28 +164,17 @@ input[type="text"] {
 
 				<div class="job-desc">
 					<br>
-					{#{% if job.job_description %}#}
-						<h3>Description</h3>
-						{#{% if scrapedJob === true %}#}
-							{#{% set job_desc = job.job_description %}#}
-							{#{% for desc in job_desc %}#}
-								{#<p>{{ desc }}</p>#}
-							{#{% endfor %}#}
-						{#{% else %}#}
-							{{ job.job_description | safe }}
-						{#{% endif %}#}
-					{#{% endif %}#}
+					{% if !scrapedJob %}
+						<h3><strong>{{ job.company.company_name }}</strong></h3>
+						<p>{{job.company.description}}</p>
+					{% endif %}
 
-					{% if job.job_requirements %}
+					<h3>Job Description</h3>
+					{{ job.job_description | safe }}
+
+					{% if job.job_requirements.length > 3 %}
 						<h3>Requirements</h3>
-						{#{% if scrapedJob === true %}#}
-							{#{% set job_desc = job.job_requirements %}#}
-							{#{% for desc in job_desc %}#}
-								{#<p>{{ desc }}</p>#}
-							{#{% endfor %}#}
-						{#{% else %}#}
-							{{ job.job_requirements | safe }}
-						{#{% endif %}#}
+						{{ job.job_requirements | safe }}
 					{% endif %}
 
 					{% if job.qualifications.length > 3 %}
@@ -194,6 +194,7 @@ input[type="text"] {
 				</div>
 				<br><br>
 				<button class="btn btn-info btn-lg apply" id="{{ job.id }}">Apply for this job</button>
+			{% endif %}
 			</div>
 		</div>
 

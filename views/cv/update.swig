@@ -125,6 +125,26 @@
 	    animation: spin 2s linear infinite;
 	}
 
+	.disable-tab {
+		cursor: default;
+		color: gray !important;
+		border-color: transparent !important;
+		border-bottom-color: #ddd !important;
+	}
+
+	.disable-tab:hover {
+		color: gray !important;
+		border-color: transparent !important;
+		border-bottom-color: #ddd !important;
+	}
+
+
+	.profile-tabs .active a {
+		color: #1DC7EA !important;
+	}
+
+
+
 	@keyframes spin {
 	    0% { transform: rotate(0deg); }
 	    100% { transform: rotate(360deg); }
@@ -185,17 +205,22 @@
 									{% set status = status + 1 %}
 									{% set photo_status = 1 %}
 								{% endif %}
-								<strong>{{ status }}/4</strong> - Resume completion
+								<strong>{{ status }}/4</strong> - Profile Completion
 							</div>
 						</div>
 					</div><br>
 
 					<div class="content">
-						<ul class="nav nav-tabs">
-							<li id="resume-tab-header"><a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> &nbsp;Resume</a></li>
-							<li id="photo-tab-header"><a href="#photo" data-toggle="tab"> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
-							<li id="test-tab-header"><a href="#test" data-toggle="tab"><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
-							<li id="video-tab-header"><a href="#video" data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
+						<ul class="nav nav-tabs profile-tabs">
+							<li id="resume-tab-header">
+								<a href="#resume-tab" data-toggle="tab"><i class="fa fa-user"></i> Resume</a>
+							</li>
+							<li id="photo-tab-header">
+								<a href="#photo" class="{{ disablePhotoTabClass }}" data-toggle="tab" disabled=""> <i class="fa fa-picture-o"></i> &nbsp;My Photo</a></li>
+							<li id="test-tab-header">
+								<a href="#test" class="{{ disableTestTabClass }}" data-toggle="tab" disabled=""><i class="fa fa-edit"></i> &nbsp;Basic Assessment</a></li>
+							<li id="video-tab-header">
+								<a href="#video" class="{{ disableVideoTabClass }}"data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
 							<div class="row loader-container-row">
@@ -584,13 +609,24 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=11"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=12"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
 
 	<script type="text/javascript">
 		$(document).ready(function() {
+			$('.disable-tab').on('click', function(evt) {
+				evt.preventDefault();
+				return false;
+			});
+
+
+			$('.profile-tabs a').on('click', function(evt) {
+				var href = $(this).attr('href');
+				window.location = href;
+			});
+
 			$("select[name=country]").find('option').filter(function(i) {
 				return 'Nigeria' == $(this).val();
 			}).attr("selected", "selected");

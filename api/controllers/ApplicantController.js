@@ -113,7 +113,7 @@ module.exports = {
 
             Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
                 AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
-                return res.redirect('/applicant/resume-page');
+                return res.redirect('/applicant/resume-page#photo');
             });
         });
     },

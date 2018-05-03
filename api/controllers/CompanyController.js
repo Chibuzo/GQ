@@ -9,10 +9,12 @@ var os = require('os');
 os.tmpDir = os.tmpdir;
 
 module.exports = {
+
     dashboard: function(req, res) {
-        return Job.find({ company: req.session.coy_id }).populate('applications').then(function(jobs) {
+         return JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
             return res.view('company/dashboard', { jobs: jobs });
-        }).catch(err => {
+        })
+        .catch(function(err) {
             return res.serverError(err);
         });
     },
@@ -112,8 +114,14 @@ module.exports = {
         },
         function(err, logo) {
             if (err) {
-                return res.ok();
+                return res.badRequest(err);
             }
+            // copy the uploaded logo to the public folder
+            const fs = require('fs');
+            const uploadedlogo = require('path').resolve(sails.config.appPath, 'assets/logos') + '/' + filename;
+            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/logos') + '/' + filename;
+            fs.createReadStream(uploadedlogo).pipe(fs.createWriteStream(temp_pic));
+
             if (logo) {
                 Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
             }
@@ -318,13 +326,25 @@ module.exports = {
     viewCompanyJobs: function(req, res) {
         var coy_id = req.param('coy_id');
 
-        return Job.find({ company: coy_id }).populate('applications').populate('poster')
-            .then(jobs => {
-                return res.view('admin/coy-jobs', { jobs: jobs, coy_id: coy_id });
-            })
-            .catch(err => {
+        if (coy_id == undefined) {
+            return res.badRequest('Missing Company Param');
+        }
+
+        return Promise.all([
+                JobService.fetchCompanyJobs(coy_id),
+                Company.findOne({id: coy_id})
+            ]).then(results => {
+                let jobs = results[0];
+                let company = results[1];
+
+                return res.view('admin/coy-jobs', {
+                    jobs: jobs,
+                    company: company,
+                    coy_id: coy_id
+                });
+            }).catch(err => {
                 return res.serverError(err);
-            });    
+            });
     },
 
 

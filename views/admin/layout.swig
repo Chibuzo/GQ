@@ -257,6 +257,7 @@
 <script>
     $(document).ready(function() {
         $('.datep').datepicker({
+            format: 'yyyy-mm-dd',
             autoHide: true
         });
     });

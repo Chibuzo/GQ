@@ -50,16 +50,6 @@ module.exports = {
         });
     },
 
-    // for companies
-	viewJobs: function(req, res) {
-        JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
-            return res.view('company/manage-jobs', { jobs: jobs });
-        })
-        .catch(function(err) {
-            return res.serverError(err);
-        });
-    },
-
     saveJob: function (req, res) {
         try {
             var q = req.param;
@@ -92,9 +82,9 @@ module.exports = {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
                     if (req.session.admin) {
-                        return res.redirect('/admin/coy-jobs/' + job[0].company);
+                        return job[0].source == 'gq' ? res.redirect('/admin/coy-jobs/' + job[0].company) : res.redirect('/viewScrapedJobs');
                     } else {
-                        return res.redirect('/job/manage');
+                        return res.redirect('/company/dashboard');
                     }
                 }).catch(err => {
                     return res.serverError(err);
@@ -113,7 +103,7 @@ module.exports = {
                             if (req.session.admin) {
                                 return res.redirect('/admin/coy-jobs/' + job.company);
                             } else {
-                                return res.redirect('/job/manage');
+                                return res.redirect('/company/dashboard');
                             }
                         })
                         .catch(err => {
@@ -192,7 +182,7 @@ module.exports = {
                     },
                     function(err) {
                         if (err) console.log(err);
-                        return res.redirect('/job/manage');
+                            return res.redirect('/company/dashboard');
                     });
                 });
             });
@@ -202,7 +192,7 @@ module.exports = {
     // for candidates
     listJobs: function(req, res) {
         var today = new Date(); //.toISOString();
-        Job.find({ closing_date: { '>=': today }, status: 'Active', source: ['', 'gq'] }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
+        Job.find({ closing_date: { '>=': today }, status: 'Active', source: 'gq' }).populate('category').populate('company').sort({ createdAt: 'desc' }).exec(function(err, jobs) {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
@@ -263,39 +253,46 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
         const userEmail = req.session.userEmail;
 
-        Job.findOne({ id: job_id }).populate('company').exec(function(err, job) {
-            if (err) return res.negotiate(err);
-            var views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
+        return Promise.all([
+             Job.findOne({ id: job_id }).populate('company'),
+             JobCategory.find().populate('jobs').sort({ category: 'asc' })
+        ]).then(results => {
+            let job = results[0];
+            let job_categories = results[1];
+
+            if (!job) {
+                return res.view('job', { status: 'false' });
+            }
+
+            let views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
-            JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
-                var jobCategories = [];
-                job_categories.forEach(function(jobcat) {
-                    if (jobcat.jobs.length > 0) {
-                        var active_jobs = 0;
-                        jobcat.jobs.forEach(function(job) {
-                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++
-                            }
-                        });
-                        jobCategories.push({
-                            category: jobcat.category,
-                            jobs: active_jobs,
-                            id: jobcat.id
-                        });
-                    }
-                });
-                // process job details if scraped...
-                //if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
-                //    job.job_description = JSON.parse(job.job_description);
-                //    job.job_requirements = JSON.parse(job.job_requirements);
-                //}
-                return res.view('job', {
-                    job: job,
-                    job_categories: jobCategories,
-                    enableAmplitude: enableAmplitude,
-                    userEmail: userEmail
-                });
+
+            let jobCategories = [];
+            job_categories.forEach(function(jobcat) {
+                if (jobcat.jobs.length > 0) {
+                    var active_jobs = 0;
+                    jobcat.jobs.forEach(function(job) {
+                        if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                            active_jobs++
+                        }
+                    });
+
+                    jobCategories.push({
+                        category: jobcat.category,
+                        jobs: active_jobs,
+                        id: jobcat.id
+                    });
+                }
             });
+
+            return res.view('job', {
+                job: job,
+                job_categories: jobCategories,
+                enableAmplitude: enableAmplitude,
+                userEmail: userEmail
+            });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
 
@@ -336,12 +333,34 @@ module.exports = {
     },
 
     fetchShortlisted: function(req, res) {
-        JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(slist) {
-            return res.view('company/shortlist', { selected_candidates: slist, job_id: req.param('job_id') });
+        return JobService.fetchShortlistedCandidates(req.param('job_id'), req.session.coy_id).then(function(shortlistedData) {
+            return res.view('company/shortlist', {
+                selected_candidates: shortlistedData.results,
+                job_id: req.param('job_id'),
+                jobTitle: shortlistedData.jobTitle
+            });
         })
         .catch(function(error) {
             return res.serverError(error);
         });
+    },
+
+    fetchShortlistedForAdmin: function(req, res) {
+        return Job.findOne({id: req.param('job_id')})
+            .then(job => {
+                return JobService.fetchShortlistedCandidates(job.id, job.company).then(function(shortlistedData) {
+                    return res.view('admin/shortlist', {
+                        selected_candidates: shortlistedData.results,
+                        job_id: req.param('job_id'),
+                        companyName: shortlistedData.companyName,
+                        jobTitle: shortlistedData.jobTitle,
+                        disableEdits: true
+                    });
+                })
+            })
+            .catch(function(error) {
+                return res.serverError(error);
+            });
     },
 
 	viewApplicantsforAdmin: function(req, res) {
@@ -357,6 +376,7 @@ module.exports = {
 
 		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
 			.then(job => {
+
                 
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
@@ -386,16 +406,26 @@ module.exports = {
 
 					return Promise.all([
 						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						//CBTService.getJobTestResults(shortlistedIds, jobTest)
-                        JobService.fetchShortlistedCandidates(job_id, job.company.id)
+						CBTService.getJobTestResults(shortlistedIds, jobTest)
+                        //JobService.fetchShortlistedCandidates(job_id, job.company.id)
 					]).then(jobTestResults => {
 
 						let allCandidates = jobTestResults[0];
 						let shortlistedCandidates = jobTestResults[1];
 
+                        let companyName;
+                        if ((job.source === null || job.source === 'gq') && job.company) {
+                            companyName = job.company.company_name;
+                        } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
+                            companyName = job.company_name
+                        } else {
+                            companyName == 'Company'
+                        }
+
 						return res.view('admin/applicants-view.swig', {
 							jobTitle: job.job_title,
-							companyName: job.company.company_name,
+							companyName: companyName,
+                            applicants: applications,
 							results: allCandidates,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id
@@ -517,8 +547,8 @@ module.exports = {
                         Job.destroy({ id: id }).exec(function() {});
                     } else {
                         Job.update({id: id}, {status: 'Deleted'}).exec(function () {});
-                        return res.json(200, {status: 'success'});
                     }
+                    return res.json(200, {status: 'success'});
                 });
             });
         }
@@ -548,7 +578,16 @@ module.exports = {
 
 
     moveToJobBoard: function(req, res) {
-        Job.update({ id: req.param('jobs') }, { source: 'gq' }).exec(function() {});
+        Job.update({ id: req.param('jobs') }, { company: '16', source: 'gq' }).exec(function(err, jobs) {
+            var job_urls = [];
+            jobs.forEach(function(job) {
+                job_urls.push({
+                    id: job.job_url,
+                    link: 'https://getqualified.work/job/' + job.id + '/' + job.job_title.split(' ').join('-')
+                });
+            });
+            JobScraperService.returnScrapedJobsUrl(job_urls);
+        });
         return res.ok();
     },
 

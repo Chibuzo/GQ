@@ -23,7 +23,8 @@ module.exports = {
 
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
-            if (!jobtest) { // use only GQ aptitude test
+            if (!jobtest) {
+                // use only GQ aptitude test
                 // get the average integrity score for the 3 proctor sessions
                 var gq_results = [];
                 var aptitude_test_results = []; // for computing aptitude test ranking
@@ -243,7 +244,8 @@ module.exports = {
     cancelGQApptitudeTest: function(userId) {
         return Promise.all([
                 GQAptitudeTestResult.destroy({user: userId}),
-                GQTestResult.destroy({candidate: userId})
+                GQTestResult.destroy({candidate: userId}),
+                Resume.update({user: userId}, {test_status: false, status: 'Incomplete'})
             ]).then(results => {
                 let destroyedRecords = results[1];
 

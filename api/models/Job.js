@@ -48,7 +48,8 @@ module.exports = {
         },
 
         num_of_hires: {
-            type: 'integer'
+            type: 'integer',
+            defaultsTo: 0
         },
 
         applications: {
@@ -61,10 +62,6 @@ module.exports = {
             defaultsTo: 0
         },
 
-        //job_tests: {
-        //    collection: 'jobtest',
-        //    via: 'test'
-        //},
         job_test: {
             model: 'cbttest'
         },
@@ -111,7 +108,7 @@ module.exports = {
         },
 
         closing_date: {
-            type: 'date'
+            type: 'datetime'
         },
 
         company: {

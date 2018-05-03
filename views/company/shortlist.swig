@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Candidates' %}
 {% block page_title %}
-	<i class="pe-7s-timer"></i> Shortlisted Candidates
+	{{ jobTitle }} Candidates
 {% endblock %}
 
 {% block body %}
@@ -9,8 +9,7 @@
 	<div class="card">
 		<div class="header row">
 			<div class="col-md-6">
-				<h4 class="title">Shortlisted Candidates</h4>
-				<p class="category">The best candidates that applied</p>
+				<h4 class="title">Candidates</h4>
 			</div>
 		</div>
 		<div class="content">
@@ -21,7 +20,9 @@
 {% endblock %}
 
 {% block scriptTag %}
+
 {#<script src="/js/plugins/datatables.min.js"></script>#}
+
 <script>
 $(document).ready(function() {
 	$('.candidate-filter').addClass('active');

@@ -54,6 +54,15 @@ $(document).ready(function() {
 	$("select[name=country]").find('option').filter(function(i) {
 		return 'Nigeria' == $(this).val();
 	}).attr("selected", "selected");
+
+	$(window).keydown(function(event){
+		if(event.keyCode == 13) {
+			event.preventDefault();
+			return false;
+		}
+	});
+
+
 });
 </script>
 {% endblock %}
