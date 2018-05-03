@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [], PROCTOR, proctorSessId;
+var TEST_ID, duration, questions = [], PROCTOR, proctorSessId, MOBILE = false;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -34,9 +34,10 @@ $("#retake-test").click(function() {
 
 $(".load-test").click(function() {
     if (mobileCheck() === true) {
+        MOBILE = true;
         //amplitude.getInstance().logEvent("Failed Mobile Check");
         //blockTest("mobileCheck");
-        return false;
+        //return false;
     }
 
     TEST_ID = $(this).data('test_id');
@@ -569,12 +570,12 @@ var proctorCanvas = (function() {
 
     return {
 		makeVisible: function(time) {
-			$(".cell").css('opacity', 1);
+			$(".cell").css({'opacity': 1, left: '-60px'});
 			canvasTimer = setTimeout(this.makeInvisible, time);
 		},
 
 		makeInvisible: function() {
-			$(".cell").css('opacity', 0);
+			$(".cell").css({opacity: 0, left: '1000px'});
 		},
 
 		remove: function() {

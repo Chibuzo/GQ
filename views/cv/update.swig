@@ -158,6 +158,10 @@
 		.question-image img {
 			width: 100%;
 		}
+
+		.nav-btns {
+			text-align: center;
+		}
 	}
 </style>
 	<div class="cell hidden">
@@ -343,7 +347,7 @@
 												</div>
 
 												<div class="row inner-test-div" style="display: none;">
-													<div class="col-md-7">
+													<div class="col-md-7 col-sm-12 col-xs-12">
 														<div class="col-md-9 col-sm-12 col-xs-12">
 															<div class="question"></div>
 															<div class="question-image"></div>
@@ -359,7 +363,7 @@
 														</div>
 													</div>
 
-													<div class="col-md-5">
+													<div class="col-md-5 col-sm-12 col-xs-12">
 														<!-- Timer -->
 														<div class="row test-panel-text text-center">
 															<span><strong>Time Remaining: </strong></span>
@@ -437,15 +441,15 @@
 
 												<div class="row nav-row inner-test-div" style="display: none;">
 
-													<div class="col-md-7">
+													<div class="col-md-7 col-sm-12 col-xs-12">
 														<div class="nav-btns">
 															<button class="btn btn-info btn-fill" id="prev-question"><i class="fa fa-caret-left"></i>Prev</button>
 															<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i></button>
 														</div>
 													</div>
 
-													<div class="col-md-5">
-														<div class="nav-btns" style="text-align: center">
+													<div class="col-md-5 col-sm-12 col-xs-12">
+														<div class="nav-btns" style="text-align: center; padding-top: 10px">
 															<button class="btn btn-primary btn-fill" id="submit-test">Submit Section </button>
 														</div>
 													</div>
@@ -609,7 +613,7 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=12"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=15"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
