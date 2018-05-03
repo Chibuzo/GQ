@@ -7,6 +7,7 @@ module.exports = {
                 method: "GET",
                 json: true
             }, function (error, response, body) {
+                console.log(body.rows.length);
                 return resolve(body.rows)
             });
         })
@@ -49,7 +50,7 @@ module.exports = {
 
             var deadline = new Date(job.job.deadline * 1000).toISOString();
             var today = new Date();
-//(Date.parse(deadline) > Date.parse(today)) && 
+//(Date.parse(deadline) > Date.parse(today)) &&
             if (jobberman_level.test(job.job.level) || (job.job.source == 'Ngcareers' && ngcareer_level.test(job.job.experience))) {
                 var description, requirements;
                 if (job.job.descriptions) {

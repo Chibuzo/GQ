@@ -90,7 +90,8 @@ module.exports = {
             dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto/'),
             saveAs: function (file, cb) {
                 if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
-                    return res.badRequest('Unsupported photo format.');
+                    //return res.badRequest('Unsupported photo format.');
+                    return cb(01);
                 }
                 var ext = file.filename.split('.').pop();
                 filename = req.param('photo_title') + "_" + req.session.userId + '.' + ext;
@@ -99,7 +100,9 @@ module.exports = {
             maxBytes: 2 * 1024 * 1024
         },
         function (err) {
-            if (err) {
+            if (err == 01) {
+                return res.view('misc/error-page', { error: 'Unsupported photo format. Must be a JPG or PNG file', url: '/applicant/resume-page' })
+            } else if (err) {
                 return res.view('misc/error-page', { error: 'Photo file size must not be more than 2MB', url: '/applicant/resume-page' })
             }
             // copy the uploaded photo to the public folder
