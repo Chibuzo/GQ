@@ -3,7 +3,7 @@
 	{% if req.session.coy_id %}
 	<tr>
 		<td colspan="6">
-			<button type="button" class="btn btn-success btn-fill action-btn pull-right" disabled><i class="fa fa-check-circle"></i>&nbsp;Accept</button>
+			<button type="button" class="btn btn-success btn-fill action-btn pull-right" disabled><i class="fa fa-check-circle"></i>Request for Interview</button>
 		</td>
 	</tr>
 	{% endif %}
@@ -49,7 +49,7 @@
 		<tfoot>
 		<tr>
 			<td colspan="6">
-				<button type="button" class="btn btn-success btn-fill action-btn pull-right" disabled><i class="fa fa-check-circle"></i>&nbsp;Accept</button>
+				<button type="button" class="btn btn-success btn-fill action-btn pull-right" disabled><i class="fa fa-check-circle"></i>Request for Interview</button>
 			</td>
 		</tr>
 		</tfoot>

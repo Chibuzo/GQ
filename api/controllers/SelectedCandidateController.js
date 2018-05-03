@@ -25,12 +25,36 @@ module.exports = {
     },
 
 
-    acceptCandidates: function(req, res) {
+    interviewCandidatesRequest: function(req, res) {
         if (!req.session.coy_id) {
             return res.forbidden();
         }
-        SelectedCandidate.update({ candidate: req.param('users'), job_id: req.param('job_id') }, { status: 'Pending Review' }).exec(function() {
-            return res.ok();
-        });
+
+        if (_.isUndefined(req.param('job_id'))) {
+            return res.badRequest();
+        }
+
+        let jobId = req.param('job_id');
+
+        return Promise.all([
+                SelectedCandidate.update({ candidate: req.param('users'), job_id: jobId }, { status: 'Interview Requested' }),
+                Job.findOne({id: jobId}).populate('company'),
+                User.find({id: req.param('users')})
+            ]).then((results) => {
+                let job = results[1];
+                let userRecords = results[2];
+
+                let jobTitle = job.job_title;
+                let companyName = job.company.company_name;
+
+                let users = _.map(userRecords, (user) => {
+                    return `${user.fullname}, (${user.email})`;
+                });
+
+                sendMail.companyRequestCandidateInterview(companyName, jobTitle, users);
+                return res.ok();
+            }).catch(err => {
+                return res.serverError();
+            })
     }
 };
