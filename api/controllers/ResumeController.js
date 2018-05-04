@@ -391,6 +391,7 @@ module.exports = {
                 introduction: q('introduction'),
                 employment_status: q('employment_status'),
                 available_date: new Date(Date.parse(q('available_date'))).toISOString(),
+                current_salary: q('current_salary') ? q('current_salary') : 0.0,
                 expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
                 profile_status: true,
                 status: status

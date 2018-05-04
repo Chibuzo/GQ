@@ -119,6 +119,21 @@
 						<option value="Unemployed" {{ unemployed }}>Unemployed</option>
 					</select>
 				</div>
+
+				<div class="col-md-4">
+					<label>Current Annual Salary</label> <span class="red">*</span>
+					<input type="number" name="current_salary" class="form-control" placeholder="Current Annual Salary?" value="{{ resume.current_salary }}" required>
+				</div>
+
+				<div class="col-md-4">
+					<label>Expected Annual Salary</label> <span class="red">*</span>
+					<input type="number" name="expected_salary" class="form-control" placeholder="Expected Annual Salary?" value="{{ resume.expected_salary }}" required>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
 				<div class="col-md-4">
 					<label>Available Employment Start Date</label> <span class="red">*</span>
 					{% if resume.available_date %}
@@ -126,10 +141,6 @@
 					{% else %}
 						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
 					{% endif %}
-				</div>
-				<div class="col-md-4">
-					<label>Expected Annual Salary</label>
-					<input type="number" name="expected_salary" class="form-control" placeholder="Expected Annual Salary?" value="{{ resume.expected_salary }}">
 				</div>
 			</div>
 		</div>
