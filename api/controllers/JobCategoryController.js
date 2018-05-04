@@ -6,10 +6,15 @@
  */
 
 module.exports = {
-	addcategory: function(req, res) {
-        JobCategory.create({ category: req.param('category') }).exec(function() {
-            return res.redirect('/admin/setup');
-        });
+	savecategory: function(req, res) {
+        if (req.param('id')) {
+            JobCategory.update({id: req.param('id')}, {category: req.param('category')}).exec(function() {});
+            return res.ok();
+        } else {
+            JobCategory.create({category: req.param('category')}).exec(function () {
+                return res.redirect('/admin/setup');
+            });
+        }
     }
 };
 
