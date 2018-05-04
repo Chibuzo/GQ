@@ -100,6 +100,7 @@ module.exports = {
 
         var allowedImgTypes = ['image/png', 'image/jpeg', 'image/gif'];
         var filename;
+        var hr = process.hrtime();
 
         req.file('logo').upload({
             dirname: require('path').resolve(sails.config.appPath, 'assets/logos/'),
@@ -108,7 +109,7 @@ module.exports = {
                     return res.badRequest('Unsupported picture format.');
                 }
                 var ext = file.filename.split('.').pop();
-                filename = q('company_name').split(' ').join('-') + '_logo.' + ext;
+                filename = hr[1] + '_logo.' + ext;
                 return cb(null, filename);
             }
         },
@@ -117,14 +118,26 @@ module.exports = {
                 return res.badRequest(err);
             }
             // copy the uploaded logo to the public folder
+            if (filename === undefined) return;
             const fs = require('fs');
-            const uploadedlogo = require('path').resolve(sails.config.appPath, 'assets/logos') + '/' + filename;
-            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/logos') + '/' + filename;
+            const path = require('path');
+            const uploadedlogo = path.resolve(sails.config.appPath, 'assets/logos') + '/' + filename;
+            const temp_pic = path.resolve(sails.config.appPath, '.tmp/public/logos') + '/' + filename;
             fs.createReadStream(uploadedlogo).pipe(fs.createWriteStream(temp_pic));
 
             if (logo) {
                 Company.update({id: req.session.coy_id}, {logo_name: filename}).exec(function () {});
             }
+            // delete previous photo if any
+            try {
+                const assetPath = path.resolve(sails.config.appPath + 'assets/logos') + '/' + req.param('logo_name');
+                if (fs.existsSync(assetPath)) {
+                    fs.unlinkSync(assetPath);
+                }
+            } catch(err) {
+                console.log(err);
+                // just do nothing
+            };
         });
         if (q('first_check') == 'true') {
             Passwords.encryptPassword({

@@ -56,13 +56,14 @@ $(document).ready(function() {
 
 
 	$(".action-btn").click(function() {
-		if (confirm("Are you sure you want to accept these candidates?")) {
+		if (confirm("Are you sure you want to interview these candidates?")) {
 			var users = [];
 			$(".user-checkbox:checked").each(function () {
 				users.push($(this).parents('tr').data('candidate_id'));
 			});
 			var job_id = {{ job_id | json | safe }};
-			$.post('/selectedCandidates/accept', {users: users, job_id: job_id}, function () {
+			$.post('/selectedCandidates/interview', {users: users, job_id: job_id}, function () {
+				alert('Your request has been recieved. A rep from Get Qualified will be in touch with you shortly.\nThank you.');
 				location.reload(true);
 			});
 		}

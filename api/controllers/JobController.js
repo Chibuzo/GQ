@@ -374,10 +374,10 @@ module.exports = {
 			return res.badRequest();
 		}
 
+        let selected_candidates;
+
 		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
 			.then(job => {
-
-                
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
 					Application.find({ job: job_id }).populate('applicant'),
@@ -386,7 +386,7 @@ module.exports = {
 
 					let jobTest = results[0];
 					let applications = results[1];
-					let selected_candidates = results[2];
+					selected_candidates = results[2];
 
 					// fetch candidate ids for use in finding/computing their test result
 					let candidatesIds = [];
@@ -407,11 +407,14 @@ module.exports = {
 					return Promise.all([
 						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
 						CBTService.getJobTestResults(shortlistedIds, jobTest)
-                        //JobService.fetchShortlistedCandidates(job_id, job.company.id)
 					]).then(jobTestResults => {
 
 						let allCandidates = jobTestResults[0];
 						let shortlistedCandidates = jobTestResults[1];
+
+                        _.each(shortlistedCandidates, (shortlistedCandidate) => {
+                            shortlistedCandidate.status = selected_candidates.find(x => x.candidate.id == shortlistedCandidate.applicant.id).status;
+                        });
 
                         let companyName;
                         if ((job.source === null || job.source === 'gq') && job.company) {

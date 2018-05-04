@@ -86,6 +86,7 @@ module.exports = {
     uploadPhoto: function(req, res) {
         var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
         var filename;
+        var hr = process.hrtime();
         req.file('photo').upload({
             dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto/'),
             saveAs: function (file, cb) {
@@ -94,7 +95,7 @@ module.exports = {
                     return cb(01);
                 }
                 var ext = file.filename.split('.').pop();
-                filename = req.param('photo_title') + "_" + req.session.userId + '.' + ext;
+                filename = hr[1] + '_photo.' + ext;
                 return cb(null, filename);
             },
             maxBytes: 2 * 1024 * 1024
@@ -107,14 +108,20 @@ module.exports = {
             }
             // copy the uploaded photo to the public folder
             const fs = require('fs');
-            const uploadedpic = require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto') + '/' + filename;
-            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/applicant_profilephoto') + '/' + filename;
+            const path = require('path');
+            const uploadedpic = path.resolve(sails.config.appPath, 'assets/applicant_profilephoto') + '/' + filename;
+            const temp_pic = path.resolve(sails.config.appPath, '.tmp/public/applicant_profilephoto') + '/' + filename;
             fs.createReadStream(uploadedpic).pipe(fs.createWriteStream(temp_pic));
 
             Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
                 AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
                 return res.redirect('/applicant/resume-page#photo');
             });
+            // delete previous photo if any
+            const assetPath = path.resolve(sails.config.appPath + 'assets/applicant_profilephoto') + '/' + req.param('photo_name');
+            if (fs.existsSync(assetPath)) {
+                fs.unlinkSync(assetPath);
+            }
         });
     },
 
@@ -127,7 +134,7 @@ module.exports = {
 
 
     fetchApplicants: function(req, res) {
-        return GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
+        GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
             return res.view('admin/candidates', { candidates: candidates });
         }).catch(function(err) {
             return res.serverError(err);

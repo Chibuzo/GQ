@@ -55,7 +55,7 @@ module.exports.routes = {
 
     'POST /applicant/unselect-candidate': 'SelectedCandidateController.unSelectCandidate',
 
-    'POST /selectedCandidates/accept': 'SelectedCandidateController.acceptCandidates',
+    'POST /selectedCandidates/interview': 'SelectedCandidateController.interviewCandidatesRequest',
 
     'GET /admin/setup': 'AdminController.setup',
 

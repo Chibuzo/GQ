@@ -42,7 +42,7 @@
 				</div>
 			</div>
 			<form action="/applicant/add-profilephoto" method="post" id="form-passport-upload" enctype="multipart/form-data">
-				<input type="hidden" name="photo_title" value="{{ me.fname }}-{{ me.lname }}" />
+				<input type="hidden" name="photo_name" value="{{ resume.photo }}" />
 				<input type="hidden" name="user_id" value="{{ resume.user.id }}">
 				<input type="file" name="photo" style="display: none" id="file-control" />
 			</form>
