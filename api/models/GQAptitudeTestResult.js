@@ -14,6 +14,11 @@ module.exports = {
 
       score: {
           type: 'integer'
+      },
+
+      status: {
+          type: 'string',   // Accepted/Rejected
+          defaultsTo: 'Pending'
       }
   }
 };

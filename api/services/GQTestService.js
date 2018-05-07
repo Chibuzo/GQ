@@ -106,7 +106,7 @@ module.exports = {
     fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            GQAptitudeTestResult.find(_candidates).sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find({ status: ['Pending', 'Rejected'] }).sort('score desc').exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
@@ -150,7 +150,8 @@ module.exports = {
                             test_date: apt_result.updatedAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: integrityScore
+                            integrity_score: integrityScore,
+                            status: apt_result.status
                         });
                         cb();
                     });

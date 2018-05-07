@@ -41,11 +41,9 @@
 				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-default pull-left" data-dismiss="modal">
+				<button type="button" class="btn btn-default" data-dismiss="modal">
 					<i class="fa fa-times"></i> Close
 				</button>
-				<button class="btn btn-danger btn-fill" id="reject-test"><i class="fa fa-times fa-lg"></i> Reject</button>
-				<button class="btn btn-success btn-fill" id="accept-test"><i class="fa fa-check-circle-o fa-lg"></i> Accept</button>
 			</div>
 		</div>
 	</div>
