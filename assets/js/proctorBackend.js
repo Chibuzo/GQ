@@ -104,7 +104,7 @@ $(".reject-test").click(function(e) {
 $(".trash-can").click(function(e) {
     e.preventDefault();
     var candidateId = $(this).parents('tr').attr('id');
-    var candidateName = $(this).data('user-name');
+    var candidateName = $(this).parents('td').data('user-name');
 
     if (confirm("Delete " + candidateName + "'s test score. This will permenantly delete all their test scores and proctor files.")) {
       $.ajax({
