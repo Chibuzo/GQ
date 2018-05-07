@@ -28,6 +28,7 @@ function updateResumeQualifications(q, resumeId) {
     let updatedQualificationsList = removeLastEmptyStrings(q('qualification'));
     let updatedQualificationsIDs = q('qualification_id') || [];
     let updatedQualificationsDates = q('qualification_date') || [];
+    let updatedQualificationsInstitutions = q('qualification_institution') || [];
 
     // Remove empty qualifications
     updatedQualificationsList = updatedQualificationsList.filter(function(qualification) {
@@ -45,7 +46,8 @@ function updateResumeQualifications(q, resumeId) {
         return {
             name: qualificationItem,
             id: id,
-            date: updatedQualificationsDates[idx]
+            date: updatedQualificationsDates[idx],
+            institution: updatedQualificationsInstitutions[idx]
         };
     });
 
@@ -62,7 +64,8 @@ function updateResumeQualifications(q, resumeId) {
             var qualification = {
                 qualification: userQualification.name,
                 date_obtained: userQualification.date ? new Date(Date.parse(userQualification.date)).toISOString() : new Date(Date.now()).toISOString(),
-                resume: resumeId
+                resume: resumeId,
+                institution: userQualification.institution
             };
 
             if (userQualification.id === false) {

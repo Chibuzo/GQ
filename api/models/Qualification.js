@@ -18,6 +18,11 @@ module.exports = {
 
       resume: {
           model: 'resume'
+      },
+
+      institution: {
+          type: 'string',
+          defaultsTo: ""
       }
   }
 };

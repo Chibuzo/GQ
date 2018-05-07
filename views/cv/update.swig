@@ -115,6 +115,10 @@
 		color: red;
 	}
 
+	#btn-submit {
+		margin-top: 10px;
+	}
+
 	.loader {
 		margin: auto;
 	    border: 16px solid #f3f3f3; /* Light grey */
@@ -138,11 +142,53 @@
 		border-bottom-color: #ddd !important;
 	}
 
-
 	.profile-tabs .active a {
 		color: #1DC7EA !important;
 	}
 
+	.delete-entry-container {
+		margin-top: 5px;
+		position: relative;
+		display: inline-block;
+		background: white;
+		border-radius: 5%;
+		padding: 5px;
+		border: 1px solid red;
+	}
+
+	.add-entry-container {
+		display: inline-block;
+		margin-top: 10px;
+		background: white;
+		border-radius: 5%;
+		padding: 5px;
+		border: 1px solid #1DC7EA;
+		color: #1DC7EA;
+	}
+
+	.delete-entry-col {
+		align-self: flex-end;
+		text-align: center;
+	}
+
+	.delete-entry-container:hover {
+		background: red;
+		border-radius: 5%;
+		padding: 5px;
+		border: 1px solid red;
+	}
+
+	.delete-entry-container:hover .delete-entry {
+		color: white;
+	}
+
+	.delete-entry {
+		color: red;
+	}
+
+	.delete-entry-test:hover {
+		color: white;
+	}
 
 
 	@keyframes spin {
@@ -238,8 +284,8 @@
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12" style="padding: 50px">
-										{% include 'includes/resume.swig' %}
 										{% include 'includes/resume-form.swig' %}
+										{% include 'includes/resume.swig' %}
 										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
 									</div>
 								</div>
@@ -677,9 +723,11 @@
 			// remove one row from institution
 			$("#institutions").on("click", ".remove-institution-btn", function(e) {
 				e.preventDefault();
-				$(this).parents(".inst-row").slideUp(function() {
-					$(this).remove();
-				});
+				if (confirm('Are you sure you want to remove this Educational entry?')) {
+					$(this).parents(".inst-row").slideUp(function() {
+						$(this).remove();
+					});
+				}
 			});
 
 			// add one row to qualifications
@@ -696,9 +744,12 @@
 			// remove one row from qualifications
 			$("#qualifications").on("click", ".remove-qualification-btn", function(e) {
 				e.preventDefault();
-				$(this).parents(".qual-row").slideUp(function() {
-					$(this).remove();
-				});
+
+				if (confirm('Are you sure you want to remove this Certification?')) {
+					$(this).parents(".qual-row").slideUp(function() {
+						$(this).remove();
+					});
+				}
 			});
 
 			// add one row to emplyment
@@ -713,9 +764,12 @@
 			// remove one row from employment
 			$("#employments").on("click", ".remove-employment-btn", function(e) {
 				e.preventDefault();
-				$(this).parents(".employment-row").slideUp(function() {
-					$(this).remove();
-				});
+
+				if (confirm('Are you sure you want to remove this Employment History?')) {
+					$(this).parents(".employment-row").slideUp(function() {
+						$(this).remove();
+					});
+				}
 			});
 
 
@@ -729,9 +783,12 @@
 			// remove one row from reference contact
 			$("#referenceContacts").on("click", ".remove-reference-btn", function(e) {
 				e.preventDefault();
-				$(this).parents(".reference-row").slideUp(function() {
-					$(this).remove();
-				});
+
+				if (confirm('Are you sure you want to remove this Reference?')) {
+					$(this).parents(".reference-row").slideUp(function() {
+						$(this).remove();
+					});
+				}
 			});
 
 
