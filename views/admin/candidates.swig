@@ -1,7 +1,7 @@
 {% extends 'layout.swig' %}
 {% set title = 'Candidates' %}
 {% block page_title %}
-	<i class="pe-7s-users"></i> Candidates
+	<i class="pe-7s-users"></i> Candidates' Test Result
 {% endblock %}
 {% block body %}
 <style>
@@ -51,7 +51,7 @@
 	<div class="card">
 		<div class="header row">
 			<div class="col-md-6">
-				<h4 class="title">Candidates</h4>
+				<h4 class="title">Candidates' GQ Test Result</h4>
 				<p class="category">You can filter candidates</p>
 			</div>
 		</div>
@@ -109,8 +109,18 @@
 							<td>{{ user.rank }}</td>
 							<td class="text-center">{{ user.integrity_score }}</td>
 							<td>{{ user.status }}</td>
-							<td data-user-id="{{ user.id }}" data-user-name="{{ user.fullname }}" class="trash-can opt-icons text-center">
-								<i  class="fa fa-trash-o fa-lg" aria-hidden="true"></i>
+							<td data-user-name="{{ user.fullname }}" class=" opt-icons text-center">
+								<div class="btn-group">
+									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Menu &nbsp;<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="" class="accept-test"><i class="fa fa-check-circle-o fa-fw"></i> Accept Test Score</a></li>
+										<li><a href="" class="reject-test"><i class="fa fa-times fa-fw"></i>Reject Test Score</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="" class="trash-can"><i class="fa fa-trash-o fa-fw"></i> Delete Test Scores</a></li>
+									</ul>
+								</div>
 							</td>
 						</tr>
 					{% endfor %}

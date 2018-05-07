@@ -208,6 +208,11 @@
 		.nav-btns {
 			text-align: center;
 		}
+
+		.cell {
+			left:-50px;
+			top:-100px;
+		}
 	}
 </style>
 	<div class="cell hidden">
@@ -411,7 +416,7 @@
 
 													<div class="col-md-5 col-sm-12 col-xs-12">
 														<!-- Timer -->
-														<div class="row test-panel-text text-center">
+														<div class="test-panel-text text-center">
 															<span><strong>Time Remaining: </strong></span>
 															<div id="countdowntimer"></div>
 														</div>

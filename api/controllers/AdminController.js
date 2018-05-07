@@ -139,7 +139,7 @@ module.exports = {
 
     setup: function(req, res) {
         return Promise.all([
-            JobCategory.find({ removed: 'false' }),
+            JobCategory.find({ removed: 'false' }).sort('category asc'),
             Sector.find({ removed: 'false' }).sort('title asc')
         ]).then(results => {
             let cat = results[0];

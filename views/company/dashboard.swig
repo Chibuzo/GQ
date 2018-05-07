@@ -74,13 +74,9 @@
 						<i class="pe-7s-portfolio"></i>
 					</div>
 					<div class="col-xs-6 text-center">
-						{% set active_jobs = 0 %}
 						{% set applicants = 0 %}
 						{% set views = 0 %}
 						{% for job in jobs %}
-							{% if job.status == 'Active' %}
-								{% set active_jobs = active_jobs + 1 %}
-							{% endif %}
 							{% set applicants += job.applications.length %}
 							{% set views += job.view_count %}
 						{% endfor %}

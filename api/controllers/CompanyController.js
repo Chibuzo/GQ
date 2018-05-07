@@ -12,7 +12,15 @@ module.exports = {
 
     dashboard: function(req, res) {
          return JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
-            return res.view('company/dashboard', { jobs: jobs });
+             // find active jobs
+             var today = new Date();
+             var active_jobs = 0;
+             jobs.forEach(function(job) {
+                 if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                     active_jobs++
+                 }
+             });
+            return res.view('company/dashboard', { jobs: jobs, active_jobs: active_jobs });
         })
         .catch(function(err) {
             return res.serverError(err);
