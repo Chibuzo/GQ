@@ -55,7 +55,7 @@ module.exports.routes = {
 
     'POST /applicant/unselect-candidate': 'SelectedCandidateController.unSelectCandidate',
 
-    'POST /selectedCandidates/accept': 'SelectedCandidateController.acceptCandidates',
+    'POST /selectedCandidates/interview': 'SelectedCandidateController.interviewCandidatesRequest',
 
     'GET /admin/setup': 'AdminController.setup',
 
@@ -150,7 +150,7 @@ module.exports.routes = {
 
     'GET /courses/list': 'CourseController.getCourses',
 
-    'POST /sector/addsector': 'SectorController.addSector',
+    'POST /sector/saveSector': 'SectorController.saveSector',
 
     'POST /company-request/send-request': 'CompanyRequestController.submitRequest',
 
@@ -224,7 +224,7 @@ module.exports.routes = {
 
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
 
-    'POST /jobcategory/addcategory': 'JobCategoryController.addCategory',
+    'POST /jobcategory/saveCategory': 'JobCategoryController.saveCategory',
 
     'GET /test': 'TestController.testApi',
 

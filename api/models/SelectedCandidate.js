@@ -18,7 +18,7 @@ module.exports = {
 
       status: {
           type: 'string',
-          defaultsTo: 'Pending Review'
+          defaultsTo: 'Pending Review' // 'Interview Requested'
       }
   }
 };

@@ -71,7 +71,7 @@
 											<th class="text-center">Job Score</th>
 											<th class="text-center">GQ Score</th>
 											<th class="text-center">GQ Integrity</th>
-											<th class="text-center">Status</th>
+											<th class="text-center">Proctor Status</th>
 											<th class="text-center">Action</th>
 										</tr>
 										</thead>

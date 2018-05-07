@@ -18,6 +18,7 @@ transporter.use('compile', hbs(options));
 
 const BASE_URL = 'https://getqualified.work/';
 const GQ_EMAIL = 'admin@getqualified.work';
+const PRODUCTIVE_PEOPLE_EMAIL = 'info@productivepeople.org';
 
 module.exports = {
     companyVerification: function(coy) {
@@ -141,6 +142,19 @@ module.exports = {
         var subject = "You have successfully created jobs on your GetQualified";
         var template = 'companyNewJob';
         module.exports.sendMail(email, subject, template, data);
+    },
+
+    // company request to interview candidates
+    companyRequestCandidateInterview: function(companyName, jobTitle, users) {
+        var subject = `${companyName} Would Like To Interview Candidates for ${jobTitle}`;
+        var template = 'companyInterviewRequest';
+
+        let data = {
+            companyName,
+            jobTitle,
+            users
+        }
+        module.exports.sendMail(PRODUCTIVE_PEOPLE_EMAIL, subject, template, data);
     },
 
     // on shortlisted candidates

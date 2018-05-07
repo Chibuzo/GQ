@@ -6,11 +6,16 @@
  */
 
 module.exports = {
-	addSector: function(req, res) {
-        Sector.create({ title: req.param('sector') }).exec(function(err) {
-            if (err) console.log(err);
-            return res.redirect('/admin/setup');
-        });
+	saveSector: function(req, res) {
+        if (req.param('id')) {
+            Sector.update({id: req.param('id')}, {title: req.param('sector')}).exec(function() {});
+            return res.ok();
+        } else {
+            Sector.create({title: req.param('sector')}).exec(function (err) {
+                if (err) console.log(err);
+                return res.redirect('/admin/setup');
+            });
+        }
     }
 };
 
