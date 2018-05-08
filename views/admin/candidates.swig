@@ -136,7 +136,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script src="/js/proctorBackend.js"></script>
+<script src="/js/proctorBackend.js?v=2"></script>
 <script src="/js/plugins/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
