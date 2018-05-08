@@ -106,7 +106,7 @@ module.exports = {
     fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            GQAptitudeTestResult.find({ status: ['Pending', 'Rejected'] }).sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find().sort('score desc').exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
