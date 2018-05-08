@@ -81,9 +81,9 @@ $(".accept-test").click(function(e) {
     if (confirm("Are you sure you want to accept this test score?")) {
         var candidate_id = $(this).parents('tr').attr('id');
         $.post('/proctor/accept-test',  { candidate_id: candidate_id }, function(d) {
-            location.reload();
+            location.reload(true);
         }, 'JSON');
-        
+
         // $("#" + candidate_id).find("td:nth-child(12)").fadeOut('fast');
     }
 });
