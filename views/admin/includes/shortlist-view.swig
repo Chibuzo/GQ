@@ -54,5 +54,4 @@
 		</tr>
 		</tfoot>
 	{% endif %}
->>>>>>> 215199fd080169743dd3108a07b6d108c69c1d2c
 </table>
