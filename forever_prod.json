@@ -1,0 +1,8 @@
+// forever/development.json
+{
+    "uid": "app",
+    "append": true,
+    "script": "app.js",
+	"o": "~/.forever/logs/out.log",
+	"e": "~/.forever/logs/err.log"
+}

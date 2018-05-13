@@ -43,7 +43,10 @@
   },
   "scripts": {
     "debug": "node debug app.js",
-    "start": "node app.js"
+    "start": "node app.js",
+	"forever": "sudo forever start -e ~/.forever/logs/err.log app.js",
+	"forever_2": "sudo forever start app.js"
+
   },
   "main": "app.js",
   "repository": {

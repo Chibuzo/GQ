@@ -26,9 +26,9 @@
 							<th><i class="fa fa-user"></i> Candidate</th>
 							<th class="text-center">Score</th>
 							<th class="text-center">Percentage</th>
-							<th class="text-center">Average Score</th>
+							{#<th class="text-center">Average Score</th>#}
 							<th>Result</th>
-							<th class="text-center">Action</th>
+							<th class="text-center hidden">Action</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -38,12 +38,12 @@
 						<tr id="{{ result.candidate.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ result.test_date | date('d M, Y') }}</td>
-							<td>{{ candidate.fullname }}</td>
+							<td>{{ result.candidate.fullname }}</td>
 							<td class="text-center">{{ result.score }}</td>
 							<td class="text-center">{{ result.percentage }}%</td>
-							<td class="text-center">{{ result.average_score }}</td>
+							{#<td class="text-center">{{ result.average_score }}</td>#}
 							<td>{{ result.result }}</td>
-							<td class="opt-icons text-center">
+							<td class="opt-icons text-center hidden">
 								<a href="" rel="tooltip" title="View Resume"><i class="fa fa-list-alt fa-lg"></i> </a>
 								<a href="#videoModal" data-toggle="modal" class="view-tests watch-video" rel="tooltip" title="Watch Video"><i class="fa fa-video-camera fa-lg"></i></a>
 							</td>
