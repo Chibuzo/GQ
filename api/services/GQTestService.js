@@ -112,7 +112,7 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        // Get Overall/average Integrity Score
+                        // Get Overall/average Integrity scor
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
                         })
@@ -147,7 +147,7 @@ module.exports = {
                             generalAbilityTest: generalAbilityTest,
                             verbalTest: verbalTest,
                             mathsTest: mathsTest,
-                            test_date: apt_result.updatedAt,
+                            test_date: apt_result.createdAt,
                             percentage: ((apt_result.score / 60) * 100).toFixed(1),
                             rank: apt_scores.indexOf(apt_result.score) + 1,
                             integrity_score: integrityScore,

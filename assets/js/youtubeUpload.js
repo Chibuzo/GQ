@@ -369,6 +369,9 @@ MediaUploader.prototype.buildUrl_ = function (id, params, baseUrl) {
 };
 
 function defineRequest() {
+    // display video infor
+    $("#vid-info").removeClass('hidden');
+
     // let's see if there's an old video and then delete it, we badt like that
     if ($("#video_id").text().length > 3) {
         $.post('/deleteYoutubeVideo', { video_id: $("#video_id").text() });

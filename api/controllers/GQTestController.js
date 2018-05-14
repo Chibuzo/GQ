@@ -406,17 +406,17 @@ module.exports = {
                     results.forEach(function(result) {
                         var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
                         test_results.push({
+                            candidate: result.candidate,
                             score: result.score,
                             percentage: percentage,
-                            average_score: test_ave[0].score,
+                            //average_score: test_ave[0].score,
                             result: percentage > 59 ? 'Passed' : 'Failed',
                             test_date: result.updatedAt
                         });
                     });
                     return res.view('gqtest/view-results', {
                         results: test_results,
-                        test: results[0].test,
-                        candidate: results[0].candidate
+                        test: results[0].test
                     });
                 });
             } else {
@@ -449,6 +449,11 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         fs.writeFileSync(path, buff);
 
+        // copy the uploaded audio to the public folder
+        //const uploadedAud = path + '/' + filename;
+        const temp_aud = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + '/aud_' + hr[1] + '.wav';
+        fs.createReadStream(path).pipe(fs.createWriteStream(temp_aud));
+
         let proctorSessId = req.param('proctorSessId');
         if (proctorSessId && proctorSessId != req.session.proctor) {
             AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
@@ -478,6 +483,11 @@ module.exports = {
         var photo = req.param('imgBase64').split(';base64,').pop();
         var buff = new Buffer(photo, 'base64');
         fs.writeFileSync(path, buff);
+
+        // copy the uploaded photo to the public folder
+        //const uploadedpic = path + '/' + filename;
+        const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
+        fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
 
         let proctorSessId = req.param('proctorSessId');
         if (proctorSessId && proctorSessId != req.session.proctor) {

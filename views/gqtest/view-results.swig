@@ -26,7 +26,7 @@
 							<th><i class="fa fa-user"></i> Candidate</th>
 							<th class="text-center">Score</th>
 							<th class="text-center">Percentage</th>
-							<th class="text-center">Average Score</th>
+							{#<th class="text-center">Average Score</th>#}
 							<th>Result</th>
 							<th class="text-center">Action</th>
 						</tr>
@@ -38,10 +38,10 @@
 						<tr id="{{ result.candidate.id }}">
 							<td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td>
 							<td>{{ result.test_date | date('d M, Y') }}</td>
-							<td>{{ candidate.fullname }}</td>
+							<td>{{ result.candidate.fullname }}</td>
 							<td class="text-center">{{ result.score }}</td>
 							<td class="text-center">{{ result.percentage }}%</td>
-							<td class="text-center">{{ result.average_score }}</td>
+							{#<td class="text-center">{{ result.average_score }}</td>#}
 							<td>{{ result.result }}</td>
 							<td class="opt-icons text-center">
 								<a href="" rel="tooltip" title="View Resume"><i class="fa fa-list-alt fa-lg"></i> </a>

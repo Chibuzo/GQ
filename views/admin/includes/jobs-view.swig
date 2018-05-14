@@ -43,7 +43,7 @@
 			{% set path = job.job_title.split(' ') %}
 			<tr id="{{ job.id }}">
 				<td style="width: 30px"><input type="checkbox" class="user-checkbox" /></td>
-				<td>{{ job.createdAt | date('d.m.Y') }}</td>
+				<td data-order="{{ job.createdAt | date('Y/m/d') }}">{{ job.createdAt | date('d.m.Y') }}</td>
 				{% if scrapedJob === true %}
 					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}" target="_blank">{{ job.job_title }}</a></td>
 					<td>{{ job.company_name }}</td>

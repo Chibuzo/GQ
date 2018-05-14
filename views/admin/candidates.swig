@@ -89,27 +89,39 @@
 							{#<td>{{ user.employment_status }}</td>#}
 							<td>{{ user.generalAbilityTest.score }}%</td>
 							<td>
-								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.generalAbilityTest.proctorId }}">
+								{% if user.status == 'Pending' || user.status == 'Rejected' %}
+									<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.generalAbilityTest.proctorId }}">
+										{{ user.generalAbilityTest.proctorScore }}%
+									</a>
+								{% else %}
 									{{ user.generalAbilityTest.proctorScore }}%
-								</a>
+								{% endif %}
 							</td>
 							<td>{{ user.verbalTest.score }}%</td>
 							<td>
-								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.verbalTest.proctorId }}">
+								{% if user.status == 'Pending' || user.status == 'Rejected' %}
+									<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.verbalTest.proctorId }}">
+										{{ user.verbalTest.proctorScore }}%
+									</a>
+								{% else %}
 									{{ user.verbalTest.proctorScore }}%
-								</a>
+								{% endif %}
 							</td>
 							<td>{{ user.mathsTest.score }}%</td>
 							<td>
-								<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.mathsTest.proctorId }}">
+								{% if user.status == 'Pending' || user.status == 'Rejected' %}
+									<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ user.mathsTest.proctorId }}">
+										{{ user.mathsTest.proctorScore }}%
+									</a>
+								{% else %}
 									{{ user.mathsTest.proctorScore }}%
-								</a>
+								{% endif %}
 							</td>
 							<td>{{ user.percentage }}%</td>
 							<td>{{ user.rank }}</td>
 							<td class="text-center">{{ user.integrity_score }}</td>
 							<td>{{ user.status }}</td>
-							<td data-user-name="{{ user.fullname }}" class=" opt-icons text-center">
+							<td data-user_name="{{ user.fullname }}" class="opt-icons text-center">
 								<div class="btn-group">
 									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										Menu &nbsp;<span class="caret"></span>
@@ -136,7 +148,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script src="/js/proctorBackend.js?v=2"></script>
+<script src="/js/proctorBackend.js?v=3"></script>
 <script src="/js/plugins/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
@@ -146,6 +158,7 @@ $(document).ready(function() {
 	$('.dataTable').DataTable({
 		pageLength: 50,
 		responsive: true,
+		"order": [[ 0, "desc" ]]
 //		"aoColumnDefs": [
 //			{ 'bSortable': false, 'aTargets': [ 2, 3 ] }
 //		]
