@@ -81,9 +81,10 @@ $(".accept-test").click(function(e) {
     if (confirm("Are you sure you want to accept this test score?")) {
         var candidate_id = $(this).parents('tr').attr('id');
         $.post('/proctor/accept-test',  { candidate_id: candidate_id }, function(d) {
-
+            location.reload(true);
         }, 'JSON');
-        $("#" + candidate_id).find("td:nth-child(12)").fadeOut('fast');
+
+        // $("#" + candidate_id).find("td:nth-child(12)").fadeOut('fast');
     }
 });
 
@@ -104,7 +105,7 @@ $(".reject-test").click(function(e) {
 $(".trash-can").click(function(e) {
     e.preventDefault();
     var candidateId = $(this).parents('tr').attr('id');
-    var candidateName = $(this).parents('td').data('user-name');
+    var candidateName = $(this).parents('.opt-icons').data('user_name');
 
     if (confirm("Delete " + candidateName + "'s test score. This will permenantly delete all their test scores and proctor files.")) {
       $.ajax({

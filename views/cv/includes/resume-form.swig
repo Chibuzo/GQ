@@ -295,7 +295,7 @@
 
 						<div class="col-md-4">
 							<label>Institution</label>
-							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From" value="{{ qual.qualification_institution }}">
+							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From" value="{{ qual.institution }}">
 						</div>
 
 						<div class="col-md-2">
@@ -342,10 +342,14 @@
 				{% endif %}
 
 				<div class="row qual-row addable" id="another-qualification">
-					<div class="col-md-9">
+					<div class="col-md-5">
 						<label>Qualification</label>
 						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
 					</div>
+					<div class="col-md-4">
+							<label>Institution</label>
+							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From">
+						</div>
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
