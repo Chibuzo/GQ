@@ -328,7 +328,7 @@ module.exports = {
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
-                    users.push(user);
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -345,7 +345,7 @@ module.exports = {
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
-                    users.push(user);
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -357,13 +357,13 @@ module.exports = {
         else if (q('course') && q('certification'))
         {
             var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE programme = ? AND qualification = ?";
+                "WHERE e.programme = ? AND q.qualification = ?";
 
             var data = [q('course').trim(), '%' + q('certification').trim() + '%'];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
-                    users.push(user);
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -375,13 +375,13 @@ module.exports = {
         else if (q('school') && q('certification'))
         {
             var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE institution = ? AND qualification = ?";
+                "WHERE e.institution = ? AND q.qualification = ?";
 
             var data = [q('school'), q('certification')];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
-                    users.push(user);
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -395,7 +395,7 @@ module.exports = {
             Education.find({ institution: q('school') }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
-                    users.push(user);
+                    if (user.resume) users.push(user.resume.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -409,7 +409,7 @@ module.exports = {
             Education.find({ programme: q('course') }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
-                    users.push(user);
+                    if (user.resume) users.push(user.resume.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -423,7 +423,7 @@ module.exports = {
             Qualification.find({ qualification: q('certification') }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
-                    users.push(user);
+                    if (user.resume) users.push(user.resume.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });

@@ -103,16 +103,17 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function(_candidates = {}) {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            GQAptitudeTestResult.find().sort('score desc').exec(function(err, apt_results) {
+            const query = _candidates === undefined ? {}: {user: _candidates};
+            GQAptitudeTestResult.find(query).sort('score desc').exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        // Get Overall/average Integrity scor
+                        // Get Overall/average Integrity score
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
                         })
