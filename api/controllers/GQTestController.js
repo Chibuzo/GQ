@@ -406,6 +406,7 @@ module.exports = {
                     results.forEach(function(result) {
                         var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
                         test_results.push({
+                            candidate: result.candidate,
                             score: result.score,
                             percentage: percentage,
                             average_score: test_ave[0].score,
@@ -415,8 +416,7 @@ module.exports = {
                     });
                     return res.view('gqtest/view-results', {
                         results: test_results,
-                        test: results[0].test,
-                        candidate: results[0].candidate
+                        test: results[0].test
                     });
                 });
             } else {
