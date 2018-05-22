@@ -150,5 +150,10 @@ module.exports = {
             return res.serverError(err);
         });
     },
+
+    hijackAccount: function(req, res) {
+        req.session.userId = req.param('user_id');
+        return res.redirect('/applicant/dashboard');
+    }
 };
 

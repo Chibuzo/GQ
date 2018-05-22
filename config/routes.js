@@ -252,7 +252,9 @@ module.exports.routes = {
 
     'POST /scrapedJobs/moveToJobBoard': 'JobController.moveToJobBoard',
 
-    'POST /scrapedJob/claimJob': 'JobController.moveToCompany'
+    'POST /scrapedJob/claimJob': 'JobController.moveToCompany',
+
+    'GET /editprofile/:user_id': 'AdminController.hijackAccount',
 
     //'GET /email': { view: 'email' },
     //

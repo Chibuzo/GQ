@@ -148,8 +148,10 @@
 				<tbody id="tb-users">
 					{% for user in users %}
 					{% if resume == true %}
+						{% set user_id = user.user %}
 						<tr id="{{ user.user }}">
 					{% else %}
+						{% set user_id = user.id %}
 						<tr id="{{ user.id }}">
 					{% endif %}
 							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
@@ -163,7 +165,16 @@
 							{% endif %}
 							<td class="email">{{ user.email }}</td>
 							<td>{{ user.phone }}</td>
-							<td></td>
+							<td class="text-center">
+								<div class="btn-group">
+									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Menu &nbsp;<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="/editprofile/{{ user_id }}" target="_blank"><i class="fa fa-wrench"></i> Edit Profile</a></li>
+									</ul>
+								</div>
+							</td>
 						</tr>
 					{% endfor %}
 				</tbody>
