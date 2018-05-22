@@ -171,7 +171,7 @@ function updateResumeEmploymentHistory(q, resumeId) {
     let updatedLocationList = q('location') || [];
     let updateDutiesList = q('duty') || [];
     let updateStartDates = q('employment_start_date') || [];
-    let updateEndedDates = q('employment_start_date') || [];
+    let updateEndedDates = q('employment_end_date') || [];
 
     // Ensure updatedJobIds is an array of integers
     updatedJobIds = updatedJobIds.map(function(jobId) {
