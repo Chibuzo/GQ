@@ -34,18 +34,31 @@ module.exports = {
     },
 
 
+    // this function MUST be modified before it can handle job specific test
     acceptTest: function(req, res) {
-        ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Accepted' }).exec(function() {});
+        GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Accepted' }).exec(function(err, test) {
+            if (test.length > 0) {
+                // delete proctor files
+                [1,2,3].forEach(function(test) {
+                    ProctorService.deleteProctorFiles(test);
+                });
+            }
+        });
         return res.ok();
     },
 
+    // this function MUST be modified before it can handle job specific test
     rejectTest: function(req, res) {
-        ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Rejected' }).exec(function(err, proc) {
-            User.find({ id: req.param('candidate_id') }).exec(function(err, user) {
-                GQTest.find({ id: proc[0].test_id }).exec(function(err, test) {
-                    sendMail.notifyOnTestCheat(user[0], test[0].test_name);
+        GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Rejected' }).exec(function(err, test) {
+            if (test.length > 0) {
+                User.find({ id: req.param('candidate_id') }).exec(function(err, user) {
+                    sendMail.notifyOnTestCheat(user[0], 'General Test');
+                    // for job specific test
+                    //GQTest.find({ id: proc[0].test_id }).exec(function(err, test) {
+                    //    sendMail.notifyOnTestCheat(user[0], test[0].test_name);
+                    //});
                 });
-            });
+            }
         });
         return res.ok();
     },

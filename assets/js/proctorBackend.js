@@ -76,32 +76,36 @@ $(".fetch-proctor-details").click(function() {
 });
 
 
-$("#accept-test").click(function() {
+$(".accept-test").click(function(e) {
+    e.preventDefault();
     if (confirm("Are you sure you want to accept this test score?")) {
-        var proctor_id = $("#proctor-id").text();
-
-        $.post('/proctor/accept-test',  { proctor_id: proctor_id }, function(d) {
-
+        var candidate_id = $(this).parents('tr').attr('id');
+        $.post('/proctor/accept-test',  { candidate_id: candidate_id }, function(d) {
+            location.reload(true);
         }, 'JSON');
-        $("#" + $("#candidate-id").text()).find("td:nth-child(8)").text('Accepted');
+
+        // $("#" + candidate_id).find("td:nth-child(12)").fadeOut('fast');
     }
 });
 
-$("#reject-test").click(function() {
+
+$(".reject-test").click(function(e) {
+    e.preventDefault();
     if (confirm("Are you sure you want to reject this test score?")) {
-        var proctor_id = $("#proctor-id").text();
-        var candidate_id = $("#candidate-id").text();
+        var candidate_id = $(this).parents('tr').attr('id');
 
-        $.post('/proctor/reject-test',  { proctor_id: proctor_id, candidate_id: candidate_id }, function() {
+        $.post('/proctor/reject-test',  { candidate_id: candidate_id }, function() {
 
         }, 'JSON');
-        $("tr#" + candidate_id).find("td:nth-child(8)").html('Rejected');
+        $("tr#" + candidate_id).find("td:nth-child(12)").html('Rejected');
     }
 });
 
-$(".trash-can").click(function() {
-    var candidateId = $(this).attr('data-user-id');
-    var candidateName = $(this).attr('data-user-name');
+
+$(".trash-can").click(function(e) {
+    e.preventDefault();
+    var candidateId = $(this).parents('tr').attr('id');
+    var candidateName = $(this).parents('.opt-icons').data('user_name');
 
     if (confirm("Delete " + candidateName + "'s test score. This will permenantly delete all their test scores and proctor files.")) {
       $.ajax({

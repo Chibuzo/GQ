@@ -51,7 +51,8 @@
 			<h4><strong>Professional Certifications</strong></h4><hr>
 			{% for qual in resume.qualifications %}
 				<div class="row">
-					<div class="col-md-8">{{ qual.qualification }}</div>
+					<div class="col-md-4">{{ qual.qualification }}</div>
+					<div class="col-md-4">{{ qual.institution }}</div>
 					<div class="col-md-4" style="text-align: right;">{{ qual.date_obtained | date('F Y') }}</div>
 				</div>
 				<br>

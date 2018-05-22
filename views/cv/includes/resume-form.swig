@@ -119,6 +119,21 @@
 						<option value="Unemployed" {{ unemployed }}>Unemployed</option>
 					</select>
 				</div>
+
+				<div class="col-md-4">
+					<label>Current Annual Salary</label> <span class="red">*</span>
+					<input type="number" name="current_salary" class="form-control" placeholder="Current Annual Salary?" value="{{ resume.current_salary }}" required>
+				</div>
+
+				<div class="col-md-4">
+					<label>Expected Annual Salary</label> <span class="red">*</span>
+					<input type="number" name="expected_salary" class="form-control" placeholder="Expected Annual Salary?" value="{{ resume.expected_salary }}" required>
+				</div>
+			</div>
+		</div>
+
+		<div class="form-group">
+			<div class="row">
 				<div class="col-md-4">
 					<label>Available Employment Start Date</label> <span class="red">*</span>
 					{% if resume.available_date %}
@@ -126,10 +141,6 @@
 					{% else %}
 						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
 					{% endif %}
-				</div>
-				<div class="col-md-4">
-					<label>Expected Annual Salary</label>
-					<input type="number" name="expected_salary" class="form-control" placeholder="Expected Annual Salary?" value="{{ resume.expected_salary }}">
 				</div>
 			</div>
 		</div>
@@ -146,7 +157,7 @@
                         <div class="col-md-1">
                             <label>Honour</label>
                             {% set selected = 'selected' %}
-                            <select name="honour[]" class="form-control">
+                            <select name="honour[]" class="form-control" required>
                                 <option value=""></option>
                                 {% for honor in honours %}
                                     {% if honor.honour == edu.honour %}
@@ -181,9 +192,14 @@
                         </div>
                         <input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
                         {% if loop.index != 1 %}
-	                        <div class="col-md-1">
-	                            <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-trash fa-lg"></i></a>
-	                        </div>
+	                        <div class="col-md-1 col-xs-12 delete-entry-col">
+								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+								<div class="delete-entry-container">
+									<a href="" class="delete-entry remove-qualification-btn ">
+										Remove
+									</a>
+								</div>
+							</div>
                         {% endif %}
                     </div>
                 {% endfor %}
@@ -197,7 +213,7 @@
                         </div>
                         <div class="col-md-1">
                             <label>Honour</label>
-                            <select name="honour[]" class="form-control">
+                            <select name="honour[]" class="form-control" required>
                                 <option value=""></option>
                                 {% for honor in honours %}
                                     <option value="{{ honor.honour }}">{{ honor.honour }}</option>
@@ -245,18 +261,25 @@
 						<label>End Date</label>
 						<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
 					</div>
-					<div class="col-md-1">
-                        <a href="" class="plus-btn remove-institution-btn"><i class="fa fa-trash fa-lg"></i></a>
+					<div class="col-md-1 col-xs-12 delete-entry-col">
+						<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+						<div class="delete-entry-container">
+							<a href="" class="delete-entry remove-qualification-btn ">
+								Remove
+							</a>
+						</div>
 					</div>
 				</div>
 
-                <div class="row">
-                    <div class="col-sm-1 col-sm-offset-5">
-                        <a href="" class="add-institution">
-                            <i class="fa fa-plus fa-lg"></i>
-                        </a>
-                    </div>
-                </div>
+				<div class="row">
+					<div class="text-center col-sm-2 col-sm-offset-5">
+						<div class="add-entry-container">
+								<a href="" class="add-institution">
+										Add Education
+								</a>
+						</div>
+					</div>
+				</div>
             </div>
 		</fieldset>
 
@@ -265,9 +288,14 @@
 			<div class="form-group">
 				{% for qual in resume.qualifications %}
 					<div class="row qual-row">
-						<div class="col-md-9">
+						<div class="col-md-5">
 							<label>Qualification</label>
 							<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtain" value="{{ qual.qualification }}">
+						</div>
+
+						<div class="col-md-4">
+							<label>Institution</label>
+							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From" value="{{ qual.institution }}">
 						</div>
 
 						<div class="col-md-2">
@@ -279,8 +307,13 @@
 							{% endif %}
 						</div>
 						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
-						<div class="col-md-1">
-							<a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
+						<div class="col-md-1 col-xs-12 delete-entry-col">
+							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+							<div class="delete-entry-container">
+								<a href="" class="delete-entry remove-qualification-btn ">
+									Remove
+								</a>
+							</div>
 						</div>
 					</div>
 				{% endfor %}
@@ -295,37 +328,53 @@
     					<div class="col-md-2">
     						<label>Date Obtained</label>
     						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
-    					</div>
-    					<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
-    					<div class="col-md-1">
-                            <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
-    					</div>
-    				</div>
-                {% endif %}
+						</div>
+						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
+						<div class="col-md-1 col-xs-12 delete-entry-col">
+							<label class="hidden-xs" style="visibility: hidden; width: 100%;">|</label>
+							<div class="delete-entry-container">
+								<a href="" class="delete-entry remove-qualification-btn ">
+									Remove
+								</a>
+							</div>
+						</div>
+					</div>
+				{% endif %}
 
 				<div class="row qual-row addable" id="another-qualification">
-					<div class="col-md-9">
+					<div class="col-md-5">
 						<label>Qualification</label>
 						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
 					</div>
+					<div class="col-md-4">
+							<label>Institution</label>
+							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From">
+						</div>
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
 						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
 					</div>
 
-					<div class="col-md-1">
-                        <a href="" class="plus-btn remove-qualification-btn"><i class="fa fa-trash fa-lg"></i></a>
+					<div class="col-md-1 col-xs-12 delete-entry-col">
+						<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+						<div class="delete-entry-container">
+							<a href="" class="delete-entry remove-qualification-btn ">
+								Remove
+							</a>
+						</div>
 					</div>
 				</div>
 
-                <div class="row">
-                    <div class="col-sm-1 col-sm-offset-5">
-                        <a href="" class="add-qualification">
-                            <i class="fa fa-plus fa-lg"></i>
-                        </a>
-                    </div>
-                </div>
+				<div class="row">
+					<div class="text-center col-sm-2 col-sm-offset-5">
+						<div class="add-entry-container">
+								<a href="" class="add-qualification">
+										Add Qualification
+								</a>
+						</div>
+					</div>
+				</div>
 
 			</div>
 		</fieldset>
@@ -377,8 +426,13 @@
 								{% endif %}
 							</div>
 							<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
-							<div class="col-md-1">
-                                <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
+							<div class="col-md-1 col-xs-12 delete-entry-col">
+								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+								<div class="delete-entry-container">
+									<a href="" class="delete-entry remove-employment-btn">
+										Remove
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -419,8 +473,13 @@
 								<label>End Date</label>
 								<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
 							</div>
-							<div class="col-md-1">
-								<a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
+							<div class="col-md-1 col-xs-12 delete-entry-col">
+								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+								<div class="delete-entry-container">
+									<a href="" class="delete-entry remove-employment-btn">
+										Remove
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -460,17 +519,24 @@
 							<label>End Date</label>
 							<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
 						</div>
-						<div class="col-md-1">
-                            <a href="" class="plus-btn remove-employment-btn"><i class="fa fa-trash fa-lg"></i></a>
+						<div class="col-md-1 col-xs-12 delete-entry-col">
+							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+							<div class="delete-entry-container">
+								<a href="" class="delete-entry remove-employment-btn">
+									Remove
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
 
-                <div class="row">
-                    <div class="col-sm-1 col-sm-offset-5">
-                        <a href="" class="add-employment">
-                            <i class="fa fa-plus fa-lg"></i>
-                        </a>
+                 <div class="row">
+                    <div class="text-center col-sm-2 col-sm-offset-5">
+                    	<div class="add-entry-container">
+								<a href="" class="add-employment">
+										Add Employment
+                        		</a>
+						</div>
                     </div>
                 </div>
 			</div>
@@ -517,8 +583,13 @@
 								<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" required>
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
-							<div class="col-md-1">
-                                <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
+							<div class="col-md-1 col-xs-12 delete-entry-col">
+								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+								<div class="delete-entry-container">
+									<a href="" class="delete-entry remove-reference-btn">
+										Remove
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -559,8 +630,13 @@
 								<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" >
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
-							<div class="col-md-1">
-								<a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
+							<div class="col-md-1 col-xs-12 delete-entry-col">
+								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+								<div class="delete-entry-container">
+									<a href="" class="delete-entry remove-reference-btn">
+										Remove
+									</a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -604,20 +680,27 @@
 							<label>Phone</label>
 							<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's Name">
 						</div>
-						<div class="col-md-1">
-                            <a href="" class="plus-btn remove-reference-btn"><i class="fa fa-trash fa-lg"></i></a>
+						<div class="col-md-1 col-xs-12 delete-entry-col">
+							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+							<div class="delete-entry-container">
+								<a href="" class="delete-entry remove-reference-btn">
+									Remove
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
 			</div>
 
-            <div class="row">
-                <div class="col-sm-1 col-sm-offset-5">
-                    <a href="" class="add-reference">
-                        <i class="fa fa-plus fa-lg"></i>
-                    </a>
+             <div class="row">
+                    <div class="text-center col-sm-2 col-sm-offset-5">
+                    	<div class="add-entry-container">
+								<a href="" class="add-reference">
+										Add Reference
+                        		</a>
+						</div>
+                    </div>
                 </div>
-            </div>
 		</fieldset>
 
 		<input type="hidden" name="resume_id" value="{{ resume.id }}" />

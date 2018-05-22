@@ -201,6 +201,12 @@ module.exports = {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
+		console.log('PROFILE LOG');
+
+		console.info('PROFILE INFO');
+
+		console.error('PROFILE INFO error');
+
         return Promise.all([
             User.findOne(req.session.userId),
             Resume.findOne({ user: req.session.userId })

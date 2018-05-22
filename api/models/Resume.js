@@ -79,6 +79,10 @@ module.exports = {
             type: 'date'
         },
 
+        current_salary: {
+            type: 'float'
+        },
+
         expected_salary: {
             type: 'float'
         },

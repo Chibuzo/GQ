@@ -28,6 +28,7 @@ function updateResumeQualifications(q, resumeId) {
     let updatedQualificationsList = removeLastEmptyStrings(q('qualification'));
     let updatedQualificationsIDs = q('qualification_id') || [];
     let updatedQualificationsDates = q('qualification_date') || [];
+    let updatedQualificationsInstitutions = q('qualification_institution') || [];
 
     // Remove empty qualifications
     updatedQualificationsList = updatedQualificationsList.filter(function(qualification) {
@@ -45,7 +46,8 @@ function updateResumeQualifications(q, resumeId) {
         return {
             name: qualificationItem,
             id: id,
-            date: updatedQualificationsDates[idx]
+            date: updatedQualificationsDates[idx],
+            institution: updatedQualificationsInstitutions[idx]
         };
     });
 
@@ -62,7 +64,8 @@ function updateResumeQualifications(q, resumeId) {
             var qualification = {
                 qualification: userQualification.name,
                 date_obtained: userQualification.date ? new Date(Date.parse(userQualification.date)).toISOString() : new Date(Date.now()).toISOString(),
-                resume: resumeId
+                resume: resumeId,
+                institution: userQualification.institution
             };
 
             if (userQualification.id === false) {
@@ -391,6 +394,7 @@ module.exports = {
                 introduction: q('introduction'),
                 employment_status: q('employment_status'),
                 available_date: new Date(Date.parse(q('available_date'))).toISOString(),
+                current_salary: q('current_salary') ? q('current_salary') : 0.0,
                 expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
                 profile_status: true,
                 status: status
