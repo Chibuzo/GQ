@@ -11,7 +11,7 @@ os.tmpDir = os.tmpdir;
 module.exports = {
 
     dashboard: function(req, res) {
-         return JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
+         JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
              // find active jobs
              var today = new Date();
              var active_jobs = 0;
@@ -20,7 +20,8 @@ module.exports = {
                      active_jobs++
                  }
              });
-            return res.view('company/dashboard', { jobs: jobs, active_jobs: active_jobs });
+             var msg = req.param('msg') ? new Buffer(req.param('msg'), 'base64').toString('ascii') : '';
+            return res.view('company/dashboard', { jobs: jobs, active_jobs: active_jobs, msg: msg });
         })
         .catch(function(err) {
             return res.serverError(err);

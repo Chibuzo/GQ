@@ -125,7 +125,7 @@ module.exports = {
 
     readApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');
-
+//Application.destroy({ job: job_id }).exec(function() {});
         var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({
             dirname: require('path').resolve(sails.config.appPath, csvpath),
@@ -139,53 +139,69 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
-            var parser = require('csv-parse');
-            const fs = require('fs');
-            fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
-                parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
-                    async.eachSeries(data, function(entry, cb) {
-                        var data = {
-                            fullname: entry[0],
-                            email: entry[1],
-                            phone: entry[2],
-                            user_type: 'Applicant'
-                        };
-                        Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
-                            if (j_err) console.log(j_err);
-                            User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
-                                if (err) {
-                                }
-                                JobService.apply(job_id, user.id).then(function (resp) {
-                                    //console.log(resp);
-                                }).catch(function (err) {
-                                    console.log(err);
-                                });
+            try {
+                var parser = require('csv-parse');
+                const fs = require('fs');
+                fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
+                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                        if (err) {
+                            var msg = new Buffer("ERROR: Invalid CSV file. Please use download and use the sample CSV file on this page").toString('base64');
+                        }
+                        var company_id;
+                        async.eachSeries(data, function(entry, cb) {
+                            if (entry[0] == 'Fullname') {
+                                return cb();
+                            }
+                            var data = {
+                                fullname: entry[0],
+                                email: entry[1],
+                                phone: entry[2],
+                                user_type: 'Applicant'
+                            };
+                            Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                                if (j_err) console.log(j_err);
+                                User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
+                                    if (err) {}
+                                    JobService.apply(job_id, user.id).then(function (resp) {
+                                        //console.log(resp);
+                                    }).catch(function (err) {
+                                        console.log(err);
+                                    });
 
-                                var msg_type; // for determining the content of the invite email to send
-                                if (user.status == 'Inactive') {
-                                    msg_type = 'new-user';
-                                    sendMail.sendAppliedJobNotice(job, user, msg_type);
-                                    cb();
-                                } else {
-                                    Resume.find({user: user.id}).exec(function (err, resume) {
-                                        if (resume[0].profile_status == true) {
-                                            msg_type = 'fyi'; // inform them
-                                        } else {
-                                            msg_type = 'incomplete-profile';
-                                        }
+                                    var msg_type; // for determining the content of the invite email to send
+                                    if (user.status == 'Inactive') {
+                                        msg_type = 'new-user';
                                         sendMail.sendAppliedJobNotice(job, user, msg_type);
                                         cb();
-                                    });
-                                }
+                                    } else {
+                                        Resume.find({user: user.id}).exec(function (err, resume) {
+                                            if (resume[0].profile_status == true) {
+                                                msg_type = 'fyi'; // inform them
+                                            } else {
+                                                msg_type = 'incomplete-profile';
+                                            }
+                                            sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                            cb();
+                                        });
+                                    }
+                                });
+                                company_id = job.company.id;
                             });
+                        },
+                        function(err) {
+                            if (err) console.log(err);
+                            if (req.session.user_type == 'admin') {
+                                return res.redirect('/admin/coy-jobs/' + company_id);
+                            } else {
+                                return res.redirect('/company/dashboard/' + msg);
+                            }
                         });
-                    },
-                    function(err) {
-                        if (err) console.log(err);
-                            return res.redirect('/company/dashboard');
                     });
-                });
-            });
+                })
+            } catch (e) {
+                console.log(e);
+                return res.ok();
+            }
         });
     },
 
@@ -598,6 +614,16 @@ module.exports = {
     moveToCompany: function(req, res) {
         JobScraperService.moveJobToCompany(req.param('job_id'), req.param('coy_id'));
         return res.redirect('/viewScrapedJobs');
+    },
+
+
+    downloadCSVSample: function(req, res) {
+        res.setHeader('Content-disposition', 'attachment; filename=sampleCSV.csv');
+        var SkipperDisk = require('skipper-disk');
+        var fileAdapter = SkipperDisk();
+        fileAdapter.read(sails.config.appPath + '/assets/csv-files/sampleCSV.csv').on('error', function (err) {
+            return res.serverError(err);
+        }).pipe(res);
     }
 
 

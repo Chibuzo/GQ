@@ -190,6 +190,19 @@
 		color: white;
 	}
 
+	.div-cv {
+		padding: 2px 50px;
+	}
+
+	h4 {
+		font-size: 25px;
+		font-weight: 100;
+	}
+
+	#cv-view .row {
+		padding: 1px 7px;
+	}
+
 
 	@keyframes spin {
 	    0% { transform: rotate(0deg); }
@@ -212,6 +225,14 @@
 		.cell {
 			left:-50px;
 			top:-100px;
+		}
+
+		.main-panel > .content {
+			padding: 30px 0;
+		}
+
+		.div-cv {
+			padding: 2px 17px;
 		}
 	}
 </style>
@@ -288,7 +309,7 @@
 
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
-									<div class="col-md-12" style="padding: 50px">
+									<div class="col-md-12 div-cv">
 										{% include 'includes/resume-form.swig' %}
 										{% include 'includes/resume.swig' %}
 										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>

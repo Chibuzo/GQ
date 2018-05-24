@@ -62,7 +62,7 @@
 								{% set shortlistNo = selected_candidates.length %}
 
 								{% if shortlistNo + candidatesNo  == 0 %}
-                                    <div class="test alert alert-info">No candidate has applied for this job yet</div>
+                                    <div class="test alert alert-info">None of the applid candidates have taken the required test.</div>
                                 {% else %}
 									<table class="text-center table table-striped tablebordered dataTable">
 										<thead>
