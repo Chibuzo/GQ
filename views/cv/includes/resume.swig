@@ -8,15 +8,13 @@
 
 <div class="{{ className }} tab-pane fade active in" id="resume">
 	{% if canEditResume == true %}
-		<div class="row">
-			<div id="candidate-editResumeBtn" class="col-md-2 col-md-offset-5 btn btn-primary">
-				Edit Resume
-			</div>
+		<div class="row text-center">
+			<button class="btn btn-primary" id="candidate-editResumeBtn"><i class="fa fa-user"></i> Edit Resume</button>
 		</div>
 	{% endif %}
-	<hr/>
+
 	<div class="row">
-		<div class="col-md-12" style="padding: 50px; padding-top: 10px">
+		<div class="col-md-12 div-cv" id="cv-view">
 			{% if showContactInfo == true  %}
 				<h3 class="text-center"><strong>{{ resume.fullname }}</strong></h3>
 				<p class="text-center">{{ resume.address }}, {{ resume.city }} {{ resume.r_state }}</p>
@@ -32,33 +30,33 @@
 				<h3 class="text-center"><strong>{{ me.fname }} {{ me.lname|first }}</strong></h3>
 			{% endif %}
 
-			<h4><strong>Summary</strong></h4><hr>
-			<div>{{ resume.introduction }}</div>
+			<h4>&nbsp;Summary</h4><hr>
+			<div class="row"><div class="col-md-12">{{ resume.introduction }}</div></div>
 
-			<h4><strong>Education</strong></h4><hr>
+			<h4>&nbsp;Education</h4><hr>
 			{% for edu in resume.educations %}
 				<div class="row">
-					<div class="col-md-8">
+					<div class="col-md-8 col-xs-7">
 						<div class="school">
-							{{ edu.institution }}<br><small>{{ edu.honour }}. {{ edu.programme }}</small>
+							{{ edu.institution }}<br><small>{{ edu.honour }} {{ edu.programme }}</small>
 						</div>
 					</div>
-					<div class="col-md-4" style="text-align: right;">{{ edu.start_date | date('F Y') }} - {{ edu.end_date | date('F Y') }}</div>
+					<div class="col-md-4 col-xs-5" style="text-align: right;">{{ edu.start_date | date('M Y') }} - {{ edu.end_date | date('M Y') }}</div>
 				</div>
 				<br>
 			{% endfor %}
 
-			<h4><strong>Professional Certifications</strong></h4><hr>
+			<h4>&nbsp;Professional Certification</h4><hr>
 			{% for qual in resume.qualifications %}
 				<div class="row">
-					<div class="col-md-4">{{ qual.qualification }}</div>
-					<div class="col-md-4">{{ qual.institution }}</div>
-					<div class="col-md-4" style="text-align: right;">{{ qual.date_obtained | date('F Y') }}</div>
+					<div class="col-md-5 col-xs-5">{{ qual.qualification }}</div>
+					<div class="col-md-5 col-xs-4">{{ qual.institution }}</div>
+					<div class="col-md-2 col-xs-3" style="text-align: right;">{{ qual.date_obtained | date('M Y') }}</div>
 				</div>
 				<br>
 			{% endfor %}
 
-			<h4><strong>Employment History</strong></h4><hr>
+			<h4>&nbsp;Employment History</h4><hr>
 			{% for emp in resume.employments %}
 				<div class="row">
 					<div class="col-md-8">
@@ -72,8 +70,16 @@
 				</div>
 			{% endfor %}
 
+			<h4>&nbsp;Salary</h4><hr>
+			<div class="row">
+				<div class="col-md-12">
+					<p>Expected Salary: &#8358;{{ resume.expected_salary | formatCurrency }}</p>
+					<p>Current Salary: &#8358;{{ resume.current_salary | formatCurrency }}</p>
+				</div>
+			</div>
+
 			{% if showContactInfo == true %}
-				<h4><strong>Referrals</strong></h4><hr>
+				<h4>&nbsp;Referrals</h4><hr>
 				{% for ref in resume.referencecontacts %}
 					<div class="row">
 						<div class="col-md-12">

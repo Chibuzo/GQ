@@ -485,5 +485,16 @@ module.exports = {
             .catch(err => {
                 return res.serverError(err);
             })
+    },
+
+
+    viewSampleCV: function(req, res) {
+        res.setHeader('Content-disposition', 'inline; filename=sampleCV.pdf');
+        res.setHeader('Content-type', 'application/pdf');
+        var SkipperDisk = require('skipper-disk');
+        var fileAdapter = SkipperDisk();
+        fileAdapter.read(sails.config.appPath + '/assets/sampleCV.pdf').on('error', function (err) {
+            return res.serverError(err);
+        }).pipe(res);
     }
 };

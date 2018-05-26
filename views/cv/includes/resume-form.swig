@@ -6,6 +6,7 @@
 {% endif %}
 
 <div id="resumeForm-container" class="{{ className }}">
+	<div class="clearfix"><a href="/viewsampleresume" class="btn btn-danger pull-right"><i class="fa fa-file-pdf-o"></i> View Sample CV</a></div>
 	<small>Fields marked in asterisk are compulsory</small>
 	<form action="/resume/update" method="post" id="form-resume">
 		<div class="form-group">
@@ -553,34 +554,34 @@
 						<div class="row">
 							<div class="col-md-6">
 								<label>First name</label>
-								<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}" required>
+								<input type="text" name="reference_fname[]" class="form-control" placeholder="Reference's First Name" value="{{ fname }}">
 							</div>
 
 							<div class="col-md-6">
 								<label>Last name</label>
-								<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="{{ lname }}" required>
+								<input type="text" name="reference_lname[]" class="form-control" placeholder="Reference's Last Name" value="{{ lname }}">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6">
 								<label>Company/Organisation</label>
-								<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}" required>
+								<input type="text" name="reference_company[]" class="form-control" placeholder="Reference's Workplace" value="{{ ref.company }}">
 							</div>
 
 							<div class="col-md-6">
 								<label>Job Title</label>
-								<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}" required>
+								<input type="text" name="reference_job_title[]" class="form-control" placeholder="Reference's Job title/Role" value="{{ ref.job_title }}">
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-md-6">
 								<label>Email</label>
-								<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}" required>
+								<input type="email" name="reference_email[]" class="form-control" placeholder="Reference's Email" value="{{ ref.email }}">
 							</div>
 
 							<div class="col-md-5">
 								<label>Phone</label>
-								<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" required>
+								<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}">
 							</div>
 							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
 							<div class="col-md-1 col-xs-12 delete-entry-col">

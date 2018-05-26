@@ -106,7 +106,9 @@
 					<a href="/job/addjob" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Add Job</a>
 				</div>
 			</div>
-
+			{% if msg.length > 5 %}
+				<div class="alert alert-danger">{{ msg }}</div>
+			{% endif %}
 			<div class="row">
 				<div class="col-md-12">
 					<div class="card">
@@ -151,7 +153,13 @@
 											<div class="button-group" role="group">
 												<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
 												{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-												<a href="" class="upload-csv btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Add Candidates via CSV Upload"><i class="fa fa-file-text-o fa-lg"></i></a>
+												<div class="btn-group">
+													<a href="" class="btn btn-secondary btn-xs btn-fill dropdown-toggle" rel="tooltip" title="Add Candidates via CSV Upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o fa-lg"></i></a>
+													<ul class="dropdown-menu dropdown-menu-right">
+														<li><a href="" class="upload-csv"><i class="fa fa-upload fa-fw"></i> Upload CSV</a></li>
+														<li><a href="/downloadsamplecsv" class="reject-test"><i class="fa fa-download fa-fw"></i>Download Sample CSV</a></li>
+													</ul>
+												</div>
 												<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
 												<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
 											</div>

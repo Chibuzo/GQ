@@ -162,7 +162,7 @@ module.exports.routes = {
 
     'POST /company/update-details': 'CompanyController.updateDetails',
 
-    'GET /company/dashboard': 'CompanyController.dashboard',
+    'GET /company/dashboard/:msg': 'CompanyController.dashboard',
 
     'GET /company/profile': 'CompanyController.profile',
 
@@ -259,6 +259,10 @@ module.exports.routes = {
     'GET /editprofile/:user_id': 'AdminController.hijackAccount',
     
     'GET /companyprofile/:coy_id': 'AdminController.hijackCompany',
+
+    'GET /downloadsamplecsv': 'JobController.downloadCSVSample',
+
+    'GET /viewsampleresume': 'ResumeController.viewSampleCV'
 
     //'GET /email': { view: 'email' },
     //
