@@ -13,7 +13,7 @@
 		<div class="card">
 			<div class="header row">
 				<div class="col-md-6">
-					<h4 class="title">All Jobs</h4>
+					<h4 class="title">All {{ job_status }} Jobs</h4>
 					<p class="category"></p>
 				</div>
 			</div>

@@ -143,15 +143,19 @@ module.exports = {
             const fs = require('fs');
             fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
                 parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
-                    async.eachSeries(data, function(entry, cb) {
-                        var data = {
-                            fullname: entry[0],
-                            email: entry[1],
-                            phone: entry[2],
-                            user_type: 'Applicant'
-                        };
-                        Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
-                            if (j_err) console.log(j_err);
+                    Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                        var company_id = job.company.id;
+                        if (j_err) {
+                            console.log(j_err);
+                            return res.badRequest(j_err);
+                        }
+                        async.eachSeries(data, function(entry, cb) {
+                            var data = {
+                                fullname: entry[0],
+                                email: entry[1],
+                                phone: entry[2],
+                                user_type: 'Applicant'
+                            };
                             User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
                                 if (err) {
                                 }
@@ -178,11 +182,11 @@ module.exports = {
                                     });
                                 }
                             });
+                        },
+                        function(err) {
+                            if (err) console.log(err);
+                                return res.redirect('/company/dashboard');
                         });
-                    },
-                    function(err) {
-                        if (err) console.log(err);
-                            return res.redirect('/company/dashboard');
                     });
                 });
             });
@@ -231,7 +235,7 @@ module.exports = {
                         var active_jobs = 0;
                         jobcat.jobs.forEach(function(job) {
                             if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++
+                                active_jobs++;
                             }
                         });
                         jobCategories.push({
@@ -598,6 +602,14 @@ module.exports = {
     moveToCompany: function(req, res) {
         JobScraperService.moveJobToCompany(req.param('job_id'), req.param('coy_id'));
         return res.redirect('/viewScrapedJobs');
+    },
+    
+    closeJob: function(req, res) {
+        var today = new Date();
+        var backdate = today.setDate(today.getDate() - 2);
+        Job.update({ id: req.param('job_id') }, { closing_date: new Date(backdate).toISOString() }).exec(function(err, job) {
+            return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+        });
     }
 
 

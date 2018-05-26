@@ -49,17 +49,24 @@ module.exports = {
     },
 
 
-    fetchCompanyJobs: function (coy_id) {
+    fetchCompanyJobs: function (coy_id, job_status = 'open') {
+        var jobstatus;
+        var today = new Date();
+        if (job_status == 'open') {
+            jobstatus = { '>=': today };
+        } else {
+            jobstatus = { '<': today };
+        }
         return new Promise(function (resolve, reject) {
             Job.find({
                 company: coy_id,
-                status: 'Active'
+                status: 'Active',
+                closing_date: jobstatus
             }).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
                 if (err) {
                     reject(err);
                     return;
                 }
-
                 var _jobs = [];
                 var today = new Date();
 

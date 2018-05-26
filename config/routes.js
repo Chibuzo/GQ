@@ -79,7 +79,7 @@ module.exports.routes = {
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
 
-    'GET /admin/coy-jobs/:coy_id': 'CompanyController.viewCompanyJobs',
+    'GET /admin/coy-jobs/:coy_id/:status': 'CompanyController.viewCompanyJobs',
 
     'GET /admin/candidates/:query': 'ApplicantController.fetchStatisticsPage',
 
@@ -213,6 +213,8 @@ module.exports.routes = {
     'GET /job/candidates/:job_id': 'JobController.getApplicantsResults',
 
     'GET /job/view-shortlisted/:job_id': 'JobController.fetchShortlisted',
+    
+    'GET /job/closejob/:job_id': 'JobController.closeJob',
 
     'GET /admin/job/:job_id/view-shortlisted': 'JobController.fetchShortlistedForAdmin',
 
@@ -255,6 +257,8 @@ module.exports.routes = {
     'POST /scrapedJob/claimJob': 'JobController.moveToCompany',
 
     'GET /editprofile/:user_id': 'AdminController.hijackAccount',
+    
+    'GET /companyprofile/:coy_id': 'AdminController.hijackCompany',
 
     //'GET /email': { view: 'email' },
     //

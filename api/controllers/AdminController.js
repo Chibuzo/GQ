@@ -154,6 +154,11 @@ module.exports = {
     hijackAccount: function(req, res) {
         req.session.userId = req.param('user_id');
         return res.redirect('/applicant/dashboard');
+    },
+    
+    hijackCompany: function(req, res) {
+        req.session.coy_id = req.param('coy_id');
+        return res.redirect('/company/profile');
     }
 };
 

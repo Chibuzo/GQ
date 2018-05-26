@@ -113,7 +113,7 @@
                         </li>
                     {% endif %}
 
-                    {% if req.session.user_type == 'company-admin' %}
+                    {% if req.session.user_type == 'company-admin' || req.session.user_type == 'admin' %}
                         <li class="users">
                             <a href="/company/users">
                                 <i class="pe-7s-users"></i>

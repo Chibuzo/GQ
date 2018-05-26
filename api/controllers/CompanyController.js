@@ -98,10 +98,9 @@ module.exports = {
             address: q('address'),
             country: q('country'),
             r_state: q('state'),
-            city: q('city'),
-            sector: q('sector'),
+            city: q('city')
         };
-        Company.update({ id: req.session.coy_id }, data).exec(function (err, com) {
+        Company.update({ id: req.session.coy_id }, data).exec(function (err) {
             if (err) return console.log(err);
             //console.log(com);
         });
@@ -145,7 +144,7 @@ module.exports = {
             } catch(err) {
                 console.log(err);
                 // just do nothing
-            };
+            }
         });
         if (q('first_check') == 'true') {
             Passwords.encryptPassword({
@@ -201,7 +200,7 @@ module.exports = {
                 });
             }).catch(err => {
                 return res.serverError(err);
-            })
+            });
     },
 
     addUser: function(req, res) {
@@ -327,32 +326,39 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-        return  Company.find({ status: 'Active' })
-            .then(coys => {
-                var companies = [];
+          return Company.find({ status: 'Active' }).then(coys => {
+               var companies = [];
+               var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
-                    Job.count({company: coy.id}).exec(function (err, jobs) {
-                        coy.jobs = jobs;
-                        companies.push(coy);
-                        cb();
+                    Job.find({company: coy.id}).exec(function (err, jobs) {
+                         coy.open_jobs = 0;
+                         coy.closed_jobs = 0;
+                         jobs.forEach(function(job) {
+                              if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                   coy.open_jobs++;    
+                              } else {
+                                   coy.closed_jobs++;
+                              }
+                         });
+                         companies.push(coy);
+                         cb();
                     });
-                }, function(err) {
+                }, function() {
                     return res.view('admin/list-companies', { companies: coys });
                 });
-            })
+            });
     },
-
 
     // admin view
     viewCompanyJobs: function(req, res) {
         var coy_id = req.param('coy_id');
+        var job_status = req.param('status');
 
-        if (coy_id == undefined) {
+        if (coy_id === undefined) {
             return res.badRequest('Missing Company Param');
         }
-
         return Promise.all([
-                JobService.fetchCompanyJobs(coy_id),
+                JobService.fetchCompanyJobs(coy_id, job_status),
                 Company.findOne({id: coy_id})
             ]).then(results => {
                 let jobs = results[0];
@@ -361,7 +367,8 @@ module.exports = {
                 return res.view('admin/coy-jobs', {
                     jobs: jobs,
                     company: company,
-                    coy_id: coy_id
+                    coy_id: coy_id,
+                    job_status: job_status
                 });
             }).catch(err => {
                 return res.serverError(err);

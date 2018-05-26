@@ -20,12 +20,13 @@
 					<tr>
 						<th style="width: 100px">Date Joined</th>
 						<th style="width: 20%">Company/Organisation</th>
-						<th>Sector</th>
+						<th class="hidden">Sector</th>
 						<th>Location</th>
 						<th>Contact Person</th>
 						<th>Contact email</th>
 						<th>Contact Phone</th>
-						<th>Jobs</th>
+						<th>Open Jobs</th>
+						<th>Closed Jobs</th>						
 						<th class="hidden"></th>
 					</tr>
 					</thead>
@@ -33,13 +34,14 @@
 					{% for coy in companies %}
 						<tr id="{{ coy.id }}">
 							<td>{{ coy.createdAt | date('d.m.Y') }}</td>
-							<td>{{ coy.company_name }}</td>
-							<td>{{ coy.sector }}</td>
-							<td>{{ coy.country }}, {{ coy.r_state }} {{ coy.city }}</td>
+							<td><a href="/companyprofile/{{ coy.id }}" target="_blank">{{ coy.company_name }}</a></td>
+							<td class="hidden">{{ coy.sector }}</td>
+							<td>{{ coy.r_state }}</td>
 							<td>{{ coy.contact_person }}</td>
 							<td>{{ coy.contact_email }}</td>
 							<td>{{ coy.contact_phone }}</td>
-							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}">{{ coy.jobs }}</a></td>
+							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/open">{{ coy.open_jobs }}</a></td>
+							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/closed">{{ coy.closed_jobs }}</a></td>							
 							<td class="hidden">
 								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
 							</td>

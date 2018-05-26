@@ -44,11 +44,9 @@
 			<tr id="{{ job.id }}">
 				<td style="width: 30px"><input type="checkbox" class="user-checkbox" /></td>
 				<td data-order="{{ job.createdAt | date('Y/m/d') }}">{{ job.createdAt | date('d.m.Y') }}</td>
+				<td><a href="/job/{{ job.id }}/{{ path | join('-') }}" target="_blank">{{ job.job_title }}</a></td>
 				{% if scrapedJob === true %}
-					<td><a href="/job/{{ job.id }}/{{ path | join('-') }}" target="_blank">{{ job.job_title }}</a></td>
 					<td>{{ job.company_name }}</td>
-				{% else %}
-					<td>{{ job.job_title }}</td>
 				{% endif %}
 				<td>{{ job.job_level }}</td>
 				<td>{{ job.view_count }}</td>
@@ -84,6 +82,10 @@
 							{% endif %}
 							<li><a href="/job/editjob/{{ job.id }}" class="edit-job"><i class="fa fa-pencil"></i> Edit Job</a></li>
 							<li><a href="" class="upload-csv"><i class="fa fa-file-text-o"></i>Upload Applicants</a></li>
+							<li><a href="/downloadsamplecsv"><i class="fa fa-download"></i>Download Sample CSV</a></li>
+							{% if job_status == 'open' %}
+								<li><a href="/job/closejob/{{ job.id }}"><i class="fa fa-ban"></i>Close Job</a></li>
+							{% endif %}
 						</ul>
 					</div>
 						{#<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>#}
