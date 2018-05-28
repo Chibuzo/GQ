@@ -25,31 +25,47 @@ select.input-lg {
 	line-height: 19px;
 }
 
+h2 {
+	font-size: 34px;
+}
+
+h4 {
+	font-size: 22px;
+}
+
 .jobs {
-	padding: 0px 50px;
+	padding: 0px 20px;
 }
 
 .job {
+	clear: both;
 	padding: 15px;
 	padding-left: 0px;
 	line-height: 1.3;
+	border-bottom: 1px solid #EEE;
+	margin-bottom: 50px;
 }
 
 .job img {
 	float: left;
-	width: 57px;
-	height: 51px;
+	width: 59px;
+	height: 53px;
 	margin-right: 18px;
+	padding: 1px;
+	border: 1px solid #e0e0e0;
 }
 
 .job-desc {
 	clear: both;
+	color: #333;
+	margin-top: 50px;
+	line-height: 24px;
 }
 
 .info-thumb {
-	padding-bottom: 13px;
-	font-size: 14px;
-	margin-bottom: 15px;
+	padding-bottom: 3px;
+	font-size: 13px;
+	line-height: 19px;
 }
 
 .info-thumb-ls {
@@ -81,6 +97,19 @@ input[type="text"] {
 	font-size: 14px;
 }
 
+.sidebar {
+	background-color: #f9f9f9;
+	padding: 20px 6px;
+}
+
+.mobile-view {
+	display:none;
+}
+
+.desktop-view {
+	display: block;
+}
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;
@@ -88,6 +117,32 @@ input[type="text"] {
 
 	#home .home-wrapper {
 		top: 60%
+	}
+	
+	h2 {
+		font-size: 26px;
+	}
+	
+	.job {
+		margin-bottom: 22px;
+	}
+	
+	.job-desc {
+		margin-top: 17px;
+		line-height: 21px;
+	}
+	
+	.desktop-view {
+		display: none;
+	}
+	
+	
+	.mobile-view {
+		display: block
+	}
+	
+	.jobs {
+		padding: 0 15px;
 	}
 }
 </style>
@@ -142,45 +197,41 @@ input[type="text"] {
 				{% else %}
 					{% set logo_name = 'company.png' %}
 				{% endif %}
-				{#<div class="job">#}
-					{#<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>#}
-					{#<div class="info-thumb">#}
-						{#<div class="row">#}
-							{#<div class="col-md-2"><img src="/logos/{{ logo_name }}" /></div>#}
-							{#<div class="col-md-3"><i class="fa fa-briefcase"></i> {{ job.company.company_name }}</div>#}
-							{#<div class="col-md-2"><i class="fa fa-map-marker"></i> {{ job.location }} </div>#}
-							{#<div class="col-md-2"><i class="fa fa-asterisk"></i> {{ job.job_level }} </div>#}
-							{#<div class="col-md-3"><i class="fa fa-calendar"></i> Closing date: {{ job.closing_date | date('d.m.Y') }}</div>#}
-						{#</div>#}
-					{#</div>#}
-					{#&#123;&#35;<div class="job-desc">{{ job.job_description }}</div>&#35;&#125;#}
-				{#</div>#}
 				<div class="job">
-					<img src="/logos/{{ logo_name }}" />
+					<img src="/logos/{{ logo_name }}" class="desktop-view" />
 					<h4 style="margin-top:3px; margin-bottom: 10px"><a href="/job/{{ job.id }}/{{ path | join('-') }}">{{ job.job_title }}</a></h4>
 					<div class="info-thumb">
-						<ul class="info-thumb-ls">
-							<li><i class="fa fa-briefcase"></i> {{ job.company.company_name }}</li>
-							<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
-							<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
-							<li><i class="fa fa-calendar"></i> Closes On: {{ job.closing_date | date('d.m.Y') }} </li>
+						<div class="row mobile-view">
+							<div class="col-md-3 col-xs-12"><i class="fa fa-briefcase fa-fw"></i> &nbsp;{{ job.company.company_name }}</div>
+							<div class="col-md-2 col-xs-12"><i class="fa fa-map-marker fa-fw"></i> &nbsp;{{ job.location }} </div>
+							<div class="col-md-2 col-xs-12"><i class="fa fa-asterisk fa-fw"></i> &nbsp;{{ job.job_level }} Level</div>
+							<div class="col-md-3 col-xs-12"><i class="fa fa-calendar fa-fw"></i> &nbsp;Closing date: {{ job.closing_date | date('d.m.Y') }}</div>
+						</div>
+						<ul class="info-thumb-ls desktop-view">
+							<li><i class="fa fa-briefcase"></i> &nbsp;{{ job.company.company_name }}</li>
+							<li><i class="fa fa-map-marker"></i> &nbsp;{{ job.location }} </li>
+							<li><i class="fa fa-asterisk"></i> &nbsp;{{ job.job_level }} Level</li>
+							<li><i class="fa fa-calendar"></i> &nbsp;Closing date: {{ job.closing_date | date('d.m.Y') }}</li>
 						</ul>
+
 					</div>
-					{#<div class="job-desc">{{ job.job_description }}</div>#}
+					<div class="job-desc">{{ job.job_description | safe | raw | truncate }}</div>
 				</div>
 			{% endfor %}
 		</div>
 
-		<div class="col-md-4"><br>
-			<h3 style="color: #666;">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
-			<ul class="job-categories">
-			{% for cat in job_categories %}
-				{% if cat.jobs > 0 %}
-					{% set cat_path = cat.category.split(' ') %}
-					<li><i class="fa fa-hand-o-right"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
-				{% endif %}
-			{% endfor %}
-			</ul>
+		<div class="col-md-4">
+			<div class="sidebar">
+				<h3>&nbsp;Job Categories</h3>
+				<ul class="job-categories">
+				{% for cat in job_categories %}
+					{% if cat.jobs > 0 %}
+						{% set cat_path = cat.category.split(' ') %}
+						<li>&nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
+					{% endif %}
+				{% endfor %}
+				</ul>
+			</div>	
 		</div>
 	</div>
 </div>

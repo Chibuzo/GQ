@@ -16,6 +16,9 @@
 					<h4 class="title">All {{ job_status }} Jobs</h4>
 					<p class="category"></p>
 				</div>
+				<div class="col-md-6 pull-right text-right">
+					<a href="/admin/view-companies" class="btn btn-danger"><i class="fa fa-caret-left"></i> Back to Companies</a>
+				</div>	
 			</div>
 			{% set isAdmin = true %}
 			{% include 'includes/jobs-view.swig' %}

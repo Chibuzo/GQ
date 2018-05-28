@@ -29,7 +29,15 @@
 }
 
 .job {
-	padding: 0px 40px;
+	padding: 0px 15px;
+}
+
+h2 {
+	font-size: 34px;
+}
+
+h4 {
+	font-size: 22px;
 }
 
 .job-desc {
@@ -42,10 +50,9 @@
 }
 
 .info-thumb {
-	padding-bottom: 13px;
-	font-size: 14px;
-	margin-bottom: 35px;
-	margin-left: 9px;
+	padding-bottom: 3px;
+	font-size: 13px;
+	line-height: 19px;
 }
 
 .info-thumb-ls {
@@ -69,6 +76,10 @@ input[type="text"] {
 	opacity: 1;
 }
 
+.job-categories {
+		list-style-type: none
+}
+
 .job-categories li {
 	padding: 4px 8px;
 }
@@ -85,6 +96,20 @@ ul li {
 	margin-left: 15px;
 }
 
+.sidebar {
+	background-color: #f9f9f9;
+	padding: 20px 6px;
+}
+
+.mobile-view {
+	display:none;
+}
+
+.desktop-view {
+	display: block;
+}
+
+
 @media screen and (min-width: 200px) and (max-width: 600px) {
 	#home {
 		height: 50vh;
@@ -93,9 +118,21 @@ ul li {
 	#home .home-wrapper {
 		top: 60%
 	}
+	
+	h2 {
+		font-size: 26px;
+	}
 
 	.job {
 		padding: 20px 10px;
+	}
+	
+	.desktop-view {
+		display: none;
+	}
+	
+	.mobile-view {
+		display: block
 	}
 }
 </style>
@@ -154,7 +191,13 @@ ul li {
 			{% else %}
 				<h2 id="job-title">{{ job.job_title }}</h2>
 				<div class="info-thumb">
-					<ul class="info-thumb-ls">
+					<div class="row mobile-view">
+							<div class="col-md-3 col-xs-12"><i class="fa fa-briefcase fa-fw"></i> &nbsp;{{ job.company.company_name }}</div>
+							<div class="col-md-2 col-xs-12"><i class="fa fa-map-marker fa-fw"></i> &nbsp;{{ job.location }} </div>
+							<div class="col-md-2 col-xs-12"><i class="fa fa-asterisk fa-fw"></i> &nbsp;{{ job.job_level }} Level</div>
+							<div class="col-md-3 col-xs-12"><i class="fa fa-calendar fa-fw"></i> &nbsp;Closing date: {{ job.closing_date | date('d.m.Y') }}</div>
+						</div>
+					<ul class="info-thumb-ls desktop-view">
 						<li><i class="fa fa-institution"></i>{% if scrapedJob === true %} GQ Direct {% else %} {{ job.company.company_name }} {% endif %} </li>
 						<li><i class="fa fa-map-marker"></i> {{ job.location }} </li>
 						<li><i class="fa fa-asterisk"></i> {{ job.job_level }} Level</li>
@@ -199,15 +242,17 @@ ul li {
 		</div>
 
 		<div class="col-md-4">
-			<h3 style="color: #666; margin-top:20px">&nbsp;Job Categories</h3><hr style="margin-top: -10px">
-			<ul class="job-categories">
-			{% for cat in job_categories %}
-				{% if cat.jobs > 0 %}
-					{% set cat_path = cat.category.split(' ') %}
-					<li><i class="fa fa-hand-o-right hidden"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
-				{% endif %}
-			{% endfor %}
-			</ul>
+				<div class="sidebar">
+						<h3>&nbsp;Job Categories</h3>
+						<ul class="job-categories">
+						{% for cat in job_categories %}
+							{% if cat.jobs > 0 %}
+								{% set cat_path = cat.category.split(' ') %}
+								<li><i class="fa fa-hand-o-right hidden"></i> &nbsp;<a href="/jobcategory/{{ cat.id }}/{{ cat_path.join('-') }}">{{ cat.category }} [ {{ cat.jobs }} ]</a></li>
+							{% endif %}
+						{% endfor %}
+						</ul>
+				</div>		
 		</div>
 	</div>
 </div>
