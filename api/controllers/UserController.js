@@ -244,6 +244,9 @@ module.exports = {
             if (err) {
                 return res.negotiate(err);
             }
+            // update in resume
+            Resume.update({ user: user[0].id }, { fullname: udata.fullname }).exec(function() {});
+
             let new_pswd = req.param('new_password');
             if(req.param('current_password') && req.param('new_password')) {
                 Passwords.checkPassword({
