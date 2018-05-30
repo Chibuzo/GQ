@@ -62,6 +62,11 @@
 		height: 165px;
 	}
 
+	a.disabled {
+		pointer-events: none;
+		cursor: default;
+	}
+
 </style>
 
 <div class="row">
@@ -171,7 +176,10 @@
 										Menu &nbsp;<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right">
-										<li><a href="/editprofile/{{ user_id }}" target="_blank"><i class="fa fa-wrench"></i> Edit Profile</a></li>
+										{% if user.status != 'Active' %}
+											{% set state = 'disabled' %}
+										{% endif %}
+										<li><a href="/editprofile/{{ user_id }}" target="_blank" class="{{ state }}"><i class="fa fa-wrench"></i> Edit Profile</a></li>
 									</ul>
 								</div>
 							</td>

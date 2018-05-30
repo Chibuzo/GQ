@@ -308,7 +308,7 @@ module.exports = {
 	editView: function(req, res) {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
-                
+
 
        return Promise.all([
             CountryStateService.getCountries(),
@@ -384,6 +384,7 @@ module.exports = {
             }
 
             var data = {
+                fullname: q('fname') + ' ' + q('lname'),
                 gender: q('gender'),
                 dob: new Date(Date.parse(q('dob'))).toISOString(),
                 phone: q('phone'),
@@ -402,6 +403,9 @@ module.exports = {
 
             return Resume.update({ id: q('resume_id') }, data)
             .then(resume => {
+                // just update fullname on user table
+                User.update({ id: resume[0].user }, { fullname: data.fullname }).exec(function() {});
+
                 return res.json(200, { status: 'success' });
             }).catch(err => {
                 console.error(err);
@@ -414,12 +418,12 @@ module.exports = {
                 } else {
                     return res.json(200, { status: 'error', msg: err });
                 }
-            })
+            });
         })
         .catch(err => {
             return res.serverError(err);
         });
-        
+
     },
 
     getVideo: function(req, res) {
