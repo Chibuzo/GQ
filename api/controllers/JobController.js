@@ -39,7 +39,7 @@ module.exports = {
             } else {
                 folder = 'company';
             }
-            
+
             return res.view(folder + '/editjob', {
                 job: job,
                 jobcategories: categories,
@@ -78,7 +78,7 @@ module.exports = {
             console.log(err);
             return res.serverError(err);
         }
-        
+
         if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
@@ -170,7 +170,7 @@ module.exports = {
                                     }).catch(function (err) {
                                         console.log(err);
                                     });
-    
+
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
@@ -316,7 +316,7 @@ module.exports = {
 
     apply: function(req, res) {
         var job_id = req.param('id');
-        if (req.session.userId && req.session.user_type == 'Applicant') {
+        if (req.session.userId && (req.session.user_type == 'Applicant' || req.session.user_type == 'admin')) {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
@@ -617,7 +617,7 @@ module.exports = {
         JobScraperService.moveJobToCompany(req.param('job_id'), req.param('coy_id'));
         return res.redirect('/viewScrapedJobs');
     },
-    
+
     closeJob: function(req, res) {
         var today = new Date();
         var backdate = today.setDate(today.getDate() - 2);
