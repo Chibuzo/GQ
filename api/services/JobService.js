@@ -54,6 +54,8 @@ module.exports = {
         var today = new Date();
         if (job_status == 'open') {
             jobstatus = { '>=': today };
+        } else if (job_status == 'all') {
+            jobstatus = { '>': new Date('2017-05-05') }; // this is a stale date
         } else {
             jobstatus = { '<': today };
         }

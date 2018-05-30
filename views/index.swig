@@ -177,7 +177,7 @@
 				<div class="col-lg-3 col-md-6 text-center">
 					<div class="service-box mt-5 mx-auto">
 						<i class="fa fa-thumbs-o-up landing-page-icon"></i>
-						<h3 class="mb-3">Appicants Are Assessed</h3>
+						<h3 class="mb-3">Applicants Are Assessed</h3>
 						<p class="text-muted mb-0">We shortlist applicants based on their aptitude and job competency scores, and an objective assessment of their work experience</p>
 					</div>
 				</div>

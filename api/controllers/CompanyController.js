@@ -11,7 +11,7 @@ os.tmpDir = os.tmpdir;
 module.exports = {
 
     dashboard: function(req, res) {
-         JobService.fetchCompanyJobs(req.session.coy_id).then(function(jobs) {
+         JobService.fetchCompanyJobs(req.session.coy_id, 'all').then(function(jobs) {
              // find active jobs
              var today = new Date();
              var active_jobs = 0;

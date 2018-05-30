@@ -215,7 +215,7 @@ input[type="text"] {
 						</ul>
 
 					</div>
-					<div class="job-desc">{{ job.job_description | safe | raw | truncate }}</div>
+					{#<div class="job-desc">{{ job.job_description | raw | truncate }}</div>#}
 				</div>
 			{% endfor %}
 		</div>
