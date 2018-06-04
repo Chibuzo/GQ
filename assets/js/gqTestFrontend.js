@@ -625,7 +625,7 @@ function startProctor() {
         },
 
         audio: {
-            fps: 2, // from 0(maximum cpu available fps) 60hz max (1)
+            fps: 10, // from 0(maximum cpu available fps) 60hz max (1)
             sensitivity: 95, // from 0 - 100
             ignoreRecording: false,
 			recordingDuration: 15000
@@ -634,7 +634,7 @@ function startProctor() {
         video: {
             element: '#proctor-video',
             canvas: '#proctor-canvas',
-            fps: 20, // from 0(maximum cpu available fps) 60hz max (2)
+            fps: 30, // from 0(maximum cpu available fps) 60hz max (2)
             streamWidth: 320,
             streamHeight: 240,
             ignoreTrack: false,

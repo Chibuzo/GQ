@@ -56,6 +56,7 @@ module.exports = {
                                 userType: data.userType,
                                 signUpDate: new Date(Date.now())
                             });
+
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });
