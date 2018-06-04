@@ -353,7 +353,6 @@ function createProctorSession(cb) {
                     proctorSessId: proctorSessId,
                     testId: TEST_ID
                 });
-
             }
         }
     )

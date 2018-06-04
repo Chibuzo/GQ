@@ -209,6 +209,15 @@ module.exports = {
         module.exports.sendMail(user.email, subject, template, data);
     },
 
+    testResetNotification: function(user) {
+        var data = {
+            user: user.fullname,
+        };
+        var subject = "GetQualified has Reset your Aptitude test";
+        var template = 'testResetNotice';
+        module.exports.sendMail(user.email, subject, template, data);
+    },
+
 
     // after candidate activates their account
     welcomeNewCandidate: function(user) {

@@ -44,6 +44,7 @@ module.exports = {
 
                         User.create(data).exec(function (err, newUser) {
                             if (err) {
+                                console.log(err);
                                 if (err.invalidAttributes && err.invalidAttributes.email && err.invalidAttributes.email[0] && err.invalidAttributes.email[0].rule === 'unique') {
                                     return res.json(200, {
                                         status: 'error',
@@ -52,11 +53,19 @@ module.exports = {
                                 }
                                 return res.json(501, {status: 'error', msg: err}); // couldn't be completed
                             }
+<<<<<<< HEAD
                             AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
                                 userType: data.userType,
                                 signUpDate: new Date(Date.now())
                             });
 
+=======
+                            //AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
+                            //    userType: data.userType,
+                            //    signUpDate: new Date(Date.now())
+                            //});
+                            console.log(newUser);
+>>>>>>> f57a8af9ee1d3afd43134aac884c3ecf7ada19c1
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });
