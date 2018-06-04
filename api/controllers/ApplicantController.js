@@ -155,7 +155,7 @@ module.exports = {
                         });
                     });
                     break;
-                
+
                 case 'active':
                     ApplicantService.fectchActiveStatus("Active").then(function(active) {
                         return res.view('admin/candidates-stat', {
@@ -202,7 +202,7 @@ module.exports = {
                         });
                     });
                     break;
-                
+
 
                 case 'photos':
                     ApplicantService.fetchResumeStatusByQuery({photo_status: true}).then(function(incomplete) {
@@ -447,6 +447,9 @@ module.exports = {
             return res.badRequest('Missing/invalid user id');
         }
         CBTService.cancelGQApptitudeTest(userId);
+        User.findOne(userId).exec(function(err, user) {
+            sendMail.testResetNotification(user);
+        });
         return res.ok();
     },
 

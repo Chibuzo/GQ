@@ -213,7 +213,7 @@ module.exports.routes = {
     'GET /job/candidates/:job_id': 'JobController.getApplicantsResults',
 
     'GET /job/view-shortlisted/:job_id': 'JobController.fetchShortlisted',
-    
+
     'GET /job/closejob/:job_id': 'JobController.closeJob',
 
     'GET /admin/job/:job_id/view-shortlisted': 'JobController.fetchShortlistedForAdmin',
@@ -257,12 +257,14 @@ module.exports.routes = {
     'POST /scrapedJob/claimJob': 'JobController.moveToCompany',
 
     'GET /editprofile/:user_id': 'AdminController.hijackAccount',
-    
+
     'GET /companyprofile/:coy_id': 'AdminController.hijackCompany',
 
     'GET /downloadsamplecsv': 'JobController.downloadCSVSample',
 
-    'GET /viewsampleresume': 'ResumeController.viewSampleCV'
+    'GET /viewsampleresume': 'ResumeController.viewSampleCV',
+
+    'GET /listtest': 'TestController.testApi',
 
     //'GET /email': { view: 'email' },
     //
