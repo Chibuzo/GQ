@@ -148,7 +148,7 @@ module.exports = {
                 fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
                     parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
                         if (err) {
-                            var msg = new Buffer("ERROR: Invalid CSV file. Please use download and use the sample CSV file on this page").toString('base64');
+                            var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
                             var company_id = job.company.id;

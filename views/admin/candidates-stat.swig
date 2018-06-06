@@ -154,6 +154,7 @@
 					{% for user in users %}
 					{% if resume == true %}
 						{% set user_id = user.user %}
+						{% set user.status = 'Active' %}
 						<tr id="{{ user.user }}">
 					{% else %}
 						{% set user_id = user.id %}

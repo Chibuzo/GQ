@@ -455,9 +455,21 @@ module.exports = {
 
 
     sendEmail: function(req, res) {
-        var emails = req.param('users');
-        sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
-        return res.json(200, { status: 'success' });
+        let email_arr = req.param('users').split(",");  // convert string to array
+        if (email_arr.length < 50) {
+            let emails = email_arr.toString();
+            sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
+            return res.json(200, { status: 'success' });
+        } else {
+            while (email_arr.length > 0) {
+                let emails = [];
+                while (email_arr.length > 0 && emails.length < 50) {
+                    emails.push(email_arr.pop());
+                }
+                sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));
+            }
+            return res.json(200, { status: 'success' });
+        }
     },
 
     deleteApplicants: function(req, res) {

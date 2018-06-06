@@ -6,12 +6,12 @@ var options = {
     viewPath: sails.config.appPath + '/views/emails/'
 };
 let transporter = nodemailer.createTransport({
-    host: 'smtp.zoho.com',
+    host: 'email-smtp.us-east-1.amazonaws.com',
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-        user: 'noreply@getqualified.work',
-        pass: 'change+this'
+        user: 'AKIAJWG4GYVXU25FAE3Q',
+        pass: 'An1W3fla+EB6cCgehn+rLukdFxzO7DgoSz/oMg4cAvqU'
     }
 });
 transporter.use('compile', hbs(options));
