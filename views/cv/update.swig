@@ -684,9 +684,9 @@
     {#<script type="text/javascript" src="/js/proctor/recorder-new.js"></script>#}
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js"></script>
 	<!-- Main Setup -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=1"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=2"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=16"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=19"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
