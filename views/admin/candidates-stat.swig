@@ -176,6 +176,7 @@
 										Menu &nbsp;<span class="caret"></span>
 									</button>
 									<ul class="dropdown-menu dropdown-menu-right">
+										<li class="hidden">{{ user.status }}</li>
 										{% if user.status != 'Active' %}
 											{% set state = 'disabled' %}
 										{% endif %}

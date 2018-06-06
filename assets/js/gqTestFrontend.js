@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [], PROCTOR, proctorSessId, MOBILE = false;
+var TEST_ID, duration, questions = [], PROCTOR, PROCTOR_CURRENT_DATA, proctorSessId, MOBILE = false;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -484,7 +484,7 @@ var wentOffline = false;
 window.addEventListener('online', () => {
     // TODO: this is going to create another proctor session
 	if (GQTestStatus.isInProgress()) {
-		PROCTOR = startProctor();
+		PROCTOR = startProctor(PROCTOR_CURRENT_DATA.noFace, PROCTOR_CURRENT_DATA.multipleFaces, PROCTOR_CURRENT_DATA.noise, PROCTOR_CURRENT_DATA.integrityScore);
 
 	    removeNotification();
 
@@ -492,10 +492,10 @@ window.addEventListener('online', () => {
 	}
     if (wentOffline) {
 		wentOffline = false;
-		amplitude.getInstance().logEvent("Lost WiFi Connection");
+		amplitude.getInstance().logEvent("Lost Internet Connection");
 	}
 
-    amplitude.getInstance().logEvent("Gained WiFi Connection");
+    amplitude.getInstance().logEvent("Gained Internet Connection");
 });
 
 window.addEventListener('offline', () => {
@@ -507,7 +507,14 @@ window.addEventListener('offline', () => {
 	        overlay: true
 	    });
 
-	    stopProctor();
+        var proctorFeedback = PROCTOR.getFeedback();
+        PROCTOR_CURRENT_DATA = {
+            noFace: proctorFeedback.video.counter.noFace,
+            noise: proctorFeedback.audio.counter.noise,
+            multipleFaces: proctorFeedback.video.counter.multiFace,
+            integrityScore: proctorFeedback.integrityScore
+        };
+        stopProctor();
 	}
 
 });
@@ -607,7 +614,7 @@ var updateIntegrityBar = function(integrityScore) {
 
 // ----- END INTEGRITY SCORE FUNCTIONS ---- //
 
-function startProctor() {
+function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integrityScore = 0) {
     amplitude.getInstance().logEvent("Starting Proctor");
 
 	// make sure proctor canvas is showing
@@ -653,11 +660,17 @@ function startProctor() {
                  data: {
                      imgBase64: data64,
                      eventName: eventName,
-                     proctorSessId: proctorSessId
+                     proctorSessId: proctorSessId,
+                     retry: 5,
                  }, success: function(data) {
                      // Some success ish blah blah
                  }, error: function() {
-                     // some error handling blah nlah
+                     if (this.retry > 0) {
+                        $.ajax(this);
+                        return;
+                     }
+                     this.retry--;
+                     amplitude.getInstance().logEvent(eventName + " upload failed");
                  }
              }).done(function(msg) {
                  // Some message blah blah
@@ -671,11 +684,17 @@ function startProctor() {
                 url: "/gqtest/uploadProctorAudio",
                 data: {
                     data: data64,
-                    proctorSessId: proctorSessId
+                    proctorSessId: proctorSessId,
+                    retry: 5
                 }, success: function(data){
                     // Some success ish blah blah
                 }, error: function() {
-                    // some error handling blah nlah
+                    if (this.retry > 0) {
+                        $.ajax(this);
+                        return;
+                     }
+                     this.retry--;
+                     amplitude.getInstance().logEvent("Audio upload failed");
                 }
             }).done(function(msg) {
                 // Some message blah blah
@@ -739,7 +758,14 @@ function startProctor() {
         feedback: () => {
         },
 
-        showLogs: true
+        showLogs: true,
+
+        data: {
+            noFaceN: noFaceN,
+            multiFaceN: multiFaceN,
+            ambientNoiseN: ambientNoiseN,
+            integrityScore: integrityScore
+        }
     });
 }
 
