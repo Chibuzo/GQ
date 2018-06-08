@@ -1,4 +1,32 @@
 module.exports = {
+    /* check if candidate can apply for the job */
+    checkEligibility: function(job_id, candidate_id) {
+        var criteria = {
+            test: false,
+            video: false
+        };
+        return new Promise(function(resolve, reject) {
+            Job.find({ id: job_id}).exec(function(err, job) {
+                if (err || job.length < 1) return reject('Job not found');
+                Resume.find({ user: candidate_id }).exec(function(err, resume) {
+                    // test requirement
+                    if (job[0].require_gqtest === true && resume[0].test_status === true) {
+                        criteria.test = true;
+                    } else if (job[0].require_gqtest === false) {
+                        criteria.test = true;
+                    }
+                    // video profile requirement
+                    if (job[0].require_video === true && resume[0].video_status === true) {
+                        criteria.video = true;
+                    } else if (job[0].video === false) {
+                        criteria.video = true;
+                    }
+                    return resolve({ status: criteria.test && criteria.video ? true : false });
+                });
+            });
+        });
+    },
+
     apply: function (job_id, applicant_id) {
         return new Promise(function (resolve, reject) {
             // let's make sure no one applies more than once

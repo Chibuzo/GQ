@@ -277,4 +277,12 @@ module.exports.routes = {
     //'GET /countries': 'BatchController.countries',
     //
     //'/states': 'BatchController.loadStates'
+
+
+    /*****************************************************
+     * GQ API v1 routes
+     * */
+    'POST /api/v1/postjob': 'JobApiController.createJob',
+
+    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl'
 };

@@ -132,6 +132,16 @@ module.exports = {
             type: 'string'
         },
 
+        require_video: {
+            type: 'boolean',
+            defaultsTo: 'true'
+        },
+
+        require_test: {
+            type: 'boolean',
+            defaultsTo: 'true'
+        },
+
         status: {
             type: 'string', // Active, Expired, Deleted
             defaultsTo: 'Active'

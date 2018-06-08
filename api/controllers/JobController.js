@@ -72,6 +72,8 @@ module.exports = {
                 max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
                 published: publish,
                 date_published: publish_date,
+                require_video: q('video_profile') ? true : false,
+                require_test: q('require_gqtest') ? true : false,
                 closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
             };
         } catch(err) {
@@ -328,7 +330,24 @@ module.exports = {
                         videoStatus: resume[0].video_status,
                         testStatus: resume[0].test_status
                     });
-                    return res.json(200, { status: 'error', msg: 'IncompleteResume' });
+                    JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
+                        if (status === false) {
+                            return res.json(200, { status: 'error', msg: 'IncompleteResume' });
+                        } else {
+                            JobService.apply(job_id, req.session.userId).then(function(resp) {
+                                if (resp) {
+                                    AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                                        jobId: job_id
+                                    });
+                                    return res.json(200, { status: 'success' });
+                                } else {
+                                    // your village people don't want you to be great
+                                }
+                            });
+                        }
+                    }).catch(function(err) {
+                        return res.serverError(err);
+                    });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {
@@ -580,7 +599,7 @@ module.exports = {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'], status: 'Active' }).sort('company_name asc').exec(function(err, jobs) {
             return res.view('admin/scrapedJobs', { jobs: jobs });
-        })
+        });
     },
 
 
