@@ -239,7 +239,7 @@ $(document).ready(function() {
 
 		$(this).find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
 		var users = [];
-		$(".user-checkbox:checked").each(function() {
+		dTable.$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
 
@@ -261,7 +261,7 @@ $(document).ready(function() {
 		e.preventDefault();
 
 		var users = [];
-		$(".user-checkbox:checked").each(function() {
+		dTable.$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').attr('id'));
 		});
 

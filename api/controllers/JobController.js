@@ -52,11 +52,12 @@ module.exports = {
 
     saveJob: function (req, res) {
         var q = req.param;
+        var data;
         try {
             var publish_date, publish = true; //q('publish_now') == 1 ? true : false;
             if (publish) publish_date = new Date().toISOString();
 
-            var data = {
+            data = {
                 job_title: q('title'),
                 job_description: q('description'),
                 job_requirements: q('requirements'),
@@ -72,6 +73,8 @@ module.exports = {
                 max_salary_budget: q('max_salary_budget') ? q('max_salary_budget') : 0.0,
                 published: publish,
                 date_published: publish_date,
+                require_video: q('require_video') ? true : false,
+                require_test: q('require_gqtest') ? true : false,
                 closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
             };
         } catch(err) {
@@ -96,8 +99,9 @@ module.exports = {
             data.company = req.session.coy_id ? req.session.coy_id : q('coy_id');
             return Job.create(data)
                 .then(job => {
-                    return User.find({ id: req.session.userId }).populate('company')
+                    return User.find({ company: data.company }).populate('company')
                         .then(user => {
+                            console.log(user);
                             sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
                             if (req.session.coy_id) {
                                 sendMail.GQnewJobAlert(user[0].company.company_name);
@@ -110,11 +114,11 @@ module.exports = {
                         })
                         .catch(err => {
                             return res.serverError(err);
-                        })
+                        });
                 })
                 .catch(err => {
                     return res.serverError(err);
-                })
+                });
         }
     },
 
@@ -167,28 +171,30 @@ module.exports = {
                                         // bad market
                                         cb();
                                     }
+                                    if (user.user_type != 'Applicant') {
+                                        // bad market
+                                        return cb();
+                                    }
                                     JobService.apply(job_id, user.id).then(function (resp) {
-                                        //console.log(resp);
                                     }).catch(function (err) {
                                         console.log(err);
                                     });
-
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
                                         sendMail.sendAppliedJobNotice(job, user, msg_type);
-                                        cb();
+                                        return cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
-                                            try {
+                                            if (resume.length > 0) { console.log('Yes');
                                                 if (resume[0].profile_status === true) {
                                                     msg_type = 'fyi'; // inform them
                                                 } else {
                                                     msg_type = 'incomplete-profile';
                                                 }
                                                 sendMail.sendAppliedJobNotice(job, user, msg_type);
-                                            } catch(err) {
-                                                console.log(err);
+                                            } else {
+                                                console.log('You are not a candidate');
                                             }
                                             cb();
                                         });
@@ -198,7 +204,7 @@ module.exports = {
                             function(err) {
                                 if (err) console.log(err);
                                 if (req.session.user_type == 'admin') {
-                                    return res.redirect('/admin/coy-jobs/' + company_id);
+                                    return res.redirect('/admin/coy-jobs/' + company_id + '/open');
                                 } else {
                                     return res.redirect('/company/dashboard/' + msg);
                                 }
@@ -226,7 +232,7 @@ module.exports = {
                         var active_jobs = 0;
                         jobcat.jobs.forEach(function(job) {
                             if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++
+                                active_jobs++;
                             }
                         });
                         jobCategories.push({
@@ -297,7 +303,7 @@ module.exports = {
                     var active_jobs = 0;
                     jobcat.jobs.forEach(function(job) {
                         if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                            active_jobs++
+                            active_jobs++;
                         }
                     });
 
@@ -334,7 +340,24 @@ module.exports = {
                         videoStatus: resume[0].video_status,
                         testStatus: resume[0].test_status
                     });
-                    return res.json(200, { status: 'error', msg: 'IncompleteResume' });
+                    JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
+                        if (status === false) {
+                            return res.json(200, { status: 'error', msg: 'IncompleteResume' });
+                        } else {
+                            JobService.apply(job_id, req.session.userId).then(function(resp) {
+                                if (resp) {
+                                    AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                                        jobId: job_id
+                                    });
+                                    return res.json(200, { status: 'success' });
+                                } else {
+                                    // your village people don't want you to be great
+                                }
+                            });
+                        }
+                    }).catch(function(err) {
+                        return res.serverError(err);
+                    });
                 }
                 JobService.apply(job_id, req.session.userId).then(function(resp) {
                     if (resp) {
@@ -380,7 +403,7 @@ module.exports = {
                         jobTitle: shortlistedData.jobTitle,
                         disableEdits: true
                     });
-                })
+                });
             })
             .catch(function(error) {
                 return res.serverError(error);
@@ -416,7 +439,7 @@ module.exports = {
 					let candidatesIds = [];
 					applications.forEach(function (application) {
 						if (application.applicant) {
-							candidatesIds.push(application.applicant.id)
+							candidatesIds.push(application.applicant.id);
 						}
 					});
 
@@ -444,9 +467,9 @@ module.exports = {
                         if ((job.source === null || job.source === 'gq') && job.company) {
                             companyName = job.company.company_name;
                         } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
-                            companyName = job.company_name
+                            companyName = job.company_name;
                         } else {
-                            companyName == 'Company'
+                            companyName == 'Company';
                         }
 
 						return res.view('admin/applicants-view.swig', {
@@ -459,7 +482,7 @@ module.exports = {
 						});
 					}).catch(err => {
 						return res.serverError(err);
-					})
+					});
 				})
 				.catch(err => {
 					return res.serverError(err);
@@ -586,7 +609,7 @@ module.exports = {
         //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'], status: 'Active' }).sort('company_name asc').exec(function(err, jobs) {
             return res.view('admin/scrapedJobs', { jobs: jobs });
-        })
+        });
     },
 
 
