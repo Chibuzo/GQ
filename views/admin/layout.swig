@@ -32,7 +32,7 @@
     <script src="/js/plugins/tinymce.min.js"></script>
     <script>tinymce.init({
             selector:'textarea.editor',
-            menubar: 'insert',
+            menubar: '',
             plugins: [
                 'lists link preview',
             ],
