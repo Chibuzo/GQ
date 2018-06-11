@@ -113,6 +113,29 @@
 				</div>
 			</div>
 		</div>
+	</fieldset>
+	<fieldset>
+		<legend></legend>
+		<div class="form-group">
+			<div class="row">
+				<div class="col-md-4">
+					{% if job.require_video %}
+						{% set vchecked = "checked" %}
+					{% endif %}
+					<label class="checkbox {{ vchecked }}">
+						<input type="checkbox" name="require_video" data-toggle="checkbox" {{ vchecked }} />Require Video Profile
+					</label>
+				</div>
+				<div class="col-md-4">
+					{% if job.require_test %}
+						{% set tchecked = "checked" %}
+					{% endif %}
+					<label class="checkbox {{ tchecked }}">Require Aptitude Test
+						<input type="checkbox" name="require_gqtest" data-toggle="checkbox" {{ tchecked }} />
+					</label>
+				</div>
+			</div>
+		</div>
 	</fieldset><br>
 	<input type="hidden" name="job_id" id="job-id" value="{{ job.id }}"/>
 	<input type="hidden" name="coy_id" value="{{ coy_id }}" />

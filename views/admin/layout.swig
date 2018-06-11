@@ -32,11 +32,11 @@
     <script src="/js/plugins/tinymce.min.js"></script>
     <script>tinymce.init({
             selector:'textarea.editor',
-            menubar: false,
+            menubar: 'insert',
             plugins: [
-                'lists preview',
+                'lists link preview',
             ],
-            toolbar: 'bullist numlist outdent indent',
+            toolbar: 'bullist numlist outdent indent link preview',
             content_css: [
                 '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
                 '//www.tinymce.com/css/codepen.min.css']
