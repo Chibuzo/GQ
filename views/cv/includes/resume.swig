@@ -79,7 +79,7 @@
 			</div>
 
 			{% if showContactInfo == true %}
-				<h4>&nbsp;Referrals</h4><hr>
+				<h4>&nbsp;Referees</h4><hr>
 				{% for ref in resume.referencecontacts %}
 					<div class="row">
 						<div class="col-md-12">

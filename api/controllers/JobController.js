@@ -163,7 +163,9 @@ module.exports = {
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
-                                    if (err) {
+                                    if (user.user_type == 'company-admin' || user.user_type == 'company') {
+                                        // bad market
+                                        cb();
                                     }
                                     JobService.apply(job_id, user.id).then(function (resp) {
                                         //console.log(resp);
@@ -178,12 +180,16 @@ module.exports = {
                                         cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
-                                            if (resume[0].profile_status === true) {
-                                                msg_type = 'fyi'; // inform them
-                                            } else {
-                                                msg_type = 'incomplete-profile';
+                                            try {
+                                                if (resume[0].profile_status === true) {
+                                                    msg_type = 'fyi'; // inform them
+                                                } else {
+                                                    msg_type = 'incomplete-profile';
+                                                }
+                                                sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                            } catch(err) {
+                                                console.log(err);
                                             }
-                                            sendMail.sendAppliedJobNotice(job, user, msg_type);
                                             cb();
                                         });
                                     }
