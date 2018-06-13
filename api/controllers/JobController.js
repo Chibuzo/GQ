@@ -187,7 +187,7 @@ module.exports = {
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
                                             if (resume.length > 0) { console.log('Yes');
-                                                if (resume[0].profile_status === true) {
+                                                if (resume[0].status === 'Complete') {
                                                     msg_type = 'fyi'; // inform them
                                                 } else {
                                                     msg_type = 'incomplete-profile';

@@ -238,7 +238,7 @@ module.exports = {
         var template = 'emailCandidates';
         let mailOptions = {
             from: '"Get Qualified" <noreply@getqualified.work>',
-            //to: to,
+            to: 'support@getqualified.work',
             subject: subject,
             bcc: emails,
             template: template,
