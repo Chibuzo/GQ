@@ -101,7 +101,6 @@ module.exports = {
                 .then(job => {
                     return User.find({ company: data.company }).populate('company')
                         .then(user => {
-                            console.log(user);
                             sendMail.companyNewJobAlert(user[0].email, user[0].fullname, q('title'));
                             if (req.session.coy_id) {
                                 sendMail.GQnewJobAlert(user[0].company.company_name);
