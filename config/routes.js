@@ -264,7 +264,7 @@ module.exports.routes = {
 
     'GET /viewsampleresume': 'ResumeController.viewSampleCV',
 
-    'GET /listtest': 'TestController.testApi',
+    //'GET /listtest': 'TestController.testApi',
 
     //'GET /email': { view: 'email' },
     //
@@ -272,7 +272,7 @@ module.exports.routes = {
     //
     //'GET /loadschools': 'BatchController.loadSchools',
     //
-    //'GET /savetest': 'TestController.saveTest',
+    'GET /savetest': 'TestController.saveTest',
     //
     //'GET /countries': 'BatchController.countries',
     //

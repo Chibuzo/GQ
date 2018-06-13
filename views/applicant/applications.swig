@@ -52,7 +52,7 @@
 							<th>Job Level</th>
 							<th>Status</th>
 							<th><i class="fa fa-calendar"></i> Closing Date</th>
-							{#<th class="text-center">Action</th> #}
+							<th class="text-center">Action</th>
 						</tr>
 						</thead>
 						<tbody>
@@ -73,7 +73,7 @@
 								<td>{{ job.job.job_level }}</td>
 								<td>{{ status }}</td>
 								<td>{{ job.job.closing_date | date('d-m-Y') }}</td>
-								{#<td class="opt-icons text-center dropdown">
+								<td class="opt-icons text-center dropdown">
 									<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
 									<ul class='dropdown-menu pull-left'>
 										<li class='dropdown-header'>Required Online Tests for the Job</li>
@@ -85,7 +85,7 @@
 											{% endif %}
 										{% endfor %}
 									</ul>
-								</td>#}
+								</td>
 							</tr>
 						{% endfor %}
 						</tbody>

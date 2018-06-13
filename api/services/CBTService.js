@@ -1,7 +1,8 @@
 module.exports = {
     saveTest: function (tests) {
-        var n = 0;
-        tests.records.forEach(function(test) {
+        //var n = 0;
+        //tests.records.forEach(function(test) {
+        async.eachSeries(tests.records, function(test, cb) {
             TestCategory.findOrCreate({ category: test.category }, { category: test.category }).exec(function(err, cat) {
                 if (err) return console.log(err);
 
@@ -15,9 +16,14 @@ module.exports = {
                     category: cat.id
                 };
                 CBTTest.create(data).exec(function (err) {
-                    //console.log(err);
+                    console.log('Error occurred while saving test.');
+                    console.log(err);
+                    cb();
                 });
             });
+        }, function(err) {
+            if (err) console.log(err);
+            console.log('Done!');
         });
     },
 

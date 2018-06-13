@@ -32,9 +32,10 @@
     <script src="/js/plugins/tinymce.min.js"></script>
     <script>tinymce.init({
             selector:'textarea.editor',
+            paste_as_text: true,
             menubar: '',
             plugins: [
-                'lists link preview',
+                'lists link preview paste',
             ],
             toolbar: 'bullist numlist outdent indent link preview',
             content_css: [
