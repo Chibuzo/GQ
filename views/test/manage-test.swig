@@ -66,6 +66,19 @@ $(document).ready(function() {
 		$("input[name=category]").val(category);
 	});
 
+	$("select[name=test_category]").change(function() {
+		let cat_id = $("select[name=test_category] option:selected").val();
+		$.get('/test/getTestList/' + cat_id, function(d) {
+			if (d.status.trim() == 'success') {
+				var opt = "<option value=''></option";
+				d.testlist.forEach(function(test) {
+					opt += "<option value='" + test.id + "'>" + test.test_name + "</option>";
+				});
+				$("select[name=expertrating_test]").html(opt);
+			}
+		}, 'JSON');
+	})
+
 	$("input[name=test_source]").change(function() {
 		if ($("input[name=test_source]:checked").val() == 'gq') {
 			$("#exp-ctrl").addClass('hidden');

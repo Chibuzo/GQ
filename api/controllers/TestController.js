@@ -6,36 +6,42 @@
  */
 
 module.exports = {
-	testApi: function(req, res) {
-		console.log('Aye!');
-        var request = require('request');
-        var qs = require('querystring');
-        var body = {
-            "request": {
-                "authentication": {
-                    "password": "1p2r9o6d4u5t1c",
-                    "partnerid": "1296451"
-                },
-                "method": {
-                    "name": "GetTestList"
-                }
-            }
-        };
+//	testApi: function(req, res) {
+//		console.log('Aye!');
+//        var request = require('request');
+//        var qs = require('querystring');
+//        var body = {
+//            "request": {
+//                "authentication": {
+//                    "password": "1p2r9o6d4u5t1c",
+//                    "partnerid": "1296451"
+//                },
+//                "method": {
+//                    "name": "GetTestList"
+//                }
+//            }
+//        };
+//
+//        var option = {
+//            url: "https://assessments.getqualified.work/webservices/",
+//            method: "POST",
+//			headers: {
+//				'Content-Type': 'application/json'
+//			},
+//            form: qs.stringify(body)
+//        };
+//        request(option, function(err, response, body) {
+//            console.log(err);
+//            //console.log('Response: ' + JSON.stringify(response));
+//            console.log('Body: ' + JSON.stringify(body));
+//        });
+//    },
 
-        var option = {
-            url: "https://assessments.getqualified.work/webservices/",
-            method: "POST",
-			headers: {
-				'Content-Type': 'application/json'
-			},
-            form: qs.stringify(body)
-        };
-        request(option, function(err, response, body) {
-            console.log(err);
-            //console.log('Response: ' + JSON.stringify(response));
-            console.log('Body: ' + JSON.stringify(body));
-        });
-    },
+	getTestListByCategory: function(req, res) {
+		CBTTest.find({ category: req.param('category_id') }).sort('test_name asc').exec(function(err, tests) {
+			return res.json(200, { status: 'success', testlist: tests });
+		});
+	},
 
     saveTest: function(req, res) {
         var data = { "records":

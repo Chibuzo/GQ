@@ -7,14 +7,14 @@
 
 module.exports = {
     manageJobTests: function (req, res) {
-        CBTTest.find().exec(function(err, xpr_tests) { // Expertrating tests
+        CBTTest.find().sort('test_name asc').exec(function(err, xpr_tests) { // Expertrating tests
             if (err) return;
             GQTest.find().exec(function(err, gqtests) {
                 JobCategory.find().exec(function(err, jobcategories) { // GQ tests
                     if (err) return;
                     JobTest.find().exec(function (err, jobtests) {
-                        var job_tests = [];
-                        jobtests.forEach(function(test) {
+                        //var job_tests = [];
+                        //jobtests.forEach(function(test) {
                             //if (test.test_source == 'gq') {
                             //    job_tests.push({
                             //        test_title: test.test_title,
@@ -29,8 +29,10 @@ module.exports = {
                             //    job_level: test.job_level,
                             //    job_category: test.job_category,
                             //});
+                        //});
+                        TestCategory.find().sort('category asc').exec(function(err, testcat) {
+                            return res.view('test/manage-test', { xpr_tests: xpr_tests, xpr_cat: testcat, gq_tests: gqtests, jobtests: jobtests, job_categories: jobcategories });
                         });
-                        return res.view('test/manage-test', { xpr_tests: xpr_tests, gq_tests: gqtests, jobtests: jobtests, job_categories: jobcategories });
                     });
                 });
             });
@@ -78,4 +80,3 @@ module.exports = {
         });
     }
 };
-

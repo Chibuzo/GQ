@@ -82,7 +82,19 @@
 	</style>
 	<div class="row">
 		<div class="col-md-12">
-			<h3 class="header-text">Get started with Get Qualified</h3>
+			<div class="alert alert-info"style="overflow: auto">
+				<div class="col-md-1"><i class="fa fa-info-circle fa-4x"></i></div>
+				<div class="col-md-11"><p>By completing steps 1 to 4, you can apply to a wide array of job positions with leading local and international companies who are constantly looking to hire talented candidates through GetQualified.</p>
+				<p>Remember, all you need is one completed profile to apply for an endless number of jobs.</p>
+				<p>Let jobs find you!</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-7 col-md-offset-2">
+			<h3 class="header-text hidden">Get started with Get Qualified</h3>
 			<h4 class="header-text">Complete your profile and start applying for jobs.</h4>
 		</div>
 	</div>
@@ -91,7 +103,7 @@
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="row checklist-item-row">
-					<div class="col-sm-7 col-xs-12 ">
+					<div class="col-sm-7 col-xs-12 col-sm-offset-2">
 						<a href="{{ item.action }}" class="panel panel-default row checklist-panel-row pointer {{ item.disbaledClass}}">
 							<div class="panel-body col-xs-3 col-sm-2 panel-checklist-icon">
 								<i class="{{ item.iconClass }} completed-{{item.completed}} checklist-icon" aria-hidden="true"></i>
