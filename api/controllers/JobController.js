@@ -166,7 +166,9 @@ module.exports = {
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
-                                    if (err) {
+                                    if (user.user_type == 'company-admin' || user.user_type == 'company') {
+                                        // bad market
+                                        cb();
                                     }
                                     if (user.user_type != 'Applicant') {
                                         // bad market
@@ -184,7 +186,7 @@ module.exports = {
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
                                             if (resume.length > 0) { console.log('Yes');
-                                                if (resume[0].profile_status === true) {
+                                                if (resume[0].status === 'Complete') {
                                                     msg_type = 'fyi'; // inform them
                                                 } else {
                                                     msg_type = 'incomplete-profile';

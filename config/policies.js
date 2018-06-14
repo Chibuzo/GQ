@@ -33,6 +33,7 @@ module.exports.policies = {
     },
 
     ApplicantController: {
+        dashboard: 'isLoggedIn',
         deleteApplicants: 'isAdmin',
         deleteTestScoreAndFiles: 'isAdmin',
         fetchApplicants: 'isAdmin'
