@@ -62,8 +62,6 @@
 		z-index: 20000;
 	}
 
-	/* CBT Styles */
-
 	.empty-vid {
 		border: #ccc solid thin;
 		text-align: center;
@@ -190,13 +188,19 @@
 		color: white;
 	}
 
+	/** CV Styles **/
+
 	.div-cv {
-		padding: 2px 50px;
+		padding: 2px 20px;
 	}
 
 	h4 {
-		font-size: 25px;
-		font-weight: 100;
+		font-size: 28px;
+		font-weight: 400;
+	}
+
+	hr {
+		margin-top: -8px;
 	}
 
 	#cv-view .row {
@@ -419,23 +423,8 @@
 												</div>
 
 												<div class="row inner-test-div" style="display: none;">
-													<div class="col-md-7 col-sm-12 col-xs-12">
-														<div class="col-md-9 col-sm-12 col-xs-12">
-															<div class="question"></div>
-															<div class="question-image"></div>
-															<div class="options">
-																<ul class="opts">
-																	<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
-																	<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
-																	<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
-																	<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
-																	<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
-																</ul>
-															</div>
-														</div>
-													</div>
 
-													<div class="col-md-5 col-sm-12 col-xs-12">
+													<div class="col-md-5 col-sm-12 col-xs-12 pull-left">
 														<!-- Timer -->
 														<div class="test-panel-text text-center">
 															<span><strong>Time Remaining: </strong></span>
@@ -506,6 +495,22 @@
 															<div class="col-md-12">
 																<div class="question-nums row">
 																</div>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-md-7 col-sm-12 col-xs-12 pull-right">
+														<div class="col-md-9 col-sm-12 col-xs-12">
+															<div class="question"></div>
+															<div class="question-image"></div>
+															<div class="options">
+																<ul class="opts">
+																	<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
+																	<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
+																	<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
+																	<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
+																	<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
+																</ul>
 															</div>
 														</div>
 													</div>

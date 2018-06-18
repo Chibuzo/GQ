@@ -50,6 +50,13 @@
 						</div>
 					</div>
 					<div class="form-group" id="exp-ctrl">
+						<label>Test Category</label>
+						<select name="test_category" class="form-control">
+							<option value="">-- Select Category --</option>
+							{% for test_cat in xpr_cat %}
+								<option value="{{ test_cat.id }}">{{ test_cat.category }}</option>
+							{% endfor %}
+						</select>
 						<label>Expertrating Test List</label>
 						<select name="expertrating_test" class="form-control">
 							<option value=""></option>
@@ -85,4 +92,3 @@
 		</div>
 	</div>
 </div>
-

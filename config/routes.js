@@ -228,13 +228,15 @@ module.exports.routes = {
 
     'POST /jobcategory/saveCategory': 'JobCategoryController.saveCategory',
 
-    'GET /test': 'TestController.testApi',
+    //'GET /test': 'TestController.testApi',
 
     'GET /gettest/:test_id/:job_id': 'TestController.getLandingPage',
 
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
     'GET /test/show-result/:test_id': 'CBTTestController.showCandidateResult',
+
+    'GET /test/getTestList/:category_id': 'TestController.getTestListByCategory',
 
     'GET /result/getVideo': 'ResumeController.getVideo',
 

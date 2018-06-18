@@ -16,6 +16,10 @@ module.exports = {
           type: 'string'
       },
 
+      r_class: {
+          type: 'integer'
+      },
+
       programme: {
           type: 'string'
       },

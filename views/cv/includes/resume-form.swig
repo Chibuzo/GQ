@@ -150,50 +150,66 @@
 			<legend>Education</legend>
 			<div class="form-group">
                 {% for edu in resume.educations %}
-                    <div class="row inst-row">
-                        <div class="col-md-3">
-                            <label>Institution</label>
-                            <input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
-                        </div>
-                        <div class="col-md-1">
-                            <label>Honour</label>
-                            {% set selected = 'selected' %}
-                            <select name="honour[]" class="form-control" required>
-                                <option value=""></option>
-                                {% for honor in honours %}
-                                    {% if honor.honour == edu.honour %}
-                                        <option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
-                                    {% else %}
-                                        <option value="{{ honor.honour }}">{{ honor.honour }}</option>
-                                    {% endif %}
-                                {% endfor %}
-                            </select>
-                        </div>
+                    <div class="inst-row">
+						<div class="row">
+							<div class="col-md-4">
+								<label>Institution</label>
+								<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
+							</div>
+							<div class="col-md-2">
+								<label>Honour</label>
+								{% set selected = 'selected' %}
+								<select name="honour[]" class="form-control" required>
+									<option value=""></option>
+									{% for honor in honours %}
+										{% if honor.honour == edu.honour %}
+											<option value="{{ honor.honour }}" selected="selected">{{ honor.honour }}</option>
+										{% else %}
+											<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+										{% endif %}
+									{% endfor %}
+								</select>
+							</div>
 
-                        <div class="col-md-3">
-                            <label>Programme</label>
-                            <input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}" required>
-                        </div>
+							<div class="col-md-3">
+								<label>Programme</label>
+								<input type="text" name="programme[]" class="form-control" placeholder="Field of Study" value="{{ edu.programme }}" required>
+							</div>
+							<div class="col-md-2">
+								<label>Result</label>
+								<select name="r_class[]" class="form-control">
+									<option value=""></option>
+									{% for clas in r_class %}
+										{%if clas.name == edu.r_class %}
+											<option value="{{ clas.id }}" selected="selected">{{ clas.name }}</option>
+										{% else %}
+											<option value="{{ clas.id }}">{{ clas.name }}</option>
+										{% endif %}	
+									{% endfor %}
+								</select>
+							</div>
+						</div>
 
-                        <div class="col-md-2">
-                            <label>Start Date</label>
-                            {% if edu.start_date %}
-                                <input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.start_date | date('Y-m-d') }}" required>
-                            {% else %}
-                                <input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
-                            {% endif %}
-                        </div>
-                        <div class="col-md-2">
-                            <label>End Date</label>
-                            {% if edu.end_date %}
-                                <input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.end_date | date('Y-m-d') }}" required>
-                            {% else %}
-                                <input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
-                            {% endif %}
-                        </div>
-                        <input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
-                        {% if loop.index != 1 %}
-	                        <div class="col-md-1 col-xs-12 delete-entry-col">
+						<div class="row">
+							<div class="col-md-2">
+								<label>Start Date</label>
+								{% if edu.start_date %}
+									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.start_date | date('Y-m-d') }}" required>
+								{% else %}
+									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+								{% endif %}
+							</div>
+							<div class="col-md-2">
+								<label>End Date</label>
+								{% if edu.end_date %}
+									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.end_date | date('Y-m-d') }}" required>
+								{% else %}
+									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+								{% endif %}
+							</div>
+							<input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
+
+							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
 									<a href="" class="delete-entry remove-qualification-btn ">
@@ -201,73 +217,101 @@
 									</a>
 								</div>
 							</div>
-                        {% endif %}
-                    </div>
+						</div>
+					</div>
                 {% endfor %}
 
 
                 {% if resume.educations.length < 1 %}
-                    <div class="row inst-row"">
-                        <div class="col-md-3">
-                            <label>Institution</label>
-                            <input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution" required>
-                        </div>
-                        <div class="col-md-1">
-                            <label>Honour</label>
-                            <select name="honour[]" class="form-control" required>
-                                <option value=""></option>
-                                {% for honor in honours %}
-                                    <option value="{{ honor.honour }}">{{ honor.honour }}</option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label>Programme</label>
-                            <input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label>start Date</label>
-                            <input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
-                        </div>
-                        <div class="col-md-2">
-                            <label>End Date</label>
-                            <input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
-                        </div>
-                    </div>
+                    <div class="inst-row">
+						<div class="row">
+							<div class="col-md-4">
+								<label>Institution</label>
+								<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution" required>
+							</div>
+							<div class="col-md-2">
+								<label>Honour</label>
+								<select name="honour[]" class="form-control" required>
+									<option value=""></option>
+									{% for honor in honours %}
+										<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="col-md-3">
+								<label>Programme</label>
+								<input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study" required>
+							</div>
+							<div class="col-md-2">
+								<label>Result</label>
+								<select name="r_class[]" class="form-control">
+									<option value=""></option>
+									{% for clas in r_class %}
+										<option value="{{ clas.id }}">{{ clas.name }}</option>
+									{% endfor %}
+								</select>
+							</div>
+						</div>
+
+						<div class="row">
+							<div class="col-md-2">
+								<label>start Date</label>
+								<input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+							</div>
+							<div class="col-md-2">
+								<label>End Date</label>
+								<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+							</div>
+						</div>
+					</div>
                 {% endif %}
 
-				<div class="row inst-row addable" id="another-inst">
-					<div class="col-md-3">
-						<label>Institution</label>
-						<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution">
+				<div class="inst-row addable" id="another-inst">
+					<div class="row">
+						<div class="col-md-4">
+							<label>Institution</label>
+							<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution">
+						</div>
+						<div class="col-md-2">
+							<label>Honour</label>
+							<select name="honour[]" class="form-control">
+								<option value=""></option>
+								{% for honor in honours %}
+									<option value="{{ honor.honour }}">{{ honor.honour }}</option>
+								{% endfor %}
+							</select>
+						</div>
+						<div class="col-md-3">
+							<label>Programme</label>
+							<input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study">
+						</div>
+						<div class="col-md-2">
+							<label>Result</label>
+							<select name="r_class[]" class="form-control">
+								<option value=""></option>
+								{% for clas in r_class %}
+									<option value="{{ clas.id }}">{{ clas.name }}</option>
+								{% endfor %}
+							</select>
+						</div>
 					</div>
-					<div class="col-md-1">
-						<label>Honour</label>
-						<select name="honour[]" class="form-control">
-							<option value=""></option>
-							{% for honor in honours %}
-								<option value="{{ honor.honour }}">{{ honor.honour }}</option>
-							{% endfor %}
-						</select>
-					</div>
-					<div class="col-md-3">
-						<label>Programme</label>
-						<input type="text" name="programme[]" class="form-control is-required" placeholder="Field of Study">
-					</div>
-					<div class="col-md-2">
-						<label>start Date</label>
-						<input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
-					</div>
-					<div class="col-md-2">
-						<label>End Date</label>
-						<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
-					</div>
-					<div class="col-md-1 col-xs-12 delete-entry-col">
-						<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
-						<div class="delete-entry-container">
-							<a href="" class="delete-entry remove-qualification-btn ">
-								Remove
-							</a>
+
+					<div class="row">
+						<div class="col-md-2">
+							<label>start Date</label>
+							<input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+						</div>
+						<div class="col-md-2">
+							<label>End Date</label>
+							<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+						</div>
+						<div class="col-md-1 col-xs-12 delete-entry-col">
+							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
+							<div class="delete-entry-container">
+								<a href="" class="delete-entry remove-qualification-btn ">
+									Remove
+								</a>
+							</div>
 						</div>
 					</div>
 				</div>
