@@ -26,14 +26,15 @@
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
-    <script src="/js/plugins/tinymce.min.js"></script>
+    <script src="/js/plugins/tinymce.min.js?v=1"></script>
     <script>tinymce.init({
             selector:'textarea.editor',
+            paste_as_text: true,
             menubar: false,
             plugins: [
-                'lists preview',
+                'lists preview paste',
             ],
-            toolbar: 'bullist numlist outdent indent',
+            toolbar: 'bullist numlist outdent indent preview',
             content_css: [
                 '//fonts.googleapis.com/css?family=Lato:300,300i,400,400i',
                 '//www.tinymce.com/css/codepen.min.css']
@@ -55,6 +56,10 @@
 
         .mce-notification {
             display: none !important;
+        }
+
+        .mce-branding {
+            font-size: 0;
         }
     </style>
 </head>

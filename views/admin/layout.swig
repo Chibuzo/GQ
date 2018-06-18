@@ -29,7 +29,7 @@
     <link href="/styles/pe-icon-7-stroke.css" rel="stylesheet" />
     <link rel="stylesheet" href="/styles/datepicker.css">
     <link rel="stylesheet" href="/styles/main.css">
-    <script src="/js/plugins/tinymce.min.js"></script>
+    <script src="/js/plugins/tinymce.min.js?v=1"></script>
     <script>tinymce.init({
             selector:'textarea.editor',
             paste_as_text: true,
