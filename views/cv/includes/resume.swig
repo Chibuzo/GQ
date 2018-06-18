@@ -17,7 +17,7 @@
 		<div class="col-md-12 div-cv" id="cv-view">
 			{% if showContactInfo == true  %}
 				<h3 class="text-center"><strong>{{ resume.fullname }}</strong></h3>
-				<p class="text-center">{{ resume.address }}, {{ resume.city }} {{ resume.r_state }}</p>
+				<p class="text-center"><i class="fa fa-map-marker" aria-hidden="true" style="color: #1DC7EA;"></i>{{ resume.address }}, {{ resume.city }} {{ resume.r_state }}</p>
 				<p class="text-center">
 					<i class="fa fa-phone-square" aria-hidden="true" style="color: #1DC7EA;"></i>
 					{{ resume.phone }}
@@ -30,6 +30,14 @@
 				<h3 class="text-center"><strong>{{ me.fname }} {{ me.lname|first }}</strong></h3>
 			{% endif %}
 
+			<h4>&nbsp;Bio Data</h4><hr>
+			<div class="row">
+				<div class="col-md-12">
+					<p><strong>Gender:</strong> {{ resume.gender }}</p>
+					<p><strong>Date of Birth:</strong> {{ resume.dob | date('d M Y') }}</p>
+				</div>
+			</div>
+
 			<h4>&nbsp;Summary</h4><hr>
 			<div class="row"><div class="col-md-12">{{ resume.introduction }}</div></div>
 
@@ -38,7 +46,7 @@
 				<div class="row">
 					<div class="col-md-8 col-xs-7">
 						<div class="school">
-							{{ edu.institution }}<br><small>{{ edu.honour }} {{ edu.programme }}</small>
+							{{ edu.institution }}<br><small>{{ edu.programme }} ({{ edu.honour }}) - {{ edu.r_class }}</small>
 						</div>
 					</div>
 					<div class="col-md-4 col-xs-5" style="text-align: right;">{{ edu.start_date | date('M Y') }} - {{ edu.end_date | date('M Y') }}</div>
@@ -65,10 +73,18 @@
 						<p>{{ emp.duties | raw | safe }}</p>
 					</div>
 					<div class="col-md-4" style="text-align: right;">
-						{{ emp.start_date | date('F Y') }} - {{ emp.end_date | date('F Y') }}
+						{{ emp.start_date | date('M Y') }} - {{ emp.end_date | date('M Y') }}
 					</div>
 				</div>
 			{% endfor %}
+
+			<h4>&nbsp;Employment Status</h4><hr>
+			<div class="row">
+				<div class="col-md-12">
+					<p>Empoyment Status: {{ resume.employment_status }}</p>
+					<p>Available on: {{ resume.available_date | date('d M Y') }}</p>
+				</div>
+			</div>
 
 			<h4>&nbsp;Salary</h4><hr>
 			<div class="row">

@@ -20,9 +20,22 @@
 		width: 100%;
 	}
 
-	hr { margin-top: 0; border-color: #999; margin-bottom: 30px }
+	.div-cv {
+		padding: 2px 20px;
+	}
 
-	h4 { margin-bottom: 8px; font-weight: 600; font-family: 'Open Sans', SansSerif }
+	h4 {
+		font-size: 28px;
+		font-weight: 400;
+	}
+
+	hr {
+		margin-top: -8px;
+	}
+
+	#cv-view .row {
+		padding: 1px 7px;
+	}
 
 
 	@media screen and (min-width: 200px) and (max-width: 600px) {
@@ -32,6 +45,10 @@
 
 		.question-image img {
 			width: 100%;
+		}
+
+		.div-cv {
+			padding: 2px 17px;
 		}
 	}
 </style>
