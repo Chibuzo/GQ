@@ -274,7 +274,7 @@ module.exports.routes = {
     //
     //'GET /loadschools': 'BatchController.loadSchools',
     //
-    'GET /savetest': 'TestController.saveTest',
+    //'GET /savetest': 'TestController.saveTest',
     //
     //'GET /countries': 'BatchController.countries',
     //

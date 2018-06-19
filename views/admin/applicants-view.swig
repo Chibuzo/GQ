@@ -64,10 +64,10 @@
 								{% if shortlistNo + candidatesNo  == 0 %}
                                     <div class="test alert alert-info">None of the applid candidates have taken the required test.</div>
                                 {% else %}
-									<table class="text-center table table-striped tablebordered dataTable">
+									<table class="table table-striped dataTable">
 										<thead>
 										<tr>
-											<th class="text-center"><i class="fa fa-user"></i>Name</th>
+											<th><i class="fa fa-user"></i>Name</th>
 											<th class="text-center">Job Score</th>
 											<th class="text-center">GQ Score</th>
 											<th class="text-center">GQ Integrity</th>

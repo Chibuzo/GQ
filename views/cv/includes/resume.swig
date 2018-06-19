@@ -46,7 +46,7 @@
 				<div class="row">
 					<div class="col-md-8 col-xs-7">
 						<div class="school">
-							{{ edu.institution }}<br><small>{{ edu.programme }} ({{ edu.honour }}) - {{ edu.r_class }}</small>
+							{{ edu.institution }}<br><small>{{ edu.programme }} ({{ edu.honour }}) {% if edu.r_class != 0 %} - {{ edu.r_class }} {% endif %}</small>
 						</div>
 					</div>
 					<div class="col-md-4 col-xs-5" style="text-align: right;">{{ edu.start_date | date('M Y') }} - {{ edu.end_date | date('M Y') }}</div>

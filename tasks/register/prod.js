@@ -20,8 +20,8 @@ module.exports = function(grunt) {
     'sails-linker:prodJs',
     'sails-linker:prodStyles',
     'sails-linker:devTpl',
-    'sails-linker:prodJsJade',
-    'sails-linker:prodStylesJade',
-    'sails-linker:devTplJade'
+    //'sails-linker:prodJsJade',
+    //'sails-linker:prodStylesJade',
+    //'sails-linker:devTplJade'
   ]);
 };

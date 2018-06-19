@@ -130,7 +130,6 @@ module.exports = {
 
     readApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');
-//Application.destroy({ job: job_id }).exec(function() {});
         var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({
             dirname: require('path').resolve(sails.config.appPath, csvpath),

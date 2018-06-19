@@ -31,6 +31,7 @@
 
 	hr {
 		margin-top: -8px;
+		border-top: 1px solid #ccc;
 	}
 
 	#cv-view .row {
@@ -61,7 +62,7 @@
 						<div class="row">
 							<div class="col-md-9">
                                 {% if showContactInfo == true  %}
-                                    <h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ resume.fullname }} - GQ Profile</h4>
+     	                               <h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ resume.fullname }} - GQ Profile</h4>
                                 {% else %}
                                     <h4 class="title"><i class="fa fa-user"></i>&nbsp; {{ me.fname }} {{ me.lname|first }} - GQ Profile</h4>
                                 {% endif %}
