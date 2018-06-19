@@ -357,17 +357,18 @@ module.exports = {
                     }).catch(function(err) {
                         return res.serverError(err);
                     });
+                } else {
+                    JobService.apply(job_id, req.session.userId).then(function(resp) {
+                        if (resp) {
+                            AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                                jobId: job_id
+                            });
+                            return res.json(200, { status: 'success' });
+                        } else {
+                            // your village people don't want you to be great
+                        }
+                    });
                 }
-                JobService.apply(job_id, req.session.userId).then(function(resp) {
-                    if (resp) {
-                        AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
-                            jobId: job_id
-                        });
-                        return res.json(200, { status: 'success' });
-                    } else {
-                        // your village people don't want you to be great
-                    }
-                });
             });
         } else {
             AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {

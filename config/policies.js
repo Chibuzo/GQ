@@ -46,7 +46,10 @@ module.exports.policies = {
         'viewJobs': 'isLoggedIn',
         'saveJob': 'isLoggedIn',
         'deleteJob': 'isLoggedIn',
-        'viewApplicantsforAdmin': 'isAdmin'
+        'viewApplicantsforAdmin': 'isAdmin',
+        'fetchShortlistedForAdmin': 'isAdmin',
+        'viewScrapedJobs': 'isAdmin',
+        'fetchScrapedJobs': 'isAdmin'
     },
 
     ResumeController: {
@@ -61,7 +64,11 @@ module.exports.policies = {
     },
 
     CourseController: {
-
+        'saveCourse': 'isAdmin',
+        'getCourses': 'isAdmin',
+        'addNew': 'isAdmin',
+        'editCourse': 'isAdmin',
+        'deleteCourse': 'isAdmin'
     },
 
     CourseCategory: {
@@ -87,7 +94,8 @@ module.exports.policies = {
     },
 
     CompanyController: {
-        'viewCompanyJobs': 'isAdmin'
+        'viewCompanyJobs': 'isAdmin',
+        'viewCompanies': 'isAdmin'
     },
 
     CompanyRequestController: {
