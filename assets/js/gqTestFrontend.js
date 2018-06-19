@@ -629,7 +629,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
         },
 
         audio: {
-            fps: 10, // from 0(maximum cpu available fps) 60hz max (1)
+            fps: 7, // from 0(maximum cpu available fps) 60hz max (1)
             sensitivity: 95, // from 0 - 100
             ignoreRecording: false,
 			recordingDuration: 15000
@@ -638,7 +638,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
         video: {
             element: '#proctor-video',
             canvas: '#proctor-canvas',
-            fps: 30, // from 0(maximum cpu available fps) 60hz max (2)
+            fps: 20, // from 0(maximum cpu available fps) 60hz max (2)
             streamWidth: 320,
             streamHeight: 240,
             ignoreTrack: false,
@@ -683,7 +683,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                 data: {
                     data: data64,
                     proctorSessId: proctorSessId,
-                    retry: 5
+                    retry: 10
                 }, success: function(data){
                     // Some success ish blah blah
                 }, error: function() {

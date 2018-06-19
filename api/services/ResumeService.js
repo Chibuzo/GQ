@@ -10,9 +10,11 @@ module.exports = {
                     let r_class = [
                         { name: "1st Class", id: 1 }, { name: "2nd Class Upper", id: 2 }, { name: "2nd Class Lower", id: 3 }, { name: "3rd Class", id: 4 }
                     ];
-                    //var edu = [];
                     resume.educations.forEach(function(edu) {
-                        edu.r_class = r_class.find(r_clas => r_clas.id == edu.r_class).name;
+                        if (edu.r_class)
+                            edu.r_class = r_class.find(r_clas => r_clas.id == edu.r_class).name;
+                        else
+                            edu.r_class = 0;    
                     });
                     // check for test result
                     CBTService.candidateGeneralTestResult(resume.user.id).then(function(result) {

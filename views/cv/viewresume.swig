@@ -31,6 +31,7 @@
 
 	hr {
 		margin-top: -8px;
+		border-top: 1px solid #ccc;
 	}
 
 	#cv-view .row {

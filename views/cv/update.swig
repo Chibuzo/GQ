@@ -201,6 +201,7 @@
 
 	hr {
 		margin-top: -8px;
+		border-top: 1px solid #ccc;
 	}
 
 	#cv-view .row {
@@ -677,21 +678,21 @@
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js?v=1"></script>
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js?v=1"></script>
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js?v=1"></script>
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js?v=1"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js?v=2"></script>
 
 	<!-- Audio Volume metering -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js?v=1"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js?v=2"></script>
 
 	<!-- Audio tracking -->
     {#<script type="text/javascript" src="/js/proctor/recorder-new.js"></script>#}
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js?v=1"></script>
 	<!-- Main Setup -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=19"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=20"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
