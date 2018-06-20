@@ -119,7 +119,7 @@
 	<div class="col-md-12">
 	<div class="card">
 		<div class="header row">
-			<div class="col-md-6">
+			<div class="col-md-8">
 				<h4 class="title">{{ filter | capitalize }} Candidates</h4>
 				<p class="category">{{ info }}</p>
 			</div>
@@ -128,19 +128,19 @@
 		<div class="content table-responsive table-full-width">
 			<table class="table table-striped dataTable">
 				<thead>
-				<tr>
-					<td class="">
-						<div class="btn-group">
-							<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
-								Action &nbsp;<span class="caret"></span>
-							</button>
-							<ul class="dropdown-menu">
-								<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
-								<li><a href="" class="delete-candidates"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Applicant(s)</a></li>
-							</ul>
-						</div>
-					</td>
-				</tr>
+					<tr>
+						<td class="">
+							<div class="btn-group">
+								<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+									Action &nbsp;<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+									<li><a href="" class="delete-candidates"><i class="fa fa-trash-o fa-fw"></i> &nbsp;Remove Applicant(s)</a></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
 					<tr>
 						<th style="width:10px"><label class=" group-check" rel="tooltip" title="Note that this will check/uncheck for all the records on the pages"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>

@@ -324,7 +324,7 @@ module.exports = {
             var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
                 "WHERE institution = ? AND programme = ? AND qualification = ?";
 
-            var data = [q('school'), q('course'), q('certification')];
+            var data = [q('school').trim(), q('course').trim(), q('certification').trim()];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -377,7 +377,7 @@ module.exports = {
             var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
                 "WHERE e.institution = ? AND q.qualification = ?";
 
-            var data = [q('school'), q('certification')];
+            var data = [q('school').trim(), q('certification').trim()];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -392,7 +392,7 @@ module.exports = {
         }
         else if (q('school'))
         {
-            Education.find({ institution: q('school') }).populate('resume').exec(function(err, results) {
+            Education.find({ institution: q('school').trim() }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
                     if (user.resume) users.push(user.resume.user);
@@ -406,7 +406,7 @@ module.exports = {
         }
         else if (q('course'))
         {
-            Education.find({ programme: q('course') }).populate('resume').exec(function(err, results) {
+            Education.find({ programme: q('course').trim() }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
                     if (user.resume) users.push(user.resume.user);
@@ -420,7 +420,7 @@ module.exports = {
         }
         else if (q('certification'))
         {
-            Qualification.find({ qualification: q('certification') }).populate('resume').exec(function(err, results) {
+            Qualification.find({ qualification: q('certification').trim() }).populate('resume').exec(function(err, results) {
                 var users = [];
                 results.forEach(function(user) {
                     if (user.resume) users.push(user.resume.user);
@@ -463,7 +463,7 @@ module.exports = {
         } else {
             while (email_arr.length > 0) {
                 let emails = [];
-                while (email_arr.length > 0 && emails.length < 50) {
+                while (email_arr.length > 0 && emails.length < 49) {
                     emails.push(email_arr.pop());
                 }
                 sendMail.emailCandidates(emails, req.param('subject'), req.param('message'));

@@ -16,9 +16,11 @@ module.exports = {
                 } else {
                     folder = 'company';
                 }
-                return res.view(folder + '/addjob', { jobcategories: categories, countries: resp.countries, coy_id: coy_id });
+                // new jobs by default will require GQtest and video profile
+                var job = { require_video: true, require_test: true };
+                return res.view(folder + '/addjob', { jobcategories: categories, countries: resp.countries, coy_id: coy_id, job: job });
             }).catch(function(err) {
-                return res.ok();
+                return res.serverError();
             });
         });
     },
@@ -330,6 +332,7 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
+                    console.log('Entered')
                     AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
                         jobId: job_id,
                         resumeStatus: resume[0].status,
@@ -339,7 +342,7 @@ module.exports = {
                         testStatus: resume[0].test_status
                     });
                     JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
-                        if (status === false) {
+                        if (status.status === false) {
                             return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                         } else {
                             JobService.apply(job_id, req.session.userId).then(function(resp) {
