@@ -33,12 +33,12 @@ $("#retake-test").click(function() {
 });
 
 $(".load-test").click(function() {
-    if (mobileCheck() === true) {
-        MOBILE = true;
-        //amplitude.getInstance().logEvent("Failed Mobile Check");
-        //blockTest("mobileCheck");
-        //return false;
-    }
+    // if (mobileCheck() === true) {
+    //     MOBILE = true;
+    //     //amplitude.getInstance().logEvent("Failed Mobile Check");
+    //     //blockTest("mobileCheck");
+    //     //return false;
+    // }
 
     TEST_ID = $(this).data('test_id');
     $(this).text('Loading test...').prop('disabled', true);

@@ -11,7 +11,7 @@
 {% endblock %}
 
 {% block body %}
-<link href="/styles/gq-cbt.css?v=1" rel="stylesheet" />
+<link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -411,7 +411,7 @@
 												<div class="test-overlay"></div>
 
 												<div class="row">
-													<h3 class="test-title text-center"></h3>
+													<h3 class="test-title text-center"></h3><br>
 												</div>
 
 												<div class="row">
@@ -425,13 +425,13 @@
 
 												<div class="row inner-test-div" style="display: none;">
 
-													<div class="col-md-5 col-sm-12 col-xs-12 pull-left">
+													<div class="col-md-5 col-sm-12 col-xs-12 pull-right">
 														<!-- Timer -->
-														<div class="test-panel-text text-center">
+														<div class="test-panel-text text-center" style="font-size: 18px">
 															<span><strong>Time Remaining: </strong></span>
-															<div id="countdowntimer"></div>
+															<div id="countdowntimer"></div><br>
 														</div>
-														<hr>
+														
 														<!-- Invigilation Score -->
 														<div class="row">
 															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
@@ -447,10 +447,10 @@
 															</div>
 														</div>
 
-														<hr>
+														
 
 														<div class="row">
-															<div class="col-md-12">
+															<div class="col-md-12" style="margin-bottom: 14px">
 																<div class="row" style="text-align: center;font-weight: bold;">
 																	Question Key:
 																</div>
@@ -488,7 +488,7 @@
 															</div>
 														</div>
 
-														<hr>
+														
 
 														<div class="row">
 															<!-- THIS IS HIDDEN -->
@@ -500,7 +500,7 @@
 														</div>
 													</div>
 
-													<div class="col-md-7 col-sm-12 col-xs-12 pull-right">
+													<div class="col-md-7 col-sm-12 col-xs-12 pull-left">
 														<div class="col-md-9 col-sm-12 col-xs-12">
 															<div class="question"></div>
 															<div class="question-image"></div>
@@ -692,7 +692,7 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=20"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=21"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>

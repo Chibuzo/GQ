@@ -78,19 +78,19 @@ module.exports = {
                 honour: q('honour')[i],
                 r_class: q('r_class')[i],
                 programme: q('programme')[i],
-                start_date: new Date(Date.parse(q('inst_start_date')[i])).toISOString(),
-                end_date: new Date(Date.parse(q('inst_end_date')[i])).toISOString(),
+                start_date: q('inst_start_date')[i] ? new Date(Date.parse(q('inst_start_date')[i])).toISOString() : new Date().toISOString(),
+                end_date: q('inst_end_date')[i] ?  new Date(Date.parse(q('inst_end_date')[i])).toISOString(): new Date().toISOString(),
                 resume: q('resume_id')
             };
-
-            if (q('inst_id')[i] && q('inst_id')[i] > 0) {
+            if (q('inst_id') && q('inst_id')[i] && q('inst_id')[i] > 0) {
                 Education.update({ id: q('inst_id')[i] }, education).exec(function() {});
                 sections.education = true;
             } else {
                 Education.findOrCreate({
                     institution: q('institution')[i],
                     honour: q('honour')[i],
-                    programme: q('programme')[i]
+                    programme: q('programme')[i],
+                    resume: q('resume_id')
                 }, education).exec(function () {});
                 sections.education = true;
             }
@@ -103,14 +103,14 @@ module.exports = {
             var qualification = {
                 qualification: q('qualification')[i],
                 institution: q('qualification_institution')[i],
-                date_obtained: new Date(Date.parse(q('qualification_date')[i])).toISOString(),
+                date_obtained: q('qualification_date')[i] ? new Date(Date.parse(q('qualification_date')[i])).toISOString() : new Date().toISOString(),
                 resume: q('resume_id')
             };
 
-            if (q('qualification_id')[i] && q('qualification_id')[i] > 0) {
+            if (q('qualification_id') && q('qualification_id')[i] && q('qualification_id')[i] > 0) {
                 Qualification.update({ id: q('qualification_id')[i] }, qualification).exec(function() {});
             } else {
-                Qualification.findOrCreate({ qualification: q('qualification') }, qualification).exec(function() {});
+                Qualification.findOrCreate({ qualification: q('qualification'), resume: q('resume_id') }, qualification).exec(function(err, qu) {});
                 //sections.qualification = true;
             }
         }
@@ -124,15 +124,15 @@ module.exports = {
                 role: q('job_title')[i],
                 location: q('location')[i],
                 duties: q('duty')[i],
-                start_date: new Date(Date.parse(q('employment_start_date')[i])).toISOString(),
-                end_date: new Date(Date.parse(q('employment_end_date')[i])).toISOString(),
+                start_date: q('employment_start_date')[i] ? new Date(Date.parse(q('employment_start_date')[i])).toISOString() : new Date().toISOString(),
+                end_date: q('employment_end_date')[i] ? new Date(Date.parse(q('employment_end_date')[i])).toISOString() : new Date().toISOString(),
                 resume: q('resume_id')
             };
 
             if (q('employment_id') && !_.isUndefined(q('employment_id')[i]) && q('employment_id')[i] > 0) {
                 Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
             } else {
-                Employment.findOrCreate({ company: q('company'), role: q('job_title') }, employment).exec(function() {});
+                Employment.findOrCreate({ company: q('company'), role: q('job_title'), resume: q('resume_id') }, employment).exec(function() {});
                 //sections.employment = true;
             }
         }
@@ -150,7 +150,7 @@ module.exports = {
                 resume: q('resume_id')
             };
 
-            if (q('reference_id')[i] && q('reference_id')[i] > 0) {
+            if (q('reference_id') && q('reference_id')[i] && q('reference_id')[i] > 0) {
                 ReferenceContact.update({ id: q('reference_id')[i] }, reference).exec(function() {});
             } else {
                 ReferenceContact.create(reference).exec(function() {});

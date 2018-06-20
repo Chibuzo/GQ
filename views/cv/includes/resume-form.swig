@@ -49,9 +49,9 @@
 				<div class="col-md-4">
 					<label><i class="fa fa-calendar"></i> &nbsp;Date of Birth</label> <span class="red">*</span>
 					{% if resume.dob %}
-						<input type="text" name="dob" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" class="form-control gq-datep" value="{{ resume.dob | date('Y-m-d') }}" required>
+						<input type="text" name="dob" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" class="form-control gq-datep" value="{{ resume.dob | date('Y-m-d') }}" required readonly>
 					{% else %}
-						<input type="text" name="dob" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" class="form-control gq-datep" required>
+						<input type="text" name="dob" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" class="form-control gq-datep" required readonly>
 					{% endif %}
 				</div>
 				<div class="col-md-4">
@@ -138,9 +138,9 @@
 				<div class="col-md-4">
 					<label>Available Employment Start Date</label> <span class="red">*</span>
 					{% if resume.available_date %}
-						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ resume.available_date | date('Y-m-d') }}" required>
+						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ resume.available_date | date('Y-m-d') }}" readonly required>
 					{% else %}
-						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+						<input type="text" name="available_date" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required readonly>
 					{% endif %}
 				</div>
 			</div>
@@ -194,17 +194,17 @@
 							<div class="col-md-2">
 								<label>Start Date</label>
 								{% if edu.start_date %}
-									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.start_date | date('Y-m-d') }}" required>
+									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.start_date | date('Y-m-d') }}" required readonly>
 								{% else %}
-									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+									<input type="text" name="inst_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required readonly>
 								{% endif %}
 							</div>
 							<div class="col-md-2">
 								<label>End Date</label>
 								{% if edu.end_date %}
-									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.end_date | date('Y-m-d') }}" required>
+									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ edu.end_date | date('Y-m-d') }}" required readonly>
 								{% else %}
-									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+									<input type="text" name="inst_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required readonly>
 								{% endif %}
 							</div>
 							<input type="hidden" name="inst_id[]" value="{{ edu.id }}" />
@@ -256,13 +256,14 @@
 						<div class="row">
 							<div class="col-md-2">
 								<label>start Date</label>
-								<input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+								<input type="text" name="inst_start_date[]" class="form-control gq-datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required readonly>
 							</div>
 							<div class="col-md-2">
 								<label>End Date</label>
-								<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required>
+								<input type="text" name="inst_end_date[]" class="form-control gq-datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" required readonly>
 							</div>
 						</div>
+						<input type="hidden" name="inst_id[]" value="0" />
 					</div>
                 {% endif %}
 
@@ -299,12 +300,13 @@
 					<div class="row">
 						<div class="col-md-2">
 							<label>start Date</label>
-							<input type="text" name="inst_start_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+							<input type="text" name="inst_start_date[]" class="form-control gq-datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 						</div>
 						<div class="col-md-2">
 							<label>End Date</label>
-							<input type="text" name="inst_end_date[]" class="form-control datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+							<input type="text" name="inst_end_date[]" class="form-control gq-datep is-required" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 						</div>
+						<input type="hidden" name="inst_id[]" value="0" />
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
@@ -346,9 +348,9 @@
 						<div class="col-md-2">
 							<label>Date Obtained</label>
 							{% if qual.date_obtained %}
-								<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ qual.date_obtained | date('Y-m-d') }}">
+								<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ qual.date_obtained | date('Y-m-d') }}" readonly>
 							{% else %}
-								<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+								<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 							{% endif %}
 						</div>
 						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
@@ -363,18 +365,23 @@
 					</div>
 				{% endfor %}
 
-                {% if resume.educations.length < 1 %}
+                {% if resume.qualifications.length < 1 %}
                     <div class="row qual-row">
-    					<div class="col-md-9">
+    					<div class="col-md-5">
     						<label>Qualification</label>
     						<input type="text" name="qualification[]" class="form-control" placeholder="Certificate Obtained">
     					</div>
 
+						<div class="col-md-4">
+							<label>Institution</label>
+							<input type="text" name="qualification_institution[]" class="form-control" placeholder="Institution Obtained From" />
+						</div>
+
     					<div class="col-md-2">
     						<label>Date Obtained</label>
-    						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+    						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 						</div>
-						<input type="hidden" name="qualification_id[]" value="{{ qual.id }}" />
+						<input type="hidden" name="qualification_id[]" value="0" />
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">|</label>
 							<div class="delete-entry-container">
@@ -398,9 +405,9 @@
 
 					<div class="col-md-2">
 						<label>Date Obtained</label>
-						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+						<input type="text" name="qualification_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 					</div>
-
+					<input type="hidden" name="qualification_id[]" value="0" />
 					<div class="col-md-1 col-xs-12 delete-entry-col">
 						<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 						<div class="delete-entry-container">
@@ -457,17 +464,17 @@
 							<div class="col-md-4">
 								<label>start Date</label>
 								{% if emp.start_date %}
-									<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ emp.start_date | date('Y-m-d') }}">
+									<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ emp.start_date | date('Y-m-d') }}" readonly>
 								{% else %}
-									<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+									<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 								{% endif %}
 							</div>
 							<div class="col-md-4">
 								<label>End Date</label>
 								{% if emp.end_date %}
-									<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ emp.end_date | date('Y-m-d') }}">
+									<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" value="{{ emp.end_date | date('Y-m-d') }}" readonly>
 								{% else %}
-									<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+									<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 								{% endif %}
 							</div>
 							<input type="hidden" name="employment_id[]" value="{{ emp.id }}" />
@@ -512,12 +519,13 @@
 						<div class="row">
 							<div class="col-md-4">
 								<label>start Date</label>
-								<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+								<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 							</div>
 							<div class="col-md-4">
 								<label>End Date</label>
-								<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+								<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 							</div>
+							<input type="hidden" name="employment_id[]" value="0" />
 							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
@@ -558,12 +566,13 @@
 					<div class="row">
 						<div class="col-md-4">
 							<label>start Date</label>
-							<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+							<input type="text" name="employment_start_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 						</div>
 						<div class="col-md-4">
 							<label>End Date</label>
-							<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD">
+							<input type="text" name="employment_end_date[]" class="form-control gq-datep" pattern="\d{4}-\d{2}-\d{2}" placeholder="YYYY-MM-DD" readonly>
 						</div>
+						<input type="hidden" name="employment_id[]" value="0" />
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
@@ -674,7 +683,7 @@
 								<label>Phone</label>
 								<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's  Name" value="{{ ref.phone }}" >
 							</div>
-							<input type="hidden" name="reference_id[]" value="{{ ref.id }}" />
+							<input type="hidden" name="reference_id[]" value="0" />
 							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
@@ -725,6 +734,7 @@
 							<label>Phone</label>
 							<input type="text" name="reference_phone[]" class="form-control" placeholder="Reference's Name">
 						</div>
+						<input type="hidden" name="reference_id[]" value="0" />
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
