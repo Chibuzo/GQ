@@ -10,15 +10,15 @@ module.exports = {
                 if (err || job.length < 1) return reject('Job not found');
                 Resume.find({ user: candidate_id }).exec(function(err, resume) {
                     // test requirement
-                    if (job[0].require_gqtest === true && resume[0].test_status === true) {
+                    if (job[0].require_test === true && resume[0].test_status === true) {
                         criteria.test = true;
-                    } else if (job[0].require_gqtest === false) {
+                    } else if (job[0].require_test === false) {
                         criteria.test = true;
                     }
                     // video profile requirement
                     if (job[0].require_video === true && resume[0].video_status === true) {
                         criteria.video = true;
-                    } else if (job[0].video === false) {
+                    } else if (job[0].require_video === false) {
                         criteria.video = true;
                     }
                     return resolve({ status: criteria.test && criteria.video ? true : false });

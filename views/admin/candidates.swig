@@ -45,6 +45,14 @@
         cursor: pointer;
     }
 
+	input[type=checkbox] {
+		top: -15px;
+	}
+
+	input[type=checkbox].form-control {
+		height: 12px;
+	}
+
 </style>
 
 <div class="col-md-12">
@@ -61,6 +69,19 @@
 			<table class="table table-striped dataTable">
 				<thead>
 					<tr>
+						<td class="" colspan="13">
+							<div class="btn-group">
+								<button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+									Action &nbsp;<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+								</ul>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<th style="width:10px !important"><label class="group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						{#<th>Employment Status</th>#}
@@ -77,9 +98,10 @@
 						<th class="text-center">Action</th>
 					</tr>
 				</thead>
-				<tbody>
+				<tbody id="tb-users">
 					{% for user in candidates %}
 						<tr id="{{ user.id }}">
+							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" /></label></td>
 							<td data-order="{{ user.test_date | date('Y/m/d') }}">{{ user.test_date | date('d/m/Y') }}</td>
 							<td>
                                 <a target="_blank" href="/applicant/resume-user/{{ user.id }}" class="view-resume" rel="tooltip" title="View Resume">
@@ -146,6 +168,7 @@
 
 {% block modals %}
 	{% include 'includes/proctorModal.swig' %}
+	{% include '../misc/email-modal.swig' %}	
 {% endblock %}
 
 {% block scriptTag %}
@@ -156,14 +179,59 @@ $(document).ready(function() {
 	$('.applicants').addClass('active');
 
 
-	$('.dataTable').DataTable({
+	var dTable = $('.dataTable').DataTable({
 		pageLength: 50,
 		responsive: true,
-		"order": [[ 0, "desc" ]]
-//		"aoColumnDefs": [
-//			{ 'bSortable': false, 'aTargets': [ 2, 3 ] }
-//		]
+		"order": [[ 1, "desc" ]],
+		"aoColumnDefs": [
+			{ 'bSortable': false, 'aTargets': [ 0 ] }
+		]
+	});
+
+	$(".group-check").click(function() {
+		if ($(this).find('input[type=checkbox]').is(':checked')) {
+			dTable.$(".user-checkbox").prop('checked', true);
+		} else {
+			dTable.$(".user-checkbox").prop('checked', false);
+		}
+		controlActionBtn();
+	});
+
+
+	$("#tb-users").on('click', ".user-checkbox", function() {
+		controlActionBtn();
+	});
+
+
+	$("#form-email").submit(function(e) {
+		e.preventDefault();
+
+		$(this).find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
+		var users = [];
+		dTable.$(".user-checkbox:checked").each(function() {
+			users.push($(this).parents('tr').find('td.email').text());
+		});
+
+//		for ( instance in tinymce.instances ) {
+//			tinymce.instances[instance].updateElement();
+//		}
+		tinymce.triggerSave();
+
+		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
+			if (d.status.trim() == 'success') {
+				$(".alert-success").removeClass('hidden');
+				$(this).find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
+			}
+		}, 'JSON');
 	});
 });
+
+function controlActionBtn() {
+	if ($(".user-checkbox:checked").size() > 0) {
+		$(".action-btn").prop("disabled", false);
+	} else {
+		$(".action-btn").prop("disabled", true);
+	}
+}
 </script>
 {% endblock %}
