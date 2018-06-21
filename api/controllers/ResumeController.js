@@ -219,7 +219,6 @@ module.exports = {
             return res.view('cv/viewresume', {
                 resume: response.resume,
                                 me: me,
-                               // r_class: r_class,
                 result: response.result ? response.result : null,
                 test_title: response.test_title ? response.test_title : null,
                 folder: folder
