@@ -6,8 +6,13 @@
 {% block body %}
 <style>
 	.filter-div {
-		/*margin-bottom: 25px*/
+		padding-bottom: 25px;
 		overflow: auto;
+		background-color:#f9f9f9;
+	}
+
+	.dataTable_wrapper .row .col-md-6 {
+		padding: 3px 30px;
 	}
 
 	.modal-dialog {
@@ -62,6 +67,7 @@
 				<h4 class="title">Candidates' GQ Test Result</h4>
 				<p class="category">You can filter candidates</p>
 			</div>
+			<div class="col-md-4 pull-right"><button class="btn btn-info btn-fill pull-right" id="search-cv"><i class="fa fa-search"></i> Search CV</button></div>
 		</div>
 
 		{% include 'includes/candidate-search-form.swig' %}
@@ -223,6 +229,10 @@ $(document).ready(function() {
 				$(this).find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
 			}
 		}, 'JSON');
+	});
+
+	$("#search-cv").click(function() {
+		$(".filter-div").slideToggle();
 	});
 });
 

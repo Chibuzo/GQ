@@ -318,13 +318,17 @@ module.exports = {
 
     // consider refactoring this method
     search: function(req, res) {
-        var q = req.param;
-        if (q('school') && q('course') && q('certification'))
+        const q = req.param;
+        const school = q('school') ? q('school').trim() : false;
+        const course = q('course') ? q('course').trim() : false;
+        const certification = q('certification') ? q('certification').trim() : false;
+        
+        if (school && course && certification)
         {
-            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE institution = ? AND programme = ? AND qualification = ?";
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE e.institution LIKE ? AND e.programme LIKE ? AND q.qualification LIKE ?";
 
-            var data = [q('school').trim(), q('course').trim(), q('certification').trim()];
+            let data = [ '%' + school + '%', '%' + course + '%', '%' + certification + '%' ];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -337,11 +341,11 @@ module.exports = {
                 });
             });
         }
-        else if (q('school') && q('course'))
+        else if (school && course)
         {
-            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution = ? AND programme like ?";
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution LIKE ? AND programme like ?";
 
-            var data = [ q('school').trim(), '%' + q('course').trim() + '%' ];
+            let data = [ '%' + school + '%', '%' + course + '%' ];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -354,12 +358,12 @@ module.exports = {
                 });
             });
         }
-        else if (q('course') && q('certification'))
+        else if (course && certification)
         {
-            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.programme = ? AND q.qualification = ?";
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE e.programme LIKE ? AND q.qualification LIKE ?";
 
-            var data = [q('course').trim(), '%' + q('certification').trim() + '%'];
+            var data = [ '%' + course + '%', '%' + certification + '%'];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -372,12 +376,12 @@ module.exports = {
                 });
             });
         }
-        else if (q('school') && q('certification'))
+        else if (school && certification)
         {
-            var sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution = ? AND q.qualification = ?";
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
+                "WHERE e.institution LIKE ? AND q.qualification LIKE ?";
 
-            var data = [q('school').trim(), q('certification').trim()];
+            let data = [ '%' + school + '%', '%' + certification + '%' ];
             Resume.query(sql, data, function(err, result) {
                 var users = [];
                 result.forEach(function(user) {
@@ -390,12 +394,14 @@ module.exports = {
                 });
             });
         }
-        else if (q('school'))
+        else if (school)
         {
-            Education.find({ institution: q('school').trim() }).populate('resume').exec(function(err, results) {
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.institution LIKE ?";
+            let data = [ '%' + school + '%' ];
+            Resume.query(sql, data, function(err, result) {
                 var users = [];
-                results.forEach(function(user) {
-                    if (user.resume) users.push(user.resume.user);
+                result.forEach(function(user) {
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -404,12 +410,14 @@ module.exports = {
                 });
             });
         }
-        else if (q('course'))
+        else if (course)
         {
-            Education.find({ programme: q('course').trim() }).populate('resume').exec(function(err, results) {
+            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.programme LIKE ?";
+            let data = [ '%' + course + '%' ];
+            Resume.query(sql, data, function(err, result) {
                 var users = [];
-                results.forEach(function(user) {
-                    if (user.resume) users.push(user.resume.user);
+                result.forEach(function(user) {
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
@@ -418,12 +426,14 @@ module.exports = {
                 });
             });
         }
-        else if (q('certification'))
+        else if (certification)
         {
-            Qualification.find({ qualification: q('certification').trim() }).populate('resume').exec(function(err, results) {
+            let sql = "SELECT user FROM resume r JOIN qualification q ON q.resume = r.id WHERE qualification LIKE ?";
+            let data = [ '%' + certification + '%' ];
+            Resume.query(sql, data, function(err, result) {
                 var users = [];
-                results.forEach(function(user) {
-                    if (user.resume) users.push(user.resume.user);
+                result.forEach(function(user) {
+                    users.push(user.user);
                 });
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
