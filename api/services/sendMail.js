@@ -203,7 +203,7 @@ module.exports = {
             user: user.fullname,
             test: test_name
         };
-        var subject = "GetQualified has cancelled your test result";
+        var subject = "GetQualified has rejected your test result";
         var template = 'testCancellationNotice';
         module.exports.sendMail(user.email, subject, template, data);
     },
