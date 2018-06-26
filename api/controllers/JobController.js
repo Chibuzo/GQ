@@ -97,7 +97,7 @@ module.exports = {
                     return res.serverError(err);
                 });
         } else {
-            data.poster = req.session.userId,
+            data.poster = req.session.admin === true ? 0 : req.session.userId,
             data.company = req.session.coy_id ? req.session.coy_id : q('coy_id');
             return Job.create(data)
                 .then(job => {
@@ -107,7 +107,7 @@ module.exports = {
                             if (req.session.coy_id) {
                                 sendMail.GQnewJobAlert(user[0].company.company_name);
                             }
-                            if (req.session.admin) {
+                            if (req.session.admin === true) {
                                 return res.redirect('/admin/coy-jobs/' + job.company + '/open');
                             } else {
                                 return res.redirect('/company/dashboard');
@@ -435,7 +435,7 @@ module.exports = {
 
 					let jobTest = results[0];
 					let applications = results[1];
-					selected_candidates = results[2];
+                    selected_candidates = results[2];
 
 					// fetch candidate ids for use in finding/computing their test result
 					let candidatesIds = [];

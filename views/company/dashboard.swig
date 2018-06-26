@@ -147,7 +147,11 @@
 		                                {% else %}
 		                                    <td><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
 		                                {% endif %}
-										<td>{{ job.poster.fullname }}</td>
+										{% if job.poster.id == 0 %}
+											<td>{{ job.admin_post }}</td>
+										{% else %}	
+											<td>{{ job.poster.fullname }}</td>
+										{% endif %}	
 										<td>{{ job.closing_date | date('d-m-Y') }}</td>
 										<td class="opt-icons text-center">
 											<div class="button-group" role="group">

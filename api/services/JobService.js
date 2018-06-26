@@ -107,6 +107,13 @@ module.exports = {
                     }).exec(function (err, assessed) {
                         job.assessed = assessed;
 
+                        // catch GQ posted jobs
+                        //console.log(job)
+                        if (job.poster && job.poster.id == 0) {
+                            console.log('Aye')
+                            job.admin_post = 'GQ';
+                        }
+
                         if (Date.parse(job.closing_date) <= Date.parse(today)) {
                             SelectedCandidate.count({job_id: job.id}).populate('candidate').exec(function (err, selected_candidates) {
                                 job.shortlisted = selected_candidates;
