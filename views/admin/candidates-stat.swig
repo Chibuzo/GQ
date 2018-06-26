@@ -123,8 +123,11 @@
 				<h4 class="title">{{ filter | capitalize }} Candidates</h4>
 				<p class="category">{{ info }}</p>
 			</div>
+			<div class="col-md-4 pull-right"><button class="btn btn-info btn-fill pull-right" id="search-cv"><i class="fa fa-search"></i> Search CV</button></div>
 		</div>
 
+		{% set search_pg = 'stat' %}
+		{% include 'includes/candidate-search-form.swig' %}
 		<div class="content table-responsive table-full-width">
 			<table class="table table-striped dataTable">
 				<thead>
@@ -142,7 +145,7 @@
 						</td>
 					</tr>
 					<tr>
-						<th style="width:10px"><label class=" group-check" rel="tooltip" title="Note that this will check/uncheck for all the records on the pages"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+						<th style="width:10px"><label class=" group-check" rel"tooltip" title="Note that this will check/uncheck for all the records on the pages"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						<th>Email</th>
@@ -281,6 +284,11 @@ $(document).ready(function() {
 				}
 			});
 		}
+	});
+
+
+	$("#search-cv").click(function() {
+		$(".filter-div").slideToggle();
 	});
 });
 

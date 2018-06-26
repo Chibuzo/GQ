@@ -145,6 +145,9 @@ module.exports = {
 
         return ApplicantService.getApplicantStatistics().then(function(stats) {
             switch (req.param('query')) {
+                case 'search':
+
+                    break;
                 case 'all':
                     ApplicantService.fetchAll().then(function(all) {
                         return res.view('admin/candidates-stat', {
@@ -316,138 +319,34 @@ module.exports = {
         });
     },
 
-    // consider refactoring this method
+
     search: function(req, res) {
         const q = req.param;
-        const school = q('school') ? q('school').trim() : false;
-        const course = q('course') ? q('course').trim() : false;
-        const certification = q('certification') ? q('certification').trim() : false;
-        
-        if (school && course && certification)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution LIKE ? AND e.programme LIKE ? AND q.qualification LIKE ?";
 
-            let data = [ '%' + school + '%', '%' + course + '%', '%' + certification + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
+        ApplicantService.searchResume(q('school'), q('course'), q('result'), q('certificate')).then(function(users) {
+            // choose a struggle
+            if (q('page') == 'test') {
+                // for test result page
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
                     return res.view('admin/candidates', { candidates: results });
                 }).catch(function(err) {
                     return res.serverError(err);
                 });
-            });
-        }
-        else if (school && course)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution LIKE ? AND programme like ?";
-
-            let data = [ '%' + school + '%', '%' + course + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
+            } else if (q('page') == 'stat') {
+                // for all candidates' page
+                ApplicantService.getApplicantStatistics().then(function(stats) {
+                    Resume.find({ user: users }).exec(function(err, fusers) {
+                        return res.view('admin/candidates-stat', {
+                            statistics: stats,
+                            users: fusers,
+                            filter: 'Search Result',
+                            info: 'All the users that match the search criteria',
+                            resume: true
+                        });
+                    });
                 });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        }
-        else if (course && certification)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.programme LIKE ? AND q.qualification LIKE ?";
-
-            var data = [ '%' + course + '%', '%' + certification + '%'];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        }
-        else if (school && certification)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution LIKE ? AND q.qualification LIKE ?";
-
-            let data = [ '%' + school + '%', '%' + certification + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        }
-        else if (school)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.institution LIKE ?";
-            let data = [ '%' + school + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        }
-        else if (course)
-        {
-            let sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.programme LIKE ?";
-            let data = [ '%' + course + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        }
-        else if (certification)
-        {
-            let sql = "SELECT user FROM resume r JOIN qualification q ON q.resume = r.id WHERE qualification LIKE ?";
-            let data = [ '%' + certification + '%' ];
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
-                }).catch(function(err) {
-                    return res.serverError(err);
-                });
-            });
-        } else {
-            GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
-                return res.view('admin/candidates', { candidates: candidates });
-            }).catch(function(err) {
-                console.log(err);
-            });
-        }
+            }
+        });
     },
 
     deleteTestScoreAndFiles: function(req, res) {

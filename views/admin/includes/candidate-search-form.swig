@@ -23,6 +23,7 @@
 				<label>Certification</label>
 				<input type="text" name="certification" class="form-control" placeholder="Filter by Certification" value="{% if req.param('certification') %} {{ req.param('certification') }} {% endif %}" />
 			</div>
+			<input type="hidden" name="page" value="{{ search_pg }}" />
 			<div class="col-md-1" style="padding-top: 30px">
 				<button type="submit" class="btn btn-default btn-fill btn-block"><i class="fa fa-search"></i> Go!</button>
 			</div>
