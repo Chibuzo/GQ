@@ -309,7 +309,7 @@ module.exports = {
             sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.programme LIKE ?";
             data = [ '%' + course + '%' ];
         }
-        else if (ressult)
+        else if (result)
         {
             sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.r_class = ?";
             data = [ result ];

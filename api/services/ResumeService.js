@@ -28,6 +28,11 @@ module.exports = {
                             result: result,
                             test_title: test_title
                         });
+                    }).catch(function(err) {
+                        return resolve({
+                            resume: resume,
+                            result: undefined
+                        });
                     });
                 });
         });

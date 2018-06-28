@@ -242,10 +242,11 @@ module.exports = {
                         fname: response.resume.user.fullname.split(' ')[0],
                         lname: response.resume.user.fullname.split(' ')[1]
                     };
+                    var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
                     return res.view(folder + '/gqprofileview', {
                         resume: response.resume,
                         me: me,
-                        result: response.result ? response.result : null,
+                        result: result,
                         test_title: response.test_title ? response.test_title : null,
                         folder: folder,
                         showContactInfo: folder === 'admin' ? true : false

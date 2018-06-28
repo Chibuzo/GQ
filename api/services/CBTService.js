@@ -228,18 +228,25 @@ module.exports = {
                 }
                 GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
                     GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        var c_score = candidate_score[0];
-                        c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
-                        c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
-                        c_score.candidates = result.length;
-                        c_score.general_ability = tests[0].score;
-                        c_score.general_percentage = ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1);
-                        //c_score.general_rank =
-                        c_score.verbal = tests[1].score;
-                        c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
-                        c_score.maths = tests[2].score;
-                        c_score.maths_percentage = ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(1);
-                        return resolve(c_score);
+                        if (tests[0] && tests[1] && tests[2]) {
+                            var c_score = candidate_score[0];
+                            c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
+                            c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                            c_score.candidates = result.length;
+                            c_score.general_ability = tests[0].score;
+                            c_score.general_percentage = ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1);
+                            //c_score.general_rank =
+                            c_score.verbal = tests[1].score;
+                            c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
+                            c_score.maths = tests[2] ? tests[2].score : 0;
+                            c_score.maths_percentage = ((c_score.maths / tests[2].no_of_questions) * 100).toFixed(1);
+                            return resolve(c_score);
+                        } else {
+                            // reset general score
+                            GQAptitudeTestResult.destroy({ user: candidate_id }).exec(function() {
+                                return module.exports.candidateGeneralTestResult(candidate_id);
+                            });
+                        }
                     });
                 });
             });
