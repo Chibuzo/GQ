@@ -145,9 +145,6 @@ module.exports = {
 
         return ApplicantService.getApplicantStatistics().then(function(stats) {
             switch (req.param('query')) {
-                case 'search':
-
-                    break;
                 case 'all':
                     ApplicantService.fetchAll().then(function(all) {
                         return res.view('admin/candidates-stat', {
@@ -244,74 +241,74 @@ module.exports = {
                     });
                     break;
 
-            case 'novideos':
-                    ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
-                        return res.view('admin/candidates-stat', {
-                            statistics: stats,
-                            users: incomplete,
-                            filter: 'No Profile Videos',
-                            info: 'All the user with no profile video.',
-                            resume: true
+                case 'novideos':
+                        ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
+                            return res.view('admin/candidates-stat', {
+                                statistics: stats,
+                                users: incomplete,
+                                filter: 'No Profile Videos',
+                                info: 'All the user with no profile video.',
+                                resume: true
+                            });
                         });
-                    });
-                    break;
-            case 'notests':
-                    ApplicantService.fetchNoTestsApplicants().then(noTests => {
+                        break;
+                case 'notests':
+                        ApplicantService.fetchNoTestsApplicants().then(noTests => {
+                            return res.view('admin/candidates-stat', {
+                                statistics: stats,
+                                users: noTests,
+                                filter: 'No Test Results',
+                                info: 'All the user who can take a test, but have not.',
+                                resume: true
+                            });
+                        })
+                        break;
+                case 'sometests':
+                        ApplicantService.fetchSomeTestsApplicants().then(someTests => {
+                            return res.view('admin/candidates-stat', {
+                                statistics: stats,
+                                users: someTests,
+                                filter: 'Some Test Results',
+                                info: 'All the user who have taken a test, but have not completed all 3 GQ tests.',
+                                resume: true
+                            });
+                        })
+                        break;
+                case 'tests':
+                        ApplicantService.fetchCompleteTestsApplicants().then(allTests => {
+                            return res.view('admin/candidates-stat', {
+                                statistics: stats,
+                                users: allTests,
+                                filter: 'Complete Test Results',
+                                info: 'All the user who have completed all 3 GQ tests.',
+                                resume: true
+                            });
+                        });
+                        break;
+                case 'jobs':
+                        ApplicantService.fetchJobApplicants().then(jobApplicants => {
+                            return res.view('admin/candidates-stat', {
+                                statistics: stats,
+                                users: jobApplicants,
+                                filter: 'Job Applicants',
+                                info: 'All the user have applied to a job.',
+                                resume: true
+                            });
+                        })
+                        break;
+                case 'nojobs':
+                    ApplicantService.fetchNoJobApplicants().then(noJobUsers => {
                         return res.view('admin/candidates-stat', {
                             statistics: stats,
-                            users: noTests,
-                            filter: 'No Test Results',
-                            info: 'All the user who can take a test, but have not.',
+                            users: noJobUsers,
+                            filter: 'No Job Applications',
+                            info: 'All the user who can apply to a job, but have not.',
                             resume: true
                         });
                     })
                     break;
-            case 'sometests':
-                    ApplicantService.fetchSomeTestsApplicants().then(someTests => {
-                        return res.view('admin/candidates-stat', {
-                            statistics: stats,
-                            users: someTests,
-                            filter: 'Some Test Results',
-                            info: 'All the user who have taken a test, but have not completed all 3 GQ tests.',
-                            resume: true
-                        });
-                    })
-                    break;
-            case 'tests':
-                    ApplicantService.fetchCompleteTestsApplicants().then(allTests => {
-                        return res.view('admin/candidates-stat', {
-                            statistics: stats,
-                            users: allTests,
-                            filter: 'Complete Test Results',
-                            info: 'All the user who have completed all 3 GQ tests.',
-                            resume: true
-                        });
-                    })
-                    break;
-            case 'jobs':
-                    ApplicantService.fetchJobApplicants().then(jobApplicants => {
-                        return res.view('admin/candidates-stat', {
-                            statistics: stats,
-                            users: jobApplicants,
-                            filter: 'Job Applicants',
-                            info: 'All the user have applied to a job.',
-                            resume: true
-                        });
-                    })
-                    break;
-            case 'nojobs':
-                ApplicantService.fetchNoJobApplicants().then(noJobUsers => {
-                    return res.view('admin/candidates-stat', {
-                        statistics: stats,
-                        users: noJobUsers,
-                        filter: 'No Job Applications',
-                        info: 'All the user who can apply to a job, but have not.',
-                        resume: true
-                    });
-                })
-                break;
-                default:
-                    return res.notFound();
+                    default:
+                        return res.notFound();
                     break;
             }
         }).catch(err => {
@@ -323,7 +320,7 @@ module.exports = {
     search: function(req, res) {
         const q = req.param;
 
-        ApplicantService.searchResume(q('school'), q('course'), q('result'), q('certificate')).then(function(users) {
+        ApplicantService.searchResume(q('school'), q('course'), q('result'), q('certificate'), q('state')).then(function(users) {
             // choose a struggle
             if (q('page') == 'test') {
                 // for test result page
@@ -346,6 +343,8 @@ module.exports = {
                     });
                 });
             }
+        }).catch(function(err) {
+            return res.redirect('/admin/candidates/all');
         });
     },
 

@@ -28,5 +28,18 @@
 				<button type="submit" class="btn btn-default btn-fill btn-block"><i class="fa fa-search"></i> Go!</button>
 			</div>
 		</div>
+		{% if search_pg == 'stat' %}
+			<div class="form-group">
+				<div class="col-md-3">
+					<label for="email"><i class="fa fa-map-marker"></i>&nbsp;State</label>
+					<select name="state" id="r_state" class="form-control">
+						<option value="">Select State</option>
+						{% for state in states %}
+							<option value="{{ state.state_name }}">{{ state.state_name }}</option>
+						{% endfor %}
+					</select>
+				</div>
+			</div>
+		{% endif %}		
 	</form>
 </div>

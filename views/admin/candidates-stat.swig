@@ -290,6 +290,15 @@ $(document).ready(function() {
 	$("#search-cv").click(function() {
 		$(".filter-div").slideToggle();
 	});
+
+	// load states
+	$.get('/getstates', function(d) {
+		var html = '<option value="">-- State --</option>';
+		d.states.forEach(function(state) {
+			html += `<option value='${state.state_name}'>${state.state_name}</option>`;
+		});
+		$('#r_state').html(html);
+	}, 'JSON');
 });
 
 function controlActionBtn() {

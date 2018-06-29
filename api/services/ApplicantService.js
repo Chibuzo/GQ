@@ -34,7 +34,7 @@ function fetchSomeTestsApplicants() {
         });
 
         let usersWithSomeTests = _.filter(usersWithTests, (tests, candidateId) => {
-            return tests.length < 3
+            return tests.length < 3;
         });
 
         let usersWithSomeTestsIds = _.map(usersWithSomeTests, (testsArr, candidateId) => {
@@ -247,94 +247,58 @@ module.exports = {
 
     fetchNoJobApplicants: fetchNoJobApplicants,
 
-    searchResume: function(_school, _course, _result, _certification) {
+    searchResume: function(_school, _course, _result, _certification, _state) {
         const school = _school ? _school.trim() : false;
         const course = _course ? _course.trim() : false;
         const result = _result ? _result.trim() : false;
         const certification = _certification ? _certification.trim() : false;
+        const state = _state ? _state.trim() : false;
 
-        var sql = "";
         var data = [];
+
+        var sql = "SELECT user, r_state FROM resume r ";
+        var where = "WHERE fullname <> '' ";
+
+        if (school || course || result) {
+            sql += "JOIN education e ON e.resume = r.id ";
+            if (school) {
+                where += "AND e.institution LIKE ? ";
+                data.push('%' + school + '%');
+            }
+            if (course) {
+                where += "AND e.programme LIKE ? ";
+                data.push('%' + course + '%');
+            }
+            if (result) {
+                where += "AND e.r_class = ? ";
+                data.push(result);
+            }
+        } 
+        if (certification) {
+            sql += "JOIN qualification q ON r.id = q.resume ";
+            where += "AND q.qualification LIKE ? ";
+            data.push('%' + certification + '%');
+        }
+        if (state) {
+            where += "AND r.r_state = ?"; 
+            data.push(state);
+        }
         
-        if (school && course && result && certification)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution LIKE ? AND e.programme LIKE ? AND e.r_class = ? AND q.qualification LIKE ?";
-
-            data = [ '%' + school + '%', '%' + course + '%', result, '%' + certification + '%' ];
-        }
-        if (school && course && certification)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution LIKE ? AND e.programme LIKE ? AND q.qualification LIKE ?";
-
-            data = [ '%' + school + '%', '%' + course + '%', '%' + certification + '%' ];
-        }
-        else if (course && result)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE programme like ? AND e.r_class = ?";
-            data = [ '%' + course + '%', result ];
-        }
-        else if (school && course)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution LIKE ? AND programme like ?";
-            data = [ '%' + school + '%', '%' + course + '%' ];
-        }
-        else if (school && course && result)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE institution LIKE ? AND programme like ? AND e.r_class = ?";
-            data = [ '%' + school + '%', '%' + course + '%', result ];
-        }
-        else if (course && certification)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.programme LIKE ? AND q.qualification LIKE ?";
-
-            data = [ '%' + course + '%', '%' + certification + '%'];
-        }
-        else if (school && certification)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id JOIN qualification q ON r.id = q.resume " +
-                "WHERE e.institution LIKE ? AND q.qualification LIKE ?";
-
-            data = [ '%' + school + '%', '%' + certification + '%' ];
-        }
-        else if (school)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.institution LIKE ?";
-            data = [ '%' + school + '%' ];
-        }
-        else if (course)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.programme LIKE ?";
-            data = [ '%' + course + '%' ];
-        }
-        else if (result)
-        {
-            sql = "SELECT user FROM resume r JOIN education e ON e.resume = r.id WHERE e.r_class = ?";
-            data = [ result ];
-        }
-        else if (certification)
-        {
-            sql = "SELECT user FROM resume r JOIN qualification q ON q.resume = r.id WHERE qualification LIKE ?";
-            data = [ '%' + certification + '%' ];
+        // if search button is click and no field was set
+        if (data.length == 0) {
+            return reject('Phew!!! Redirect to same page.');
         } else {
-            return GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
-                return res.view('admin/candidates', { candidates: candidates });
-            }).catch(function(err) {
-                console.log(err);
+            sql += where;
+            return new Promise(function(resolve) {
+                Resume.query(sql, data, function(err, result) {
+                    var users = [];
+                    result.forEach(function(user) {
+                        users.push(user.user);
+                    });
+                    return resolve(users);
+                });
             });
         }
-
-        return new Promise(function(resolve) {
-            Resume.query(sql, data, function(err, result) {
-                var users = [];
-                result.forEach(function(user) {
-                    users.push(user.user);
-                });
-                return resolve(users);
-            });
-        });
     },
 
 

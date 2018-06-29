@@ -44,6 +44,12 @@ module.exports = {
             States.create({ state_name: state.state_name }).exec(function() {});
         });
         return res.ok();
+    },
+
+    getStates: function(req, res) {
+        States.find().sort('state_name asc').exec(function(err, states) {
+            return res.json(200, { states: states });
+        });
     }
 };
 
