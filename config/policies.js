@@ -36,7 +36,9 @@ module.exports.policies = {
         dashboard: 'isLoggedIn',
         deleteApplicants: 'isAdmin',
         deleteTestScoreAndFiles: 'isAdmin',
-        fetchApplicants: 'isAdmin'
+        fetchApplicants: 'isAdmin',
+        search: 'isAdmin',
+        fetchStatisticsPage: 'isAdmin',
     },
 
     JobController: {
@@ -50,6 +52,10 @@ module.exports.policies = {
         'fetchShortlistedForAdmin': 'isAdmin',
         'viewScrapedJobs': 'isAdmin',
         'fetchScrapedJobs': 'isAdmin'
+    },
+
+    JobTestController: {
+        manageJobTests: 'isAdmin'
     },
 
     ResumeController: {

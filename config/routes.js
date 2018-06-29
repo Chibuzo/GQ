@@ -280,6 +280,8 @@ module.exports.routes = {
     //
     //'/states': 'BatchController.loadStates'
 
+    'GET /getstates': 'BatchController.getStates',
+
 
     /*****************************************************
      * GQ API v1 routes
