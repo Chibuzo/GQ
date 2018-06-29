@@ -337,14 +337,18 @@ module.exports = {
                             statistics: stats,
                             users: fusers,
                             filter: 'Search Result',
-                            info: 'All the users that match the search criteria',
+                            info: 'All the Candidates that match the search criteria',
                             resume: true
                         });
                     });
                 });
             }
         }).catch(function(err) {
-            return res.redirect('/admin/candidates/all');
+            if (q('page') == 'test') {
+                return res.redirect('/admin/applicants');
+            } else {
+                return res.redirect('/admin/candidates/all');
+            }
         });
     },
 
