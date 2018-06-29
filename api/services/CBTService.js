@@ -52,7 +52,7 @@ module.exports = {
 							return gqTestResult.proctor.integrity_score;
 						});
 
-						let integrityScore = (integrityScoreSum / 3).toFixed(1)
+						let integrityScore = (integrityScoreSum / 3).toFixed(1);
 
 						let integrityStatuses = _.map(gqTestResults, (gqTestResult) => {
 							return gqTestResult.proctor.status;
@@ -125,6 +125,8 @@ module.exports = {
     },
 
     processJobResult: function(results) {
+        console.log('Results...')
+        console.log(results);
         return new Promise(function(resolve, reject) {
             var gq_results = [];
             var aptitude_test_results = []; // for computing aptitude test ranking
@@ -144,7 +146,7 @@ module.exports = {
                     gq_results.push({
                         test_id: result.id,
                         applicant: result.candidate,
-                        score: result.score ? result.score : 'NA',
+                        score: result.score ? percentage : 'NA', // condition not really required
                         percentage: percentage,
                         percentile: '-',
                         test_result: percentage > 59 ? 'Passed' : 'Failed',

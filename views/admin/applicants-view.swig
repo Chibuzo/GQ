@@ -86,7 +86,7 @@
 													</a>
 												</td>
 												{% if result.job_score !== false %}
-													<td class="text-center">{{ result.job_score }}%</td>
+													<td class="text-center">{{ result.percentage }}%</td>
 												{% else %}
 													<td class="text-center">N/A</td>
 												{% endif %}

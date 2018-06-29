@@ -3,6 +3,13 @@
 {% block page_title %}
 	<i class="pe-7s-test"></i> &nbsp;GQ Assessment
 {% endblock %}
+
+{% block head %}
+  {% parent %}
+  {% set location = "Job Test" %}
+  {% include "../externalApplications/amplified.swig" %}
+{% endblock %}
+
 {% block body %}
 <style>
 	.cell {
@@ -13,6 +20,7 @@
 	}
 </style>
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
+<link href="/styles/proctor-style.css" rel="stylesheet" />
 
 <div class="row">
 	<div class="col-md-12">
@@ -76,101 +84,32 @@
 							</div>
 						</div>
 
-						<div class="test overlay-container">
-							<div class="alert alert-warning text-center hidden" id="internet-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
-							<div class="test-overlay"></div>
-
-							<h3 class="test-title text-center"></h3>
-							<div id="instructions">
-								<div class="instruction"></div>
-								<div class="text-center">
-									<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
-								</div>
-							</div>
-
-							<div class="inner-test-div" style="display: none;">
-								<div class="row">
-									<div class="col-md-4 pull-right">
-										<small>Invigilation Score</small>
-										<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room.">
-											<div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
-												{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
-											</div>
-										</div>
-									</div>
-								</div>
-								<div id="countdowntimer" class="text-right"><span id="hms_timer"><span>00:00</div>
-								<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
-								<div class="row">
-									<div class="col-md-3 col-sm-12 col-xs-12 pull-right">
-										<div class="question-nums">
-
-										</div>
-									</div>
-
-									<div class="col-md-9 col-sm-12 col-xs-12">
-										<div class="question"></div>
-										<div class="question-image"></div>
-										<div class="options">
-											<ul class="opts">
-												<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
-												<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
-												<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
-												<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
-												<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
-											</ul>
-										</div>
-									</div>
-								</div>
-
-								<div class="nav-btns">
-									<button class="btn btn-info btn-fill hidden">Pev <i class="fa fa-caret-left"></i> </button>
-									<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i> </button>
-									<button class="btn btn-primary btn-fill pull-right" id="submit-test">Submit Test </button>
-								</div>
-							</div>
-							<div class="test-blocked-screen hidden" style="margin-top: 15px">
-								<div class="alert alert-danger">
-									<div class="text-center">
-										<br><i class="fa fa-ban fa-4x"></i>
-										<br><br><h4>Hi {{ req.session.fname }},<br><br>Your microphone and webcam MUST grant access to this page before you can proceed with the test.</h4>
-										<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
-									</div>
-								</div>
-								<span id="integrity-score" class="hidden"></span>
-								<button class="btn btn-default hidden" id="stopTestTimer">Stop</button>
-							</div>
-						</div>
+						{% include 'includes/testpage.swig' %}	
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 </div>
-
-	<div class="cell">
-		<div class="proctor-container" style="position: relative; width: 320px; height: 180px">
-			<video id="proctor-video" width="320" height="180" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-			<canvas id="proctor-canvas" width="320" height="180" style="position: absolute; top: 0; left: 0"></canvas>
-		</div>
-	</div>
 {% endblock %}
 
 {% block scriptTag %}
 <!-- Facial tracking -->
-<script src="/js/proctor/tracking-min.js"></script>
-<script src="/js/proctor/face-min.js"></script>
-<script src="/js/proctor/eye-min.js"></script>
-<script src="/js/proctor/mouth-min.js"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js?v=2"></script>
 
-<!-- Audio Volume metering -->
-<script src="/js/proctor/volume-meter.js"></script>
+	<!-- Audio Volume metering -->
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js?v=2"></script>
 
-<!-- Audio tracking -->
-<script src="/js/proctor/recorder.min.js"></script>
-<!-- Main Setup -->
-<script src="/js/proctor/setup.js"></script>
+	<!-- Audio tracking -->
+    {#<script type="text/javascript" src="/js/proctor/recorder-new.js"></script>#}
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js?v=1"></script>
+	<!-- Main Setup -->
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
 
-<script type="text/javascript" src="/js/gqTestFrontend.js?v=3"></script>
-<script type="text/javascript" src="/js/plugins/jquery.countdownTimer.min.js"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=21"></script>
+	
+<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 {% endblock %}
