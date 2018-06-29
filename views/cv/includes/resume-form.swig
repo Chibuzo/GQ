@@ -82,7 +82,7 @@
 				</div>
 				<div class="col-md-4">
 					<label for="email"><i class="fa fa-map-marker"></i>&nbsp;State</label>
-					<select name="state" class="form-control">
+					<select name="state" class="form-control" required>
 						<option value="">Select State</option>
 						{% for state in states %}
 							<option value="{{ state.state_name }}">{{ state.state_name }}</option>
