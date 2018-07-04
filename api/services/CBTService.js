@@ -52,7 +52,7 @@ module.exports = {
 							return gqTestResult.proctor.integrity_score;
 						});
 
-						let integrityScore = (integrityScoreSum / 3).toFixed(1)
+						let integrityScore = (integrityScoreSum / 3).toFixed(1);
 
 						let integrityStatuses = _.map(gqTestResults, (gqTestResult) => {
 							return gqTestResult.proctor.status;
@@ -132,10 +132,11 @@ module.exports = {
                 // get their BEST aptitude test score
                 GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
                     var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+                    var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
                     // if the job has a competency test, compute the two, else use only aptitude test score
                     var composite_score;
                     if (result.score) {
-                        composite_score = ((apt_score[0].score / 2) + (result.score / 2)).toFixed(1);
+                        composite_score = (gq_score / 2) + (percentage / 2);
                         aptitude_test_results.push(composite_score);
                     } else {
                         composite_score = apt_score[0].score;
@@ -144,8 +145,8 @@ module.exports = {
                     gq_results.push({
                         test_id: result.id,
                         applicant: result.candidate,
-                        score: result.score ? result.score : 'NA',
-                        percentage: percentage,
+                        job_score: result.score ? percentage : 'NA', // condition not really required
+                        percentage: gq_score,
                         percentile: '-',
                         test_result: percentage > 59 ? 'Passed' : 'Failed',
                         composite_score: composite_score,
@@ -257,7 +258,7 @@ module.exports = {
     cancelGQApptitudeTest: function(userId) {
         return Promise.all([
                 GQAptitudeTestResult.destroy({user: userId}),
-                GQTestResult.destroy({candidate: userId}),
+                GQTestResult.destroy({ candidate: userId, test: [1, 2, 3 ] }),
                 Resume.update({user: userId}, {test_status: false, status: 'Incomplete'})
             ]).then(results => {
                 let destroyedRecords = results[1];

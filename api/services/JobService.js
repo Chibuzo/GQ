@@ -37,14 +37,17 @@ module.exports = {
                 // let's proceed
                 Job.findOne({id: job_id}).exec(function (err, job) {
                     if (err) return reject(err);
-                    var data = {
-                        job: job_id,
-                        company: job.company,
-                        applicant: applicant_id
-                    };
-                    Application.create(data).exec(function (err) {
-                        if (err) return reject(err);
-                        return resolve(true);
+                    JobTest.find({ job_category_id: job.category, job_level: job.job_level }).exec(function(jt_err, tests) {
+                        var data = {
+                            job: job_id,
+                            company: job.company,
+                            applicant: applicant_id,
+                            status: tests.length > 0 ? 'Take test' : 'Under Review'
+                        };
+                        Application.create(data).exec(function (err) {
+                            if (err) return reject(err);
+                            return resolve(true);
+                        });
                     });
                 });
             });

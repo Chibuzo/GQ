@@ -80,11 +80,17 @@ $(".accept-test").click(function(e) {
     e.preventDefault();
     if (confirm("Are you sure you want to accept this test score?")) {
         var candidate_id = $(this).parents('tr').attr('id');
-        $.post('/proctor/accept-test',  { candidate_id: candidate_id }, function(d) {
-            location.reload(true);
+        var proctor_id = 0;
+        var $parentTd = $(this).parents('td');;
+        var test_type = $parentTd.data('test-type');
+        if (test_type == 'job-test') {
+            proctor_id = $parentTd.data('proctor-id');
+        }
+        $.post('/proctor/accept-test',  { candidate_id: candidate_id, proctor_id: proctor_id, test_type: test_type }, function(d) {
+            //location.reload(true);
         }, 'JSON');
 
-        // $("#" + candidate_id).find("td:nth-child(12)").fadeOut('fast');
+        $("#" + candidate_id).find("td.proctor-status").html('Accepted');
     }
 });
 
@@ -92,12 +98,21 @@ $(".accept-test").click(function(e) {
 $(".reject-test").click(function(e) {
     e.preventDefault();
     if (confirm("Are you sure you want to reject this test score?")) {
+        var $parentTd = $(this).parents('td');
         var candidate_id = $(this).parents('tr').attr('id');
+        var job_title = '';
+        var proctor_id = 0;
+        var test_type = $parentTd.data('test-type');
+        alert(test_type)
+        if (test_type == 'job-test') {
+            job_title = $parentTd.data('job-title');
+            proctor_id = $parentTd.data('proctor-id');
+        }
 
-        $.post('/proctor/reject-test',  { candidate_id: candidate_id }, function() {
+        $.post('/proctor/reject-test',  { candidate_id: candidate_id, test_type: test_type, job_title: job_title, proctor_id: proctor_id }, function() {
 
         }, 'JSON');
-        $("tr#" + candidate_id).find("td:nth-child(12)").html('Rejected');
+        $("tr#" + candidate_id).find("td.proctor-status").html('Rejected');
     }
 });
 

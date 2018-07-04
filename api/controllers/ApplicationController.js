@@ -10,7 +10,7 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
         const userEmail = req.session.userEmail;
 
-        return Application.find({ applicant: req.session.userId }).populate('job').populate('company')
+        return Application.find({ applicant: req.session.userId }).populate('job').populate('company').sort('createdAt desc')
             .then(applications => {
                 let _applications = [];
                 async.eachSeries(applications, function (app, cb) {
@@ -34,6 +34,6 @@ module.exports = {
             })
             .catch(err => {
                 return res.serverError(err);
-            })
+            });
     }
 };

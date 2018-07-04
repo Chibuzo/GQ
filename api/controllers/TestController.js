@@ -6428,7 +6428,7 @@ module.exports = {
         var request = require('request');
         var qs = require('querystring');
 
-        req.session.job_id = req.param('job_id');
+        req.session.application_id = req.param('job_id');
 
         var data = {
             password: '1p2r9o6d4u5t1c',
@@ -6486,7 +6486,7 @@ module.exports = {
         // update application
         if (req.session.job_id) {
             // update application status
-            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {});
+            Application.update({ id: req.session.application_id }, { status: 'Under Review' }).exec(function() {});
         }
         return res.ok();
     },

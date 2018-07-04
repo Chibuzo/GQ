@@ -17,6 +17,11 @@ module.exports = {
           type: 'integer'
       },
 
+      test_source: {
+          type: 'string', // GQ, XPR
+          defaultsTo: 'GQ'
+      },
+
       user_id: {
           type: 'integer'
       },
