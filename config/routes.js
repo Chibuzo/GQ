@@ -292,5 +292,14 @@ module.exports.routes = {
      * */
     'POST /api/v1/postjob': 'JobApiController.createJob',
 
-    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl'
+    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
+
+
+    'GET /api/v1/proctor/getsessionid/:test_id': 'ProctorRecordController.startSession',
+
+    'POST /api/v1/proctor/uploadphoto': 'GQTestController.uploadProctorPicture',
+
+    'POST /api/v1/proctor/uploadaudio': 'GQTestController.uploadProctorAudio',
+
+    'POST /api/v1/proctor/saveproctordata': 'ProctorRecordController.saveEvidenceData'
 };

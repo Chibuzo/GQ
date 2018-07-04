@@ -473,24 +473,37 @@ module.exports = {
 
         }
 
-        let proctorSessId = req.param('proctorSessId');
-        if (proctorSessId && proctorSessId != req.session.proctor) {
-            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-                location: 'GQTestController.uploadProctorAudio()',
-                filename: filename,
-                sessionProctor: req.session.proctor,
-                requestProctor: proctorSessId
-            });
+        // let proctorSessId = req.param('proctorSessId');
+        // if (proctorSessId && proctorSessId != req.session.proctor) {
+        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+        //         location: 'GQTestController.uploadProctorAudio()',
+        //         filename: filename,
+        //         sessionProctor: req.session.proctor,
+        //         requestProctor: proctorSessId
+        //     });
+        // }
+
+        // check source
+        var session_id;
+        var path = req.path.split('/')[1];
+        if (path == 'api') {
+            session_id = req.param('session_id');
+        } else {
+            session_id = req.session.proctor;
         }
 
         // save audio filename
         var data = {
             filename: filename,
             file_type: 'audio',
-            proctor: req.session.proctor
+            proctor: session_id
         };
-        ProctorRecord.create(data).exec(function() {});
-        return res.ok()
+        ProctorRecord.create(data).exec(function(err) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
+            }
+            return res.json(201, { status: 'success' });
+        });
     },
 
     uploadProctorPicture: function(req, res) {
@@ -512,23 +525,36 @@ module.exports = {
 
         }
 
-        let proctorSessId = req.param('proctorSessId');
-        if (proctorSessId && proctorSessId != req.session.proctor) {
-            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-                location: 'GQTestController.uploadProctorPicture()',
-                filename: filename,
-                sessionProctor: req.session.proctor,
-                requestProctor: proctorSessId
-            });
+        // let proctorSessId = req.param('proctorSessId');
+        // if (proctorSessId && proctorSessId != req.session.proctor) {
+        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+        //         location: 'GQTestController.uploadProctorPicture()',
+        //         filename: filename,
+        //         sessionProctor: req.session.proctor,
+        //         requestProctor: proctorSessId
+        //     });
+        // }
+
+        // check source
+        var session_id;
+        var path = req.path.split('/')[1];
+        if (path == 'api') {
+            session_id = req.param('session_id');
+        } else {
+            session_id = req.session.proctor;
         }
 
         // save photo filename
         var data = {
             filename: filename,
             file_type: 'photo',
-            proctor: req.session.proctor
+            proctor: session_id
         };
-        ProctorRecord.create(data).exec(function() {});
-        return res.ok();
+        ProctorRecord.create(data).exec(function(err) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
+            }
+            return res.json(201, { status: 'success' });
+        });
     }
 };

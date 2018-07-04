@@ -12,7 +12,8 @@ module.exports = {
         // Create a new proctor session for each test.
         return ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
             if (err) {
-                return res.serverError(err);
+                return res.json(500, { status: 'error', message: err });
+                //return res.serverError(err);
             }
 
             req.session.proctor = sess.id;
@@ -66,6 +67,26 @@ module.exports = {
             }
         });
         return res.ok();
+    },
+
+
+    saveEvidenceData: function(req, res) {
+        let integrity_score = req.param('integrity_score');
+        let session_id = req.param('session_id');
+        let invigilationTracking = req.param('invigilationTracking') || {};
+
+        let data = {
+            integrity_score: integrity_score ? integrity_score : -1,
+            noFaceCount: invigilationTracking.noFace ? invigilationTracking.noFace : -1,
+            noiseCount: invigilationTracking.noise ? invigilationTracking.noise : -1,
+            multipleFacesCount: invigilationTracking.multipleFaces ? invigilationTracking.multipleFaces : -1
+        };
+        ProctorSession.update({ id: session_id }, data).exec(function(err, result) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
+            }
+            return res.json(200, { status: 'success' });
+        });
     },
 
 
