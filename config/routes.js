@@ -47,6 +47,8 @@ module.exports.routes = {
 
     'DELETE /applicant/test/:userId': 'ApplicantController.deleteTestScoreAndFiles',
 
+    'POST /test/deleteScore': 'ApplicantController.deleteTestScoreAndFiles',
+
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
     'GET /applicant/resume-user/:user_id': 'ResumeController.viewResumeByUser',
@@ -115,6 +117,8 @@ module.exports.routes = {
     //'GET /gqtest/remove': 'GQTestController.deleteTest',
 
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
+
+    'GET /gqtest/deleteResult': 'GQTestController.deleteResult',
 
     'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
 
@@ -279,7 +283,6 @@ module.exports.routes = {
     //'GET /countries': 'BatchController.countries',
     //
     //'/states': 'BatchController.loadStates'
-
 
     /*****************************************************
      * GQ API v1 routes
