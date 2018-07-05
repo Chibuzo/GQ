@@ -18,7 +18,7 @@ module.exports = {
 
             req.session.proctor = sess.id;
             req.session.save();
-            return res.json(200, { status: 'success', proctor_id: sess.id });
+            return res.json(200, { status: 'success', proctor_id: sess.id, session_id: sess.id });
         });
     },
 
