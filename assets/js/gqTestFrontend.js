@@ -669,7 +669,8 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                      }
                      this.retry--;
                      amplitude.getInstance().logEvent(eventName + " upload failed");
-                 }
+                 },
+                 timeout: 30000 // sets timeout to 30 seconds
              }).done(function(msg) {
                  // Some message blah blah
              });
@@ -694,7 +695,8 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                      this.retry--;
                      amplitude.getInstance().logEvent("Audio upload failed");
                      if (this.retry == 0) amplitude.getInstance().logEvent("Audio upload retried 5 times and still failed");
-                }
+                },
+                timeout: 30000 // sets timeout to 30 seconds
             }).done(function(msg) {
                 // Some message blah blah
             });
