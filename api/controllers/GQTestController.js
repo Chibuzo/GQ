@@ -97,7 +97,9 @@ module.exports = {
     // when candidate clicks on take test from a job
     getTest: function(req, res) {
         var test_id = req.param('test_id');
-        var job_id = req.param('job_id');
+        var application_id = req.param('job_id');
+       
+        req.session.application_id = application_id;
 
         GQTestResult.find({
             test: test_id,
@@ -110,7 +112,6 @@ module.exports = {
                 });
             } else {
                 // load test
-                req.session.job_id = job_id;
                 return res.view('gqtest/gqtest', { test_id: test_id });
             }
         });
@@ -215,9 +216,11 @@ module.exports = {
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 // destroy stored test answers
                 // update application
-                if (req.session.job_id) {
-                    Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {
-                        req.session.job_id = null;
+                if (req.session.application_id) {
+                    Application.update({ id: req.session.application_id }, { status: 'Under Review' }).exec(function(err, app) {
+                        console.log(err)
+                        console.log(app)
+                        req.session.application_id = null;
                     });
                 }
 
@@ -225,7 +228,7 @@ module.exports = {
                 .then(function(resp) {
                     return res.json(200, { status: 'success', result: resp});
                 }).catch(function(err) {
-                    console.log(err)
+                    console.log(err);
                 });
             });
         });
@@ -440,6 +443,18 @@ module.exports = {
         }
     },
 
+    deleteResult: function(req, res) {
+        GQTestResult.destroy({ id: req.param('test_id') }).exec(function(err, test) {
+            try {
+                ProctorService.deleteProctorFiles(test[0].proctor);
+            } catch(err) {
+                console.log(err);
+            } finally {
+                return res.json(200, { status: 'success' });
+            }
+        });
+    },
+
     uploadProctorAudio: function(req, res) {
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
         var hr = process.hrtime();
@@ -451,27 +466,44 @@ module.exports = {
 
         // copy the uploaded audio to the public folder
         //const uploadedAud = path + '/' + filename;
-        const temp_aud = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + '/aud_' + hr[1] + '.wav';
-        fs.createReadStream(path).pipe(fs.createWriteStream(temp_aud));
+        try {
+            const temp_aud = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + '/aud_' + hr[1] + '.wav';
+            fs.createReadStream(path).pipe(fs.createWriteStream(temp_aud));
+        } catch(err) {
 
-        let proctorSessId = req.param('proctorSessId');
-        if (proctorSessId && proctorSessId != req.session.proctor) {
-            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-                location: 'GQTestController.uploadProctorAudio()',
-                filename: filename,
-                sessionProctor: req.session.proctor,
-                requestProctor: proctorSessId
-            });
+        }
+
+        // let proctorSessId = req.param('proctorSessId');
+        // if (proctorSessId && proctorSessId != req.session.proctor) {
+        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+        //         location: 'GQTestController.uploadProctorAudio()',
+        //         filename: filename,
+        //         sessionProctor: req.session.proctor,
+        //         requestProctor: proctorSessId
+        //     });
+        // }
+
+        // check source
+        var session_id;
+        var path = req.path.split('/')[1];
+        if (path == 'api') {
+            session_id = req.param('session_id');
+        } else {
+            session_id = req.session.proctor;
         }
 
         // save audio filename
         var data = {
             filename: filename,
             file_type: 'audio',
-            proctor: req.session.proctor
+            proctor: session_id
         };
-        ProctorRecord.create(data).exec(function() {});
-        return res.ok()
+        ProctorRecord.create(data).exec(function(err) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
+            }
+            return res.json(201, { status: 'success' });
+        });
     },
 
     uploadProctorPicture: function(req, res) {
@@ -486,26 +518,43 @@ module.exports = {
 
         // copy the uploaded photo to the public folder
         //const uploadedpic = path + '/' + filename;
-        const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
-        fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
+        try {
+            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
+            fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
+        } catch(err) {
 
-        let proctorSessId = req.param('proctorSessId');
-        if (proctorSessId && proctorSessId != req.session.proctor) {
-            AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-                location: 'GQTestController.uploadProctorPicture()',
-                filename: filename,
-                sessionProctor: req.session.proctor,
-                requestProctor: proctorSessId
-            });
+        }
+
+        // let proctorSessId = req.param('proctorSessId');
+        // if (proctorSessId && proctorSessId != req.session.proctor) {
+        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
+        //         location: 'GQTestController.uploadProctorPicture()',
+        //         filename: filename,
+        //         sessionProctor: req.session.proctor,
+        //         requestProctor: proctorSessId
+        //     });
+        // }
+
+        // check source
+        var session_id;
+        var path = req.path.split('/')[1];
+        if (path == 'api') {
+            session_id = req.param('session_id');
+        } else {
+            session_id = req.session.proctor;
         }
 
         // save photo filename
         var data = {
             filename: filename,
             file_type: 'photo',
-            proctor: req.session.proctor
+            proctor: session_id
         };
-        ProctorRecord.create(data).exec(function() {});
-        return res.ok();
+        ProctorRecord.create(data).exec(function(err) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
+            }
+            return res.json(201, { status: 'success' });
+        });
     }
 };

@@ -37,11 +37,11 @@
 
 	.image-tag {
 		position: absolute;
-		left: 0;
+		left: 10px;
 		bottom: 0;
 		color: white;
 		font-size: 20px;
-		margin-left: 5px;
+		margin-left: 10px;
 		margin-bottom: 5px;
 	}
 
@@ -149,8 +149,8 @@
 							<td>{{ user.percentage }}%</td>
 							<td>{{ user.rank }}</td>
 							<td class="text-center">{{ user.integrity_score }}</td>
-							<td>{{ user.status }}</td>
-							<td data-user_name="{{ user.fullname }}" class="opt-icons text-center">
+							<td class='proctor-status'>{{ user.status }}</td>
+							<td data-user_name="{{ user.fullname }}" class="opt-icons text-center" data-test-type="GQAptitude">
 								<div class="btn-group">
 									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 										Menu &nbsp;<span class="caret"></span>

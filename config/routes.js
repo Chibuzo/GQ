@@ -47,6 +47,8 @@ module.exports.routes = {
 
     'DELETE /applicant/test/:userId': 'ApplicantController.deleteTestScoreAndFiles',
 
+    'POST /test/deleteScore': 'ApplicantController.deleteTestScoreAndFiles',
+
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
     'GET /applicant/resume-user/:user_id': 'ResumeController.viewResumeByUser',
@@ -116,7 +118,9 @@ module.exports.routes = {
 
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 
-    'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
+    'GET /gqtest/deleteResult': 'GQTestController.deleteResult',
+
+    'GET /gqtest/gettest/:test_id/:job_id/:gqtest_id': 'GQTestController.getTest',
 
     'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
 
@@ -288,5 +292,14 @@ module.exports.routes = {
      * */
     'POST /api/v1/postjob': 'JobApiController.createJob',
 
-    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl'
+    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
+
+
+    'POST /api/v1/proctor/getsessionid': 'ProctorRecordController.startSession',
+
+    'POST /api/v1/proctor/uploadphoto': 'GQTestController.uploadProctorPicture',
+
+    'POST /api/v1/proctor/uploadaudio': 'GQTestController.uploadProctorAudio',
+
+    'POST /api/v1/proctor/saveproctordata': 'ProctorRecordController.saveEvidenceData'
 };
