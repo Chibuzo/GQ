@@ -120,7 +120,7 @@ module.exports.routes = {
 
     'GET /gqtest/deleteResult': 'GQTestController.deleteResult',
 
-    'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
+    'GET /gqtest/gettest/:test_id/:job_id/:gqtest_id': 'GQTestController.getTest',
 
     'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
 
@@ -295,7 +295,7 @@ module.exports.routes = {
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 
 
-    'GET /api/v1/proctor/getsessionid/:test_id': 'ProctorRecordController.startSession',
+    'POST /api/v1/proctor/getsessionid': 'ProctorRecordController.startSession',
 
     'POST /api/v1/proctor/uploadphoto': 'GQTestController.uploadProctorPicture',
 
