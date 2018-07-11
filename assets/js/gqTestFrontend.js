@@ -655,19 +655,20 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
             $.ajax({
                  type: "POST",
                  url: "/gqtest/uploadProctorPicture",
+                 retry: 10,
                  data: {
                      imgBase64: data64,
                      eventName: eventName,
                      proctorSessId: proctorSessId,
-                     retry: 5,
                  }, success: function(data) {
                      // Some success ish blah blah
                  }, error: function() {
                      if (this.retry > 0) {
+                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + retry);
                         $.ajax(this);
+                        this.retry--;
                         return;
                      }
-                     this.retry--;
                      amplitude.getInstance().logEvent(eventName + " upload failed");
                  },
                  timeout: 30000 // sets timeout to 30 seconds
@@ -681,18 +682,19 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
             $.ajax({
                 type: "POST",
                 url: "/gqtest/uploadProctorAudio",
+                retry: 10,
                 data: {
                     data: data64,
                     proctorSessId: proctorSessId,
-                    retry: 10
                 }, success: function(data){
                     // Some success ish blah blah
                 }, error: function() {
                     if (this.retry > 0) {
+                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + retry);
                         $.ajax(this);
+                        this.retry--;
                         return;
                      }
-                     this.retry--;
                      amplitude.getInstance().logEvent("Audio upload failed");
                      if (this.retry == 0) amplitude.getInstance().logEvent("Audio upload retried 5 times and still failed");
                 },

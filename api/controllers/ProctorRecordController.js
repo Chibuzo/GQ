@@ -12,13 +12,13 @@ module.exports = {
         var user_id;
         if (req.path.split('/')[1] == 'api') {
             if (_.isUndefined(req.param('user_id')) || isNaN(req.param('user_id'))) {
-                return res.json(500, { status: 'error', message: 'User ID must be numeric' });
+                return res.json(400, { status: 'error', message: 'User ID must be numeric' });
             } else {
                 user_id = req.param('user_id');
             }
 
             if (_.isUndefined(test_id) || isNaN(test_id)) {
-                return res.json(500, { status: 'error', message: 'Test ID must be numeric' });
+                return res.json(400, { status: 'error', message: 'Test ID must be numeric' });
             }
         } else {
             user_id = req.session.userId;
@@ -27,7 +27,7 @@ module.exports = {
         // Create a new proctor session for each test.
         return ProctorSession.create({ test_id: test_id, user_id: user_id }).exec(function(err, sess) {
             if (err) {
-                return res.json(500, { status: 'error', message: err });
+                return res.json(400, { status: 'error', message: 'Invalid input data' });
                 //return res.serverError(err);
             }
 
