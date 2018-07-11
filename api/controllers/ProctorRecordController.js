@@ -9,8 +9,23 @@ module.exports = {
     startSession: function(req, res) {
         var test_id = req.param('test_id');
 
+        var user_id;
+        if (req.path.split('/')[1] == 'api') {
+            if (_.isUndefined(req.param('user_id')) || isNaN(req.param('user_id'))) {
+                return res.json(500, { status: 'error', message: 'User ID must be numeric' });
+            } else {
+                user_id = req.param('user_id');
+            }
+
+            if (_.isUndefined(test_id) || isNaN(test_id)) {
+                return res.json(500, { status: 'error', message: 'Test ID must be numeric' });
+            }
+        } else {
+            user_id = req.session.userId;
+        }     
+
         // Create a new proctor session for each test.
-        return ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
+        return ProctorSession.create({ test_id: test_id, user_id: user_id }).exec(function(err, sess) {
             if (err) {
                 return res.json(500, { status: 'error', message: err });
                 //return res.serverError(err);
