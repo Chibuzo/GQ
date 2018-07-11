@@ -196,25 +196,29 @@ module.exports = {
 
     saveGeneralTestScore: function(candidate) {
         return new Promise(function(resolve, reject) {
-            GQTestResult.find({
-                candidate: candidate,
-                test: [1, 2, 3]
-            }).sum('score').groupBy('candidate').exec(function (err, scores) {
-                var data = {
-                    score: scores[0].score,
-                    user: candidate
-                };
-                GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
-                    if (result.length > 0) {
-                        GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function (err, res) {
-                            // handle errors if you like
-                            return resolve(true); // 13/02/2018
-                        });
-                    } else {
-                        GQAptitudeTestResult.create(data).exec(function (e, nc) {
-                            return resolve(true);
-                        });
-                    }
+            GQTestResult.find({ candidate: candidate }).exec(function(err, tests) {
+                if (tests.length < 3) return resolve(true);
+
+                GQTestResult.find({
+                    candidate: candidate,
+                    test: [1, 2, 3]
+                }).sum('score').groupBy('candidate').exec(function (err, scores) {
+                    var data = {
+                        score: scores[0].score,
+                        user: candidate
+                    };
+                    GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
+                        if (result.length > 0) {
+                            GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function (err, res) {
+                                // handle errors if you like
+                                return resolve(true); // 13/02/2018
+                            });
+                        } else {
+                            GQAptitudeTestResult.create(data).exec(function (e, nc) {
+                                return resolve(true);
+                            });
+                        }
+                    });
                 });
             });
         });

@@ -84,7 +84,7 @@ module.exports = {
             return res.serverError(err);
         }
 
-        if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
+        if (q('job_id') && _.isNumber(q('job_id'))) {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
                     if (req.session.admin) {
@@ -332,7 +332,6 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
-                    console.log('Entered')
                     AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
                         jobId: job_id,
                         resumeStatus: resume[0].status,
@@ -584,7 +583,7 @@ module.exports = {
         });
     },
 
-    //TODO: Make this function capable of deleting more than one job at a time
+
     deleteJob: function (req, res) {
         var id = req.param('id');
         if (req.session.coy_id || req.session.admin) {
@@ -608,7 +607,6 @@ module.exports = {
 
 
     viewScrapedJobs: function(req, res) {
-        //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'], status: 'Active' }).sort('company_name asc').exec(function(err, jobs) {
             return res.view('admin/scrapedJobs', { jobs: jobs });
         });

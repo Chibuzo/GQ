@@ -6435,6 +6435,7 @@ module.exports = {
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
+            gqtestid: req.param('gqtest_id'),
             returnURL: 'https://getqualified.work/test/show-result/' + req.param('test_id'),
             dev: false,
             debug: false,
