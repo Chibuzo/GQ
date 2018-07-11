@@ -209,7 +209,7 @@ module.exports = {
 
     fetchAll: function() {
         return new Promise(function(resolve) {
-            User.find({user_type: 'Applicant'}).exec(function (err, applicants) {
+            User.find({user_type: 'Applicant'}).limit(500).exec(function (err, applicants) {
                 return resolve(applicants);
             });
         });

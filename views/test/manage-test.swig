@@ -70,7 +70,7 @@ $(document).ready(function() {
 		let cat_id = $("select[name=test_category] option:selected").val();
 		$.get('/test/getTestList/' + cat_id, function(d) {
 			if (d.status.trim() == 'success') {
-				var opt = "<option value=''></option";
+				var opt = "<option value=''></option>";
 				d.testlist.forEach(function(test) {
 					opt += "<option value='" + test.id + "'>" + test.test_name + "</option>";
 				});

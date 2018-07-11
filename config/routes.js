@@ -295,11 +295,35 @@ module.exports.routes = {
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 
 
-    'POST /api/v1/proctor/getsessionid': 'ProctorRecordController.startSession',
+    'POST /api/v1/proctor/getsessionid': { 
+        controller: 'ProctorRecordController', action: 'startSession', 
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
 
-    'POST /api/v1/proctor/uploadphoto': 'GQTestController.uploadProctorPicture',
+    'POST /api/v1/proctor/uploadphoto': {
+        controller: 'GQTestController', action: 'uploadProctorPicture',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
 
-    'POST /api/v1/proctor/uploadaudio': 'GQTestController.uploadProctorAudio',
+    'POST /api/v1/proctor/uploadaudio': {
+        controller: 'GQTestController', action: 'uploadProctorAudio',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
 
-    'POST /api/v1/proctor/saveproctordata': 'ProctorRecordController.saveEvidenceData'
+    'POST /api/v1/proctor/saveproctordata': {
+        controller: 'ProctorRecordController', action: 'saveEvidenceData',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    }
 };

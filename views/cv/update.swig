@@ -539,7 +539,7 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=21"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=23"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>

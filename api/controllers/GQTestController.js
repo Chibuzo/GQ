@@ -557,7 +557,7 @@ module.exports = {
         };
         ProctorRecord.create(data).exec(function(err) {
             if (err) {
-                return res.json(500, { status: 'error', message: err });
+                return res.json(404, { status: 'error', message: err });
             }
             return res.json(201, { status: 'success' });
         });
