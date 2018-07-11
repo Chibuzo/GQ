@@ -197,7 +197,7 @@ module.exports = {
     saveGeneralTestScore: function(candidate) {
         return new Promise(function(resolve, reject) {
             GQTestResult.find({ candidate: candidate }).exec(function(err, tests) {
-                if (tests.length < 3) return resolve(true);
+                if (tests.length < 3) return resolve('On'); // still taking test
 
                 GQTestResult.find({
                     candidate: candidate,

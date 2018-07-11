@@ -368,32 +368,30 @@ module.exports = {
             // save or update candidate's test score
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
-
+                    var state = resp === true ? 'Done' : 'On';
+                    if (test_id === 3) {
+                        // update candidate's resume
+                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                            if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                                Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                            }
+                        });
+    
+                        // CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                        //     return res.json(200, { status: 'success', result: result, state: state });
+                        // }).catch(function(err) {
+                        //     console.log(err);
+                        //     return res.serverError(err);
+                        // });
+                    }
+                    return res.json(200, { status: 'success', state: state });
                 }).catch(function(err) {
                     console.log(err);
-                    //return res.serverError(err);
+                    return res.json(200, { status: 'error', state: state });
                 });
-                if (test_id === 3) {
-                    // update candidate's resume
-                    Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                        if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                            Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                        }
-                    });
-
-                    CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                        return res.json(200, { status: 'success', result: result });
-                    }).catch(function(err) {
-                        console.log(err);
-                        return res.serverError(err);
-                    });
-                } else {
-                    return res.json(200, { status: 'success'});
-                }
-
             }).catch(function(err) {
                 console.error(err);
-                return res.serverError(err);
+                //return res.serverError(err);
             });
         });
     },
@@ -498,12 +496,19 @@ module.exports = {
             file_type: 'audio',
             proctor: session_id
         };
-        ProctorRecord.create(data).exec(function(err) {
-            if (err) {
-                return res.json(500, { status: 'error', message: err });
-            }
+        console.log(data)
+        try {
+            ProctorRecord.create(data).exec(function(err) {
+                if (err) {
+                    return res.json(500, { status: 'error', message: err });
+                }
+            });
+        } catch(e) {
+            console.log(e)
+            return res.json(500, { status: 'error', message: e });
+        } finally {
             return res.json(201, { status: 'success' });
-        });
+        }
     },
 
     uploadProctorPicture: function(req, res) {
