@@ -375,7 +375,7 @@
 												<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
 												<p class="text-left"><br>
 													<ol class="text-left">
-														<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
+														<li>All tests must be taken preferably on a laptop or desktop computer equipped with a webcam. A smart phone can be used but it should hava a 4G or WiFi connection.</li>
 														<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
 														<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
 														<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
