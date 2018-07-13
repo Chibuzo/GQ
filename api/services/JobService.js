@@ -113,21 +113,20 @@ module.exports = {
                         // catch GQ posted jobs
                         //console.log(job)
                         if (job.poster && job.poster.id == 0) {
-                            console.log('Aye')
                             job.admin_post = 'GQ';
                         }
 
-                        if (Date.parse(job.closing_date) <= Date.parse(today)) {
+                       // if (Date.parse(job.closing_date) <= Date.parse(today)) {
                             SelectedCandidate.count({job_id: job.id}).populate('candidate').exec(function (err, selected_candidates) {
                                 job.shortlisted = selected_candidates;
                                 _jobs.push(job);
                                 cb();
                             });
-                        } else {
-                            job.shortlisted = false;
-                            _jobs.push(job);
-                            cb();
-                        }
+                        // } else {
+                        //     job.shortlisted = false;
+                        //     _jobs.push(job);
+                        //     cb();
+                        // }
                     });
                 }, function (err) {
                     return resolve(_jobs);
