@@ -113,7 +113,7 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        // Get Overall/average Integrity score
+                        if (!tests[0]) cb();
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
                         })
@@ -142,19 +142,26 @@ module.exports = {
                             proctorId: _.get(tests, '[2].proctor.id', -1)
                         };
 
-                        candidates.push({
-                            id: apt_result.user,
-                            fullname: tests[0].candidate.fullname,
-                            generalAbilityTest: generalAbilityTest,
-                            verbalTest: verbalTest,
-                            mathsTest: mathsTest,
-                            test_date: apt_result.createdAt,
-                            percentage: ((apt_result.score / 60) * 100).toFixed(1),
-                            rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: integrityScore,
-                            status: apt_result.status
-                        });
-                        cb();
+                        try {
+                            candidates.push({
+                                id: apt_result.user,
+                                fullname: tests[0].candidate.fullname,
+                                generalAbilityTest: generalAbilityTest,
+                                verbalTest: verbalTest,
+                                mathsTest: mathsTest,
+                                test_date: apt_result.createdAt,
+                                percentage: ((apt_result.score / 60) * 100).toFixed(1),
+                                rank: apt_scores.indexOf(apt_result.score) + 1,
+                                integrity_score: integrityScore,
+                                status: apt_result.status
+                            });
+                            cb();
+                        } catch (err) {
+                            console.log(err);
+                            console.log(tests)
+                        } finally {
+                            //cb();
+                        }
                     });
                 }, function(err) {
                     if (err) return reject(err);

@@ -366,35 +366,39 @@ module.exports = {
             });
 
             // save or update candidate's test score
-            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-                if (test_id === 3) {
-                    CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+            if (req.session.user_type == 'Applicant') {
+                CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                    if (test_id === 3) {
+                        CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
 
-                        // update candidate's resume
-                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                            if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                                Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                            }
-                        });
+                            // update candidate's resume
+                            Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                                if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                                    Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                                }
+                            });
 
-                        CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                            return res.json(200, { status: 'success', result: result });
+                            CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                                return res.json(200, { status: 'success', result: result });
+                            }).catch(function(err) {
+                                console.log(err);
+                                return res.serverError(err);
+                            });
                         }).catch(function(err) {
                             console.log(err);
                             return res.serverError(err);
                         });
-                    }).catch(function(err) {
-                        console.log(err);
-                        return res.serverError(err);
-                    });
-                } else {
-                    return res.json(200, { status: 'success'});
-                }
+                    } else {
+                        return res.json(200, { status: 'success'});
+                    }
 
-            }).catch(function(err) {
-                console.error(err);
-                return res.serverError(err);
-            });
+                }).catch(function(err) {
+                    console.error(err);
+                    return res.serverError(err);
+                });
+            } else {
+                return res,json(404, { status: 'error' });
+            }
         });
     },
 
@@ -500,7 +504,7 @@ module.exports = {
         };
         ProctorRecord.create(data).exec(function(err) {
             if (err) {
-                return res.json(500, { status: 'error', message: err });
+                return res.json(404, { status: 'error', message: err });
             }
             return res.json(201, { status: 'success' });
         });
