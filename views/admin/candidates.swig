@@ -237,6 +237,12 @@ $(document).ready(function() {
 	});
 });
 
+$(document).on('focusin', function(e) {
+    if ($(e.target).closest(".mce-window").length) {
+        e.stopImmediatePropagation();
+    }
+});
+
 function controlActionBtn() {
 	if ($(".user-checkbox:checked").size() > 0) {
 		$(".action-btn").prop("disabled", false);
