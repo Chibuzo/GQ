@@ -1,3 +1,24 @@
+$(document).ready(function() {
+    var obj = JSON.parse(localStorage.getItem('video_check'));
+    can_upload = new Date(obj.tried_video_update);
+    if (can_upload) {
+        console.log(can_upload)
+        var __now = new Date();
+        if (can_upload.getTime() + (30 * 60 * 1000) > __now.getTime()) {
+            $('.select-file-button').prop('disabled', true);
+            console.log(new Date(can_upload + (30 * 60 * 1000)))
+            var rem = Math.abs(can_upload.getTime() + (30 * 60 * 1000) - __now);
+            console.log('Raw new: ' + rem);
+            var ndate = new Date(rem);
+            console.log('Date Object: ' + ndate);
+            $(".video-alert").text("You can not re upload a video now. Please try again in " + ndate.getMinutes() + " minutes.").removeClass('hidden');
+        } else {
+            $(".select-file-button").prop('disabled', false);
+            $(".video-alert").text("").addClass('hidden');
+        }
+    }
+});
+
 var TOKEN;
 
 $.ajax({
@@ -370,12 +391,16 @@ MediaUploader.prototype.buildUrl_ = function (id, params, baseUrl) {
 
 function defineRequest() {
     // display video infor
-    $("#vid-info").removeClass('hidden');
+    $(".vid-info").removeClass('hidden');
 
     // let's see if there's an old video and then delete it, we badt like that
     if ($("#video_id").text().length > 3) {
         $.post('/deleteYoutubeVideo', { video_id: $("#video_id").text() });
     }
+
+    // register the time of this event
+    var obj = { tried_video_update: new Date().getTime() };
+    localStorage.setItem('video_check', JSON.stringify(obj));
 
     var metadata = createResource({
         'snippet.categoryId': '22',
@@ -429,6 +454,10 @@ function defineRequest() {
         }.bind(this),
         onProgress: function (data) {
             var currentTime = Date.now();
+            var perc = Math.round((data.loaded / data.total) * 100);
+            $('#progressBar span.sr-only').text(perc + '%');
+            $('#progressBar').css('width', perc + '%');
+           // $('.progress-bar').css('width', integrityScore + "%");
             //console.log('Progress: ' + data.loaded + ' bytes loaded out of ' + data.total);
             var totalBytes = data.total;
         }.bind(this),

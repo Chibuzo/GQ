@@ -664,7 +664,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                      // Some success ish blah blah
                  }, error: function() {
                      if (this.retry > 0) {
-                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + retry);
+                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + this.retry);
                         $.ajax(this);
                         this.retry--;
                         return;
@@ -690,7 +690,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                     // Some success ish blah blah
                 }, error: function() {
                     if (this.retry > 0) {
-                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + retry);
+                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + this.retry);
                         $.ajax(this);
                         this.retry--;
                         return;

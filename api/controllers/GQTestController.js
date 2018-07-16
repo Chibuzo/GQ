@@ -256,7 +256,7 @@ module.exports = {
                     return q.id == userAnswer.quest_id;
                 });
 
-                if (!question) {
+                if (!question) { // candidate didn't answer
                     console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
                     return;
                 }
@@ -356,7 +356,7 @@ module.exports = {
 
                 if (!question) {
                     // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
-                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                    console.error(`Couldn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
                     return;
                 }
 
@@ -488,7 +488,7 @@ module.exports = {
         // }
 
         // check source
-        var session_id;
+        var session_id = false;
         var path = req.path.split('/')[1];
         if (path == 'api') {
             session_id = req.param('session_id');
@@ -497,17 +497,19 @@ module.exports = {
         }
 
         // save audio filename
-        var data = {
-            filename: filename,
-            file_type: 'audio',
-            proctor: session_id
-        };
-        ProctorRecord.create(data).exec(function(err) {
-            if (err) {
-                return res.json(404, { status: 'error', message: err });
-            }
-            return res.json(201, { status: 'success' });
-        });
+        if (session_id) {
+            var data = {
+                filename: filename,
+                file_type: 'audio',
+                proctor: session_id
+            };
+            ProctorRecord.create(data).then(function() {
+                return res.json(201, { status: 'success' });
+            }).catch(function(err) {
+                sails.log.error(err);
+                return res.json(400, { status: 'error', message: err });
+            });
+        }
     },
 
     uploadProctorPicture: function(req, res) {
@@ -540,7 +542,7 @@ module.exports = {
         // }
 
         // check source
-        var session_id;
+        var session_id = false;
         var path = req.path.split('/')[1];
         if (path == 'api') {
             session_id = req.param('session_id');
@@ -549,16 +551,18 @@ module.exports = {
         }
 
         // save photo filename
-        var data = {
-            filename: filename,
-            file_type: 'photo',
-            proctor: session_id
-        };
-        ProctorRecord.create(data).exec(function(err) {
-            if (err) {
-                return res.json(404, { status: 'error', message: err });
-            }
-            return res.json(201, { status: 'success' });
-        });
+        if (session_id) {
+            var data = {
+                filename: filename,
+                file_type: 'photo',
+                proctor: session_id
+            };
+            ProctorRecord.create(data).then(function() {
+                return res.json(201, { status: 'success' });
+            }).catch(function(err) {
+                sails.log.error(err);
+                return res.json(400, { status: 'error', message: err });
+            });
+        }
     }
 };

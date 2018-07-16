@@ -434,9 +434,17 @@
 									</div>
 									{% if resume.video_status == true %}
 										<div class="col-md-5">
-											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<br>
+											<div class="alert alert-warning hidden video-alert"></div>
+											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
+												<div class="progress" style="margin: 10px 5px;">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">0%</span>
+													</div>
+												</div>
 											</div>
 											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
 										</div>
@@ -444,9 +452,17 @@
 									{% else %}
 										<div class="col-md-5">
 											<div class="empty-vid">
+												<div class="alert alert-warning hidden">Notice: You can not upload a video at this moment. Please check back in a fews hours. Thank you.</div>
+												<div class="alert alert-warning hidden video-alert"></div>
+												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
 												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
+												 <div class="progress" style="margin: 10px 5px;">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">0%</span>
+													</div>
+												</div>
 												<ul class="text-left">
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 3 minutes</li>
@@ -455,7 +471,6 @@
 											</div>
 										</div>
 									{% endif %}
-									<div class="alert alert-info hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 									<input id="select-file" type="file" style="display:none">
 								</div>
 							</div>
@@ -746,6 +761,6 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="/js/youtubeUpload.js?v=2"></script>
+	<script src="/js/youtubeUpload.js"></script>
 
 {% endblock %}

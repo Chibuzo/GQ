@@ -92,7 +92,7 @@ module.exports = {
             saveAs: function (file, cb) {
                 if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
                     //return res.badRequest('Unsupported photo format.');
-                    return cb(01);
+                    return cb(new Error('01'));
                 }
                 var ext = file.filename.split('.').pop();
                 filename = hr[1] + '_photo.' + ext;
@@ -100,11 +100,15 @@ module.exports = {
             },
             maxBytes: 2 * 1024 * 1024
         },
-        function (err) {
-            if (err == 01) {
+        function (err, upfile) {
+            if (err == '01') {
                 return res.view('misc/error-page', { error: 'Unsupported photo format. Must be a JPG or PNG file', url: '/applicant/resume-page' })
             } else if (err) {
                 return res.view('misc/error-page', { error: 'Photo file size must not be more than 2MB', url: '/applicant/resume-page' })
+            }
+            // this is weird but let's check if a file was uploaded
+            if (!upfile) {
+                return res.redirect('/applicant/resume-page#photo');
             }
             // copy the uploaded photo to the public folder
             const fs = require('fs');
@@ -242,7 +246,7 @@ module.exports = {
                     break;
 
                 case 'novideos':
-                        ApplicantService.fetchResumeStatusByQuery({video_status: false}).then(function(incomplete) {
+                        ApplicantService.fetchResumeStatusByQuery({video_status: false, test_status: true}).then(function(incomplete) {
                             return res.view('admin/candidates-stat', {
                                 statistics: stats,
                                 users: incomplete,
