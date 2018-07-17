@@ -179,7 +179,7 @@ module.exports = {
                 Resume.count({photo_status: true}),
                 Resume.count({photo_status: false}),
                 Resume.count({video_status: true}),
-                Resume.count({video_status: false}),
+                Resume.count({video_status: false, test_status: true}),
                 fetchNoTestsApplicants(),
                 fetchSomeTestsApplicants(),
                 fetchCompleteTestsApplicants(),
@@ -284,12 +284,12 @@ module.exports = {
             data.push(state);
         }
         
-        // if search button is click and no field was set
-        if (data.length == 0) {
-            return reject('Phew!!! Redirect to same page.');
-        } else {
-            sql += where;
-            return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
+            // if search button is click and no field was set
+            if (data.length == 0) {
+                return reject('Phew!!! Redirect to same page.');
+            } else {
+                sql += where;
                 Resume.query(sql, data, function(err, result) {
                     var users = [];
                     result.forEach(function(user) {
@@ -297,8 +297,8 @@ module.exports = {
                     });
                     return resolve(users);
                 });
-            });
-        }
+            }
+        });
     },
 
 

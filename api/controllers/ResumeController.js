@@ -86,13 +86,12 @@ module.exports = {
                 Education.update({ id: q('inst_id')[i] }, education).exec(function() {});
                 sections.education = true;
             } else {
-                Education.findOrCreate({
-                    institution: q('institution')[i],
-                    honour: q('honour')[i],
-                    programme: q('programme')[i],
-                    resume: q('resume_id')
-                }, education).exec(function () {});
-                sections.education = true;
+                try {
+                    Education.create(education).exec(function () {});
+                    sections.education = true;
+                } catch(err) {
+                    console.log(err);
+                }
             }
         }
 
@@ -132,8 +131,11 @@ module.exports = {
             if (q('employment_id') && !_.isUndefined(q('employment_id')[i]) && q('employment_id')[i] > 0) {
                 Employment.update({ id: q('employment_id')[i] }, employment).exec(function() {});
             } else {
-                Employment.findOrCreate({ company: q('company'), role: q('job_title'), resume: q('resume_id') }, employment).exec(function() {});
-                //sections.employment = true;
+                try {
+                    Employment.create(employment).exec(function() {});
+                } catch(err) {
+                    console.log(err);
+                }
             }
         }
 
@@ -166,7 +168,7 @@ module.exports = {
         var data = {
             fullname: q('fname') + ' ' + q('lname'),
             gender: q('gender'),
-            dob: new Date(Date.parse(q('dob'))).toISOString(),
+            dob: q('dob') ? new Date(Date.parse(q('dob'))).toISOString() : new Date().toISOString(),
             phone: q('phone'),
             country: q('country'),
             r_state: q('state'),
@@ -174,7 +176,7 @@ module.exports = {
             address: q('address'),
             introduction: q('introduction'),
             employment_status: q('employment_status'),
-            available_date: new Date(Date.parse(q('available_date'))).toISOString(),
+            available_date: q('available_date') ? new Date(Date.parse(q('available_date'))).toISOString() : new Date().toISOString(),
             current_salary: q('current_salary') ? q('current_salary') : 0.0,
             expected_salary: q('expected_salary') ? q('expected_salary') : 0.0,
             profile_status: true,
