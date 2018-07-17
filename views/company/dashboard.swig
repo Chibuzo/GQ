@@ -55,7 +55,6 @@
 
 	<div class="col-xs-12">
 		<div class="row">
-
 			<div class="col-md-4">
 				<div class="widget-box">
 					<div class="col-xs-6">
@@ -119,59 +118,110 @@
 							</div>
 						</div>
 						<div class="content table-responsive table-full-width">
-							<table class="table table-striped tablebordered">
-								<thead>
-								<tr>
-									<th>Date Added</th>
-									<th>Job Title</th>
-									<th>Job Level</th>
-									<th>Views</th>
-									<th>Applied</th>
-									<th>Shortlisted</th>
-									<th>Posted By</th>
-									<th><i class="fa fa-calendar"></i> Closing Date</th>
-									<th style="width: 170px">Action</th>
-								</tr>
-								</thead>
-								<tbody>
-								{% for job in jobs %}
-									{% set applications = job.applications.length %}
-									<tr id="{{ job.id }}">
-										<td>{{ job.createdAt | date('d-m-Y') }}</td>
-										<td>{{ job.job_title }}</td>
-										<td>{{ job.job_level }}</td>
-										<td>{{ job.view_count }}</td>
-										<td>{{ applications }}</td>
-		                                {% if job.shortlisted == false %}
-		                                    <td> - </td>
-		                                {% else %}
-		                                    <td><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
-		                                {% endif %}
-										{% if job.poster.id == 0 %}
-											<td>{{ job.admin_post }}</td>
-										{% else %}	
-											<td>{{ job.poster.fullname }}</td>
-										{% endif %}	
-										<td>{{ job.closing_date | date('d-m-Y') }}</td>
-										<td class="opt-icons text-center">
-											<div class="button-group" role="group">
-												<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
-												{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
-												<div class="btn-group">
-													<a href="" class="btn btn-secondary btn-xs btn-fill dropdown-toggle" rel="tooltip" title="Add Candidates via CSV Upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o fa-lg"></i></a>
-													<ul class="dropdown-menu dropdown-menu-right">
-														<li><a href="" class="upload-csv"><i class="fa fa-upload fa-fw"></i> Upload CSV</a></li>
-														<li><a href="/downloadsamplecsv" class="reject-test"><i class="fa fa-download fa-fw"></i>Download Sample CSV</a></li>
-													</ul>
-												</div>
-												<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
-												<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
-											</div>
-										</td>
-									</tr>
-								{% endfor %}
-								</tbody>
-							</table>
+							<ul class="nav nav-tabs">
+								<li class="active"><a href="#active_jobs" data-toggle="tab">Active Jobs</a></li>
+								<li><a href="#archive" data-toggle="tab">Archived Jobs</a></li>
+							</ul>
+							<div class="tab-content">
+
+								<div class="tab-pane in fade active" id="active_jobs">
+									<table class="table table-striped">
+										<thead>
+										<tr>
+											<th>Date Added</th>
+											<th class="text-left">Job Title</th>
+											<th>Job Level</th>
+											<th>Views</th>
+											<th>Applied</th>
+											<th>Shortlisted</th>
+											<th class="text-left">Posted By</th>
+											<th><i class="fa fa-calendar"></i> Closing Date</th>
+											<th style="width: 170px">Action</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for job in jobs %}
+											{% set applications = job.applications.length %}
+											<tr id="{{ job.id }}">
+												<td>{{ job.createdAt | date('d-m-Y') }}</td>
+												<td class="text-left">{{ job.job_title }}</td>
+												<td>{{ job.job_level }}</td>
+												<td>{{ job.view_count }}</td>
+												<td>{{ applications }}</td>
+												{% if job.shortlisted == false %}
+													<td> - </td>
+												{% else %}
+													<td><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>
+												{% endif %}
+												{% if job.poster.id == 0 %}
+													<td class="text-left">{{ job.admin_post }}</td>
+												{% else %}	
+													<td class="text-left">{{ job.poster.fullname }}</td>
+												{% endif %}	
+												<td>{{ job.closing_date | date('d-m-Y') }}</td>
+												<td class="opt-icons text-center">
+													<div class="button-group" role="group">
+														<a href="/job/editjob/{{ job.id }}" class="edit-job btn btn-secondary btn-xs btn-fill" rel="tooltip" title="Edit Job"><i class="fa fa-pencil fa-lg"></i></a>
+														{#<a href="#manageTestModal" data-toggle="modal" class="view-tests" rel="tooltip" title="Manage Tests"><i class="fa fa-book fa-lg"></i></a>#}
+														<div class="btn-group">
+															<a href="" class="btn btn-secondary btn-xs btn-fill dropdown-toggle" rel="tooltip" title="Add Candidates via CSV Upload" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-file-text-o fa-lg"></i></a>
+															<ul class="dropdown-menu dropdown-menu-right">
+																<li><a href="" class="upload-csv"><i class="fa fa-upload fa-fw"></i> Upload CSV</a></li>
+																<li><a href="/downloadsamplecsv" class="reject-test"><i class="fa fa-download fa-fw"></i>Download Sample CSV</a></li>
+															</ul>
+														</div>
+														<a href="/job/candidates/{{ job.id }}" class="hidden btn btn-secondary btn-xs btn-fill" rel="tooltip" title="View Candidates"><i class="fa fa-users fa-lg"></i></a>
+														<a href="" class="del-job btn btn-secondary btn-xs btn-fill btn-danger" rel="tooltip" title="Delete Job"><i class="fa fa-trash-o fa-lg"></i></a>
+													</div>
+												</td>
+											</tr>
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
+
+								<div class="tab-pane fade" id="archive">
+									<table class="table table-striped">
+										<thead>
+										<tr>
+											<th>Date Added</th>
+											<th class="text-left">Job Title</th>
+											<th>Job Level</th>
+											<th>Views</th>
+											<th>Applied</th>
+											<th>Shortlisted</th>
+											<th class="text-left">Posted By</th>
+											<th><i class="fa fa-calendar"></i> Closing Date</th>
+										</tr>
+										</thead>
+										<tbody>
+										{% for job in archived_jobs %}
+											{% set applications = job.applications.length %}
+											<tr id="{{ job.id }}">
+												<td>{{ job.createdAt | date('d-m-Y') }}</td>
+												<td class="text-left">{{ job.job_title }}</td>
+												<td>{{ job.job_level }}</td>
+												<td>{{ job.view_count }}</td>
+												<td>{{ applications }}</td>
+												{% if job.shortlisted == false %}
+													<td> - </td>
+												{% else %}
+													{#<td><a href="/job/view-shortlisted/{{ job.id }}">{{ job.shortlisted }}</a></td>#}
+													<td>{{ job.shortlisted }}</td>
+												{% endif %}
+												{% if job.poster.id == 0 %}
+													<td class="text-left">{{ job.admin_post }}</td>
+												{% else %}	
+													<td class="text-left">{{ job.poster.fullname }}</td>
+												{% endif %}	
+												<td>{{ job.closing_date | date('d-m-Y') }}</td>
+											</tr>
+										{% endfor %}
+										</tbody>
+									</table>
+								</div>
+
+							</div>		
 						</div>
 					</div>
 				</div>

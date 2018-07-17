@@ -274,13 +274,17 @@ function sendAnswers(proctorFeedback) {
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
         proctorSessId: proctorSessId
-    }, function (d) {
+    }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
                 loadNextTest: loadNextTest,
                 aptitudeTest: aptitudeTest
             });
 
+            if (d.state && d.state.trim() == 'Done') { // when a candidate retook a section after completing the entire aptitude test
+                loadNextTest = false;
+                aptitudeTest = true;
+            }
             if (loadNextTest) {
                 //TODO Call a function that does this
                 $(".load-test").click();
@@ -664,7 +668,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                      // Some success ish blah blah
                  }, error: function() {
                      if (this.retry > 0) {
-                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + retry);
+                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + this.retry);
                         $.ajax(this);
                         this.retry--;
                         return;
@@ -690,7 +694,7 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                     // Some success ish blah blah
                 }, error: function() {
                     if (this.retry > 0) {
-                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + retry);
+                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + this.retry);
                         $.ajax(this);
                         this.retry--;
                         return;

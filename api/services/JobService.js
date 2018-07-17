@@ -81,21 +81,22 @@ module.exports = {
 
 
     fetchCompanyJobs: function (coy_id, job_status = 'open') {
-        var jobstatus;
+        var criteria = { company: coy_id };
         var today = new Date();
         if (job_status == 'open') {
-            jobstatus = { '>=': today };
+            criteria.closing_date = { '>=': today };
+            criteria.status = 'Active';
         } else if (job_status == 'all') {
-            jobstatus = { '>': new Date('2017-05-05') }; // this is a stale date
+            criteria.closing_date = { '>': new Date('2017-05-05') }; // this is a stale date
+        } else if (job_status == 'closed') {
+            criteria.closing_date = { '<': today };
+            criteria.status = 'Active';
         } else {
-            jobstatus = { '<': today };
+            criteria.closing_date = { '<': today };
+            criteria.status = 'Inactive';
         }
         return new Promise(function (resolve, reject) {
-            Job.find({
-                company: coy_id,
-                status: 'Active',
-                closing_date: jobstatus
-            }).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
+            Job.find(criteria).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
                 if (err) {
                     reject(err);
                     return;
@@ -116,17 +117,17 @@ module.exports = {
                             job.admin_post = 'GQ';
                         }
 
-                       // if (Date.parse(job.closing_date) <= Date.parse(today)) {
+                        if (Date.parse(job.closing_date) <= Date.parse(today)) {
                             SelectedCandidate.count({job_id: job.id}).populate('candidate').exec(function (err, selected_candidates) {
                                 job.shortlisted = selected_candidates;
                                 _jobs.push(job);
                                 cb();
                             });
-                        // } else {
-                        //     job.shortlisted = false;
-                        //     _jobs.push(job);
-                        //     cb();
-                        // }
+                        } else {
+                            job.shortlisted = false;
+                            _jobs.push(job);
+                            cb();
+                        }
                     });
                 }, function (err) {
                     return resolve(_jobs);

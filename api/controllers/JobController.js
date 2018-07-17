@@ -84,7 +84,7 @@ module.exports = {
             return res.serverError(err);
         }
 
-        if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
+        if (q('job_id') && _.isNumber(q('job_id'))) {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
                     if (req.session.admin) {
@@ -376,7 +376,6 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
-                    console.log('Entered')
                     AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
                         jobId: job_id,
                         resumeStatus: resume[0].status,
@@ -460,7 +459,6 @@ module.exports = {
 		if (req.session.user_type !== 'admin') {
 			return res.forbidden();
 		}
-
 		const job_id =  req.param('job_id');
 
 		if (!job_id) {
@@ -469,7 +467,7 @@ module.exports = {
 
         let selected_candidates;
 
-		return Job.findOne({ id: job_id, status: 'Active' }).populate('company')
+		return Job.findOne({ id: job_id }).populate('company')
 			.then(job => {
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
@@ -589,6 +587,7 @@ module.exports = {
                                         results: all_text_result,
                                         selected_candidates: selected_candidates_test_result,
                                         job_id: job_id,
+                                        job: job,
                                         folder: folder
                                     });
                                 }).catch(function (err) {
@@ -599,6 +598,7 @@ module.exports = {
                                     applicants: applications,
                                     results: all_text_result,
                                     job_id: job_id,
+                                    job: job,
                                     folder: folder
                                 });
                             }
@@ -628,7 +628,7 @@ module.exports = {
         });
     },
 
-    //TODO: Make this function capable of deleting more than one job at a time
+
     deleteJob: function (req, res) {
         var id = req.param('id');
         if (req.session.coy_id || req.session.admin) {
@@ -652,7 +652,6 @@ module.exports = {
 
 
     viewScrapedJobs: function(req, res) {
-        //Job.destroy({ source: ['Jobberman', 'Ngcareers'] }).exec(function() {});
         Job.find({ source: ['Jobberman', 'Ngcareers'], status: 'Active' }).sort('company_name asc').exec(function(err, jobs) {
             return res.view('admin/scrapedJobs', { jobs: jobs });
         });
@@ -698,6 +697,12 @@ module.exports = {
         var backdate = today.setDate(today.getDate() - 2);
         Job.update({ id: req.param('job_id') }, { closing_date: new Date(backdate).toISOString() }).exec(function(err, job) {
             return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+        });
+    },
+
+    archiveJob: function(req, res) {
+        Job.update({ id: req.param('job_id') }, { status: 'Inactive'}).exec(function(err, job) {
+            return res.redirect('/admin/coy-jobs/' + job[0].company + '/closed');
         });
     },
 

@@ -212,7 +212,7 @@
 							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
-									<a href="" class="delete-entry remove-qualification-btn ">
+									<a href="" data-id="{{ edu.id }}" class="delete-entry remove-edu-btn ">
 										Remove
 									</a>
 								</div>
@@ -310,7 +310,7 @@
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
-								<a href="" class="delete-entry remove-qualification-btn ">
+								<a href="" class="delete-entry remove-edu-btn ">
 									Remove
 								</a>
 							</div>
@@ -357,7 +357,7 @@
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
-								<a href="" class="delete-entry remove-qualification-btn ">
+								<a href="" data-id="{{ qual.id }}" class="delete-entry remove-qualification-btn ">
 									Remove
 								</a>
 							</div>
@@ -481,7 +481,7 @@
 							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
-									<a href="" class="delete-entry remove-employment-btn">
+									<a href="" data-id="{{ emp.id }}" class="delete-entry remove-employment-btn">
 										Remove
 									</a>
 								</div>

@@ -72,15 +72,25 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             // look for test result
             var tests_taken = []
-            GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).sort('id desc').limit(1).exec(function(err, tests) {
-                if (tests.length > 0) {
-                    if (tests[0].test < 3)
-                        return resolve(tests[0].test + 1);
-                    else // its 3 return 1
-                        return resolve(1);
-                } else {
+            GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).exec(function(err, tests) {
+                var _tests = [];
+                if (tests.length == 0) {
                     return resolve(1);
+                } else {
+                    tests.forEach(function(test) {
+                        _tests.push(test.test);
+                    });
+                    var next = _.difference([1,2,3], _tests);
+                    next.sort(function(a, b) { return a - b; });
+                    return resolve(next[0]);
                 }
+                //     if (tests[0].test < 3)
+                //         return resolve(tests[0].test + 1);
+                //     else // its 3 return 1
+                //         return resolve(1);
+                // } else {
+                   
+                // }
             });
         });
     },
@@ -113,7 +123,8 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        if (!tests[0]) cb();
+                        if (!tests[0] || tests.length < 3) return cb();
+                    
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
                         })
@@ -157,10 +168,9 @@ module.exports = {
                             });
                             cb();
                         } catch (err) {
-                            console.log(err);
-                            console.log(tests)
+                            
                         } finally {
-                            //cb();
+                            cb();
                         }
                     });
                 }, function(err) {

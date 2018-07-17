@@ -256,7 +256,7 @@ module.exports = {
                     return q.id == userAnswer.quest_id;
                 });
 
-                if (!question) {
+                if (!question) { // candidate didn't answer
                     console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
                     return;
                 }
@@ -356,7 +356,7 @@ module.exports = {
 
                 if (!question) {
                     // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
-                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                    console.error(`Couldn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
                     return;
                 }
 
@@ -366,39 +366,33 @@ module.exports = {
             });
 
             // save or update candidate's test score
-            if (req.session.user_type == 'Applicant') {
-                CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+                    var state = resp === true ? 'Done' : 'On';
                     if (test_id === 3) {
-                        CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
-
-                            // update candidate's resume
-                            Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                                if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                                    Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                                }
-                            });
-
-                            CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                                return res.json(200, { status: 'success', result: result });
-                            }).catch(function(err) {
-                                console.log(err);
-                                return res.serverError(err);
-                            });
-                        }).catch(function(err) {
-                            console.log(err);
-                            return res.serverError(err);
+                        // update candidate's resume
+                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                            if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                                Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                            }
                         });
-                    } else {
-                        return res.json(200, { status: 'success'});
+    
+                        // CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                        //     return res.json(200, { status: 'success', result: result, state: state });
+                        // }).catch(function(err) {
+                        //     console.log(err);
+                        //     return res.serverError(err);
+                        // });
                     }
-
+                    return res.json(200, { status: 'success', state: state });
                 }).catch(function(err) {
-                    console.error(err);
-                    return res.serverError(err);
+                    console.log(err);
+                    return res.json(200, { status: 'error', state: state });
                 });
-            } else {
-                return res,json(404, { status: 'error' });
-            }
+            }).catch(function(err) {
+                console.error(err);
+                //return res.serverError(err);
+            });
         });
     },
 
@@ -488,7 +482,7 @@ module.exports = {
         // }
 
         // check source
-        var session_id;
+        var session_id = false;
         var path = req.path.split('/')[1];
         if (path == 'api') {
             session_id = req.param('session_id');
@@ -497,17 +491,19 @@ module.exports = {
         }
 
         // save audio filename
-        var data = {
-            filename: filename,
-            file_type: 'audio',
-            proctor: session_id
-        };
-        ProctorRecord.create(data).exec(function(err) {
-            if (err) {
-                return res.json(404, { status: 'error', message: err });
-            }
-            return res.json(201, { status: 'success' });
-        });
+        if (session_id) {
+            var data = {
+                filename: filename,
+                file_type: 'audio',
+                proctor: session_id
+            };
+            ProctorRecord.create(data).then(function() {
+                return res.json(201, { status: 'success' });
+            }).catch(function(err) {
+                sails.log.error(err);
+                return res.json(400, { status: 'error', message: err });
+            });
+        }
     },
 
     uploadProctorPicture: function(req, res) {
@@ -540,7 +536,7 @@ module.exports = {
         // }
 
         // check source
-        var session_id;
+        var session_id = false;
         var path = req.path.split('/')[1];
         if (path == 'api') {
             session_id = req.param('session_id');
@@ -549,16 +545,18 @@ module.exports = {
         }
 
         // save photo filename
-        var data = {
-            filename: filename,
-            file_type: 'photo',
-            proctor: session_id
-        };
-        ProctorRecord.create(data).exec(function(err) {
-            if (err) {
-                return res.json(404, { status: 'error', message: err });
-            }
-            return res.json(201, { status: 'success' });
-        });
+        if (session_id) {
+            var data = {
+                filename: filename,
+                file_type: 'photo',
+                proctor: session_id
+            };
+            ProctorRecord.create(data).then(function() {
+                return res.json(201, { status: 'success' });
+            }).catch(function(err) {
+                sails.log.error(err);
+                return res.json(400, { status: 'error', message: err });
+            });
+        }
     }
 };
