@@ -266,7 +266,10 @@ module.exports = {
                 data.push('%' + school + '%');
             }
             if (course) {
+                sql += "JOIN employment emp ON r.id = emp.resume "
                 where += "AND e.programme LIKE ? ";
+                where += "OR emp.role LIKE ? "
+                data.push('%' + course + '%');
                 data.push('%' + course + '%');
             }
             if (result) {
@@ -291,6 +294,10 @@ module.exports = {
             } else {
                 sql += where;
                 Resume.query(sql, data, function(err, result) {
+                    if (err) {
+                        console.log(err)
+                        return reject(err);
+                    }
                     var users = [];
                     result.forEach(function(user) {
                         users.push(user.user);
