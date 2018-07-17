@@ -111,6 +111,15 @@ module.exports = {
         module.exports.sendMail(user.email, subject, template, data);
     },
 
+    customSendAppliedJobNotice: function(name, email) {
+        var data = {
+            user: name,
+        };
+        var subject = "AIRTEL ENTRY LEVEL JOB ALERT!!!!";
+        var template = 'customAppliedJobNotice';
+        module.exports.sendMail(email, subject, template, data);
+    },
+
     // sent after company account activation
     companyIntroduction: function(email, contact_person) {
         var data = {

@@ -366,38 +366,33 @@ module.exports = {
             });
 
             // save or update candidate's test score
-            if (req.session.user_type == 'Applicant') {
-                CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+                CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+                    var state = resp === true ? 'Done' : 'On';
                     if (test_id === 3) {
-                        CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
-
-                            // update candidate's resume
-                            Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                                if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                                    Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                                }
-                            });
-
-                            CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                                return res.json(200, { status: 'success', result: result });
-                            }).catch(function(err) {
-                                console.log(err);
-                                return res.serverError(err);
-                            });
-                        }).catch(function(err) {
-                            console.log(err);
-                            return res.serverError(err);
+                        // update candidate's resume
+                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                            if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+                                Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+                            }
                         });
-                    } else {
-                        return res.json(200, { status: 'success'});
+    
+                        // CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                        //     return res.json(200, { status: 'success', result: result, state: state });
+                        // }).catch(function(err) {
+                        //     console.log(err);
+                        //     return res.serverError(err);
+                        // });
                     }
+                    return res.json(200, { status: 'success', state: state });
                 }).catch(function(err) {
-                    console.error(err);
-                    return res.serverError(err);
+                    console.log(err);
+                    return res.json(200, { status: 'error', state: state });
                 });
-            } else {
-                return res.json(404, { status: 'error' });
-            }
+            }).catch(function(err) {
+                console.error(err);
+                //return res.serverError(err);
+            });
         });
     },
 

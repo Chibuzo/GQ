@@ -274,13 +274,17 @@ function sendAnswers(proctorFeedback) {
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
         proctorSessId: proctorSessId
-    }, function (d) {
+    }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
                 loadNextTest: loadNextTest,
                 aptitudeTest: aptitudeTest
             });
 
+            if (d.state && d.state.trim() == 'Done') { // when a candidate retook a section after completing the entire aptitude test
+                loadNextTest = false;
+                aptitudeTest = true;
+            }
             if (loadNextTest) {
                 //TODO Call a function that does this
                 $(".load-test").click();
