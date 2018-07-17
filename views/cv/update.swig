@@ -447,6 +447,12 @@
 												<i class="pe-7s-video"></i>
 												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
 												<br>
+												 <div class="progress" style="margin: 10px 5px;">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">0%</span>
+													</div>
+												</div>
+												<br>
 												<ul class="text-left">
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 3 minutes</li>

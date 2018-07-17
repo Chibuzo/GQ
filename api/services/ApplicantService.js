@@ -179,7 +179,7 @@ module.exports = {
                 Resume.count({photo_status: true}),
                 Resume.count({photo_status: false}),
                 Resume.count({video_status: true}),
-                Resume.count({video_status: false}),
+                Resume.count({video_status: false, test_status: true}),
                 fetchNoTestsApplicants(),
                 fetchSomeTestsApplicants(),
                 fetchCompleteTestsApplicants(),
