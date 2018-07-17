@@ -85,14 +85,15 @@ module.exports = {
     // candidate's profile photo
     uploadPhoto: function(req, res) {
         var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-        var filename;
+        var filename = false;
         var hr = process.hrtime();
         req.file('photo').upload({
             dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto/'),
             saveAs: function (file, cb) {
                 if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
                     //return res.badRequest('Unsupported photo format.');
-                    return cb(new Error('01'));
+                    //cb(new Error('01'));
+                    return;
                 }
                 var ext = file.filename.split('.').pop();
                 filename = hr[1] + '_photo.' + ext;
@@ -107,7 +108,7 @@ module.exports = {
                 return res.view('misc/error-page', { error: 'Photo file size must not be more than 2MB', url: '/applicant/resume-page' })
             }
             // this is weird but let's check if a file was uploaded
-            if (!upfile) {
+            if (!upfile || !filename) {
                 return res.redirect('/applicant/resume-page#photo');
             }
             // copy the uploaded photo to the public folder

@@ -391,13 +391,12 @@ module.exports = {
                     } else {
                         return res.json(200, { status: 'success'});
                     }
-
                 }).catch(function(err) {
                     console.error(err);
                     return res.serverError(err);
                 });
             } else {
-                return res,json(404, { status: 'error' });
+                return res.json(404, { status: 'error' });
             }
         });
     },
