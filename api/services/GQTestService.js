@@ -73,7 +73,6 @@ module.exports = {
             // look for test result
             var tests_taken = []
             GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).exec(function(err, tests) {
-                console.log(tests)
                 var _tests = [];
                 if (tests.length == 0) {
                     return resolve(1);
@@ -81,10 +80,7 @@ module.exports = {
                     tests.forEach(function(test) {
                         _tests.push(test.test);
                     });
-                    console.log('Taken tests...');
-                    console.log(_tests);
                     var next = _.difference([1,2,3], _tests);
-                    console.log(next)
                     next.sort(function(a, b) { return a - b; });
                     return resolve(next[0]);
                 }

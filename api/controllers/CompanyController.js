@@ -327,22 +327,25 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-          return Company.find({ status: 'Active' }).then(coys => {
-               var companies = [];
-               var today = new Date().toISOString();
+            return Company.find({ status: 'Active' }).then(coys => {
+                var companies = [];
+                var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
-                    Job.find({company: coy.id}).exec(function (err, jobs) {
-                         coy.open_jobs = 0;
-                         coy.closed_jobs = 0;
-                         jobs.forEach(function(job) {
-                              if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                   coy.open_jobs++;    
-                              } else {
-                                   coy.closed_jobs++;
-                              }
-                         });
-                         companies.push(coy);
-                         cb();
+                    Job.find({company: coy.id}).sort('createdAt desc').exec(function (err, jobs) {
+                        coy.open_jobs = 0;
+                        coy.closed_jobs = 0;
+                        coy.archived_jobs = 0;
+                        jobs.forEach(function(job) {
+                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                coy.open_jobs++;    
+                            } else if (Date.parse(job.closing_date) < Date.parse(today) && job.status == 'Active') {
+                                coy.closed_jobs++;
+                            } else if (Date.parse(job.closing_date) < Date.parse(today) && job.status == 'Inactive') {
+                                coy.archived_jobs++;
+                            }
+                        });
+                        companies.push(coy);
+                        cb();
                     });
                 }, function() {
                     return res.view('admin/list-companies', { companies: coys });

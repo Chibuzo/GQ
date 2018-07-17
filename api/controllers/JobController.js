@@ -655,6 +655,12 @@ module.exports = {
         });
     },
 
+    archiveJob: function(req, res) {
+        Job.update({ id: req.param('id') }, { status: 'Inactive '}).exec(function(err, job) {
+            return res.redirect('/admin/coy-jobs/' + job[0].company + '/closed');
+        });
+    },
+
 
     downloadCSVSample: function(req, res) {
         res.setHeader('Content-disposition', 'attachment; filename=sampleCSV.csv');

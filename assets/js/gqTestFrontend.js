@@ -274,9 +274,7 @@ function sendAnswers(proctorFeedback) {
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
         proctorSessId: proctorSessId
-    }, function (d) {
-        console.log(d)
-        
+    }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
                 loadNextTest: loadNextTest,
