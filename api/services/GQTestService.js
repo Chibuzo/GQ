@@ -123,7 +123,7 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        if (!tests[0] || tests.length < 3) cb();
+                        if (!tests[0] || tests.length < 3) return cb();
                     
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
@@ -168,10 +168,9 @@ module.exports = {
                             });
                             cb();
                         } catch (err) {
-                            console.log(err);
-                            console.log(tests)
+                            
                         } finally {
-                            //cb();
+                            cb();
                         }
                     });
                 }, function(err) {

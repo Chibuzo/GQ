@@ -81,14 +81,16 @@ module.exports = {
 
 
     fetchCompanyJobs: function (coy_id, job_status = 'open') {
-        var criteria = { company: coy_id, status: 'Active' };
+        var criteria = { company: coy_id };
         var today = new Date();
         if (job_status == 'open') {
             criteria.closing_date = { '>=': today };
+            criteria.status = 'Active';
         } else if (job_status == 'all') {
             criteria.closing_date = { '>': new Date('2017-05-05') }; // this is a stale date
         } else if (job_status == 'closed') {
             criteria.closing_date = { '<': today };
+            criteria.status = 'Active';
         } else {
             criteria.closing_date = { '<': today };
             criteria.status = 'Inactive';
@@ -122,11 +124,11 @@ module.exports = {
                                 _jobs.push(job);
                                 cb();
                             });
-                        // } else {
-                        //     job.shortlisted = false;
-                        //     _jobs.push(job);
-                        //     cb();
-                        // }
+                        } else {
+                            job.shortlisted = false;
+                            _jobs.push(job);
+                            cb();
+                        }
                     });
                 }, function (err) {
                     return resolve(_jobs);

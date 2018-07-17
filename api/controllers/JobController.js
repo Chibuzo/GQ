@@ -415,7 +415,6 @@ module.exports = {
 		if (req.session.user_type !== 'admin') {
 			return res.forbidden();
 		}
-
 		const job_id =  req.param('job_id');
 
 		if (!job_id) {
@@ -656,7 +655,7 @@ module.exports = {
     },
 
     archiveJob: function(req, res) {
-        Job.update({ id: req.param('id') }, { status: 'Inactive '}).exec(function(err, job) {
+        Job.update({ id: req.param('job_id') }, { status: 'Inactive'}).exec(function(err, job) {
             return res.redirect('/admin/coy-jobs/' + job[0].company + '/closed');
         });
     },

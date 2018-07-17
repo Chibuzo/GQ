@@ -131,32 +131,36 @@ module.exports = {
             async.eachSeries(results, function(result, cb) {
                 // get their BEST aptitude test score
                 GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
-                    var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
-                    var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
-                    // if the job has a competency test, compute the two, else use only aptitude test score
-                    var composite_score;
-                    if (result.score) {
-                        composite_score = (gq_score / 2) + (percentage / 2);
-                        aptitude_test_results.push(composite_score);
+                    if (apt_score.length > 0) {
+                        var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+                        var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
+                        // if the job has a competency test, compute the two, else use only aptitude test score
+                        var composite_score;
+                        if (result.score) {
+                            composite_score = (gq_score / 2) + (percentage / 2);
+                            aptitude_test_results.push(composite_score);
+                        } else {
+                            composite_score = apt_score[0].score;
+                            aptitude_test_results.push(apt_score[0].score);
+                        }
+                        gq_results.push({
+                            test_id: result.id,
+                            applicant: result.candidate,
+                            job_score: result.score ? percentage : 'NA', // condition not really required
+                            percentage: gq_score,
+                            percentile: '-',
+                            test_result: percentage > 59 ? 'Passed' : 'Failed',
+                            composite_score: composite_score,
+                            aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                            integrity_score: result.proctor.integrity_score,
+                            proctor_status: result.proctor.status,
+                            proctor_id: result.proctor.id,
+                            createdAt: result.createdAt
+                        });
+                        cb();
                     } else {
-                        composite_score = apt_score[0].score;
-                        aptitude_test_results.push(apt_score[0].score);
+                        cb();
                     }
-                    gq_results.push({
-                        test_id: result.id,
-                        applicant: result.candidate,
-                        job_score: result.score ? percentage : 'NA', // condition not really required
-                        percentage: gq_score,
-                        percentile: '-',
-                        test_result: percentage > 59 ? 'Passed' : 'Failed',
-                        composite_score: composite_score,
-                        aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                        integrity_score: result.proctor.integrity_score,
-                        proctor_status: result.proctor.status,
-                        proctor_id: result.proctor.id,
-                        createdAt: result.createdAt
-                    });
-                    cb();
                 });
             }, function() {
                 gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b });

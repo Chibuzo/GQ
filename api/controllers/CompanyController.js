@@ -11,17 +11,24 @@ os.tmpDir = os.tmpdir;
 module.exports = {
 
     dashboard: function(req, res) {
-         JobService.fetchCompanyJobs(req.session.coy_id, 'all').then(function(jobs) {
+         JobService.fetchCompanyJobs(req.session.coy_id, 'all').then(function(_jobs) {
              // find active jobs
              var today = new Date();
              var active_jobs = 0;
-             jobs.forEach(function(job) {
-                 if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                     active_jobs++
-                 }
+             var activejobs = [], archived_jobs = [];
+             _jobs.forEach(function(job) {
+                if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                    active_jobs++;
+                }
+                if (job.status == 'Active') {
+                    activejobs.push(job);
+                } else if (job.status.trim() == 'Inactive') {
+                    archived_jobs.push(job);
+                }
+
              });
              var msg = req.param('msg') ? new Buffer(req.param('msg'), 'base64').toString('ascii') : '';
-            return res.view('company/dashboard', { jobs: jobs, active_jobs: active_jobs, msg: msg });
+            return res.view('company/dashboard', { jobs: activejobs, archived_jobs: archived_jobs, active_jobs: active_jobs, msg: msg });
         })
         .catch(function(err) {
             return res.serverError(err);
@@ -327,7 +334,7 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-            return Company.find({ status: 'Active' }).then(coys => {
+            return Company.find().then(coys => {
                 var companies = [];
                 var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
@@ -340,11 +347,11 @@ module.exports = {
                                 coy.open_jobs++;    
                             } else if (Date.parse(job.closing_date) < Date.parse(today) && job.status == 'Active') {
                                 coy.closed_jobs++;
-                            } else if (Date.parse(job.closing_date) < Date.parse(today) && job.status == 'Inactive') {
+                            } else if (job.status.trim() == 'Inactive') {
                                 coy.archived_jobs++;
-                            }
+                            } 
                         });
-                        companies.push(coy);
+                        //companies.push(coy);
                         cb();
                     });
                 }, function() {

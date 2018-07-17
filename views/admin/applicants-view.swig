@@ -36,8 +36,12 @@
                     <h4 class="title">{{ companyName }}</h4>
                     <p class="category">{{ jobTitle }}</p>
                 </div>
+                <div class="col-md-5 pull-right text-right">
+                    <a href="" class="btn btn-danger hidden"><i class="fa fa-caret-left"></i> Back to jobs</a>
+                    <button class="btn btn-success btn-fill" id="archive-job"><i class="fa fa-archive"></i> Archive Job</button>
+                </div>
             </div>
-            <div class="content">
+            <div class="content table-responsive table-full-width">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
                     <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
@@ -155,6 +159,8 @@
 <script type="text/javascript">
 $(document).ready(function() {
 
+    var job_id = {{ job_id | json | safe }};
+
     $(".short-list").click(function(e) {
         e.preventDefault();
         if (confirm("Are you sure you want to shortlist this candidate?")) {
@@ -162,7 +168,6 @@ $(document).ready(function() {
             var score = $(this).parents('tr').find('td:nth-child(2)').text();
             var gqtest = $(this).parents('tr').find('td:nth-child(3)').text();
 
-            var job_id = {{ job_id | json | safe }};
             var candidate_id = $(this).parents('tr').attr('id');
 
             $.post('/applicant/select-candidate', { job_id: job_id, candidate_id: candidate_id });
@@ -172,8 +177,8 @@ $(document).ready(function() {
                  "<td>" + fullname + "</td>" +
                  "<td>" + score + "</td>" +
                  "<td>" + gqtest + "</td>" +
-                 "<td>Pending Review</td>"
-                 "<td><a href='' class='btn btn-danger btn-xs btn-fill unselect-candidate' rel='tooltip' title='Remove Candidate'><i class='fa fa-times fa-lg'></i></a></td>" +
+                 "<td>Pending Review</td>" +
+                 "<td class='text-center'><a href='' class='btn btn-danger btn-xs btn-fill unselect-candidate' rel='tooltip' title='Remove Candidate'><i class='fa fa-times fa-lg'></i></a></td>" +
             "</tr>";
 
 			//var html = $("#tb-selected").html();
@@ -208,6 +213,13 @@ $(document).ready(function() {
                     $parentTr.fadeOut();
                 }
             });
+        }
+    });
+
+
+    $("#archive-job").click(function() {
+        if (confirm("Are you sure you want to move this job to archive?")) {
+           location.href = "/job/archive/" + job_id;
         }
     });
 

@@ -220,6 +220,8 @@ module.exports.routes = {
 
     'GET /job/closejob/:job_id': 'JobController.closeJob',
 
+    'GET /job/archive/:job_id': 'JobController.archiveJob',
+
     'GET /admin/job/:job_id/view-shortlisted': 'JobController.fetchShortlistedForAdmin',
 
     'GET /job/:id/:title': 'JobController.showJob',
