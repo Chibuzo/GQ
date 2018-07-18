@@ -13,6 +13,7 @@
 {% block body %}
 <link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
 <link href="/styles/proctor-style.css" rel="stylesheet" />
+<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -38,7 +39,7 @@
 		display: inline-block;
 	}
 
-	.addable {
+	.addable, .RC-video-canvass {
 		display: none;
 	}
 
@@ -433,13 +434,14 @@
 										</div>
 									</div>
 									{% if resume.video_status == true %}
-										<div class="col-md-5">
+										<div class="col-md-5 gq-video-canvass">
 											<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
 											<br>
 											<div class="alert alert-warning hidden video-alert"></div>
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
+												<button class="btn btn-primary record-video">Record Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 														<span class="sr-only">0%</span>
@@ -450,13 +452,16 @@
 										</div>
 										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
 									{% else %}
-										<div class="col-md-5">
+										<div class="col-md-5 gq-video-canvass">
 											<div class="empty-vid">
 												<div class="alert alert-warning hidden">Notice: You can not upload a video at this moment. Please check back in a fews hours. Thank you.</div>
 												<div class="alert alert-warning hidden video-alert"></div>
 												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
+												<p>
+													<button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
+													<button class="btn btn-primary record-video">Record Video</button>	
+												</p>
 												<br>
 												 <div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
@@ -471,6 +476,7 @@
 											</div>
 										</div>
 									{% endif %}
+									{% include '../applicant/includes/video-recorder.swig' %}
 									<input id="select-file" type="file" style="display:none">
 								</div>
 							</div>
@@ -762,5 +768,17 @@
 
 	<script src="https://apis.google.com/js/api.js"></script>
 	<script src="/js/youtubeUpload.js"></script>
+	<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>
+	<script src="https://api.neon.ventures/proctor/js/pavp.js"></script>
+
+	<script>
+		$(document).ready(function() {
+			var pavp;
+			$(".gq-video-canvass").click(function() {
+				$(".gq-video-canvass").hide();
+				pavp = new Pavp();
+			});
+		});
+	</script>
 
 {% endblock %}

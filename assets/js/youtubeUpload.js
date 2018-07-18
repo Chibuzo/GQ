@@ -1,23 +1,23 @@
-$(document).ready(function() {
-    var obj = JSON.parse(localStorage.getItem('video_check'));
-    can_upload = new Date(obj.tried_video_update);
-    if (can_upload) {
-        console.log(can_upload)
-        var __now = new Date();
-        if (can_upload.getTime() + (30 * 60 * 1000) > __now.getTime()) {
-            $('.select-file-button').prop('disabled', true);
-            console.log(new Date(can_upload + (30 * 60 * 1000)))
-            var rem = Math.abs(can_upload.getTime() + (30 * 60 * 1000) - __now);
-            console.log('Raw new: ' + rem);
-            var ndate = new Date(rem);
-            console.log('Date Object: ' + ndate);
-            $(".video-alert").text("You can not re upload a video now. Please try again in " + ndate.getMinutes() + " minutes.").removeClass('hidden');
-        } else {
-            $(".select-file-button").prop('disabled', false);
-            $(".video-alert").text("").addClass('hidden');
-        }
-    }
-});
+// $(document).ready(function() {
+//     var obj = JSON.parse(localStorage.getItem('video_check'));
+//     can_upload = new Date(obj.tried_video_update);
+//     if (can_upload) {
+//         console.log(can_upload)
+//         var __now = new Date();
+//         if (can_upload.getTime() + (30 * 60 * 1000) > __now.getTime()) {
+//             $('.select-file-button').prop('disabled', true);
+//             console.log(new Date(can_upload + (30 * 60 * 1000)))
+//             var rem = Math.abs(can_upload.getTime() + (30 * 60 * 1000) - __now);
+//             console.log('Raw new: ' + rem);
+//             var ndate = new Date(rem);
+//             console.log('Date Object: ' + ndate);
+//             $(".video-alert").text("You can not re upload a video now. Please try again in " + ndate.getMinutes() + " minutes.").removeClass('hidden');
+//         } else {
+//             $(".select-file-button").prop('disabled', false);
+//             $(".video-alert").text("").addClass('hidden');
+//         }
+//     }
+// });
 
 var TOKEN;
 

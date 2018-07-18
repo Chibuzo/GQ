@@ -170,7 +170,7 @@ module.exports = {
                         } catch (err) {
                             
                         } finally {
-                            cb();
+                            //cb();
                         }
                     });
                 }, function(err) {
