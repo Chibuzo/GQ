@@ -476,7 +476,6 @@
 											</div>
 										</div>
 									{% endif %}
-									{% include '../applicant/includes/video-recorder.swig' %}
 									<input id="select-file" type="file" style="display:none">
 								</div>
 							</div>
@@ -510,6 +509,8 @@
 	        </div>
 	    </div>
 	</div>
+
+	{% include '../applicant/includes/video-recorder-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
@@ -776,6 +777,7 @@
 			var pavp;
 			$(".gq-video-canvass").click(function() {
 				$(".gq-video-canvass").hide();
+				$("#videoRecorderModal").modal();
 				pavp = new Pavp();
 			});
 		});
