@@ -441,7 +441,7 @@
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
-												<button class="btn btn-primary record-video">Record Video</button>
+												<button class="btn btn-primary record-video hidden">Record Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 														<span class="sr-only">0%</span>
@@ -460,7 +460,7 @@
 												<i class="pe-7s-video"></i>
 												<p>
 													<button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
-													<button class="btn btn-primary record-video">Record Video</button>	
+													<button class="btn btn-primary record-video hidden">Record Video</button>	
 												</p>
 												<br>
 												 <div class="progress" style="margin: 10px 5px;">
@@ -476,7 +476,7 @@
 											</div>
 										</div>
 									{% endif %}
-									{% include '../applicant/includes/video-recorder.swig' %}
+									
 									<input id="select-file" type="file" style="display:none">
 								</div>
 							</div>
@@ -510,6 +510,8 @@
 	        </div>
 	    </div>
 	</div>
+
+	{% include '../applicant/includes/video-recorder-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
@@ -776,6 +778,7 @@
 			var pavp;
 			$(".gq-video-canvass").click(function() {
 				$(".gq-video-canvass").hide();
+				$("#videoRecorderModal").modal();
 				pavp = new Pavp();
 			});
 		});
