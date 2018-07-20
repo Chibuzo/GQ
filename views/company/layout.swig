@@ -126,6 +126,13 @@
                             </a>
                         </li>
 
+                        <li class="tests hidden">
+                            <a href="/gqtest/manage">
+                                <i class="pe-7s-display2"></i>
+                                <p>Manage Tests</p>
+                            </a>
+                        </li>
+
                         <li class="profile">
                             <a href="/company/profile">
                                 <i class="pe-7s-user"></i>

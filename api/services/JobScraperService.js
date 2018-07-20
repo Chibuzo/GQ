@@ -7,7 +7,6 @@ module.exports = {
                 method: "GET",
                 json: true
             }, function (error, response, body) {
-                console.log(body.rows.length);
                 return resolve(body.rows)
             });
         })

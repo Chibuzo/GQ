@@ -94,7 +94,7 @@
 		</div>
 	</div>
 
-	{% if first_time == 'true' %}
+	{% if first_time == 'true' || comapny %}
 		<div class="form-group">
 			<div class="row">
 				<div class="col-md-6">

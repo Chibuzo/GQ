@@ -60,6 +60,8 @@ $(".load-test").click(function() {
             // update test_id for the resuming section test (GQ aptitude test)
             TEST_ID = d.test_id;
             $(".load-test").data('test_id', d.test_id);
+        } else {
+            $('.load-test').text('Load Test').prop('disabled', false);
         }
     }, 'JSON');
 });
@@ -274,13 +276,17 @@ function sendAnswers(proctorFeedback) {
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
         proctorSessId: proctorSessId
-    }, function (d) {
+    }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
                 loadNextTest: loadNextTest,
                 aptitudeTest: aptitudeTest
             });
 
+            if (d.state && d.state.trim() == 'Done') { // when a candidate retook a section after completing the entire aptitude test
+                loadNextTest = false;
+                aptitudeTest = true;
+            }
             if (loadNextTest) {
                 //TODO Call a function that does this
                 $(".load-test").click();
@@ -655,21 +661,23 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
             $.ajax({
                  type: "POST",
                  url: "/gqtest/uploadProctorPicture",
+                 retry: 10,
                  data: {
                      imgBase64: data64,
                      eventName: eventName,
                      proctorSessId: proctorSessId,
-                     retry: 5,
                  }, success: function(data) {
                      // Some success ish blah blah
                  }, error: function() {
                      if (this.retry > 0) {
+                        amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + this.retry);
                         $.ajax(this);
+                        this.retry--;
                         return;
                      }
-                     this.retry--;
                      amplitude.getInstance().logEvent(eventName + " upload failed");
-                 }
+                 },
+                 timeout: 30000 // sets timeout to 30 seconds
              }).done(function(msg) {
                  // Some message blah blah
              });
@@ -680,21 +688,23 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
             $.ajax({
                 type: "POST",
                 url: "/gqtest/uploadProctorAudio",
+                retry: 10,
                 data: {
                     data: data64,
                     proctorSessId: proctorSessId,
-                    retry: 10
                 }, success: function(data){
                     // Some success ish blah blah
                 }, error: function() {
                     if (this.retry > 0) {
+                        amplitude.getInstance().logEvent("Audio upload retry countdown: " + this.retry);
                         $.ajax(this);
+                        this.retry--;
                         return;
                      }
-                     this.retry--;
                      amplitude.getInstance().logEvent("Audio upload failed");
                      if (this.retry == 0) amplitude.getInstance().logEvent("Audio upload retried 5 times and still failed");
-                }
+                },
+                timeout: 30000 // sets timeout to 30 seconds
             }).done(function(msg) {
                 // Some message blah blah
             });

@@ -26,7 +26,8 @@
 						<th>Contact email</th>
 						<th>Contact Phone</th>
 						<th>Open Jobs</th>
-						<th>Closed Jobs</th>						
+						<th>Closed</th>	
+						<th>Archive</th>					
 						<th class="hidden"></th>
 					</tr>
 					</thead>
@@ -41,7 +42,8 @@
 							<td>{{ coy.contact_email }}</td>
 							<td>{{ coy.contact_phone }}</td>
 							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/open">{{ coy.open_jobs }}</a></td>
-							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/closed">{{ coy.closed_jobs }}</a></td>							
+							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/closed">{{ coy.closed_jobs }}</a></td>
+							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/archived">{{ coy.archived_jobs }}</a></td>							
 							<td class="hidden">
 								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
 							</td>

@@ -9,10 +9,26 @@ module.exports = {
     startSession: function(req, res) {
         var test_id = req.param('test_id');
 
+        var user_id;
+        if (req.path.split('/')[1] == 'api') {
+            if (_.isUndefined(req.param('user_id')) || isNaN(req.param('user_id'))) {
+                return res.json(400, { status: 'error', message: 'User ID must be numeric' });
+            } else {
+                user_id = req.param('user_id');
+            }
+
+            if (_.isUndefined(test_id) || isNaN(test_id)) {
+                return res.json(400, { status: 'error', message: 'Test ID must be numeric' });
+            }
+        } else {
+            user_id = req.session.userId;
+        }     
+
         // Create a new proctor session for each test.
-        return ProctorSession.create({ test_id: test_id, user_id: req.session.userId }).exec(function(err, sess) {
+        return ProctorSession.create({ test_id: test_id, user_id: user_id }).exec(function(err, sess) {
             if (err) {
-                return res.serverError(err);
+                return res.json(400, { status: 'error', message: 'Invalid input data' });
+                //return res.serverError(err);
             }
 
             req.session.proctor = sess.id;
@@ -34,33 +50,58 @@ module.exports = {
     },
 
 
-    // this function MUST be modified before it can handle job specific test
     acceptTest: function(req, res) {
-        GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Accepted' }).exec(function(err, test) {
-            if (test.length > 0) {
-                // delete proctor files
-                [1,2,3].forEach(function(test) {
-                    ProctorService.deleteProctorFiles(test);
+        if (req.param('test_type') == 'GQAptitude') {
+            GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Accepted' }).exec(function(err, test) {
+                if (test.length > 0) {
+                    // delete proctor files
+                    [1,2,3].forEach(function(test) {
+                        ProctorService.deleteProctorFiles(test);
+                    });
+                }
+            });
+        } else if (req.param('test_type') == 'job-test') {
+            ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Accepted' }).exec(function() {
+                ProctorService.deleteProctorFiles(req.param('proctor_id'));
+            });
+        }
+        return res.ok();
+    },
+
+
+    rejectTest: function(req, res) {
+        User.find({ id: req.param('candidate_id') }).exec(function(err, user) {
+            if (req.param('test_type') == 'GQAptitude') {
+                GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Rejected' }).exec(function(err, test) {
+                    sendMail.notifyOnTestCheat(user[0], 'General Aptitude Test');
+                });
+            } else if (req.param('test_type') == 'job-test') {
+                ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Rejected' }).exec(function() {
+                    //sendMail.notifyOnJobTestCheat(user[0], req.param('job_title'));
                 });
             }
         });
         return res.ok();
     },
 
-    // this function MUST be modified before it can handle job specific test
-    rejectTest: function(req, res) {
-        GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Rejected' }).exec(function(err, test) {
-            if (test.length > 0) {
-                User.find({ id: req.param('candidate_id') }).exec(function(err, user) {
-                    sendMail.notifyOnTestCheat(user[0], 'General Test');
-                    // for job specific test
-                    //GQTest.find({ id: proc[0].test_id }).exec(function(err, test) {
-                    //    sendMail.notifyOnTestCheat(user[0], test[0].test_name);
-                    //});
-                });
+
+    saveEvidenceData: function(req, res) {
+        let integrity_score = req.param('integrity_score');
+        let session_id = req.param('session_id');
+        let invigilationTracking = req.param('invigilationTracking') || {};
+
+        let data = {
+            integrity_score: integrity_score ? integrity_score : -1,
+            noFaceCount: invigilationTracking.noFace ? invigilationTracking.noFace : -1,
+            noiseCount: invigilationTracking.noise ? invigilationTracking.noise : -1,
+            multipleFacesCount: invigilationTracking.multipleFaces ? invigilationTracking.multipleFaces : -1
+        };
+        ProctorSession.update({ id: session_id }, data).exec(function(err, result) {
+            if (err) {
+                return res.json(500, { status: 'error', message: err });
             }
+            return res.json(200, { status: 'success' });
         });
-        return res.ok();
     },
 
 

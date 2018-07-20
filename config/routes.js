@@ -40,12 +40,15 @@ module.exports.routes = {
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    //'POST /applicant/add-video': 'ApplicantController.uploadVideo',    //--> deprecated
+    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo', 
+
     'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
     'POST /applicant/add-profilephoto': 'ApplicantController.uploadPhoto',
 
     'DELETE /applicant/test/:userId': 'ApplicantController.deleteTestScoreAndFiles',
+
+    'POST /test/deleteScore': 'ApplicantController.deleteTestScoreAndFiles',
 
     'GET /applicant/resume/:resume_id': 'ResumeController.viewResume',
 
@@ -75,7 +78,7 @@ module.exports.routes = {
 
     'GET /admin/applicants': 'ApplicantController.fetchApplicants',
 
-    'GET /admin/gq-test': 'GQTestController.manageTest',
+    'GET /gqtest/manage': 'GQTestController.manageTest',
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
 
@@ -116,7 +119,9 @@ module.exports.routes = {
 
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 
-    'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
+    'GET /gqtest/deleteResult': 'GQTestController.deleteResult',
+
+    'GET /gqtest/gettest/:test_id/:job_id/:gqtest_id': 'GQTestController.getTest',
 
     'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
 
@@ -216,6 +221,8 @@ module.exports.routes = {
 
     'GET /job/closejob/:job_id': 'JobController.closeJob',
 
+    'GET /job/archive/:job_id': 'JobController.archiveJob',
+
     'GET /admin/job/:job_id/view-shortlisted': 'JobController.fetchShortlistedForAdmin',
 
     'GET /job/:id/:title': 'JobController.showJob',
@@ -288,5 +295,38 @@ module.exports.routes = {
      * */
     'POST /api/v1/postjob': 'JobApiController.createJob',
 
-    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl'
+    'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
+
+
+    'POST /api/v1/proctor/getsessionid': { 
+        controller: 'ProctorRecordController', action: 'startSession', 
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/proctor/uploadphoto': {
+        controller: 'GQTestController', action: 'uploadProctorPicture',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/proctor/uploadaudio': {
+        controller: 'GQTestController', action: 'uploadProctorAudio',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/proctor/saveproctordata': {
+        controller: 'ProctorRecordController', action: 'saveEvidenceData',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    }
 };

@@ -8,61 +8,40 @@ const fs = require('fs');
 
 module.exports = {
 	manageTest: function(req, res) {
-        var source, user_id, folder;
-        if (req.session.admin === true) {
-            source = 'GQ';
-            user_id = req.session.admin_id;
-            folder = 'admin';
-        } else if (req.session.user_type == 'company-admin' || req.session.user_type == 'company-test') {
-            source = 'COY';
-            user_id = req.session.user_id;
-            folder = 'company';
-        } else {
-            return res.serverError('Gerrout!!!');
-        }
-        GQTest.find({ user_id: user_id, test_source: source }).populate('questions').sort({createdAt: 'desc'}).exec(function(err, tests) {
+        GQTest.find().populate('questions').sort({createdAt: 'desc'}).exec(function(err, tests) {
             if (err) return res.badRequest(err);
-            return res.view(folder + '/manage-tests', { tests: tests });
+            return res.view('gqtest/manage-tests', { tests: tests });
         });
     },
 
     createTestPage: function(req, res) {
-        var folder = req.session.admin === true ? 'admin' : 'company';
-        return res.view(folder + '/createnew');
+        return res.view('gqtest/createnew');
     },
 
     saveTest: function(req, res) {
-        var source = req.session.user_type == 'admin' ? 'GQ' : 'COY';
-        var user_id = req.session.admin === true ? req.session.admin_id : req.session.userId;
-
         var data = {
             test_name: req.param('test_name'),
             category: req.param('category'),
             difficulty: req.param('difficulty'),
             duration: req.param('duration'),
-            instructions: req.param('instructions'),
-            test_source: source,
-            user_id: user_id
+            instructions: req.param('instructions')
         };
         if (req.param('test_id') && _.isNumber(parseInt(req.param('test_id')))) {
-            GQTest.update({ id: req.param('test_id') }, data).exec(function(err) {
-                if (err) {
-                    return res.json(400, { status: 'error', message: err });
-                }
+            GQTest.update({ id: req.param('test_id') }, data).exec(function() {
                 return res.json(200, { status: 'success' });
             });
         } else {
             GQTest.create(data).exec(function(err, test) {
-                if (err) return res.json(400, { status: 'error', message: err });
+                if (err) return res.json(200, { status: 'error', msg: err });
 
-                return res.json(201, { status: 'success' });
+                return res.json(200, { status: 'success' });
             });
         }
     },
 
     uploadQuestions: function(req, res) {
         GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
-        return res.redirect('/gqtest/edittest/' + req.param('test_id'));
+        return res.ok();
     },
 
     saveQuestion: function(req, res) {
@@ -80,11 +59,11 @@ module.exports = {
             GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
                 data.image_file = resp;
                 GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
-                    if (err) return res.json(400, {status: 'error', msg: err});
+                    if (err) return res.json(200, {status: 'error', msg: err});
                     return res.json(200, {status: 'success'});
                 });
             }).catch(function(err) {
-                if (err) return res.json(400, { status: 'error', 'msg': err });
+                if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
@@ -93,7 +72,7 @@ module.exports = {
                     GQTestQuestions.update({ id: quest.id }, { image_file: resp }).exec(function() {});
                     return res.json(200, {status: 'success'});
                 }).catch(function(err) {
-                    if (err) return res.json(201, { status: 'error', 'msg': err });
+                    if (err) return res.json(200, { status: 'error', 'msg': err });
                 });;
             });
         }
@@ -126,7 +105,7 @@ module.exports = {
             test: test_id,
             candidate: req.session.userId
         }).populate('test').exec(function (err, test_result) {
-            if (err) return console.log(err)
+            if (err) console.log(err)
             if (test_result.length > 0) {
                 GQTestService.prepareCandidateResult(test_id, test_result[0].score, test_result[0].no_of_questions).then(function (result) {
                     return res.view('gqtest/gqtest', { result: result, test_id: test_id, test: test_result, test_title: test_result[0].test.test_name });
@@ -456,11 +435,8 @@ module.exports = {
 
     deleteTest: function(req, res) {
         if (req.session.admin === true) {
-            GQTest.destroy({ id: req.param('id') }).exec(function() {
+            GQTest.destroy({ id: req.param('quest_id') }).exec(function() {
                 // handle questions
-                GQTestQuestions.destroy({ test: req.param('id') }).exec(function() {
-                    return res.json(200, { status: 'success' });
-                });
             });
         }
     },

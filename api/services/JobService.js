@@ -37,14 +37,17 @@ module.exports = {
                 // let's proceed
                 Job.findOne({id: job_id}).exec(function (err, job) {
                     if (err) return reject(err);
-                    var data = {
-                        job: job_id,
-                        company: job.company,
-                        applicant: applicant_id
-                    };
-                    Application.create(data).exec(function (err) {
-                        if (err) return reject(err);
-                        return resolve(true);
+                    JobTest.find({ job_category_id: job.category, job_level: job.job_level }).exec(function(jt_err, tests) {
+                        var data = {
+                            job: job_id,
+                            company: job.company,
+                            applicant: applicant_id,
+                            status: tests.length > 0 ? 'Take test' : 'Under Review'
+                        };
+                        Application.create(data).exec(function (err) {
+                            if (err) return reject(err);
+                            return resolve(true);
+                        });
                     });
                 });
             });
@@ -78,21 +81,22 @@ module.exports = {
 
 
     fetchCompanyJobs: function (coy_id, job_status = 'open') {
-        var jobstatus;
+        var criteria = { company: coy_id };
         var today = new Date();
         if (job_status == 'open') {
-            jobstatus = { '>=': today };
+            criteria.closing_date = { '>=': today };
+            criteria.status = 'Active';
         } else if (job_status == 'all') {
-            jobstatus = { '>': new Date('2017-05-05') }; // this is a stale date
+            criteria.closing_date = { '>': new Date('2017-05-05') }; // this is a stale date
+        } else if (job_status == 'closed') {
+            criteria.closing_date = { '<': today };
+            criteria.status = 'Active';
         } else {
-            jobstatus = { '<': today };
+            criteria.closing_date = { '<': today };
+            criteria.status = 'Inactive';
         }
         return new Promise(function (resolve, reject) {
-            Job.find({
-                company: coy_id,
-                status: 'Active',
-                closing_date: jobstatus
-            }).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
+            Job.find(criteria).populate('category').populate('applications').populate('poster').sort('createdAt desc').exec(function (err, jobs) {
                 if (err) {
                     reject(err);
                     return;
@@ -110,7 +114,6 @@ module.exports = {
                         // catch GQ posted jobs
                         //console.log(job)
                         if (job.poster && job.poster.id == 0) {
-                            console.log('Aye')
                             job.admin_post = 'GQ';
                         }
 

@@ -145,7 +145,7 @@
                 </li>
 
                 <li class="gq-test">
-                    <a href="/admin/gq-test">
+                    <a href="/gqtest/manage">
                         <i class="pe-7s-edit"></i>
                         <p>GQ Tests</p>
                     </a>

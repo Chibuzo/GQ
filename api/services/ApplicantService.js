@@ -179,7 +179,7 @@ module.exports = {
                 Resume.count({photo_status: true}),
                 Resume.count({photo_status: false}),
                 Resume.count({video_status: true}),
-                Resume.count({video_status: false}),
+                Resume.count({video_status: false, test_status: true}),
                 fetchNoTestsApplicants(),
                 fetchSomeTestsApplicants(),
                 fetchCompleteTestsApplicants(),
@@ -209,7 +209,7 @@ module.exports = {
 
     fetchAll: function() {
         return new Promise(function(resolve) {
-            User.find({user_type: 'Applicant'}).exec(function (err, applicants) {
+            User.find({user_type: 'Applicant'}).limit(500).exec(function (err, applicants) {
                 return resolve(applicants);
             });
         });
@@ -266,7 +266,10 @@ module.exports = {
                 data.push('%' + school + '%');
             }
             if (course) {
+                sql += "JOIN employment emp ON r.id = emp.resume "
                 where += "AND e.programme LIKE ? ";
+                where += "OR emp.role LIKE ? "
+                data.push('%' + course + '%');
                 data.push('%' + course + '%');
             }
             if (result) {
@@ -284,21 +287,25 @@ module.exports = {
             data.push(state);
         }
         
-        // if search button is click and no field was set
-        if (data.length == 0) {
-            return reject('Phew!!! Redirect to same page.');
-        } else {
-            sql += where;
-            return new Promise(function(resolve) {
+        return new Promise(function(resolve, reject) {
+            // if search button is click and no field was set
+            if (data.length == 0) {
+                return reject('Phew!!! Redirect to same page.');
+            } else {
+                sql += where;
                 Resume.query(sql, data, function(err, result) {
+                    if (err) {
+                        console.log(err)
+                        return reject(err);
+                    }
                     var users = [];
                     result.forEach(function(user) {
                         users.push(user.user);
                     });
                     return resolve(users);
                 });
-            });
-        }
+            }
+        });
     },
 
 

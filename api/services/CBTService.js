@@ -52,7 +52,7 @@ module.exports = {
 							return gqTestResult.proctor.integrity_score;
 						});
 
-						let integrityScore = (integrityScoreSum / 3).toFixed(1)
+						let integrityScore = (integrityScoreSum / 3).toFixed(1);
 
 						let integrityStatuses = _.map(gqTestResults, (gqTestResult) => {
 							return gqTestResult.proctor.status;
@@ -131,31 +131,36 @@ module.exports = {
             async.eachSeries(results, function(result, cb) {
                 // get their BEST aptitude test score
                 GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
-                    var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
-                    // if the job has a competency test, compute the two, else use only aptitude test score
-                    var composite_score;
-                    if (result.score) {
-                        composite_score = ((apt_score[0].score / 2) + (result.score / 2)).toFixed(1);
-                        aptitude_test_results.push(composite_score);
+                    if (apt_score.length > 0) {
+                        var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+                        var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
+                        // if the job has a competency test, compute the two, else use only aptitude test score
+                        var composite_score;
+                        if (result.score) {
+                            composite_score = (gq_score / 2) + (percentage / 2);
+                            aptitude_test_results.push(composite_score);
+                        } else {
+                            composite_score = apt_score[0].score;
+                            aptitude_test_results.push(apt_score[0].score);
+                        }
+                        gq_results.push({
+                            test_id: result.id,
+                            applicant: result.candidate,
+                            job_score: result.score ? percentage : 'NA', // condition not really required
+                            percentage: gq_score,
+                            percentile: '-',
+                            test_result: percentage > 59 ? 'Passed' : 'Failed',
+                            composite_score: composite_score,
+                            aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+                            integrity_score: result.proctor.integrity_score,
+                            proctor_status: result.proctor.status,
+                            proctor_id: result.proctor.id,
+                            createdAt: result.createdAt
+                        });
+                        cb();
                     } else {
-                        composite_score = apt_score[0].score;
-                        aptitude_test_results.push(apt_score[0].score);
+                        cb();
                     }
-                    gq_results.push({
-                        test_id: result.id,
-                        applicant: result.candidate,
-                        score: result.score ? result.score : 'NA',
-                        percentage: percentage,
-                        percentile: '-',
-                        test_result: percentage > 59 ? 'Passed' : 'Failed',
-                        composite_score: composite_score,
-                        aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                        integrity_score: result.proctor.integrity_score,
-                        proctor_status: result.proctor.status,
-                        proctor_id: result.proctor.id,
-                        createdAt: result.createdAt
-                    });
-                    cb();
                 });
             }, function() {
                 gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b });
@@ -195,25 +200,29 @@ module.exports = {
 
     saveGeneralTestScore: function(candidate) {
         return new Promise(function(resolve, reject) {
-            GQTestResult.find({
-                candidate: candidate,
-                test: [1, 2, 3]
-            }).sum('score').groupBy('candidate').exec(function (err, scores) {
-                var data = {
-                    score: scores[0].score,
-                    user: candidate
-                };
-                GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
-                    if (result.length > 0) {
-                        GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function (err, res) {
-                            // handle errors if you like
-                            return resolve(true); // 13/02/2018
-                        });
-                    } else {
-                        GQAptitudeTestResult.create(data).exec(function (e, nc) {
-                            return resolve(true);
-                        });
-                    }
+            GQTestResult.find({ candidate: candidate }).exec(function(err, tests) {
+                if (tests.length < 3) return resolve('On'); // still taking test
+
+                GQTestResult.find({
+                    candidate: candidate,
+                    test: [1, 2, 3]
+                }).sum('score').groupBy('candidate').exec(function (err, scores) {
+                    var data = {
+                        score: scores[0].score,
+                        user: candidate
+                    };
+                    GQAptitudeTestResult.find({user: candidate}).exec(function (err, result) {
+                        if (result.length > 0) {
+                            GQAptitudeTestResult.update({user: candidate}, { score: scores[0].score }).exec(function (err, res) {
+                                // handle errors if you like
+                                return resolve(true); // 13/02/2018
+                            });
+                        } else {
+                            GQAptitudeTestResult.create(data).exec(function (e, nc) {
+                                return resolve(true);
+                            });
+                        }
+                    });
                 });
             });
         });
@@ -257,7 +266,7 @@ module.exports = {
     cancelGQApptitudeTest: function(userId) {
         return Promise.all([
                 GQAptitudeTestResult.destroy({user: userId}),
-                GQTestResult.destroy({candidate: userId}),
+                GQTestResult.destroy({ candidate: userId, test: [1, 2, 3 ] }),
                 Resume.update({user: userId}, {test_status: false, status: 'Incomplete'})
             ]).then(results => {
                 let destroyedRecords = results[1];

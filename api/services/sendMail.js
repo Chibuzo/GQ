@@ -111,6 +111,15 @@ module.exports = {
         module.exports.sendMail(user.email, subject, template, data);
     },
 
+    customSendAppliedJobNotice: function(name, email) {
+        var data = {
+            user: name,
+        };
+        var subject = "AIRTEL ENTRY LEVEL JOB ALERT!!!!";
+        var template = 'customAppliedJobNotice';
+        module.exports.sendMail(email, subject, template, data);
+    },
+
     // sent after company account activation
     companyIntroduction: function(email, contact_person) {
         var data = {
@@ -207,6 +216,18 @@ module.exports = {
         var template = 'testCancellationNotice';
         module.exports.sendMail(user.email, subject, template, data);
     },
+
+
+    notifyOnJobTestCheat: function(user, job_title) {
+        var data = {
+            user: user.fullname,
+            job_title: job_title
+        };
+        var subject = "GetQualified has cancelled your competency test result";
+        var template = 'jobtestCancellationNotice';
+        module.exports.sendMail(user.email, subject, template, data);
+    },
+
 
     testResetNotification: function(user) {
         var data = {

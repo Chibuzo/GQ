@@ -78,15 +78,25 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             // look for test result
             var tests_taken = []
-            GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).sort('id desc').limit(1).exec(function(err, tests) {
-                if (tests.length > 0) {
-                    if (tests[0].test < 3)
-                        return resolve(tests[0].test + 1);
-                    else // its 3 return 1
-                        return resolve(1);
-                } else {
+            GQTestResult.find({ candidate: candidate_id, test: [1,2,3] }).exec(function(err, tests) {
+                var _tests = [];
+                if (tests.length == 0) {
                     return resolve(1);
+                } else {
+                    tests.forEach(function(test) {
+                        _tests.push(test.test);
+                    });
+                    var next = _.difference([1,2,3], _tests);
+                    next.sort(function(a, b) { return a - b; });
+                    return resolve(next[0]);
                 }
+                //     if (tests[0].test < 3)
+                //         return resolve(tests[0].test + 1);
+                //     else // its 3 return 1
+                //         return resolve(1);
+                // } else {
+                   
+                // }
             });
         });
     },
@@ -119,7 +129,8 @@ module.exports = {
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        // Get Overall/average Integrity score
+                        if (!tests[0] || tests.length < 3) return cb();
+                    
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
                         })
@@ -148,19 +159,23 @@ module.exports = {
                             proctorId: _.get(tests, '[2].proctor.id', -1)
                         };
 
-                        candidates.push({
-                            id: apt_result.user,
-                            fullname: tests[0].candidate.fullname,
-                            generalAbilityTest: generalAbilityTest,
-                            verbalTest: verbalTest,
-                            mathsTest: mathsTest,
-                            test_date: apt_result.createdAt,
-                            percentage: ((apt_result.score / 60) * 100).toFixed(1),
-                            rank: apt_scores.indexOf(apt_result.score) + 1,
-                            integrity_score: integrityScore,
-                            status: apt_result.status
-                        });
-                        cb();
+                        try {
+                            candidates.push({
+                                id: apt_result.user,
+                                fullname: tests[0].candidate.fullname,
+                                generalAbilityTest: generalAbilityTest,
+                                verbalTest: verbalTest,
+                                mathsTest: mathsTest,
+                                test_date: apt_result.createdAt,
+                                percentage: ((apt_result.score / 60) * 100).toFixed(1),
+                                rank: apt_scores.indexOf(apt_result.score) + 1,
+                                integrity_score: integrityScore,
+                                status: apt_result.status
+                            });
+                            cb();
+                        } catch (err) {
+                            
+                        }
                     });
                 }, function(err) {
                     if (err) return reject(err);

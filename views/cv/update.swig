@@ -12,6 +12,8 @@
 
 {% block body %}
 <link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
+<link href="/styles/proctor-style.css" rel="stylesheet" />
+<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -37,7 +39,7 @@
 		display: inline-block;
 	}
 
-	.addable {
+	.addable, .RC-video-canvass {
 		display: none;
 	}
 
@@ -52,14 +54,6 @@
 
 	#test-notice {
 		padding: 10px 120px;
-	}
-
-	.cell {
-		opacity: 0;
-		position: fixed !important;
-		left:-60px;
-		top:122px;
-		z-index: 20000;
 	}
 
 	.empty-vid {
@@ -79,7 +73,7 @@
 
 	.question-title {
 		cursor: pointer;
-		font: 100 17px 'Open Sans Light', san-serif, Tahoma;
+		font: 100 16px 'Open Sans Light', san-serif, Tahoma;
 		padding: 3px 10px 10px;
 		border-bottom: #ccc solid thin;
 	}
@@ -195,8 +189,9 @@
 	}
 
 	h4 {
-		font-size: 28px;
-		font-weight: 400;
+		/**font-size: 28px;
+		font-weight: 400;**/
+		margin-top: 5px;
 	}
 
 	hr {
@@ -241,12 +236,6 @@
 		}
 	}
 </style>
-	<div class="cell hidden">
-		<div class="proctor-container" style="position: relative; width: 320px; height: 240px">
-			<video id="proctor-video" width="320" height="240" preload autoplay loop muted style="position: absolute; top: 0; left: 0"></video>
-			<canvas id="proctor-canvas" width="320" height="240" style="position: absolute; top: 0; left: 0"></canvas>
-		</div>
-	</div>
 
 	<div class="cell">
 		<div id="vol-meter"></div>
@@ -388,7 +377,7 @@
 												<p><strong>Please read the following instructions very carefully as they describe critical elements of the GQ Assessment.</strong></p>
 												<p class="text-left"><br>
 													<ol class="text-left">
-														<li>All tests must be taken on a laptop or desktop computer equipped with a webcam. Please do not attempt to take the test on a mobile device (phone or tablet).</li>
+														<li>All tests must be taken preferably on a laptop or desktop computer equipped with a webcam. A smart phone can be used but it should hava a 4G or WiFi connection.</li>
 														<li>Questions are presented as multiple-choice. Please read each question carefully and choose the correct answer.</li>
 														<li>You may go back to change your answers to previous questions provided that you are within the time limit indicated for the test</li>
 														<li>The test is equipped with Get Qualified’s digital invigilation software, which monitors the candidate as (s)he takes the test to ensure the test is taken under strict exam conditions.</li>
@@ -405,148 +394,8 @@
 										</div>
 
 										<!-- TEST CONTAINER -->
-										<div class="row test">
-											<div class="col-md-12 overlay-container">
-												<div class="alert alert-warning text-center invisible" id="notification-alert">You are currently disconnected from the internet. You need to be connected on the internet to continue this test</div>
-												<div class="test-overlay"></div>
+										{% include '../gqtest/includes/testpage.swig' %}
 
-												<div class="row">
-													<h3 class="test-title text-center"></h3><br>
-												</div>
-
-												<div class="row">
-													<div id="instructions" class="col-md-10 col-md-offset-1">
-														<div class="instruction"></div>
-														<div class="text-center">
-															<button class="btn btn-lg btn-primary hidden" id="start-test"><i class="fa fa-clock-o"></i> Start Test</button>
-														</div>
-													</div>
-												</div>
-
-												<div class="row inner-test-div" style="display: none;">
-
-													<div class="col-md-5 col-sm-12 col-xs-12 pull-right">
-														<!-- Timer -->
-														<div class="test-panel-text text-center" style="font-size: 18px">
-															<span><strong>Time Remaining: </strong></span>
-															<div id="countdowntimer"></div><br>
-														</div>
-														
-														<!-- Invigilation Score -->
-														<div class="row">
-															<div class="col-sm-8 col-sm-offset-2 col-xs-12">
-																<div class="invigilation-report test-panel-text">
-																	<div><strong>Invigilation Score:</strong></div>
-																</div>
-
-																<div class="progress" rel="tooltip" title="This score is a measure of the integrity of your test. Keep it high by taking test alone in a very quiet room." style="margin-bottom: 0px;">
-																  <div class="progress-bar progress-bar-success" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%; ">
-																	{#<span class="sr-only">100% Complete (danger)</span>Integrity Score#}
-																  </div>
-																</div>
-															</div>
-														</div>
-
-														
-
-														<div class="row">
-															<div class="col-md-12" style="margin-bottom: 14px">
-																<div class="row" style="text-align: center;font-weight: bold;">
-																	Question Key:
-																</div>
-
-																<div class="row">
-																	<div class="col-xs-3">
-																		<p class="key-text">
-																			Answered:
-																		</p>
-																		<div class="question-num-base question-key" style="background-color: #99cc66;"></div>
-																	</div>
-
-																	<div class="col-xs-3">
-																		<p class="key-text">
-																			Skipped:
-																		</p>
-																		<div class="question-num-base question-key" style="background-color: #c9302c;"></div>
-																	</div>
-
-																	<div class="col-xs-3">
-																		<p class="key-text">
-																			Current:
-																		</p>
-																		<div class="question-num-base question-key" style="background-color: #A37F2D"></div>
-																	</div>
-
-																	<div class="col-xs-3">
-																		<p class="key-text">
-																			Unanswered:
-																		</p>
-																		<div class="question-num-base question-key"></div>
-																	</div>
-
-																</div>
-															</div>
-														</div>
-
-														
-
-														<div class="row">
-															<!-- THIS IS HIDDEN -->
-															<div class="question-count text-right" style="display: none;"><span id="current_quest"></span> / <span id="total_questions"></span></div>
-															<div class="col-md-12">
-																<div class="question-nums row">
-																</div>
-															</div>
-														</div>
-													</div>
-
-													<div class="col-md-7 col-sm-12 col-xs-12 pull-left">
-														<div class="col-md-9 col-sm-12 col-xs-12">
-															<div class="question"></div>
-															<div class="question-image"></div>
-															<div class="options">
-																<ul class="opts">
-																	<li><label class="radio"><span id="span-opt-a"></span> <input name="opt" id="opt_a" type="radio" class="form-control" data-toggle="radio" value="A" /></label></li>
-																	<li><label class="radio"><span id="span-opt-b"></span> <input name="opt" id="opt_b" type="radio" class="form-control" data-toggle="radio" value="B" /></label></li>
-																	<li><label class="radio"><span id="span-opt-c"></span> <input name="opt" id="opt_c" type="radio" class="form-control" data-toggle="radio" value="C" /></label></li>
-																	<li><label class="radio"><span id="span-opt-d"></span> <input name="opt" id="opt_d" type="radio" class="form-control" data-toggle="radio" value="D" /></label></li>
-																	<li><label class="radio"><span id="span-opt-e"></span> <input name="opt" id="opt_e" type="radio" class="form-control" data-toggle="radio" value="E" /></label></li>
-																</ul>
-															</div>
-														</div>
-													</div>
-												</div>
-
-												<div class="row nav-row inner-test-div" style="display: none;">
-
-													<div class="col-md-7 col-sm-12 col-xs-12">
-														<div class="nav-btns">
-															<button class="btn btn-info btn-fill" id="prev-question"><i class="fa fa-caret-left"></i>Prev</button>
-															<button class="btn btn-info btn-fill" id="next-question">Next <i class="fa fa-caret-right"></i></button>
-														</div>
-													</div>
-
-													<div class="col-md-5 col-sm-12 col-xs-12">
-														<div class="nav-btns" style="text-align: center; padding-top: 10px">
-															<button class="btn btn-primary btn-fill" id="submit-test">Submit Section </button>
-														</div>
-													</div>
-
-												</div>
-
-											</div>
-											<div class="test-blocked-screen hidden" style="margin-top: 15px">
-												<div class="alert alert-danger">
-													<div class="text-center">
-														<br><i class="fa fa-ban fa-4x"></i>
-														<br><br><h4>Hi {{ resume.fullname }},<br><br>Your microphone and webcam MUST grant access to this page before you can proceed with the test.</h4>
-														<p>You will need to refresh this page after granting access to use your webcam and microphone.</p>
-													</div>
-												</div>
-												<span id="integrity-score" class="hidden"></span>
-											</div>
-										</div>
-										<!-- test row end -->
 									</div>
 								{% else %}
                                     {% if resume.profile_status !== true %}
@@ -564,42 +413,71 @@
 							</div>
 
 							<div class="tab-pane fade in" id="video">
-								<div class="row" style="margin-top: 40px">
+								<div class="row" style="margin-top: 20px">
 									<div class="col-md-6">
-										<h3>Instructions</h3>
+										<h4>Basic Instructions</h4>
+										<ol style="margin-left: -14px">
+											<li>Dress professionally as prospective employers will use this video as part of the candidate selection process</li>
+											<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>
+											<li>Record your video during daylight hours or in a well lit room</li>
+											<li>Ensure that the light source is behind and not in front of the camera to avoid your face being in shadow</li>
+											<li>Once finished, please play back the video and ensure audio volume is adequate. </li>
+											<li>If audio volume is not appropriate, please try using headphone with a built in microphone and ensure your microphone volume is high</li>
+										</ol>	
 										<div class="">
-											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i>Briefly introduce yourself to prospective employers</h5>
+											<h4>Questions to Answer</h4>
+											<h5 class="question-title" id="about">Briefly introduce yourself to prospective employers</h5>
 											<div class="quest-instruction" id="about-text">Give employers a sense for who you are, your motivations and your aspirations. Focus on traits that make you unique and are not readily apparent from you CV. This is your personal “elevator pitch” to employers that ensures you are memorable and hence, stand out from the crowd.</div>
-											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i>Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
+											<h5 class="question-title" id="work">Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
 											<div class="quest-instruction" id="work-text">This question tests your ability to be resilient and cope under pressure. It gives you the opportunity to demonstrate how you can use your initiative and act with integrity. Your answer should focus on a work-related issue, explain clearly the measures you took to overcome the obstacle. Don’t fall into the trap of criticising your company or colleagues and trying to present yourself in a superior light. This will come across as unprofessional and arrogant.</div>
 
-											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i>Describe the work environment or culture in which you are most productive and happy?</h5>
+											<h5 class="question-title" id="strength">Describe the work environment or culture in which you are most productive and happy?</h5>
 											<div class="quest-instruction" id="strength-text">A good way to approach this question is to show that you are aware of the benefits of different work environments or cultures and you understand that you need to be comfortable working in these scenarios. It is fine to have a preference, as many of us will prefer one specific environment to the other. The key is for you to ensure that prospective employers understand your preferred environment or culture (working in a team or individually, working in an unstructured or structured environment, large or smaller team, strict supervision or less supervision, etc).</div>
 
-											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i>Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
+											<h5 class="question-title" id="environment">Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
 											<div class="quest-instruction" id="environment-text">This question is a good way to demonstrate that you are able to work well under pressure and stay focused on the task at hand. This is an opportunity to explain the measures you put in place to prevent an issue from spiralling into a stressful situation. Give an example of when you were faced with a difficult situation and how you kept a cool head and stuck through the situation. Getting overwhelmed by stress can be counter-productive, especially when working in a team. Employers will look to avoid hiring candidates who crack under pressure.</div>
 
-											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i>How do you react when asked to do something beyond your capabilities?</h5>
+											<h5 class="question-title" id="future">How do you react when asked to do something beyond your capabilities?</h5>
 											<div class="quest-instruction" id="future-text">There’s no right or wrong answer for this question. This question tries to establish what makes you tick, and how you manage challenging tasks. Therefore, your answer needs to reflect this. Whatever your answer is, make sure you say why.</div>
 
 											<a id="sample-vid-btn" href="" data-modal-id="modal-sample-video"> See Sample Video </a>
 										</div>
 									</div>
 									{% if resume.video_status == true %}
-										<div class="col-md-5">
-											<iframe width="420" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+										<div class="col-md-5 gq-video-canvass">
+											<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<br>
+											<div class="alert alert-warning hidden video-alert"></div>
+											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
-												<button class="btn btn-default select-file-button">Change Video</button>
+												<button class="btn btn-default selectfile-button hidden">Change Video</button>
+												<button class="btn btn-primary record-video">Record Video</button>
+												<div class="progress" style="margin: 10px 5px;">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">0%</span>
+													</div>
+												</div>
 											</div>
 											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
 										</div>
 										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
 									{% else %}
-										<div class="col-md-5">
+										<div class="col-md-5 gq-video-canvass">
 											<div class="empty-vid">
+												<div class="alert alert-warning hidden">Notice: You can not upload a video at this moment. Please check back in a fews hours. Thank you.</div>
+												<div class="alert alert-warning hidden video-alert"></div>
+												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
-												<p><button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button></p>
+												<p>
+													<button class="btn btn-danger selectfile-button hidden"><i class="fa fa-video-camera"></i> Upload Your Video</button>
+													<button class="btn btn-primary record-video">Record Video</button>	
+												</p>
 												<br>
+												 <div class="progress" style="margin: 10px 5px;">
+													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
+														<span class="sr-only">0%</span>
+													</div>
+												</div>
 												<ul class="text-left">
 													<li>The video file size must not be more than 100MB</li>
 													<li>Then length of the video must not be more than 3 minutes</li>
@@ -608,8 +486,12 @@
 											</div>
 										</div>
 									{% endif %}
-									<div class="alert alert-info hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
-									<input id="select-file" type="file" style="display:none">
+									<!--<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
+										<input type="hidden" name="video_name" value="{{ resume.video }}" />
+										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
+										<input type="file" name="video" style="display: none" id="file-control" />
+									</form>-->
+									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
 
@@ -642,6 +524,8 @@
 	        </div>
 	    </div>
 	</div>
+
+	{% include '../applicant/includes/video-recorder-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
@@ -692,7 +576,7 @@
 	<!-- Main Setup -->
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=21"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=23"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
@@ -899,6 +783,59 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="/js/youtubeUpload.js?v=2"></script>
+	<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>
+	<script src="https://api.neon.ventures/proctor/js/pavp.js"></script>
+	<!--<script src="/js/youtubeUpload.js"></script>-->
 
+<script>
+$(document).ready(function() {
+	// $(".selectfile-button").click(function() {
+	// 	$("input[name=video]").click();
+	// });
+	
+	$(".record-video").click(function() {
+		$("#videoRecorderModal").modal();
+
+		pavp = new Pavp({
+			onUploadButtonClicked: function($this, video_file) {
+				var video = video_file;
+				uploadFile(video);
+			}
+		});
+	});
+
+		//var vd = new FormData($("#form-video-upload")[0]);
+
+	$("#videoRecorderModal").on("hidden.bs.modal", function () {
+        pavp.stop();
+    });
+});
+
+function uploadFile(video) {
+	$.ajax({
+		type: "POST",
+		url: '/applicant/add-profilevideo',
+		data: { data: video },
+		success: function (data) {
+			location.reload(true);
+		},
+		xhr: function(){
+			//Get XmlHttpRequest object
+			var xhr = $.ajaxSettings.xhr() ;
+			//Set onprogress event handler
+			xhr.upload.onprogress = function(data){
+				var perc = Math.round((data.loaded / data.total) * 100);
+				$('#progressBar span.sr-only').text(perc + '%');
+				$('#progressBar').css('width', perc + '%');
+			};
+			return xhr ;
+		},
+		error: function (e) {
+			//HideLoad();
+			console.log(e)
+			console.error('Error has occurred while uploading the media file.');
+		}
+	});
+}
+</script>
 {% endblock %}

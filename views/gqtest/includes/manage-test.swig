@@ -1,11 +1,4 @@
-{% extends '../admin/layout.swig' %}
-{% set title = 'Manage Test' %}
-{% block page_title %}
-	<i class="pe-7s-edit"></i> Manage Tests
-{% endblock %}
-
-{% block body %}
-	<div class="col-md-5 pull-right">
+<div class="col-md-5 pull-right">
 		<a href="/gqtest/createnew" class="btn btn-success btn-fill pull-right btnsm" style="margin-top: -10px; margin-bottom: 10px"><i class="fa fa-plus"></i> Create New Test</a>
 	</div>
 
@@ -62,29 +55,3 @@
 		<input type="hidden" name="test_id" id="test_id" />
 		<input type="file" name="excel" id="excel" class="hidden" />
 	</form>
-{% endblock %}
-
-{% block modals %}
-{#{% include "includes/test-form.swig" %}#}
-{#{% include "includes/manage-test-modal.swig" %}#}
-{% endblock %}
-
-{% block scriptTag %}
-<script type="text/javascript">
-$(document).ready(function() {
-	$('.gq-test').addClass('active');
-
-	$(".del-test").click(function (e) {
-		e.preventDefault();
-		var $this = $(this);
-		if (confirm("Are you sure you want to delete this test?")) {
-			var id = $(this).parents('tr').attr('id');
-			$.get('/gqtest/remove', { id: id }, function(d) {
-				if (d.status.trim() == 'success') {
-					$this.parents('tr').fadeOut();
-				}
-			}, 'JSON');
-		}
-	});
-});
-</script>

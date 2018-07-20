@@ -6428,13 +6428,14 @@ module.exports = {
         var request = require('request');
         var qs = require('querystring');
 
-        req.session.job_id = req.param('job_id');
+        req.session.application_id = req.param('job_id');
 
         var data = {
             password: '1p2r9o6d4u5t1c',
             partnerid: '1296451',
             testid: req.param('test_id'),
             partneruserid: req.session.userId,
+            gqtestid: req.param('gqtest_id'),
             returnURL: 'https://getqualified.work/test/show-result/' + req.param('test_id'),
             dev: false,
             debug: false,
@@ -6462,6 +6463,7 @@ module.exports = {
         var result = data.request.method;
 
         CBTTest.find({ test_id: result.test_id }).exec(function(err, test) {
+            if (test.length < 1) return;
             var test_result = {
                 test_id: result.test_id,
                 applicant: result.user_id,
@@ -6486,7 +6488,7 @@ module.exports = {
         // update application
         if (req.session.job_id) {
             // update application status
-            Application.update({ job: req.session.job_id, applicant: req.session.userId }, { status: 'Under Review' }).exec(function() {});
+            Application.update({ id: req.session.application_id }, { status: 'Under Review' }).exec(function() {});
         }
         return res.ok();
     },

@@ -57,13 +57,18 @@
 						</thead>
 						<tbody>
 						{% for job in jobs %}
-							{% if job.tests.length < 1 %}
+							{#{% if job.tests.length < 1 %}
 								{% set status = 'Under Review' %}
 								{% set btn_state = "disabled" %}
 							{% else %}
 								{% set status = job.status %}
 								{% set btn_state = "" %}
-							{% endif %}
+							{% endif %}#}
+							{% if job.status == 'Take test' %}
+								{% set btn_state = "" %}
+							{% else %}
+								{% set btn_state = "disabled" %}
+							{% endif %}	
 							<tr id="{{ job.id }}">
 								{# <td style="width: 30px"><label class="checkbox"><input type="checkbox" class="form-control" data-toggle="checkbox" /></label></td> #}
 								<td>{{ job.createdAt | date('d-m-Y') }}</td>
@@ -71,17 +76,17 @@
 								<td>{{ job.job.job_title }}</td>
 								<td>{{ job.job.location }}</td>
 								<td>{{ job.job.job_level }}</td>
-								<td>{{ status }}</td>
+								<td>{{ job.status }}</td>
 								<td>{{ job.job.closing_date | date('d-m-Y') }}</td>
 								<td class="opt-icons text-center dropdown">
 									<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
-									<ul class='dropdown-menu pull-left'>
+									<ul class='dropdown-menu dropdown-menu-right'>
 										<li class='dropdown-header'>Required Online Tests for the Job</li>
 										{% for test in job.tests %}
 											{% if test.test_source == 'gq' %}
 												<li><a href="/gqtest/gettest/{{ test.gq_test.id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 											{% else %}
-												<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
+												<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}/{{ test.test.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 											{% endif %}
 										{% endfor %}
 									</ul>
