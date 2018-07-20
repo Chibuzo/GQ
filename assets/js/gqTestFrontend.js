@@ -60,6 +60,8 @@ $(".load-test").click(function() {
             // update test_id for the resuming section test (GQ aptitude test)
             TEST_ID = d.test_id;
             $(".load-test").data('test_id', d.test_id);
+        } else {
+            $('.load-test').text('Load Test').prop('disabled', false);
         }
     }, 'JSON');
 });

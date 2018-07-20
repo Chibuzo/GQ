@@ -73,7 +73,7 @@
 
 	.question-title {
 		cursor: pointer;
-		font: 100 17px 'Open Sans Light', san-serif, Tahoma;
+		font: 100 16px 'Open Sans Light', san-serif, Tahoma;
 		padding: 3px 10px 10px;
 		border-bottom: #ccc solid thin;
 	}
@@ -189,8 +189,9 @@
 	}
 
 	h4 {
-		font-size: 28px;
-		font-weight: 400;
+		/**font-size: 28px;
+		font-weight: 400;**/
+		margin-top: 5px;
 	}
 
 	hr {
@@ -412,22 +413,31 @@
 							</div>
 
 							<div class="tab-pane fade in" id="video">
-								<div class="row" style="margin-top: 40px">
+								<div class="row" style="margin-top: 20px">
 									<div class="col-md-6">
-										<h3>Instructions</h3>
+										<h4>Basic Instructions</h4>
+										<ol style="margin-left: -14px">
+											<li>Dress professionally as prospective employers will use this video as part of the candidate selection process</li>
+											<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>
+											<li>Record your video during daylight hours or in a well lit room</li>
+											<li>Ensure that the light source is behind and not in front of the camera to avoid your face being in shadow</li>
+											<li>Once finished, please play back the video and ensure audio volume is adequate. </li>
+											<li>If audio volume is not appropriate, please try using headphone with a built in microphone and ensure your microphone volume is high</li>
+										</ol>	
 										<div class="">
-											<h5 class="question-title" id="about"><i class="fa fa-caret-right"></i>Briefly introduce yourself to prospective employers</h5>
+											<h4>Questions to Answer</h4>
+											<h5 class="question-title" id="about">Briefly introduce yourself to prospective employers</h5>
 											<div class="quest-instruction" id="about-text">Give employers a sense for who you are, your motivations and your aspirations. Focus on traits that make you unique and are not readily apparent from you CV. This is your personal “elevator pitch” to employers that ensures you are memorable and hence, stand out from the crowd.</div>
-											<h5 class="question-title" id="work"><i class="fa fa-caret-right"></i>Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
+											<h5 class="question-title" id="work">Discuss a time when you were faced with a major obstacle (work or otherwise) and how you overcame it?</h5>
 											<div class="quest-instruction" id="work-text">This question tests your ability to be resilient and cope under pressure. It gives you the opportunity to demonstrate how you can use your initiative and act with integrity. Your answer should focus on a work-related issue, explain clearly the measures you took to overcome the obstacle. Don’t fall into the trap of criticising your company or colleagues and trying to present yourself in a superior light. This will come across as unprofessional and arrogant.</div>
 
-											<h5 class="question-title" id="strength"><i class="fa fa-caret-right"></i>Describe the work environment or culture in which you are most productive and happy?</h5>
+											<h5 class="question-title" id="strength">Describe the work environment or culture in which you are most productive and happy?</h5>
 											<div class="quest-instruction" id="strength-text">A good way to approach this question is to show that you are aware of the benefits of different work environments or cultures and you understand that you need to be comfortable working in these scenarios. It is fine to have a preference, as many of us will prefer one specific environment to the other. The key is for you to ensure that prospective employers understand your preferred environment or culture (working in a team or individually, working in an unstructured or structured environment, large or smaller team, strict supervision or less supervision, etc).</div>
 
-											<h5 class="question-title" id="environment"><i class="fa fa-caret-right"></i>Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
+											<h5 class="question-title" id="environment">Drawing on your work experience or personal life, can you give an example of a time when you wanted to give up, and chose not to?</h5>
 											<div class="quest-instruction" id="environment-text">This question is a good way to demonstrate that you are able to work well under pressure and stay focused on the task at hand. This is an opportunity to explain the measures you put in place to prevent an issue from spiralling into a stressful situation. Give an example of when you were faced with a difficult situation and how you kept a cool head and stuck through the situation. Getting overwhelmed by stress can be counter-productive, especially when working in a team. Employers will look to avoid hiring candidates who crack under pressure.</div>
 
-											<h5 class="question-title" id="future"><i class="fa fa-caret-right"></i>How do you react when asked to do something beyond your capabilities?</h5>
+											<h5 class="question-title" id="future">How do you react when asked to do something beyond your capabilities?</h5>
 											<div class="quest-instruction" id="future-text">There’s no right or wrong answer for this question. This question tries to establish what makes you tick, and how you manage challenging tasks. Therefore, your answer needs to reflect this. Whatever your answer is, make sure you say why.</div>
 
 											<a id="sample-vid-btn" href="" data-modal-id="modal-sample-video"> See Sample Video </a>
@@ -441,7 +451,7 @@
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
 												<button class="btn btn-default select-file-button">Change Video</button>
-												<button class="btn btn-primary record-video hidden">Record Video</button>
+												<button class="btn btn-primary record-video">Record Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 														<span class="sr-only">0%</span>
@@ -460,7 +470,7 @@
 												<i class="pe-7s-video"></i>
 												<p>
 													<button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
-													<button class="btn btn-primary record-video hidden">Record Video</button>	
+													<button class="btn btn-primary record-video">Record Video</button>	
 												</p>
 												<br>
 												 <div class="progress" style="margin: 10px 5px;">
@@ -769,19 +779,8 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="/js/youtubeUpload.js"></script>
 	<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>
 	<script src="https://api.neon.ventures/proctor/js/pavp.js"></script>
-
-	<script>
-		$(document).ready(function() {
-			var pavp;
-			$(".gq-video-canvass").click(function() {
-				$(".gq-video-canvass").hide();
-				$("#videoRecorderModal").modal();
-				pavp = new Pavp();
-			});
-		});
-	</script>
+	<script src="/js/youtubeUpload.js?v=24"></script>
 
 {% endblock %}
