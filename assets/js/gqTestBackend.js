@@ -153,3 +153,16 @@ $("#delete-question").click(function() {
         location.reload();
     }
 });
+
+$(".del-test").click(function (e) {
+    e.preventDefault();
+    var $this = $(this);
+    if (confirm("Are you sure you want to delete this test?")) {
+        var id = $(this).parents('tr').attr('id');
+        $.get('/gqtest/remove', { id: id }, function(d) {
+            if (d.status.trim() == 'success') {
+                $this.parents('tr').fadeOut();
+            }
+        }, 'JSON');
+    }
+});

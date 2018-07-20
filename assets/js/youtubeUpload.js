@@ -22,7 +22,7 @@
 var TOKEN;
 
 $.ajax({
-    url: '/getYoutubeAccessToken',
+    url: 'https://getqualified.work/js/getYoutubeAccessToken',
     success: function (e) {
         if (e && e.access_token) {
             TOKEN = e.access_token;
@@ -30,6 +30,7 @@ $.ajax({
         }
     }
 })
+
 
 var selectedFile;
 
@@ -458,10 +459,11 @@ function defineRequest() {
             $('#progressBar span.sr-only').text(perc + '%');
             $('#progressBar').css('width', perc + '%');
            // $('.progress-bar').css('width', integrityScore + "%");
-            //console.log('Progress: ' + data.loaded + ' bytes loaded out of ' + data.total);
+            console.log('Progress: ' + data.loaded + ' bytes loaded out of ' + data.total);
             var totalBytes = data.total;
         }.bind(this),
         onComplete: function (data) {
+            pavp.stop();
             var uploadResponse = JSON.parse(data);
             console.log(uploadResponse);
 

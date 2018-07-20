@@ -40,7 +40,8 @@ module.exports.routes = {
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    //'POST /applicant/add-video': 'ApplicantController.uploadVideo',    //--> deprecated
+    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo', 
+
     'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
     'POST /applicant/add-profilephoto': 'ApplicantController.uploadPhoto',
@@ -77,7 +78,7 @@ module.exports.routes = {
 
     'GET /admin/applicants': 'ApplicantController.fetchApplicants',
 
-    'GET /admin/gq-test': 'GQTestController.manageTest',
+    'GET /gqtest/manage': 'GQTestController.manageTest',
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
 

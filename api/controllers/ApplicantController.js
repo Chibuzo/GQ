@@ -130,6 +130,39 @@ module.exports = {
         });
     },
 
+
+    // candidate's profile video
+    uploadVideo: function(req, res) {
+        const fs = require('fs');
+        var path = require('path').resolve(sails.config.appPath + '/assets/applicant_profilevideos');
+        var hr = process.hrtime();
+        var filename = hr[1] + '.mp4';
+        path += '/' + filename;
+        var video = req.param('data').split(';base64,').pop();
+        var buff = new Buffer(video, 'base64');
+        fs.writeFileSync(path, buff);
+
+        const uploadedvid = require('path').resolve(sails.config.appPath, 'assets/applicant_profilevideos') + '/' + filename;
+        const temp_vid = require('path').resolve(sails.config.appPath, '.tmp/public/applicant_profilevideos') + '/' + filename;
+
+        var rd = fs.createReadStream(uploadedvid);
+        var wr = fs.createWriteStream(temp_vid);
+        return new Promise(function(resolve, reject) {
+            rd.on('error', reject);
+            wr.on('error', reject);
+            wr.on('finish', resolve);
+            rd.pipe(wr);
+            return res.json(200, { status: 'success' });
+        }).catch(function(error) {
+            rd.destroy();
+            wr.end();
+            throw error;
+        });
+
+        
+    },
+
+
     showLanding: function(req, res) {
         Course.find({ status: 'Active' }).limit(3).exec(function(err, courses) {
             if (err) return res.badRequest();

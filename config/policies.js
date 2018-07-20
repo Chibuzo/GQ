@@ -84,15 +84,17 @@ module.exports.policies = {
     GQTestController: {
         loadTestInstruction: 'isLoggedIn',
         loadTest: 'isLoggedIn',
+        getTest: 'isLoggedIn',
         markTest: 'isLoggedIn',
         markGQTest: 'isLoggedIn',
-        deleteTest: 'isAdmin',
-        deleteQuestion: 'isAdmin',
-        manageTest: 'isAdmin',
-        saveTest: 'isAdmin',
-        saveQuestion: 'isAdmin',
-        uploadQuestions: 'isAdmin',
-        editTest: 'isAdmin'
+        markGQ: 'isLoggedIn',
+        deleteTest: 'isAdminOrCompany',
+        deleteQuestion: 'isAdminOrCompany',
+        manageTest: 'isAdminOrCompany',
+        saveTest: 'isAdminOrCompany',
+        saveQuestion: 'isAdminOrCompany',
+        uploadQuestions: 'isAdminOrCompany',
+        editTest: 'isAdminOrCompany'
     },
 
     selectedCandidateController: {

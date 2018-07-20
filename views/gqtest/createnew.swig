@@ -1,4 +1,4 @@
-{% extends '../admin/layout.swig' %}
+{% extends 'layout.swig' %}
 {% set title = 'Create New Test' %}
 {% block page_title %}
 	<i class="pe-7s-edit"></i> &nbsp;Create New Text
@@ -34,7 +34,7 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12" style="padding: 50px">
-							{% include 'includes/test-form.swig' %}
+							{% include '../gqtest/includes/test-form.swig' %}
 						</div>
 					</div>
 				</div>

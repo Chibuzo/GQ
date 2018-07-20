@@ -142,6 +142,11 @@ module.exports = {
             defaultsTo: 'true'
         },
 
+        require_competency_test: {
+            type: 'boolean',
+            defaultsTo: 'false'
+        },
+
         status: {
             type: 'string', // Active, Archived, Deleted
             defaultsTo: 'Active'
