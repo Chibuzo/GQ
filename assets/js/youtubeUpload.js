@@ -33,6 +33,24 @@ $.ajax({
 
 
 var selectedFile;
+var pavp;
+$(document).ready(function() {
+    $(".record-video").click(function() {
+        //$(".gq-video-canvass").hide();
+        $("#videoRecorderModal").modal();
+        pavp = new Pavp({
+            onUploadButtonClicked: function($this, video_file) {
+                selectedFile = video_file;
+                defineRequest();
+            }
+        });
+    });
+
+    $("#videoRecorderModal").on("hidden.bs.modal", function () {
+        pavp.stop();
+    });
+});
+
 
 function initClient() {
     $(".select-file-button").click(function () {
