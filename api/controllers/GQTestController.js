@@ -124,24 +124,31 @@ module.exports = {
             GQTestService.determineTestId(req.session.userId).then(function (next_test) {
                 GQTest.find({id: next_test}).exec(function (err, test) {
                     if (err) return console.log(err);
-                    //console.log(test);
+                    if (test.length > 0) {
+                        return res.json(200, {
+                            status: 'success',
+                            test_id: test[0].id,
+                            test_name: test[0].test_name,
+                            instructions: test[0].instructions
+                        });
+                    } else {
+                        return res.json(400, { status: 'error' });
+                    }
+                });
+            });
+        } else {
+            GQTest.find({id: test_id}).exec(function (err, test) {
+                if (err) return console.log(err);
+                if (test.length > 0) {
                     return res.json(200, {
                         status: 'success',
                         test_id: test[0].id,
                         test_name: test[0].test_name,
                         instructions: test[0].instructions
                     });
-                });
-            });
-        } else {
-            GQTest.find({id: test_id}).exec(function (err, test) {
-                if (err) return console.log(err);
-                return res.json(200, {
-                    status: 'success',
-                    test_id: test[0].id,
-                    test_name: test[0].test_name,
-                    instructions: test[0].instructions
-                });
+                } else {
+                    return res.json(400, { status: 'error' });
+                }
             });
         }
     },

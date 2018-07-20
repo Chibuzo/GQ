@@ -130,7 +130,7 @@
 					{% if job.require_test %}
 						{% set tchecked = "checked" %}
 					{% endif %}
-					<label class="checkbox {{ tchecked }}">Require Aptitude Test
+					<label class="checkbox {{ tchecked }}">Require GQ Aptitude Test
 						<input type="checkbox" name="require_gqtest" data-toggle="checkbox" {{ tchecked }} />
 					</label>
 				</div>

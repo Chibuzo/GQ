@@ -6463,6 +6463,7 @@ module.exports = {
         var result = data.request.method;
 
         CBTTest.find({ test_id: result.test_id }).exec(function(err, test) {
+            if (test.length < 1) return;
             var test_result = {
                 test_id: result.test_id,
                 applicant: result.user_id,

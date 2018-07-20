@@ -450,7 +450,11 @@
 											<div class="alert alert-warning hidden video-alert"></div>
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
+<<<<<<< HEAD
 												<button class="btn btn-default selectfile-button">Change Video</button>
+=======
+												<button class="btn btn-default select-file-button">Change Video</button>
+>>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
 												<button class="btn btn-primary record-video">Record Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
@@ -469,7 +473,11 @@
 												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
 												<p>
+<<<<<<< HEAD
 													<button class="btn btn-danger selectfile-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
+=======
+													<button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
+>>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
 													<button class="btn btn-primary record-video">Record Video</button>	
 												</p>
 												<br>
@@ -486,12 +494,17 @@
 											</div>
 										</div>
 									{% endif %}
+<<<<<<< HEAD
 									<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
 										<input type="hidden" name="video_name" value="{{ resume.video }}" />
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
 										<input type="file" name="video" style="display: none" id="file-control" />
 									</form>
 									<!--<input id="select-file" type="file" style="display:none">-->
+=======
+									
+									<input id="select-file" type="file" style="display:none">
+>>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
 								</div>
 							</div>
 

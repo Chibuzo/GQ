@@ -2,14 +2,16 @@
 	<div class="row">
 		<div class="col-md-7">
 			<div class="photo-instructions">
-				<p class="photo-instructions-title">Your photo is a vital part of your application process. For your GQ profile, your photo must meet the following requirements:</p>
+				<p class="photo-instructions-title">Your photo is a vital part of your application process. For your GQ profile, you should take a selfie using a smartphone or your laptop.</p>
+				<p>The photo must meet the following requirements:</p>
                 <ol>
-                    <li class="photo-instructions-item"><strong>2MB</strong> or less in in size</li>
+                    <li class="photo-instructions-item"><strong>2MB</strong> or less in size</li>
                     <li class="photo-instructions-item">Taken with full-face view directly facing the camera and length not below chest.</li>
                     <li class="photo-instructions-item">A recent picture that reflects your current appearance.</li>
                     <li class="photo-instructions-item">Do not wear accessories over your head that obscures the hairline, unless worn daily for religious purpose.</li>
                     <li class="photo-instructions-item">Headphones, wireless hand-free devices or similar items are not acceptable.</li>
                     <li class="photo-instructions-item">If you normally wear prescription glasses, hearing device or similar articles, they may be worn for your photo.</li>
+					<li class="photo-instructions-item">Dress professionally as this will be seen by prospective employers</li>
                 </ol>
 			</div>
 		</div>

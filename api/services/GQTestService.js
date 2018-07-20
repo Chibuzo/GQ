@@ -169,8 +169,6 @@ module.exports = {
                             cb();
                         } catch (err) {
                             
-                        } finally {
-                            //cb();
                         }
                     });
                 }, function(err) {
