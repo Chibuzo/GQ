@@ -83,8 +83,7 @@ module.exports = {
             console.log(err);
             return res.serverError(err);
         }
-
-        if (q('job_id') && _.isNumber(q('job_id'))) {
+        if (q('job_id') && _.isNumber(parseInt(q('job_id')))) {
             return Job.update({ id: q('job_id') }, data)
                 .then(job => {
                     if (req.session.admin) {
