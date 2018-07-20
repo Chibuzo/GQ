@@ -143,23 +143,23 @@ module.exports = {
         fs.writeFileSync(path, buff);
 
         const uploadedvid = require('path').resolve(sails.config.appPath, 'assets/applicant_profilevideos') + '/' + filename;
-        const temp_vid = require('path').resolve(sails.config.appPath, '.tmp/public/applicant_profilevideos') + '/' + filename;
 
-        var rd = fs.createReadStream(uploadedvid);
-        var wr = fs.createWriteStream(temp_vid);
-        return new Promise(function(resolve, reject) {
-            rd.on('error', reject);
-            wr.on('error', reject);
-            wr.on('finish', resolve);
-            rd.pipe(wr);
-            return res.json(200, { status: 'success' });
-        }).catch(function(error) {
-            rd.destroy();
-            wr.end();
-            throw error;
+        S3Service.uploadProfileVideo(uploadedvid).then(function(resp) {
+            Resume.update({ user: req.session.userId }, { video_file: resp.url, video_status: 'true' }).exec(function () {
+                // check for old video and delete
+                console.log(req.param('old_video'))
+                S3Service.deleteProfileVideo(req.param('old_video'));
+                
+                // delete GQ
+                if (fs.existsSync(uploadedvid)) {
+                    fs.unlinkSync(uploadedvid);
+                }
+                AmplitudeService.trackEvent('Uploaded Profile Video', req.session.userEmail);
+                return res.redirect('/applicant/resume-page#video');
+            });
+        }).catch(function(err) {
+            return res.json(400, { status: 'error', message: err });
         });
-
-        
     },
 
 

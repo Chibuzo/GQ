@@ -71,6 +71,10 @@
 		margin-top:80px;
 	}
 
+	.video-div img {
+		width: 100%;
+	}
+
 	.question-title {
 		cursor: pointer;
 		font: 100 16px 'Open Sans Light', san-serif, Tahoma;
@@ -445,7 +449,14 @@
 									</div>
 									{% if resume.video_status == true %}
 										<div class="col-md-5 gq-video-canvass">
-											<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<!--<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
+											<div class="video-div">
+												<video width="470" height="345" controls>
+													<source src="{{ resume.video_file }}" type="video/mp4">
+													Your browser does not support the video tag.
+												</video>
+											</div>	
+											<span id="old-video" class="hidden">{{ resume.video_file }}</span>
 											<br>
 											<div class="alert alert-warning hidden video-alert"></div>
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
@@ -458,13 +469,12 @@
 													</div>
 												</div>
 											</div>
-											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
+											<!--<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>-->
 										</div>
-										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
+										<!--<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>-->
 									{% else %}
 										<div class="col-md-5 gq-video-canvass">
 											<div class="empty-vid">
-												<div class="alert alert-warning hidden">Notice: You can not upload a video at this moment. Please check back in a fews hours. Thank you.</div>
 												<div class="alert alert-warning hidden video-alert"></div>
 												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
@@ -800,6 +810,8 @@ $(document).ready(function() {
 			onUploadButtonClicked: function($this, video_file) {
 				var video = video_file;
 				uploadFile(video);
+				$("#videoRecorderModal").modal('hide');
+				$(".record-video").prop('disabled', true);
 			}
 		});
 	});
@@ -812,10 +824,11 @@ $(document).ready(function() {
 });
 
 function uploadFile(video) {
+	var old_video = $("#old_video").text();
 	$.ajax({
 		type: "POST",
 		url: '/applicant/add-profilevideo',
-		data: { data: video },
+		data: { data: video, old_video: old_video },
 		success: function (data) {
 			location.reload(true);
 		},
