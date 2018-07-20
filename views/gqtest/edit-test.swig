@@ -104,7 +104,7 @@
 												<div class="form-group">
 													<div class="col-md-5">
 														<label>Upload Test Questions via Spreadsheet</label>
-														<input type="file" name="xslx_questions" /><br>
+														<input type="file" name="xslx_questions" required /><br>
 														<button type="submit" class="btn btn-info btn-fill"><i class="fa fa-upload"></i> Upload Questions</button>
 														<br><br>
 													</div>

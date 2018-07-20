@@ -16,7 +16,7 @@ let transporter = nodemailer.createTransport({
 });
 transporter.use('compile', hbs(options));
 
-const BASE_URL = 'https://getqualified.work/';
+const BASE_URL = 'https://wemabank.getqualified.work/';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'info@productivepeople.org';
 
@@ -221,7 +221,8 @@ module.exports = {
     // after candidate activates their account
     welcomeNewCandidate: function(user) {
         var data = {
-            user: user.fullname
+            user: user.fullname,
+            url: BASE_URL + 'login'
         };
         var subject = "Welcome to GetQualified";
         var template = 'welcomeNewCandidate';

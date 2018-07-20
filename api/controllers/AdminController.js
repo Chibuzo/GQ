@@ -39,6 +39,7 @@ module.exports = {
                         var data = {
                             fullname: req.param('fullname'),
                             email: req.param('email'),
+                            admin_type: req.param('admin_type'),
                             password: encryptedPassword,
                         };
 
@@ -84,9 +85,10 @@ module.exports = {
                     req.session.userId = foundUser.id;
                     req.session.admin = true;
                     req.session.fname = foundUser.fullname;
-                    req.session.user_type = 'admin';
+                    req.session.user_type = 'admin'; // not sure what this does
+                    req.session.admin_type = foundUser.admin_type;
                     req.session.userEmail = foundUser.email;
-                    return res.json(200, { status: 'Ok' });
+                    return res.json(200, { status: 'success', admin_type: req.session.admin_type });
                 }
             });
         });

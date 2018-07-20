@@ -15,6 +15,14 @@
                         <input type="email" name="email" id="email" class="form-control input-lg" />
                     </div>
                     <div class="form-group">
+                        <label for="admin_type">ADMIN TYPE</label>
+                        <select name="admin_type" class="form-control" required>
+                            <option value="">-- Admin Type --</option>
+                            <option value="test">Test Manager</option>
+                            <option value="hr">HR</option>
+                        </select>
+                    </div>        
+                    <div class="form-group">
                         <label for="password">PASSWORD</label>
                         <input type="password" name="password" id="password" class="form-control input-lg" required />
                     </div>

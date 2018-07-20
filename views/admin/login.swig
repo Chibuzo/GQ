@@ -32,8 +32,12 @@
 		$(this).find('button').html("<i class='fa fa-cog fa-spin'></i> Processing").prop('disabled', true);
 
 		$.post('/admin/login', $(this).serialize(), function(d) {
-			if (d.status.trim() == 'Ok') {
+			if (d.status.trim() == 'success') {
+				if (d.admin_type == 'test') {
+					location.replace('/admin/gq-test');
+				} else {
 					location.replace('/company-request/view-requests');
+				}
 			} else {
 				$(".alert-danger").html("<strong>Error:</strong> " + d.msg).removeClass('hidden');
 			}
