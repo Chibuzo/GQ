@@ -60,7 +60,7 @@ module.exports = {
                 function(err, ufile) {
                     if (err) return reject(err);
 
-                    if (!ufile || filename) {
+                    if (!ufile || filename === undefined || filename.lenght < 1) {
                         return reject('No file was uploaded');
                     }
                     try {
