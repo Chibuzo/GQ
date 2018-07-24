@@ -27,7 +27,11 @@ function fetchSomeTestsApplicants() {
     // Group by Candidate
     // Remove candidates who have < 3 tests
 
-    return GQTestResult.find({test: [1, 2, 3]})
+    // let sql = "SELECT candidate FROM gqtestresult WHERE test IN (1,2,3) AND candidate <> ''";
+    // return GQTestResult.query(sql, function(err, result) {
+    //     console.log(result)
+    // });
+    return GQTestResult.find({test: [1, 2, 3], candidate: 'IS NULL'})
     .then(gqTestResults => {
         let usersWithTests = _.groupBy(gqTestResults, (testResult) => {
             return testResult.candidate;
@@ -40,6 +44,7 @@ function fetchSomeTestsApplicants() {
         let usersWithSomeTestsIds = _.map(usersWithSomeTests, (testsArr, candidateId) => {
             return parseInt(testsArr[0].candidate);
         });
+        console.log(usersWithSomeTestsIds);
 
         return Resume.find({user: usersWithSomeTestsIds});
     });
