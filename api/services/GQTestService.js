@@ -15,13 +15,11 @@ module.exports = {
             var workbook = new Excel.Workbook();
             workbook.xlsx.readFile(testexcel + filename)
                 .then(function(d) {
-                    // console.log('D:');
-                    // console.log(d)
                     // use workbook
                     var sheet = workbook.getWorksheet(1);
                     for (i = 2; i < sheet.actualRowCount + 1; i++) {
                         var row = sheet.getRow(i);
-                        //if (row.getCell('B').value) break;
+                        if (row.getCell('B').value.length < 5) continue;
                         var data = {
                             test: test_id,
                             question: row.getCell('B').value,
@@ -41,7 +39,7 @@ module.exports = {
         });
     },
 
-    addImageToQuestion: function(image, current_img_name) {
+    addImageToQuestion: function(image) {
         return new Promise(function(resolve, reject) {
             if (image) {
                 var filename, hr = process.hrtime();
@@ -52,19 +50,19 @@ module.exports = {
                         if (allowedImgTypes.indexOf(file.headers['content-type']) === -1) {
                             return cb('Unsupported picture format.');
                         }
-                        if (current_img_name) {
-                            filename = current_img_name;
-                        } else {
-                            var ext = file.filename.split('.').pop();
-                            filename = hr[1] + '.' + ext;
-                        }
+                        var ext = file.filename.split('.').pop();
+                        filename = hr[1] + '.' + ext;
+                        
                         return cb(null, filename);
                     },
                     maxBytes: 100 * 1024 * 1024
                 },
-                function(err) {
+                function(err, ufile) {
                     if (err) return reject(err);
 
+                    if (!ufile || filename === undefined || filename.lenght < 1) {
+                        return reject('No file was uploaded');
+                    }
                     try {
                         const fs = require('fs');
                         const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/cbt-images') + '/' + filename;
