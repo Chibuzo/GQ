@@ -134,6 +134,7 @@ module.exports = {
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
+                    if (!apt_result.user) return cb();
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user.id }).populate('proctor').exec(function(err, tests) {
                         if (!tests[0] || tests.length < 3) return cb();
                     
