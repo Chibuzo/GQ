@@ -152,6 +152,7 @@ module.exports = {
             wr.on('error', reject);
             wr.on('finish', resolve);
             rd.pipe(wr);
+            S3Service.uploadProfileVideo(uploadedvid);
             return res.json(200, { status: 'success' });
         }).catch(function(error) {
             rd.destroy();
