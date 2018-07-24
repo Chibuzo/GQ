@@ -60,7 +60,9 @@ module.exports = {
 
     login: function(req, res) {
         Admin.findOne({ email: req.param('email') }).exec(function(err, foundUser) {
-            if (err) return res.json(200, { status: 'Err', msg: err });
+            if (err) {
+                return res.json(200, { status: 'Err', msg: err });
+            }
             if (!foundUser) return res.json(200, { status: 'Err', msg : 'User not found' });
 
             Passwords.checkPassword({

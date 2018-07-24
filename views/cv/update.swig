@@ -423,7 +423,7 @@
 										<h4>Basic Instructions</h4>
 										<ol style="margin-left: -14px">
 											<li>Dress professionally as prospective employers will use this video as part of the candidate selection process</li>
-											<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>
+											<!--<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>-->
 											<li>Record your video during daylight hours or in a well lit room</li>
 											<li>Ensure that the light source is behind and not in front of the camera to avoid your face being in shadow</li>
 											<li>Once finished, please play back the video and ensure audio volume is adequate. </li>
@@ -453,7 +453,12 @@
 											<!--<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
 											<div class="video-div">
 												<video width="470" height="345" controls>
-													<source src="{{ resume.video_file }}" type="video/webm">
+													{% if resume.youtube_vid_id.length > 5 %}
+														<source src="https://api.neon.ventures/gqyt/files/{{ resume.youtube_vid_id }}.mp4" type="video/mp4">
+													{% else %}
+														<source src="{{ resume.video_file }}" type="video/webm">
+													{% endif %}	
+													<!--<source src="{{ resume.video_file }}" type="video/mp4">-->
 													Your browser does not support the video tag.
 												</video>
 												<!--<video id="my-video" class="video-js" controls preload="auto" width="470" height="345" data-setup="{}">
@@ -801,6 +806,7 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
+	<!--<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>-->
 	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
 	<!--<script src="/js/youtubeUpload.js"></script>-->
 
