@@ -67,6 +67,7 @@ $("#form-test").submit(function(e) {
 // fetch question for edit and update
 $(".question").click(function() {
     $(".question-image").empty();
+    $("#image-file").val('');
     $(".question").removeClass('active_q');
     $(this).addClass('active_q');
     var question_id = $(this).attr('id');

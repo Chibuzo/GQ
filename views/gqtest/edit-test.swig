@@ -213,7 +213,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestBackend.js?v=1"></script>
+<script type="text/javascript" src="/js/gqTestBackend.js?v=3"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	var category = {{ test.category | json | safe }};

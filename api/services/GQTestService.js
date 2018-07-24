@@ -41,7 +41,7 @@ module.exports = {
         });
     },
 
-    addImageToQuestion: function(image, current_img_name) {
+    addImageToQuestion: function(image) {
         return new Promise(function(resolve, reject) {
             if (image) {
                 var filename, hr = process.hrtime();
@@ -52,12 +52,9 @@ module.exports = {
                         if (allowedImgTypes.indexOf(file.headers['content-type']) === -1) {
                             return cb('Unsupported picture format.');
                         }
-                        if (current_img_name) {
-                            filename = current_img_name;
-                        } else {
-                            var ext = file.filename.split('.').pop();
-                            filename = hr[1] + '.' + ext;
-                        }
+                        var ext = file.filename.split('.').pop();
+                        filename = hr[1] + '.' + ext;
+                        
                         return cb(null, filename);
                     },
                     maxBytes: 100 * 1024 * 1024
