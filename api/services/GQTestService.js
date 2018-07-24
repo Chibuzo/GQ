@@ -14,11 +14,14 @@ module.exports = {
         function(err, uploadedFile) {
             var workbook = new Excel.Workbook();
             workbook.xlsx.readFile(testexcel + filename)
-                .then(function() {
+                .then(function(d) {
+                    // console.log('D:');
+                    // console.log(d)
                     // use workbook
                     var sheet = workbook.getWorksheet(1);
-                    for (i = 14; i < 34; i++) {
+                    for (i = 2; i < sheet.actualRowCount + 1; i++) {
                         var row = sheet.getRow(i);
+                        //if (row.getCell('B').value) break;
                         var data = {
                             test: test_id,
                             question: row.getCell('B').value,
@@ -31,6 +34,9 @@ module.exports = {
                         };
                         GQTestQuestions.create(data).exec(function (err, quest) {});
                     }
+                }).catch(function(err) {
+                    console.log('Error!!!');
+                    console.log(err);
                 });
         });
     },
@@ -58,6 +64,14 @@ module.exports = {
                 },
                 function(err) {
                     if (err) return reject(err);
+
+                    try {
+                        const fs = require('fs');
+                        const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/cbt-images') + '/' + filename;
+                        fs.createReadStream(require('path').resolve(sails.config.appPath, 'assets/cbt-images') + '/' + filename).pipe(fs.createWriteStream(temp_pic));
+                    } catch(err) {
+                        console.log(err)
+                    }
                     return resolve(filename);
                 });
             } else {
@@ -117,7 +131,7 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             const candidates = [];
             const query = _candidates === undefined ? {}: {user: _candidates};
-            GQAptitudeTestResult.find(query).sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find(query).exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
@@ -168,7 +182,7 @@ module.exports = {
                             });
                             cb();
                         } catch (err) {
-                            
+                            console.log(err);
                         }
                     });
                 }, function(err) {

@@ -8,27 +8,14 @@ const fs = require('fs');
 
 module.exports = {
 	manageTest: function(req, res) {
-        var source, user_id, folder;
-        if (req.session.admin === true) {
-            source = 'GQ';
-            user_id = req.session.admin_id;
-            folder = 'admin';
-        } else if (req.session.user_type == 'company-admin' || req.session.user_type == 'company-test') {
-            source = 'COY';
-            user_id = req.session.user_id;
-            folder = 'company';
-        } else {
-            return res.serverError('Gerrout!!!');
-        }
         GQTest.find().populate('questions').sort({createdAt: 'desc'}).exec(function(err, tests) {
             if (err) return res.badRequest(err);
-            return res.view(folder + '/manage-tests', { tests: tests });
+            return res.view('gqtest/manage-tests', { tests: tests });
         });
     },
 
     createTestPage: function(req, res) {
-        var folder = req.session.admin === true ? 'admin' : 'company';
-        return res.view(folder + '/createnew');
+        return res.view('gqtest/createnew');
     },
 
     saveTest: function(req, res) {
@@ -45,9 +32,7 @@ module.exports = {
             });
         } else {
             GQTest.create(data).exec(function(err, test) {
-                if (err) {
-                    return res.json(200, { status: 'error', msg: err });
-                }
+                if (err) return res.json(200, { status: 'error', msg: err });
 
                 return res.json(200, { status: 'success' });
             });
@@ -56,7 +41,7 @@ module.exports = {
 
     uploadQuestions: function(req, res) {
         GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
-        return res.redirect('/gqtest/edittest/' + req.param('test_id'));
+        return res.ok();
     },
 
     saveQuestion: function(req, res) {
@@ -450,10 +435,8 @@ module.exports = {
 
     deleteTest: function(req, res) {
         if (req.session.admin === true) {
-            GQTest.destroy({ id: req.param('test_id') }).exec(function() {
+            GQTest.destroy({ id: req.param('quest_id') }).exec(function() {
                 // handle questions
-                GQTestQuestions.destroy({test: req.param('test_id')}).exec(function () {});
-                return res.json(200, { status: 'success' });
             });
         }
     },

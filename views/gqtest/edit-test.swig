@@ -77,7 +77,14 @@
 			<div class="col-md-12">
 				<div class="card">
 					<div class="header">
-						<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Edit Selected Test</h4>
+						<div class="row">
+							<div class="col-md-6">
+								<h4 class="title"><i class="fa fa-edit"></i>&nbsp; Edit Selected Test</h4>
+							</div>
+							<div class="col-md-5 pull-right">
+								<a href="/gqtest/manage" class="btn btn-danger pull-right"><i class="fa fa-caret-left"></i> Back to test</a>
+							</div>
+						</div>		
 					</div><br>
 					<div class="content">
 						<ul class="nav nav-tabs">
@@ -104,7 +111,7 @@
 												<div class="form-group">
 													<div class="col-md-5">
 														<label>Upload Test Questions via Spreadsheet</label>
-														<input type="file" name="xslx_questions" /><br>
+														<input type="file" name="xslx_questions" required /><br>
 														<button type="submit" class="btn btn-info btn-fill"><i class="fa fa-upload"></i> Upload Questions</button>
 														<br><br>
 													</div>
@@ -139,7 +146,7 @@
 
 													<div class="form-group">
 														<label>Question Image</label><br>
-														<button class="btn btn-fill btn-info" id="_attach-file">Attach Image file</button>
+														<button type="button" class="btn btn-fill btn-info" id="_attach-file">Attach Image file</button>
 													</div>
 
 													<div class="form-group">
@@ -206,7 +213,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestBackend.js"></script>
+<script type="text/javascript" src="/js/gqTestBackend.js?v=1"></script>
 <script type="text/javascript">
 $(document).ready(function() {
 	var category = {{ test.category | json | safe }};

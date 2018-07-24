@@ -17,7 +17,7 @@ $("#form-test").submit(function(e) {
             showNotification('bottom', 'center', 'success', 'Test Details Saved', 'pe-7s-bell');
 
             if (!$.isNumeric($("#test-id").val())) {
-                location.replace('/admin/gq-test');
+                location.replace('/gqtest/manage');
             } else {
                 if ($('input[name=add_question_type]:checked').val() == 'manual') {
                     $("#new-question").click();
@@ -151,5 +151,18 @@ $("#delete-question").click(function() {
         var quest_id = $("#_question_id").val();
         $.get('/gqtest/delete-question', { quest_id: quest_id });
         location.reload();
+    }
+});
+
+$(".del-test").click(function (e) {
+    e.preventDefault();
+    var $this = $(this);
+    if (confirm("Are you sure you want to delete this test?")) {
+        var id = $(this).parents('tr').attr('id');
+        $.get('/gqtest/remove/' + id, function(d) {
+            if (d.status.trim() == 'success') {
+                $this.parents('tr').fadeOut();
+            }
+        }, 'JSON');
     }
 });

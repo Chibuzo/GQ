@@ -96,7 +96,7 @@ module.exports = {
             criteria.status = 'Inactive';
         }
         return new Promise(function (resolve, reject) {
-            Job.find(criteria).populate('category').populate('applications').populate('poster').exec(function (err, jobs) {
+            Job.find(criteria).populate('category').populate('applications').populate('poster').sort('createdAt desc').exec(function (err, jobs) {
                 if (err) {
                     reject(err);
                     return;

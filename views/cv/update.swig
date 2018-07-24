@@ -14,6 +14,7 @@
 <link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
 <link href="/styles/proctor-style.css" rel="stylesheet" />
 <link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
+<!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -69,6 +70,10 @@
 		font-size: 80px;
 		vertical-align: middle;
 		margin-top:80px;
+	}
+
+	.video-div img {
+		width: 100%;
 	}
 
 	.question-title {
@@ -353,7 +358,7 @@
 													</tr>
 													<tr id="total">
 														<td>Total Score</td>
-														<td>{{ result.score }}/60</td>
+														<td>{{ result.score }}/{{ result.total_num_questions }}</td>
 														<td>{{ result.percentage }}%</td>
 													</tr>
 												</tbody>
@@ -418,7 +423,7 @@
 										<h4>Basic Instructions</h4>
 										<ol style="margin-left: -14px">
 											<li>Dress professionally as prospective employers will use this video as part of the candidate selection process</li>
-											<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>
+											<!--<li>You can record your video directly on GetQualified using the record button or record elsewhere and upload</li>-->
 											<li>Record your video during daylight hours or in a well lit room</li>
 											<li>Ensure that the light source is behind and not in front of the camera to avoid your face being in shadow</li>
 											<li>Once finished, please play back the video and ensure audio volume is adequate. </li>
@@ -445,16 +450,31 @@
 									</div>
 									{% if resume.video_status == true %}
 										<div class="col-md-5 gq-video-canvass">
-											<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<!--<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
+											<div class="video-div">
+												<video width="470" height="345" controls>
+													{% if resume.youtube_vid_id.length > 5 %}
+														<source src="https://api.neon.ventures/gqyt/files/{{ resume.youtube_vid_id }}.mp4" type="video/mp4">
+													{% else %}
+														<source src="{{ resume.video_file }}" type="video/webm">
+													{% endif %}	
+													<!--<source src="{{ resume.video_file }}" type="video/mp4">-->
+													Your browser does not support the video tag.
+												</video>
+												<!--<video id="my-video" class="video-js" controls preload="auto" width="470" height="345" data-setup="{}">
+													<source src="{{ resume.video_file }}" type="video/webm">
+													<p class="vjs-no-js">
+														To view this video please enable JavaScript, and consider upgrading to a web browser that
+														<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+													</p>
+												</video>-->
+											</div>	
+											<span id="old-video" class="hidden">{{ resume.video_file }}</span>
 											<br>
 											<div class="alert alert-warning hidden video-alert"></div>
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
-<<<<<<< HEAD
-												<button class="btn btn-default selectfile-button">Change Video</button>
-=======
-												<button class="btn btn-default select-file-button">Change Video</button>
->>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
+												<button class="btn btn-default selectfile-button hidden">Change Video</button>
 												<button class="btn btn-primary record-video">Record Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
@@ -462,22 +482,17 @@
 													</div>
 												</div>
 											</div>
-											<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>
+											<!--<span class="hidden" id="video_id">{{ resume.youtube_vid_id }}</span>-->
 										</div>
-										<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>
+										<!--<span id="video_id" class="hidden">{{ resume.youtube_vid_id }}</span>-->
 									{% else %}
 										<div class="col-md-5 gq-video-canvass">
 											<div class="empty-vid">
-												<div class="alert alert-warning hidden">Notice: You can not upload a video at this moment. Please check back in a fews hours. Thank you.</div>
 												<div class="alert alert-warning hidden video-alert"></div>
 												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
 												<p>
-<<<<<<< HEAD
-													<button class="btn btn-danger selectfile-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
-=======
-													<button class="btn btn-danger select-file-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
->>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
+													<button class="btn btn-danger selectfile-button hidden"><i class="fa fa-video-camera"></i> Upload Your Video</button>
 													<button class="btn btn-primary record-video">Record Video</button>	
 												</p>
 												<br>
@@ -494,17 +509,12 @@
 											</div>
 										</div>
 									{% endif %}
-<<<<<<< HEAD
-									<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
+									<!--<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
 										<input type="hidden" name="video_name" value="{{ resume.video }}" />
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
 										<input type="file" name="video" style="display: none" id="file-control" />
-									</form>
+									</form>-->
 									<!--<input id="select-file" type="file" style="display:none">-->
-=======
-									
-									<input id="select-file" type="file" style="display:none">
->>>>>>> 1966754cba6104cbe4363fcc8d5dce1c3c7ffa8a
 								</div>
 							</div>
 
@@ -796,8 +806,8 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/pavp.js"></script>
+	<!--<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>-->
+	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
 	<!--<script src="/js/youtubeUpload.js"></script>-->
 
 <script>
@@ -805,29 +815,33 @@ $(document).ready(function() {
 	// $(".selectfile-button").click(function() {
 	// 	$("input[name=video]").click();
 	// });
-
-
+	
 	$(".record-video").click(function() {
 		$("#videoRecorderModal").modal();
+
+		pavp = new Pavp({
+			onUploadButtonClicked: function($this, video_file) {
+				var video = video_file;
+				uploadFile(video);
+				$("#videoRecorderModal").modal('hide');
+				$(".record-video").prop('disabled', true);
+			}
+		});
 	});
 
-
-	pavp = new Pavp({
-		onUploadButtonClicked: function($this, video_file) {
-			var video = video_file;
-			uploadFile(video);
-		}
-	});
 		//var vd = new FormData($("#form-video-upload")[0]);
+
+	$("#videoRecorderModal").on("hidden.bs.modal", function () {
+        pavp.stop();
+    });
 });
 
-function(video) {
+function uploadFile(video) {
+	var old_video = $("#old_video").text();
 	$.ajax({
 		type: "POST",
 		url: '/applicant/add-profilevideo',
-		data: video,
-		processData: false,
-		contentType: false,
+		data: { data: video, old_video: old_video },
 		success: function (data) {
 			location.reload(true);
 		},
@@ -844,9 +858,11 @@ function(video) {
 		},
 		error: function (e) {
 			//HideLoad();
+			console.log(e)
 			console.error('Error has occurred while uploading the media file.');
 		}
 	});
 }
 </script>
+<!--<script src="https://vjs.zencdn.net/7.0.5/video.js"></script>-->
 {% endblock %}

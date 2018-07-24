@@ -77,6 +77,7 @@ module.exports = {
                 date_published: publish_date,
                 require_video: q('require_video') ? true : false,
                 require_test: q('require_gqtest') ? true : false,
+                require_competency_test: q('require_competency_test') ? true : false,
                 closing_date: new Date(Date.parse(q('closing_date'))).toISOString(),
             };
         } catch(err) {

@@ -86,6 +86,14 @@
             </div>
 
             <ul class="nav">
+            {% if req.session.admin_type == 'test' %}
+                <li class="gq-test">
+                    <a href="/gqtest/manage">
+                        <i class="pe-7s-edit"></i>
+                        <p>Aptitude Tests</p>
+                    </a>
+                </li>
+            {% else %}
                 <li class="hidden">
                     <a href="/admin/dashboard">
                         <i class="pe-7s-graph"></i>
@@ -137,7 +145,7 @@
                 </li>
 
                 <li class="gq-test">
-                    <a href="/admin/gq-test">
+                    <a href="/gqtest/manage">
                         <i class="pe-7s-edit"></i>
                         <p>GQ Tests</p>
                     </a>
@@ -170,6 +178,7 @@
                         <p>Settings</p>
                     </a>
                 </li>
+            {% endif %}    
             </ul>
         </div>
     </div>

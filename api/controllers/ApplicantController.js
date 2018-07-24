@@ -130,69 +130,38 @@ module.exports = {
         });
     },
 
+
     // candidate's profile video
     uploadVideo: function(req, res) {
-        var allowedVidTypes = ['video/mp4'];
-        var filename = false;
+        const fs = require('fs');
+        var path = require('path').resolve(sails.config.appPath + '/assets/applicant_profilevideos');
         var hr = process.hrtime();
-        req.file('video').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilevideos/'),
-            saveAs: function (file, cb) {
-                if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
-                    //return res.badRequest('Unsupported photo format.');
-                    //cb(new Error('01'));
-                    return;
-                }
-                var ext = file.filename.split('.').pop();
-                filename = hr[1] + '_vid.' + ext;
-                return cb(null, filename);
-            },
-            maxBytes: 100 * 1024 * 1024
-        },
-        function (err, upfile) {
-            if (err == '01') {
-                return res.view('misc/error-page', { error: 'Unsupported video format. Must be a .mp4 file', url: '/applicant/resume-page' })
-            } else if (err) {
-                return res.view('misc/error-page', { error: 'Video file size must not be more than 100MB', url: '/applicant/resume-page' })
-            }
-            // this is weird but let's check if a file was uploaded
-            if (!upfile || !filename) {
-                return res.redirect('/applicant/resume-page#video');
-            }
-            // copy the uploaded photo to the public folder
-            const fs = require('fs');
-            const path = require('path');
-            const uploadedvid = path.resolve(sails.config.appPath, 'assets/applicant_profilevideos') + '/' + filename;
-            const temp_vid = path.resolve(sails.config.appPath, '.tmp/public/applicant_profilevideos') + '/' + filename;
+        var filename = hr[1] + '.webm';
+        path += '/' + filename;
+        var video = req.param('data').split(';base64,').pop();
+        var buff = new Buffer(video, 'base64');
+        fs.writeFileSync(path, buff);
 
-            Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
+        const uploadedvid = require('path').resolve(sails.config.appPath, 'assets/applicant_profilevideos') + '/' + filename;
+
+        S3Service.uploadProfileVideo(uploadedvid).then(function(resp) {
+            Resume.update({ user: req.session.userId }, { video_file: resp.url, youtube_vid_id: '', video_status: 'true' }).exec(function () {
+                // check for old video and delete
+                // console.log(req.param('old_video'))
+                // S3Service.deleteProfileVideo(req.param('old_video'));
+                
+                // delete GQ's copy of the uploaded video
+                if (fs.existsSync(uploadedvid)) {
+                    fs.unlinkSync(uploadedvid);
+                }
                 AmplitudeService.trackEvent('Uploaded Profile Video', req.session.userEmail);
                 return res.redirect('/applicant/resume-page#video');
             });
-            // delete previous photo if any
-            const assetPath = path.resolve(sails.config.appPath + 'assets/applicant_profilevideos') + '/' + req.param('video_name');
-            if (fs.existsSync(assetPath)) {
-                fs.unlinkSync(assetPath);
-            }
-            const tempath = path.resolve(sails.config.appPath + '.tmp/public/applicant_profilevideos') + '/' + req.param('video_name');
-            if (fs.existsSync(tempath)) {
-                fs.unlinkSync(tempath);
-            }
-
-            var rd = fs.createReadStream(uploadedvid);
-            var wr = fs.createWriteStream(temp_vid);
-            return new Promise(function(resolve, reject) {
-                rd.on('error', reject);
-                wr.on('error', reject);
-                wr.on('finish', resolve);
-                rd.pipe(wr);
-            }).catch(function(error) {
-                rd.destroy();
-                wr.end();
-                throw error;
-            });
+        }).catch(function(err) {
+            return res.json(400, { status: 'error', message: err });
         });
     },
+
 
     showLanding: function(req, res) {
         Course.find({ status: 'Active' }).limit(3).exec(function(err, courses) {

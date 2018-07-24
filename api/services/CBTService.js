@@ -249,6 +249,7 @@ module.exports = {
                             c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
                             c_score.maths = tests[2] ? tests[2].score : 0;
                             c_score.maths_percentage = ((c_score.maths / tests[2].no_of_questions) * 100).toFixed(1);
+                            c_score.total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
                             return resolve(c_score);
                         } else {
                             // reset general score
