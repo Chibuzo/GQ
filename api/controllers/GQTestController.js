@@ -71,7 +71,7 @@ module.exports = {
             answer: req.param('answer')
         };
         if (req.param('question_id') && _.isNumber(parseInt(req.param('question_id')))) {
-            GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
+            GQTestService.addImageToQuestion(req.file('question_image')).then(function(resp) {
                 data.image_file = resp;
                 GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
                     if (err) return res.json(200, {status: 'error', msg: err});
@@ -83,7 +83,7 @@ module.exports = {
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
                 if (err) return res.json(200, {status: 'error', msg: err});
-                GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
+                GQTestService.addImageToQuestion(req.file('question_image')).then(function(resp) {
                     GQTestQuestions.update({ id: quest.id }, { image_file: resp }).exec(function() {});
                     return res.json(200, {status: 'success'});
                 }).catch(function(err) {
