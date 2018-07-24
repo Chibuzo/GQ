@@ -15,13 +15,11 @@ module.exports = {
             var workbook = new Excel.Workbook();
             workbook.xlsx.readFile(testexcel + filename)
                 .then(function(d) {
-                    // console.log('D:');
-                    // console.log(d)
                     // use workbook
                     var sheet = workbook.getWorksheet(1);
                     for (i = 2; i < sheet.actualRowCount + 1; i++) {
                         var row = sheet.getRow(i);
-                        //if (row.getCell('B').value) break;
+                        if (row.getCell('B').value.length < 5) continue;
                         var data = {
                             test: test_id,
                             question: row.getCell('B').value,
@@ -59,9 +57,12 @@ module.exports = {
                     },
                     maxBytes: 100 * 1024 * 1024
                 },
-                function(err) {
+                function(err, ufile) {
                     if (err) return reject(err);
 
+                    if (!ufile || filename === undefined || filename.lenght < 1) {
+                        return reject('No file was uploaded');
+                    }
                     try {
                         const fs = require('fs');
                         const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/cbt-images') + '/' + filename;

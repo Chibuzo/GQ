@@ -190,7 +190,7 @@
 														</div>
 														<input type="hidden" name="test_id" id="_test_id" />
 														<input type="hidden" name="question_id" id="_question_id" />
-														<input type="hidden" name="image_file" id="image-file" />
+														<!--<input type="hidden" name="image_file" id="image-file" />-->
 														<input type="file" name="question_image" id="_question_image" class="form-control-file hidden" />
 													</div>
 													<div class="form-group">
