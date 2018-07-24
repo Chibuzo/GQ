@@ -16,13 +16,13 @@ module.exports = {
           type: 'string'
       },
 
-      test_source: {
-          type: 'string' // GQ, COY
-      },
+    //   test_source: {
+    //       type: 'string' // GQ, COY
+    //   },
 
-      user_id: {
-          type: 'integer'
-      },
+    //   user_id: {
+    //       type: 'integer'
+    //   },
 
       difficulty: {
           type: 'string'

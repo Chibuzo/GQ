@@ -242,7 +242,8 @@ module.exports = {
     // after candidate activates their account
     welcomeNewCandidate: function(user) {
         var data = {
-            user: user.fullname
+            user: user.fullname,
+            url: BASE_URL + 'login'
         };
         var subject = "Welcome to GetQualified";
         var template = 'welcomeNewCandidate';

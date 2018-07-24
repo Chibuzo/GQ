@@ -129,7 +129,7 @@
 												</tr>
 												<tr id="total">
 													<td>Total Score</td>
-													<td>{{ result.score }}/60</td>
+													<td>{{ result.score }}/{{ result.total_num_questions }}</td>
 													<td>{{ result.percentage }}%</td>
 												</tr>
 											</tbody>
@@ -150,7 +150,18 @@
 											{#<video style="margin-top: 50px;" width="450" height="300" controls=controls>#}
 												{#<source src="/applicant_videos/{{ resume.video_file }}" type="video/mp4"></source>#}
 											{#</video>#}
-											<iframe width="800" height="740" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>
+											<div class="video-div">
+												<video style="margin-top: 50px;" width="640" height="480" preload="metadata" controls>
+													{% if resume.youtube_vid_id.length > 5 %}
+														<source src="https://api.neon.ventures/gqyt/files/{{ resume.youtube_vid_id }}.mp4" type="video/mp4">
+													{% else %}
+														<source src="{{ resume.video_file }}" type="video/webm">
+														<source src="{{ resume.video_file }}" type="video/mp4">
+													{% endif %}	
+													Your browser does not support the video tag.
+												</video>
+											</div>
+											<!--<iframe width="800" height="740" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
 										</div>
 									{% endif %}
 									</div>

@@ -20,6 +20,10 @@ module.exports = {
           type: 'string'
       },
 
+      admin_type: {
+          type: 'string'
+      },
+
       status: {
           type: 'string',
           defaultsTo: 'Active'

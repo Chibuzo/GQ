@@ -136,31 +136,30 @@ module.exports = {
         const fs = require('fs');
         var path = require('path').resolve(sails.config.appPath + '/assets/applicant_profilevideos');
         var hr = process.hrtime();
-        var filename = hr[1] + '.mp4';
+        var filename = hr[1] + '.webm';
         path += '/' + filename;
         var video = req.param('data').split(';base64,').pop();
         var buff = new Buffer(video, 'base64');
         fs.writeFileSync(path, buff);
 
         const uploadedvid = require('path').resolve(sails.config.appPath, 'assets/applicant_profilevideos') + '/' + filename;
-        const temp_vid = require('path').resolve(sails.config.appPath, '.tmp/public/applicant_profilevideos') + '/' + filename;
 
-        var rd = fs.createReadStream(uploadedvid);
-        var wr = fs.createWriteStream(temp_vid);
-        return new Promise(function(resolve, reject) {
-            rd.on('error', reject);
-            wr.on('error', reject);
-            wr.on('finish', resolve);
-            rd.pipe(wr);
-            S3Service.uploadProfileVideo(uploadedvid);
-            return res.json(200, { status: 'success' });
-        }).catch(function(error) {
-            rd.destroy();
-            wr.end();
-            throw error;
+        S3Service.uploadProfileVideo(uploadedvid).then(function(resp) {
+            Resume.update({ user: req.session.userId }, { video_file: resp.url, youtube_vid_id: '', video_status: 'true' }).exec(function () {
+                // check for old video and delete
+                // console.log(req.param('old_video'))
+                // S3Service.deleteProfileVideo(req.param('old_video'));
+                
+                // delete GQ's copy of the uploaded video
+                if (fs.existsSync(uploadedvid)) {
+                    fs.unlinkSync(uploadedvid);
+                }
+                AmplitudeService.trackEvent('Uploaded Profile Video', req.session.userEmail);
+                return res.redirect('/applicant/resume-page#video');
+            });
+        }).catch(function(err) {
+            return res.json(400, { status: 'error', message: err });
         });
-
-        
     },
 
 
