@@ -131,7 +131,7 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             const candidates = [];
             const query = _candidates === undefined ? {}: {user: _candidates};
-            GQAptitudeTestResult.find(query).sort('score desc').exec(function(err, apt_results) {
+            GQAptitudeTestResult.find(query).exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
@@ -182,7 +182,7 @@ module.exports = {
                             });
                             cb();
                         } catch (err) {
-                            
+                            console.log(err);
                         }
                     });
                 }, function(err) {
