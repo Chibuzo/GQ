@@ -64,6 +64,14 @@ module.exports = {
                 },
                 function(err) {
                     if (err) return reject(err);
+
+                    try {
+                        const fs = require('fs');
+                        const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/cbt-images') + '/' + filename;
+                        fs.createReadStream(require('path').resolve(sails.config.appPath, 'assets/cbt-images') + '/' + filename).pipe(fs.createWriteStream(temp_pic));
+                    } catch(err) {
+                        console.log(err)
+                    }
                     return resolve(filename);
                 });
             } else {

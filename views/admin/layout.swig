@@ -88,7 +88,7 @@
             <ul class="nav">
             {% if req.session.admin_type == 'test' %}
                 <li class="gq-test">
-                    <a href="/admin/gq-test">
+                    <a href="/gqtest/manage">
                         <i class="pe-7s-edit"></i>
                         <p>Aptitude Tests</p>
                     </a>

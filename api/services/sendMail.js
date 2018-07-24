@@ -16,7 +16,7 @@ let transporter = nodemailer.createTransport({
 });
 transporter.use('compile', hbs(options));
 
-const BASE_URL = 'https://wemabank.getqualified.work/';
+const BASE_URL = 'https://wema.getqualified.work/';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'info@productivepeople.org';
 

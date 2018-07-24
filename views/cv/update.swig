@@ -14,6 +14,7 @@
 <link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
 <link href="/styles/proctor-style.css" rel="stylesheet" />
 <link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
+<!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -357,7 +358,7 @@
 													</tr>
 													<tr id="total">
 														<td>Total Score</td>
-														<td>{{ result.score }}/60</td>
+														<td>{{ result.score }}/{{ result.total_num_questions }}</td>
 														<td>{{ result.percentage }}%</td>
 													</tr>
 												</tbody>
@@ -452,9 +453,16 @@
 											<!--<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
 											<div class="video-div">
 												<video width="470" height="345" controls>
-													<source src="{{ resume.video_file }}" type="video/mp4">
+													<source src="{{ resume.video_file }}" type="video/webm">
 													Your browser does not support the video tag.
 												</video>
+												<!--<video id="my-video" class="video-js" controls preload="auto" width="470" height="345" data-setup="{}">
+													<source src="{{ resume.video_file }}" type="video/webm">
+													<p class="vjs-no-js">
+														To view this video please enable JavaScript, and consider upgrading to a web browser that
+														<a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a>
+													</p>
+												</video>-->
 											</div>	
 											<span id="old-video" class="hidden">{{ resume.video_file }}</span>
 											<br>
@@ -793,8 +801,7 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/pavp.js"></script>
+	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
 	<!--<script src="/js/youtubeUpload.js"></script>-->
 
 <script>
@@ -851,4 +858,5 @@ function uploadFile(video) {
 	});
 }
 </script>
+<!--<script src="https://vjs.zencdn.net/7.0.5/video.js"></script>-->
 {% endblock %}

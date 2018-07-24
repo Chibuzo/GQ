@@ -115,7 +115,7 @@ module.exports.routes = {
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
-    'GET /gqtest/remove': 'GQTestController.deleteTest',
+    'GET /gqtest/remove/:test_id': 'GQTestController.deleteTest',
 
     'GET /gqtest/delete-question': 'GQTestController.deleteQuestion',
 

@@ -136,7 +136,7 @@ module.exports = {
         const fs = require('fs');
         var path = require('path').resolve(sails.config.appPath + '/assets/applicant_profilevideos');
         var hr = process.hrtime();
-        var filename = hr[1] + '.mp4';
+        var filename = hr[1] + '.webm';
         path += '/' + filename;
         var video = req.param('data').split(';base64,').pop();
         var buff = new Buffer(video, 'base64');
@@ -147,8 +147,8 @@ module.exports = {
         S3Service.uploadProfileVideo(uploadedvid).then(function(resp) {
             Resume.update({ user: req.session.userId }, { video_file: resp.url, video_status: 'true' }).exec(function () {
                 // check for old video and delete
-                console.log(req.param('old_video'))
-                S3Service.deleteProfileVideo(req.param('old_video'));
+                // console.log(req.param('old_video'))
+                // S3Service.deleteProfileVideo(req.param('old_video'));
                 
                 // delete GQ
                 if (fs.existsSync(uploadedvid)) {

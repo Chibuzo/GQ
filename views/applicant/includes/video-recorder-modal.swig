@@ -10,7 +10,7 @@
 
 			<div class="modal-body" style="height: 515px">
 			
-				<div class="pavp-wrapper is-recordin-g is-playin-g is-vide-o is-uploadin-g" style="position: relative; top: 240px">
+				<div class="pavp-wrapper is-recordin-g is-playin-g is-vide-o is-uploadin-g" stle="position: relative; top: 240px">
 					<div class="view-wrap">
 						<div class="stage">
 							<video id="pavp-video-view" width="640" height="480" autoplay muted style="position: absolute; top: 0; left: 0; border-radius: 4px"></video>

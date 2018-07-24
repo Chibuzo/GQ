@@ -129,7 +129,7 @@
 												</tr>
 												<tr id="total">
 													<td>Total Score</td>
-													<td>{{ result.score }}/60</td>
+													<td>{{ result.score }}/{{ result.total_num_questions }}</td>
 													<td>{{ result.percentage }}%</td>
 												</tr>
 											</tbody>

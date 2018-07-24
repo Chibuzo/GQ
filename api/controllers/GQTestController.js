@@ -45,7 +45,9 @@ module.exports = {
             });
         } else {
             GQTest.create(data).exec(function(err, test) {
-                if (err) return res.json(200, { status: 'error', msg: err });
+                if (err) {
+                    return res.json(200, { status: 'error', msg: err });
+                }
 
                 return res.json(200, { status: 'success' });
             });
@@ -54,7 +56,7 @@ module.exports = {
 
     uploadQuestions: function(req, res) {
         GQTestService.extractTestQuestionsFromExcel(req.file('xslx_questions'), req.param('test_id'));
-        return res.ok();
+        return res.redirect('/gqtest/edittest/' + req.param('test_id'));
     },
 
     saveQuestion: function(req, res) {
@@ -448,8 +450,10 @@ module.exports = {
 
     deleteTest: function(req, res) {
         if (req.session.admin === true) {
-            GQTest.destroy({ id: req.param('quest_id') }).exec(function() {
+            GQTest.destroy({ id: req.param('test_id') }).exec(function() {
                 // handle questions
+                GQTestQuestions.destroy({test: req.param('test_id')}).exec(function () {});
+                return res.json(200, { status: 'success' });
             });
         }
     },
