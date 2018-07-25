@@ -34,6 +34,14 @@ module.exports.routes = {
 
     'POST /resume/update': 'ResumeController.save',
 
+    'POST /resume/remove-education': 'ResumeController.removeEducation',
+
+    'POST /resume/remove-certification': 'ResumeController.removeCertification',
+
+    'POST /resume/remove-employment': 'ResumeController.removeEmployment',
+
+    'POST /resume/remove-referee': 'ResumeController.removeReferee',
+
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',

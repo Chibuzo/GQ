@@ -136,7 +136,10 @@ module.exports = {
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     if (!apt_result.user) return cb();
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user.id }).populate('proctor').exec(function(err, tests) {
-                        if (!tests[0] || tests.length < 3) return cb();
+                        if (err) {
+                            return reject(err);
+                        }
+                        if (tests.length < 3) return cb();
                     
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
