@@ -81,8 +81,8 @@ module.exports = {
                                 composite_score: percentage,
 								job_score: false,
                                 aptitude_test: aptScore.score,
-                                integrity_score: integrityScore,
-                                proctor_status: proctorStatus,
+                                integrity_score: 'NA',
+                                proctor_status: 'NA',
                                 proctor_id: 0,
                                 createdAt: aptScore.createdAt
                             });
