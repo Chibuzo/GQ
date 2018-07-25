@@ -38,7 +38,7 @@ module.exports = {
                     // get their BEST aptitude test score
 
 					Promise.all([
-						GQAptitudeTestResult.find({ user: candidate_id }).populate('user').sort('score desc').limit(1),
+						GQAptitudeTestResult.find({ user: candidate_id, status: 'Accepted' }).populate('user').sort('score desc').limit(1),
 						GQTestResult.find({test: [1, 2, 3], candidate: candidate_id}).populate('proctor')
 					]).then(results => {
 						let apt_score = results[0];
@@ -78,13 +78,12 @@ module.exports = {
                                 score: 'NA',
                                 percentage: percentage,
                                 test_result: percentage > 59 ? 'Passed' : 'Failed',
-                                composite_score: 'NA',
+                                composite_score: percentage,
 								job_score: false,
                                 aptitude_test: aptScore.score,
                                 integrity_score: integrityScore,
                                 proctor_status: proctorStatus,
                                 proctor_id: 0,
-                                gqtest_status: apt_score.status,
                                 createdAt: aptScore.createdAt
                             });
                             cb();

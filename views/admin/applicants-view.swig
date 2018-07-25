@@ -98,7 +98,7 @@
 										{% set n = 0 %}
 										{% for result in results %}
 											{% set n = n + 1 %}
-                                            {% if result.gqtest_status == 'Accepted' %}
+                                            {#{% if result.gqtest_status == 'Accepted' %}#}
                                                 <tr  id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
                                                     <td class="name">
                                                         <a target="_blank" href="/applicant/resume-user/{{ result.applicant.id }}" class="" rel="tooltip" title="View Resume">
@@ -131,7 +131,7 @@
                                                         </div>
                                                     </td>
                                                 </tr>
-                                            {% endif %}    
+                                            {#{% endif %}  #}  
 										{% endfor %}
 										</tbody>
 									</table>
