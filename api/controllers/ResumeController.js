@@ -263,6 +263,26 @@ module.exports = {
             })
     },
 
+    removeEducation: function(req, res) {
+        Education.destroy({ id: req.param('id') }).exec(function() {});
+        return res.ok();
+    },
+
+    removeCertification: function(req, res) {
+        Qualification.destroy({ id: req.param('id') }).exec( {});
+        return res.ok();
+    },
+
+    removeEmployment: function(req, res) {
+        Employment.destroy({ id: req.param('id') }).exec(function() {});
+        return res.ok();
+    },
+
+    removeReferee: function(req, res) {
+        ReferenceContact.destroy({ id: req.param('id') }).exec(function() {});
+        return res.ok();
+    },
+
 
     viewSampleCV: function(req, res) {
         res.setHeader('Content-disposition', 'inline; filename=sampleCV.pdf');
