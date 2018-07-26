@@ -131,6 +131,9 @@ module.exports = {
             async.eachSeries(results, function(result, cb) {
                 // get their BEST aptitude test score
                 GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
+                    if (err) {
+                        return reject(err);
+                    }
                     if (apt_score.length > 0) {
                         var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
                         var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
@@ -235,21 +238,21 @@ module.exports = {
                 if (candidate_score.length < 1) {
                     return resolve(false);
                 }
-                GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
-                    GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                //GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
+                    GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).sort('test asc').populate('proctor').exec(function(err, tests) {
                         if (tests[0] && tests[1] && tests[2]) {
                             var c_score = candidate_score[0];
-                            c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
-                            c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
-                            c_score.candidates = result.length;
-                            c_score.general_ability = tests[0].score;
+                            c_score.total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+                            c_score.percentage = ((c_score.score / c_score.total_num_questions) * 100).toFixed(1);
+                            //c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                            // c_score.candidates = result.length;
+                            // c_score.general_ability = tests[0].score;
                             c_score.general_percentage = ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1);
-                            //c_score.general_rank =
                             c_score.verbal = tests[1].score;
                             c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
                             c_score.maths = tests[2] ? tests[2].score : 0;
                             c_score.maths_percentage = ((c_score.maths / tests[2].no_of_questions) * 100).toFixed(1);
-                            c_score.total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+
                             return resolve(c_score);
                         } else {
                             // reset general score
@@ -258,7 +261,7 @@ module.exports = {
                             });
                         }
                     });
-                });
+                //});
             });
         });
     },

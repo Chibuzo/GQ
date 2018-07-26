@@ -47,33 +47,21 @@
             </div>
             <div class="content table-responsive table-full-width">
                 <ul class="nav nav-tabs">
+                    <li class="hidden"><a href="#all-applications" data-toggle="tab">All Applications</a></li>
                     <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
                     <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
                 </ul>
                 <div class="tab-content">
 
-                    <div class="tab-pane in fade active" id="assessed">
-                        <div class="hidden">
-                            <form method="post" id="form-filter">
-                                <div class="form-group">
-                                    <div class="col-md-4">
-                                        <label>School</label>
-                                        <input type="text" name="school" class="form-control" placeholder="Filter by school" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Profession</label>
-                                        <input type="text" name="course" class="form-control" placeholder="Filter by Profession or course of study" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Certification</label>
-                                        <input type="text" name="school" class="form-control" placeholder="Filter by Certification" />
-                                    </div>
-                                    <div class="col-md-2" style="padding-top: 30px">
-                                        <button type="submit" class="btn btn-info btn-block"><i class="fa fa-search"></i> Filter Candidates</button>
-                                    </div>
-                                </div>
-                            </form>
+                     <!--<div class="tab-pane in fade" id="selected">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive table-full-width" stle="padding: 50px; padding-top: 15px;">
+
+                            </div>
                         </div>
+                    </div>-->        
+
+                    <div class="tab-pane in fade active" id="assessed">
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px;">
 								{% set candidatesNo = results.length %}
