@@ -129,13 +129,17 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             const candidates = [];
             const query = _candidates === undefined ? {}: {user: _candidates};
-            GQAptitudeTestResult.find(query).exec(function(err, apt_results) {
+            GQAptitudeTestResult.find(query).populate('user').sort('score desc').exec(function(err, apt_results) {
                 var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
-                    GQTestResult.find({ test: [1,2,3], candidate: apt_result.user }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
-                        if (!tests[0] || tests.length < 3) return cb();
+                    if (!apt_result.user) return cb();
+                    GQTestResult.find({ test: [1,2,3], candidate: apt_result.user.id }).populate('proctor').exec(function(err, tests) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        if (tests.length < 3) return cb();
                     
                         let integrityScoreCumalative = _(tests).map(function(test) {
                             return test.proctor ? test.proctor.integrity_score : false;
@@ -148,27 +152,27 @@ module.exports = {
 
                         // Group together test information for each test
                         let generalAbilityTest = {
-                            score: tests[0] ? ((tests[0].score / 20) * 100).toFixed(1) : -1,
+                            score: tests[0] ? ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1) : -1,
                             proctorScore: _.get(tests, '[0].proctor.integrity_score', -1),
                             proctorId: _.get(tests, '[0].proctor.id', -1)
                         };
 
                         let verbalTest = {
-                            score: tests[1] ? ((tests[1].score / 20) * 100).toFixed(1) : -1,
+                            score: tests[1] ? ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1) : -1,
                             proctorScore: _.get(tests, '[1].proctor.integrity_score', -1),
                             proctorId: _.get(tests, '[1].proctor.id', -1)
                         };
 
                         let mathsTest = {
-                            score: tests[2] ? ((tests[2].score / 20) * 100).toFixed(1) : -1,
+                            score: tests[2] ? ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(1) : -1,
                             proctorScore: _.get(tests, '[2].proctor.integrity_score', -1),
                             proctorId: _.get(tests, '[2].proctor.id', -1)
                         };
 
                         try {
                             candidates.push({
-                                id: apt_result.user,
-                                fullname: tests[0].candidate.fullname,
+                                id: apt_result.user.id,
+                                fullname: apt_result.user.fullname,
                                 generalAbilityTest: generalAbilityTest,
                                 verbalTest: verbalTest,
                                 mathsTest: mathsTest,

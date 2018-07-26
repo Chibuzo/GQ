@@ -661,12 +661,14 @@
 			});
 
 			// remove one row from institution
-			$("#institutions").on("click", ".remove-institution-btn", function(e) {
+			$("#institutions").on("click", ".remove-edu-btn", function(e) {
 				e.preventDefault();
 				if (confirm('Are you sure you want to remove this Educational entry?')) {
 					$(this).parents(".inst-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-education', { id: id });
 				}
 			});
 
@@ -689,6 +691,8 @@
 					$(this).parents(".qual-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-certification', { id: id });
 				}
 			});
 
@@ -709,6 +713,8 @@
 					$(this).parents(".employment-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-employment', { id: id });
 				}
 			});
 
@@ -728,6 +734,8 @@
 					$(this).parents(".reference-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-referee', { id: id });
 				}
 			});
 
@@ -768,8 +776,8 @@
 
 
 			$(".question-title").click(function() {
-				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
-				$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+				//$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
+				//$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
 				var id = $(this).attr('id');
 				$(".quest-instruction").slideUp();
 				$('#' + id + "-text").slideDown();
@@ -781,7 +789,7 @@
 					keyboard: true
 				});
 
-                amplitude.getInstance().logEvent("Sample Video Link Clicked");
+                //amplitude.getInstance().logEvent("Sample Video Link Clicked");
 			});
 
 			$('#modal-sample-video').on('hide.bs.modal', function(e) {
@@ -797,18 +805,16 @@
 				$frame.attr('src', vidsrc);
 			});
 
-            $('.nav.nav-tabs a').on('click', function(evt) {
-                var href = $(this).attr('href');
-                href = href.substr(1);
-                amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
-            });
+            // $('.nav.nav-tabs a').on('click', function(evt) {
+            //     var href = $(this).attr('href');
+            //     href = href.substr(1);
+            //     amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
+            // });
 		});
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<!--<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>-->
 	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
-	<!--<script src="/js/youtubeUpload.js"></script>-->
 
 <script>
 $(document).ready(function() {
@@ -829,7 +835,6 @@ $(document).ready(function() {
 		});
 	});
 
-		//var vd = new FormData($("#form-video-upload")[0]);
 
 	$("#videoRecorderModal").on("hidden.bs.modal", function () {
         pavp.stop();

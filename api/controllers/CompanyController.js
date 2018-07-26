@@ -334,11 +334,14 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-            return Company.find().then(coys => {
+            return Company.find().sort('createdAt desc').then(coys => {
                 var companies = [];
                 var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
-                    Job.find({company: coy.id}).sort('createdAt desc').exec(function (err, jobs) {
+                    Job.find({company: coy.id}).exec(function (err, jobs) {
+                        if (err) {
+                            return res.serverError(err);
+                        }
                         coy.open_jobs = 0;
                         coy.closed_jobs = 0;
                         coy.archived_jobs = 0;

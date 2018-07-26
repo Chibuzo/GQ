@@ -17,7 +17,7 @@ module.exports = {
                     folder = 'company';
                 }
                 // new jobs by default will require GQtest and video profile
-                var job = { require_video: true, require_test: true };
+                var job = { require_video: true, require_test: true, require_competency_test: false };
                 return res.view(folder + '/addjob', { jobcategories: categories, countries: resp.countries, coy_id: coy_id, job: job });
             }).catch(function(err) {
                 return res.serverError();

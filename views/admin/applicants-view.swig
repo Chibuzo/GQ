@@ -47,33 +47,21 @@
             </div>
             <div class="content table-responsive table-full-width">
                 <ul class="nav nav-tabs">
+                    <li class="hidden"><a href="#all-applications" data-toggle="tab">All Applications</a></li>
                     <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
                     <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
                 </ul>
                 <div class="tab-content">
 
-                    <div class="tab-pane in fade active" id="assessed">
-                        <div class="hidden">
-                            <form method="post" id="form-filter">
-                                <div class="form-group">
-                                    <div class="col-md-4">
-                                        <label>School</label>
-                                        <input type="text" name="school" class="form-control" placeholder="Filter by school" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Profession</label>
-                                        <input type="text" name="course" class="form-control" placeholder="Filter by Profession or course of study" />
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label>Certification</label>
-                                        <input type="text" name="school" class="form-control" placeholder="Filter by Certification" />
-                                    </div>
-                                    <div class="col-md-2" style="padding-top: 30px">
-                                        <button type="submit" class="btn btn-info btn-block"><i class="fa fa-search"></i> Filter Candidates</button>
-                                    </div>
-                                </div>
-                            </form>
+                     <!--<div class="tab-pane in fade" id="selected">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive table-full-width" stle="padding: 50px; padding-top: 15px;">
+
+                            </div>
                         </div>
+                    </div>-->        
+
+                    <div class="tab-pane in fade active" id="assessed">
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px;">
 								{% set candidatesNo = results.length %}
@@ -86,8 +74,8 @@
 										<thead>
 										<tr>
 											<th><i class="fa fa-user"></i>Name</th>
+                                            <th class="text-center">GQ Score</th>
 											<th class="text-center">Job Score</th>
-											<th class="text-center">GQ Score</th>
                                             <th class="text-center">Overall</th>
 											<th class="text-center">Integrity</th>
 											<th class="text-center">Proctor Status</th>
@@ -98,38 +86,40 @@
 										{% set n = 0 %}
 										{% for result in results %}
 											{% set n = n + 1 %}
-											<tr  id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
-												<td class="name">
-													<a target="_blank" href="/applicant/resume-user/{{ result.applicant.id }}" class="" rel="tooltip" title="View Resume">
-														{{ result.applicant.fullname }}
-													</a>
-												</td>
-												{% if result.job_score !== false %}
-													<td class="text-center">{{ result.score }}%</td>
-												{% else %}
-													<td class="text-center">N/A</td>
-												{% endif %}
-												<td class="text-center">{{ result.percentage }}%</td>
-                                                <td class="text-center">{{ result.composite_score }}%</td>
-												<td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ result.proctor_id }}">{{ result.integrity_score }}</a></td>
-												{#<td class="text-center"> {{ result.integrity_score }} %</td>#}
-												<td class="text-center proctor-status">{{ result.proctor_status }}</td>
-                                                <td data-user_name="{{ result.applicant.fullname }}" data-test-type="job-test" data-test-id="{{ result.test_id }}" data-proctor-id="{{ result.proctor_id }}" data-job-title="{{ jobTitle }}" class="opt-icons text-center">
-                                                    <div class="btn-group">
-                                                        <button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                            Menu &nbsp;<span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu dropdown-menu-right">
-                                                            <li><a href="" class="accept-test"><i class="fa fa-check-circle-o fa-fw"></i> Accept Test Score</a></li>
-                                                            <li><a href="" class="short-list"><i class="fa fa-check fa-fw"></i> Shortlist Candidate</a></li>
-                                                            <li><a href="/editprofile/{{ user.id }}" target="_blank"><i class="fa fa-wrench"></i> Edit Profile</a></li>
-                                                            <li role="separator" class="divider"></li>
-                                                            <li><a href="" class="reject-test"><i class="fa fa-times fa-fw"></i>Reject Test Score</a></li>
-                                                            <li><a href="" class="delete-test"><i class="fa fa-trash-o fa-fw"></i>Delete Test Scores</a></li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-											</tr>
+                                            {#{% if result.gqtest_status == 'Accepted' %}#}
+                                                <tr  id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
+                                                    <td class="name">
+                                                        <a target="_blank" href="/applicant/resume-user/{{ result.applicant.id }}" class="" rel="tooltip" title="View Resume">
+                                                            {{ result.applicant.fullname }}
+                                                        </a>
+                                                    </td>
+                                                    <td class="text-center">{{ result.percentage }}%</td>
+                                                    {% if result.job_score !== false %}
+                                                        <td class="text-center">{{ result.score }}%</td>
+                                                    {% else %}
+                                                        <td class="text-center">N/A</td>
+                                                    {% endif %}
+                                                    <td class="text-center">{{ result.composite_score }}%</td>
+                                                    <td class="text-center"><a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="{{ result.proctor_id }}">{{ result.integrity_score }}</a></td>
+                                                    {#<td class="text-center"> {{ result.integrity_score }} %</td>#}
+                                                    <td class="text-center proctor-status">{{ result.proctor_status }}</td>
+                                                    <td data-user_name="{{ result.applicant.fullname }}" data-test-type="job-test" data-test-id="{{ result.test_id }}" data-proctor-id="{{ result.proctor_id }}" data-job-title="{{ jobTitle }}" class="opt-icons text-center">
+                                                        <div class="btn-group">
+                                                            <button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                Menu &nbsp;<span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu dropdown-menu-right">
+                                                                <li><a href="" class="accept-test"><i class="fa fa-check-circle-o fa-fw"></i> Accept Test Score</a></li>
+                                                                <li><a href="" class="short-list"><i class="fa fa-check fa-fw"></i> Shortlist Candidate</a></li>
+                                                                <li><a href="/editprofile/{{ user.id }}" target="_blank"><i class="fa fa-wrench"></i> Edit Profile</a></li>
+                                                                <li role="separator" class="divider"></li>
+                                                                <li><a href="" class="reject-test"><i class="fa fa-times fa-fw"></i>Reject Test Score</a></li>
+                                                                <li><a href="" class="delete-test"><i class="fa fa-trash-o fa-fw"></i>Delete Test Scores</a></li>
+                                                            </ul>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {#{% endif %}  #}  
 										{% endfor %}
 										</tbody>
 									</table>
