@@ -71,15 +71,17 @@ module.exports = {
             answer: req.param('answer')
         };
         if (req.param('question_id') && _.isNumber(parseInt(req.param('question_id')))) {
+            GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
+                if (err) return res.json(200, {status: 'error', msg: err});
+                //return res.json(200, {status: 'success'});
+            });
             GQTestService.addImageToQuestion(req.file('question_image')).then(function(resp) {
-                data.image_file = resp;
-                GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
+                GQTestQuestions.update({ id: req.param('question_id') }, { image_file: resp }).exec(function (err, quest) {
                     if (err) return res.json(200, {status: 'error', msg: err});
                     return res.json(200, {status: 'success'});
                 });
             }).catch(function(err) {
                 return res.json(200, {status: 'success'});
-                //if (err) return res.json(200, { status: 'error', 'msg': err });
             });
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
@@ -90,7 +92,7 @@ module.exports = {
                 }).catch(function(err) {
                     return res.json(200, {status: 'success'});
                     //if (err) return res.json(200, { status: 'error', 'msg': err });
-                });;
+                });
             });
         }
     },
