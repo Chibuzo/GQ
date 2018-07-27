@@ -31,7 +31,7 @@ function fetchSomeTestsApplicants() {
     // return GQTestResult.query(sql, function(err, result) {
     //     console.log(result)
     // });
-    return GQTestResult.find({test: [1, 2, 3], candidate: 'IS NULL'})
+    return GQTestResult.find({test: [1, 2, 3]})
     .then(gqTestResults => {
         let usersWithTests = _.groupBy(gqTestResults, (testResult) => {
             return testResult.candidate;

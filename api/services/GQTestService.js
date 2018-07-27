@@ -173,6 +173,7 @@ module.exports = {
                             candidates.push({
                                 id: apt_result.user.id,
                                 fullname: apt_result.user.fullname,
+                                email: apt_result.user.email,
                                 generalAbilityTest: generalAbilityTest,
                                 verbalTest: verbalTest,
                                 mathsTest: mathsTest,
