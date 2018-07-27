@@ -168,7 +168,7 @@ module.exports = {
                             proctorScore: _.get(tests, '[2].proctor.integrity_score', -1),
                             proctorId: _.get(tests, '[2].proctor.id', -1)
                         };
-
+                        var total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
                         try {
                             candidates.push({
                                 id: apt_result.user.id,
@@ -177,7 +177,7 @@ module.exports = {
                                 verbalTest: verbalTest,
                                 mathsTest: mathsTest,
                                 test_date: apt_result.createdAt,
-                                percentage: ((apt_result.score / 60) * 100).toFixed(1),
+                                percentage: ((apt_result.score / total_num_questions) * 100).toFixed(1),
                                 rank: apt_scores.indexOf(apt_result.score) + 1,
                                 integrity_score: integrityScore,
                                 status: apt_result.status

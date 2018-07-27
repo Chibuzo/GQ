@@ -342,17 +342,17 @@
 												</thead>
 												<tbody>
 													<tr id="general">
-														<td>General Ability</td>
+														<td>{{ result.general_ability_name }}</td>
 														<td>{{ result.general_ability }}</td>
 														<td>{{ result.general_percentage }}%</td>
 													</tr>
 													<tr id="verbal">
-														<td>Verbal Reasoning</td>
+														<td>{{ result.verbal_name }}</td>
 														<td>{{ result.verbal }}</td>
 														<td>{{ result.verbal_percentage }}%</td>
 													</tr>
 													<tr id="maths">
-														<td>Numerical Reasoning</td>
+														<td>{{ result.maths_name }}<td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
 													</tr>
