@@ -134,8 +134,16 @@ module.exports = {
             let skip = start === undefined ? 1 : start;
             let limit = rows === undefined ? -1 : rows;
             let query = _candidates === undefined ? {}: {user: _candidates};
+            let criteria;
+            let paginate = false;
+            if (start === undefined || rows === undefined) {
+                criteria = query;
+            } else {
+                paginate = true;
+                criteria = { where: query, limit: limit, skip: skip };
+            }
             return Promise.all([
-                GQAptitudeTestResult.find({ where: query, limit: limit, skip: skip }).populate('user').sort('score desc'), //.exec(function(err, apt_results) {
+                GQAptitudeTestResult.find(criteria).populate('user').sort('score desc'), //.exec(function(err, apt_results) {
                 GQAptitudeTestResult.count(query)
             ]).then(results => {
                 var apt_results = results[0];
