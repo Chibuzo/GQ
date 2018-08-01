@@ -336,5 +336,14 @@ module.exports.routes = {
             allowOrigins: ['*'],
             allowCredentials: false
         }
+    },
+
+    // candidates
+    'POST /api/v1/candidates/fetchgqresults': {
+        controller: 'GQTestController', action: 'getAptitudeTestResults',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
     }
 };

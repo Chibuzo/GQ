@@ -27,6 +27,39 @@
 		margin-left: 5px;
 		margin-bottom: 5px;
 	}
+	.filter-div {
+		padding-bottom: 25px;
+		overflow: auto;
+		background-color:#f9f9f9;
+	}
+
+	.dataTable_wrapper .row .col-md-6 {
+		padding: 3px 30px;
+	}
+
+	.image-tag {
+		position: absolute;
+		left: 10px;
+		bottom: 0;
+		color: white;
+		font-size: 20px;
+		margin-left: 10px;
+		margin-bottom: 5px;
+	}
+
+    .trash-can {
+        color: red;
+        cursor: pointer;
+    }
+
+	input[type=checkbox] {
+		top: -15px;
+	}
+
+	input[type=checkbox].form-control {
+		height: 12px;
+	}
+
 </style>
 
     <div class="col-md-12">
@@ -47,19 +80,94 @@
             </div>
             <div class="content table-responsive table-full-width">
                 <ul class="nav nav-tabs">
-                    <li class="hidden"><a href="#all-applications" data-toggle="tab">All Applications</a></li>
+                    <li class=""><a href="#all-applications" data-toggle="tab">All Applications</a></li>
+                    <li><a href="#gqassessed" data-toggle="tab">GQ Test</a></li>
                     <li class="active"><a href="#assessed" data-toggle="tab">Assessed Candidates</a></li>
                     <li><a href="#selected" data-toggle="tab">Shortlisted Candidates</a></li>
                 </ul>
                 <div class="tab-content">
 
-                     <!--<div class="tab-pane in fade" id="selected">
+                    <div class="tab-pane in fade" id="all-applications">
                         <div class="row">
-                            <div class="col-md-12 table-responsive table-full-width" stle="padding: 50px; padding-top: 15px;">
-
+                            <div class="col-md-12 table-responsive table-full-width" style="padding: 30px; margin-left:1px; padding-top: 15px;">
+                                <table class="table table-striped dataTable">
+                                    <thead>
+                                        <tr>
+                                            <td class="" colspan="4">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                                        Action &nbsp;<span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:10px !important"><label class="all-group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Status</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tb-applications">
+                                        {% for app in applicants %}
+                                            <tr>
+                                                <td style="width:10px !important"><label class=""><input type="checkbox" class="form-control user-checkbox" /></label></td>
+                                                <td>{{ app.applicant.fullname }}</td>
+                                                <td class="email">{{ app.applicant.email }}</td>
+                                                <td>{{ app.applicant.status }}</td>
+                                                <td></td>
+                                            </tr>
+                                        {% endfor %}        
+                                    </tbody>        
+                                </table>
                             </div>
                         </div>
-                    </div>-->        
+                    </div>
+
+                     <div class="tab-pane in fade" id="gqassessed">
+                        <div class="row">
+                            <div class="col-md-12 table-responsive table-full-width" style="padding: 30px; margin-left:1px; padding-top: 15px;">
+                                <div class="alert alert-danger">Not yet fully functional</div>
+                                <table class="table table-striped ajaxDataTable">
+                                    <thead>
+                                        <tr>
+                                            <td class="" colspan="13">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                                        Action &nbsp;<span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th style="width:10px !important"><label class="test-group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+                                            <th><i class="fa fa-calendar"></i> Date</th>
+                                            <th>Name</th>
+                                            <th class="hidden">Email</th>
+                                            <th>Gen. Score</th>
+                                            <th>Gen. Proctor</th>
+                                            <th>Verbal Score</th>
+                                            <th>Verbal Proctor</th>
+                                            <th>Math Score</th>
+                                            <th>Math Proctor</th>
+                                            <th>Total</th>
+                                            <th>Rank</th>
+                                            <th class="text-center">Avg. Invigilation</th>
+                                            <th>Test Status</th>
+                                            <th class="text-center">Action</th>
+                                        </tr>
+                                    </thead>
+                                </table>    
+                            </div>
+                        </div>
+                    </div>       
 
                     <div class="tab-pane in fade active" id="assessed">
                         <div class="row">
@@ -131,7 +239,7 @@
 
                     <div class="tab-pane in fade" id="selected">
                         <div class="row">
-                            <div class="col-md-12 table-responsive table-full-width" stle="padding: 50px">
+                            <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px">
                                 {% include './includes/shortlist-view.swig' %}
                             </div>
                         </div>
@@ -144,6 +252,7 @@
 
 {% block modals %}
     {% include 'includes/proctorModal.swig' %}
+    {% include '../misc/email-modal.swig' %}
 {% endblock %}
 
 {% block scriptTag %}
@@ -152,6 +261,7 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
+    var activeDTable = null;    // for the DataTable last clicked on
 
     var job_id = {{ job_id | json | safe }};
 
@@ -186,7 +296,6 @@ $(document).ready(function() {
     $("#tb-users").on('click', '.unselect-candidate', function(e) {
         e.preventDefault();
         if (confirm("Are you sure you want to remove this candidate?")) {
-            var job_id = {{ job_id | json | safe }};
             var candidate_id = $(this).parents('tr').data('candidate_id');
             $.post('/applicant/unselect-candidate', { job_id: job_id, candidate_id: candidate_id });
             $(this).parents('tr').remove();
@@ -218,9 +327,158 @@ $(document).ready(function() {
     });
 
 
-	$('.dataTable').DataTable({
-		pageLength: 50,
+	var allDTable = $('.dataTable').DataTable({
+		pageLength: 25,
 		responsive: true
 	});
+
+    var testDTable = $(".ajaxDataTable").DataTable({
+        pageLength: 30,
+        processing: true,
+        language: {
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
+        },
+        serverSide: true,
+        ajax: {
+            "url": '/api/v1/candidates/fetchgqresults',
+            "type": 'POST',
+            "draw": 1,
+            "length": 30,
+            "searching": true,
+            "search": true,
+            "data": function(d) {
+                d.mode = 'job_applicants';
+                d.job_id = job_id;
+            },
+            "dataSrc": function(_data) {
+                let data = _data.data;
+                let processed_data = [];
+                for (var i = 0, len = data.length; i < len; i++) {
+                    let d = {};
+                    d.checkbox = '<label class=""><input type="checkbox" class="form-control user-checkbox" /></label>';
+                    d.test_date = new Date(data[i].test_date).toLocaleDateString();
+                    d.fullname = `<a target="_blank" href="/applicant/resume-user/${data[i].id}" class="view-resume" rel="tooltip" title="View Resume">${data[i].fullname}</a>`;
+                    d.email = data[i].email;
+                    d.general_ability_score = data[i].generalAbilityTest.score;
+                    d.general_ability_proctor = data[i].generalAbilityTest.proctorScore;
+                    d.verbal_score = data[i].verbalTest.score;
+                    d.verbal_proctor = data[i].verbalTest.proctorScore;
+                    d.maths_score = data[i].mathsTest.score;
+                    d.maths_proctor = data[i].mathsTest.proctorScore;
+                    d.percentage = data[i].percentage;
+                    d.rank = data[i].rank;
+                    d.integrity_score = data[i].integrity_score; 
+                    d.status = data[i].status;
+                    d.actionbtn = `<div class="btn-group">
+									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+										Menu &nbsp;<span class="caret"></span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<li><a href="" class="accept-test"><i class="fa fa-check-circle-o fa-fw"></i> Accept Test Score</a></li>
+										<li><a href="" class="reject-test"><i class="fa fa-times fa-fw"></i>Reject Test Score</a></li>
+										<li role="separator" class="divider"></li>
+										<li><a href="" class="trash-can"><i class="fa fa-trash-o fa-fw"></i> Delete Test Scores</a></li>
+										<li><a href="/editprofile/{{ user.id }}" target="_blank"><i class="fa fa-wrench"></i> Edit Profile</a></li>
+									</ul>
+								</div>`;
+                    processed_data.push(d);
+                }
+                return processed_data;
+            }
+        },
+         "columns": [
+            { "data": "checkbox" }, 
+            { "data": "test_date" }, 
+            { "data": "fullname" },
+            { "data": "email" },
+            { "data": "general_ability_score" },
+            { "data": "general_ability_proctor" },
+            { "data": "verbal_score" },
+            { "data": "verbal_proctor" },
+            { "data": "maths_score" },
+            { "data": "maths_proctor" },
+            { "data": "percentage" },
+            { "data": "rank" },
+            { "data": "integrity_score" },
+            { "data": "status" },
+            { "data": "actionbtn" }
+        ],
+        'createdRow': function( row, data, dataIndex ) {
+      		$(row).attr('id',  data.id);
+  		},
+  		'columnDefs': [
+     		{
+        		'targets': 3,
+        		'createdCell':  function (td, cellData, rowData, row, col) {
+           			$(td).attr('class', 'hidden'); 
+        		}
+     		}
+  		]
+    });
+
+    $(".test-group-check").click(function() {
+		if ($(this).find('input[type=checkbox]').is(':checked')) {
+			testDTable.$(".user-checkbox").prop('checked', true);
+		} else {
+			testDTable.$(".user-checkbox").prop('checked', false);
+		}
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = testDTable;
+	});
+
+    $(".all-group-check").click(function() {
+		if ($(this).find('input[type=checkbox]').is(':checked')) {
+			allDTable.$(".user-checkbox").prop('checked', true);
+		} else {
+			allDTable.$(".user-checkbox").prop('checked', false);
+		}
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = allDTable;
+	});
+
+    $(".ajaxDataTable tbody").prop("id", "tb-test-result");
+
+    $("#tb-applications").on('click', ".user-checkbox", function() {
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = allDTable;
+	});
+
+    $(".ajaxDataTable").on('click', ".user-checkbox", function() {
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = testDTable;
+	});
+
+     $("#form-email").submit(function(e) {
+		e.preventDefault();
+
+        sendEmail(activeDTable, $(this));
+     });
+    
 });
+
+function sendEmail($table, $form) {
+   
+    $form.find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
+    var users = [];
+    $table.$(".user-checkbox:checked").each(function() {
+        users.push($(this).parents('tr').find('td.email').text());
+    });
+
+    tinymce.triggerSave();
+
+    $.post('/admin/sendemail', $form.serialize() + '&users=' + users, function(d) {
+        if (d.status.trim() == 'success') {
+            $(".alert-success").removeClass('hidden');
+            $form.find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
+        }
+    }, 'JSON');
+}
+
+function controlActionBtn($parent) {
+	if ($parent.find(".user-checkbox:checked").size() > 0) {
+		$parent.find(".action-btn").prop("disabled", false);
+	} else {
+		$parent.find(".action-btn").prop("disabled", true);
+	}
+}
 </script>

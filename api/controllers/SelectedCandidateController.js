@@ -13,8 +13,11 @@ module.exports = {
         }, {
             job_id: req.param('job_id'),
             candidate: req.param('candidate_id')
-        }).exec(function () {
-            return res.ok();
+        }).exec(function (err, result) {
+            if (err) {
+                return json(400, { status: 'error', message: err });
+            }
+            return res.json(200, { status: 'success' });
         });
     },
 

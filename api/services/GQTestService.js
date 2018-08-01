@@ -125,12 +125,22 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined) {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined, start = undefined, rows = undefined) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            const query = _candidates === undefined ? {}: {user: _candidates};
-            GQAptitudeTestResult.find(query).populate('user').sort('score desc').exec(function(err, apt_results) {
-                var count = apt_results.length;
+            // if (start !== undefined) query.start = start;
+            // if (rows !== undefined) query.rows = rows;
+            // if (_candidates !== undefined) query.user = _candidates;
+            let skip = start === undefined ? 1 : start;
+            let limit = rows === undefined ? -1 : rows;
+            let query = _candidates === undefined ? {}: {user: _candidates};
+            return Promise.all([
+                GQAptitudeTestResult.find({ where: query, limit: limit, skip: skip }).populate('user').sort('score desc'), //.exec(function(err, apt_results) {
+                GQAptitudeTestResult.count(query)
+            ]).then(results => {
+                var apt_results = results[0];
+                var count = results[1];
+                //var count = apt_results.length;
                 var apt_scores = apt_results.map(function(e) { return e.score; });
                 apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
                 async.eachSeries(apt_results, function(apt_result, cb) {
@@ -193,6 +203,9 @@ module.exports = {
                     candidates.num = count; // also return number of candidates that has taken the test
                     return resolve(candidates);
                 });
+            })
+            .catch(err => {
+                return reject(err);
             });
         });
     }

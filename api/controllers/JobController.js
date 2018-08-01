@@ -377,14 +377,14 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
-                    AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
-                        jobId: job_id,
-                        resumeStatus: resume[0].status,
-                        profileStatus: resume[0].profile_status,
-                        photoStatus: resume[0].photo_status,
-                        videoStatus: resume[0].video_status,
-                        testStatus: resume[0].test_status
-                    });
+                    // AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
+                    //     jobId: job_id,
+                    //     resumeStatus: resume[0].status,
+                    //     profileStatus: resume[0].profile_status,
+                    //     photoStatus: resume[0].photo_status,
+                    //     videoStatus: resume[0].video_status,
+                    //     testStatus: resume[0].test_status
+                    // });
                     JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
                         if (status.status === false) {
                             return res.json(200, { status: 'error', msg: 'IncompleteResume' });
@@ -417,9 +417,9 @@ module.exports = {
                 }
             });
         } else {
-            AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
-                jobId: job_id
-            });
+            // AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
+            //     jobId: job_id
+            // });
             req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
@@ -473,7 +473,7 @@ module.exports = {
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
 					Application.find({ job: job_id }).populate('applicant'),
-					SelectedCandidate.find({job_id: job_id}).populate('candidate')
+					SelectedCandidate.find({ job_id: job_id })
 				]).then(results => {
 
 					let jobTest = results[0];
@@ -488,24 +488,11 @@ module.exports = {
 						}
 					});
 
-					let shortlistedIds = [];
-					selected_candidates.forEach(function (shortlisted) {
-						if (shortlisted.candidate) {
-							shortlistedIds.push(shortlisted.candidate.id);
-						}
-					});
-
-
-					return Promise.all([
-						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						CBTService.getJobTestResults(shortlistedIds, jobTest)
-					]).then(jobTestResults => {
-
-						let allCandidates = jobTestResults[0];
-						let shortlistedCandidates = jobTestResults[1];
-
-                        _.each(shortlistedCandidates, (shortlistedCandidate) => {
-                            shortlistedCandidate.status = selected_candidates.find(x => x.candidate.id == shortlistedCandidate.applicant.id).status;
+					CBTService.getJobTestResults(candidatesIds, jobTest).then(function(allCandidates) {
+                        // find shortlisted mo'fuckers
+                        let shortlistedCandidates = [];
+                        selected_candidates.forEach(function(shortlisted) {
+                            shortlistedCandidates.push(allCandidates.find(candidate => candidate.applicant.id == shortlisted.candidate));
                         });
 
                         let companyName;
@@ -514,12 +501,12 @@ module.exports = {
                         } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
                             companyName = job.company_name;
                         } else {
-                            companyName == 'Company';
+                            companyName = 'Company';
                         }
 
 						return res.view('admin/applicants-view.swig', {
 							jobTitle: job.job_title,
-							companyName: companyName,
+                            companyName: companyName,
                             applicants: applications,
 							results: allCandidates,
 							selected_candidates: shortlistedCandidates,

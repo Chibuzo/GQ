@@ -221,9 +221,6 @@ $(document).ready(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
 
-//		for ( instance in tinymce.instances ) {
-//			tinymce.instances[instance].updateElement();
-//		}
 		tinymce.triggerSave();
 
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
