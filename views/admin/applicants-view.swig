@@ -18,15 +18,6 @@
 		width: 100%;
 	}
 
-    .image-tag {
-		position: absolute;
-		left: 0;
-		bottom: 0;
-		color: white;
-		font-size: 20px;
-		margin-left: 5px;
-		margin-bottom: 5px;
-	}
 	.filter-div {
 		padding-bottom: 25px;
 		overflow: auto;
@@ -116,7 +107,13 @@
                                         {% for app in applicants %}
                                             <tr>
                                                 <td style="width:10px !important"><label class=""><input type="checkbox" class="form-control user-checkbox" /></label></td>
-                                                <td>{{ app.applicant.fullname }}</td>
+                                                <td>
+                                                    {% if app.applicant.status == 'Active' %}
+                                                        <a target="_blank" href="/applicant/resume-user/{{ app.applicant.id }}" class="" rel="tooltip" title="View Resume">{{ app.applicant.fullname }}</a>
+                                                    {% else %}
+                                                        {{ app.applicant.fullname }}
+                                                    {% endif %}    
+                                                </td>
                                                 <td class="email">{{ app.applicant.email }}</td>
                                                 <td>{{ app.applicant.status }}</td>
                                                 <td></td>
@@ -172,15 +169,26 @@
                     <div class="tab-pane in fade active" id="assessed">
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px;">
-								{% set candidatesNo = results.length %}
-								{% set shortlistNo = selected_candidates.length %}
 
-								{% if shortlistNo + candidatesNo  == 0 %}
+								{% if unshortlisted.length  == 0 %}
                                     <div class="test alert alert-info">None of the applid candidates have taken the required test.</div>
                                 {% else %}
-									<table class="table table-striped dataTable">
+									<table class="table table-striped assessedDataTable">
 										<thead>
+                                        <tr>
+                                            <td class="" colspan="13">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-success btn-fill dropdown-toggle action-btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" disabled>
+                                                        Action &nbsp;<span class="caret"></span>
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a href="#emailModal" data-toggle="modal"><i class="fa fa-envelope fa-fw"></i> &nbsp;Send Email</a></li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        </tr>
 										<tr>
+                                            <th style="width:10px !important"><label class="test-group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 											<th><i class="fa fa-user"></i>Name</th>
                                             <th class="text-center">GQ Score</th>
 											<th class="text-center">Job Score</th>
@@ -190,12 +198,13 @@
 											<th class="text-center">Action</th>
 										</tr>
 										</thead>
-										<tbody>
+										<tbody id="tb-assessed">
 										{% set n = 0 %}
-										{% for result in results %}
+										{% for result in unshortlisted %}
 											{% set n = n + 1 %}
                                             {#{% if result.gqtest_status == 'Accepted' %}#}
                                                 <tr  id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
+                                                    <td style="width:10px !important"><label class=""><input type="checkbox" class="form-control user-checkbox" /></label></td>                                
                                                     <td class="name">
                                                         <a target="_blank" href="/applicant/resume-user/{{ result.applicant.id }}" class="" rel="tooltip" title="View Resume">
                                                             {{ result.applicant.fullname }}
@@ -293,6 +302,21 @@ $(document).ready(function() {
     });
 
 
+    // enable company to view contact/send email
+    $(".enable-contact").click(function() {
+        if (confirm("Are you sure you it is okay for the company to contact these candidates?")) {
+            $.post('/job/enable-contactview', { job_id: job_id }, function(d) {
+                if (d.status.trim() == 'success') {
+                    showNotification('top', 'center', 'success', 'Contact details has been enabled for this shortlist', 'pe-7s-bell');
+                    $(".enable-contact").prop('disabled', true);
+                } else {
+                    showNotification('top', 'center', 'error', 'Something went wrong. Couldn\'t enable contact for this shortlist', 'pe-7s-bell');
+                }
+            });
+        }
+    });
+
+
     $("#tb-users").on('click', '.unselect-candidate', function(e) {
         e.preventDefault();
         if (confirm("Are you sure you want to remove this candidate?")) {
@@ -332,6 +356,11 @@ $(document).ready(function() {
 		responsive: true
 	});
 
+    var assessedDTable = $('.assessedDataTable').DataTable({
+		pageLength: 25,
+		responsive: true
+	});
+
     var testDTable = $(".ajaxDataTable").DataTable({
         pageLength: 30,
         processing: true,
@@ -344,8 +373,6 @@ $(document).ready(function() {
             "type": 'POST',
             "draw": 1,
             "length": 30,
-            "searching": true,
-            "search": true,
             "data": function(d) {
                 d.mode = 'job_applicants';
                 d.job_id = job_id;
@@ -389,8 +416,8 @@ $(document).ready(function() {
          "columns": [
             { "data": "checkbox" }, 
             { "data": "test_date" }, 
-            { "data": "fullname" },
-            { "data": "email" },
+            { "data": "fullname", "searchable": true },
+            { "data": "email", "searchable": true },
             { "data": "general_ability_score" },
             { "data": "general_ability_proctor" },
             { "data": "verbal_score" },
@@ -416,6 +443,8 @@ $(document).ready(function() {
   		]
     });
 
+    $(".ajaxDataTable").css('width', '100%');
+
     $(".test-group-check").click(function() {
 		if ($(this).find('input[type=checkbox]').is(':checked')) {
 			testDTable.$(".user-checkbox").prop('checked', true);
@@ -425,6 +454,18 @@ $(document).ready(function() {
 		controlActionBtn($(this).parents('.table'));
         activeDTable = testDTable;
 	});
+
+
+    $(".assessed-group-check").click(function() {
+		if ($(this).find('input[type=checkbox]').is(':checked')) {
+			assessedDataTable.$(".user-checkbox").prop('checked', true);
+		} else {
+			assessedDataTable.$(".user-checkbox").prop('checked', false);
+		}
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = assessedDataTable;
+	});
+
 
     $(".all-group-check").click(function() {
 		if ($(this).find('input[type=checkbox]').is(':checked')) {
@@ -442,6 +483,16 @@ $(document).ready(function() {
 		controlActionBtn($(this).parents('.table'));
         activeDTable = allDTable;
 	});
+
+    $("#tb-assessed").on('click', ".user-checkbox", function() {
+		controlActionBtn($(this).parents('.table'));
+        activeDTable = $(this).parents('.table');
+	});
+
+    $("#tb-users").on('click', ".user-checkbox", function () {
+        controlActionBtn();
+        activeDTable = $(this).parents('.table');
+    });
 
     $(".ajaxDataTable").on('click', ".user-checkbox", function() {
 		controlActionBtn($(this).parents('.table'));

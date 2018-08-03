@@ -430,6 +430,7 @@ module.exports = {
             return res.view('company/shortlist', {
                 selected_candidates: shortlistedData.results,
                 job_id: req.param('job_id'),
+                job_paid: shortlistedData.paid,
                 jobTitle: shortlistedData.jobTitle
             });
         })
@@ -495,6 +496,13 @@ module.exports = {
                             shortlistedCandidates.push(allCandidates.find(candidate => candidate.applicant.id == shortlisted.candidate));
                         });
 
+                        //if (shortlistedCandidates.length < 1) shortlistedCandidates.push({ applicant: { id: 0 }});
+                        let unshortlisted = allCandidates.filter(function(el) {
+                            return !shortlistedCandidates.some(function(obj) {
+                                return el.applicant.id == obj.applicant.id;
+                            });
+                        });
+
                         let companyName;
                         if ((job.source === null || job.source === 'gq') && job.company) {
                             companyName = job.company.company_name;
@@ -508,7 +516,7 @@ module.exports = {
 							jobTitle: job.job_title,
                             companyName: companyName,
                             applicants: applications,
-							results: allCandidates,
+							unshortlisted: unshortlisted,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id
 						});
@@ -685,6 +693,15 @@ module.exports = {
         var backdate = today.setDate(today.getDate() - 2);
         Job.update({ id: req.param('job_id') }, { closing_date: new Date(backdate).toISOString() }).exec(function(err, job) {
             return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+        });
+    },
+
+    enableContactView: function(req, res) {
+        Job.update({ id: req.param('job_id') }, { paid: 'true' }).exec(function(err) {
+            if (err) {
+                return res.json(400, { status: 'error', message: err });
+            }
+            return res.json(200, { status: 'success' });
         });
     },
 

@@ -352,7 +352,7 @@
 														<td>{{ result.verbal_percentage }}%</td>
 													</tr>
 													<tr id="maths">
-														<td>{{ result.maths_name }}<td>
+														<td>{{ result.maths_name }}</td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
 													</tr>
