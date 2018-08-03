@@ -84,6 +84,16 @@ $(document).ready(function() {
 
 		sendEmail($("#shortlist"), $(this));
 	});
+
+	$("#emailModal").on("hidden.bs.modal", function () {
+        $("#form-email").find(".alert-success").addClass('hidden');
+    });
+});
+
+$(document).on('focusin', function(e) {
+    if ($(e.target).closest(".mce-window").length) {
+        e.stopImmediatePropagation();
+    }
 });
 
 

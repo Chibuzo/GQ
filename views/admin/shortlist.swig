@@ -37,7 +37,7 @@
 
 		// enable company to view contact/send email
 		$(".enable-contact").click(function() {
-			if (confirm("Are you sure you it is okay for the company to contact these candidates?")) {
+			if (confirm("This action will enable the company to have assess to candidates' contact. Do you want to proceed?")) {
 				var job_id = {{ job_id | json | safe }};
 				$.post('/job/enable-contactview', { job_id: job_id }, function(d) {
 					if (d.status.trim() == 'success') {
@@ -95,6 +95,16 @@
 
 		sendEmail($("#shortlist"), $(this));
 	});
+
+	$("#emailModal").on("hidden.bs.modal", function () {
+        $("#form-email").find(".alert-success").addClass('hidden');
+    });
+});
+
+$(document).on('focusin', function(e) {
+    if ($(e.target).closest(".mce-window").length) {
+        e.stopImmediatePropagation();
+    }
 });
 
 
