@@ -147,6 +147,11 @@ module.exports = {
             defaultsTo: 'false'
         },
 
+        paid: {
+            type: 'boolean',
+            defaultsTo: 'false'
+        },
+
         status: {
             type: 'string', // Active, Archived, Deleted
             defaultsTo: 'Active'

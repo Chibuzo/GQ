@@ -96,13 +96,6 @@ module.exports = {
                     next.sort(function(a, b) { return a - b; });
                     return resolve(next[0]);
                 }
-                //     if (tests[0].test < 3)
-                //         return resolve(tests[0].test + 1);
-                //     else // its 3 return 1
-                //         return resolve(1);
-                // } else {
-                   
-                // }
             });
         });
     },

@@ -164,6 +164,7 @@ module.exports = {
                             });
                             return resolve({
                                 results: _results,
+                                paid: job.paid,
                                 jobTitle: job.job_title,
                                 companyName: job.company.company_name
                             });

@@ -42,6 +42,8 @@ module.exports.routes = {
 
     'POST /resume/remove-referee': 'ResumeController.removeReferee',
 
+    'GET /resume/view/:user_id/:job_id': 'ResumeController.viewJobResume',
+
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
@@ -236,6 +238,8 @@ module.exports.routes = {
     'GET /job/:id/:title': 'JobController.showJob',
 
     'GET /job/:id': 'JobController.showJob',
+
+    'POST /job/enable-contactview': 'JobController.enableContactView',
 
     'GET /jobcategory/:id/*': 'JobController.findJobsByCategory',
 

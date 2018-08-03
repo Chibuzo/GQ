@@ -6,20 +6,14 @@
 
 {% block body %}
 <style>
-	th {
-		text-align: center;
-	}
-
-	td {
-		text-align: center;
-	}
+	
 </style>
 
 <div class="col-md-12">
 	<div class="card">
 		<div class="header row">
 			<div class="col-md-6">
-				<h4 class="title">Candidates</h4>
+				<h4 class="title">Candidates</h4>	
 			</div>
 		</div>
 		<div class="content">
@@ -29,6 +23,10 @@
 </div>
 {% endblock %}
 
+{% block modals %}
+    {% include '../misc/email-modal.swig' %}
+{% endblock %}
+
 {% block scriptTag %}
 
 {#<script src="/js/plugins/datatables.min.js"></script>#}
@@ -36,6 +34,22 @@
 <script>
 
 	$(document).ready(function() {
+
+		// enable company to view contact/send email
+		$(".enable-contact").click(function() {
+			if (confirm("Are you sure you it is okay for the company to contact these candidates?")) {
+				var job_id = {{ job_id | json | safe }};
+				$.post('/job/enable-contactview', { job_id: job_id }, function(d) {
+					if (d.status.trim() == 'success') {
+						showNotification('top', 'center', 'success', 'Contact details has been enabled for this shortlist', 'pe-7s-bell');
+						$(".enable-contact").prop('disabled', true);
+					} else {
+						showNotification('top', 'center', 'error', 'Something went wrong. Couldn\'t enable contact for this shortlist', 'pe-7s-bell');
+					}
+				});
+			}
+		});
+
 		$(".group-check").click(function () {
 			if ($(this).is(":checked")) {
 				$(".user-checkbox").prop('checked', true);
@@ -51,18 +65,18 @@
 		});
 
 
-		$(".action-btn").click(function() {
-			if (confirm("Are you sure you want to accept these candidates?")) {
-				var users = [];
-				$(".user-checkbox:checked").each(function () {
-					users.push($(this).parents('tr').data('candidate_id'));
-				});
-				var job_id = {{ job_id | json | safe }};
-				$.post('/selectedCandidates/accept', {users: users, job_id: job_id}, function () {
-					location.reload(true);
-				});
-			}
-		});
+		// $(".action-btn").click(function() {
+		// 	if (confirm("Are you sure you want to accept these candidates?")) {
+		// 		var users = [];
+		// 		$(".user-checkbox:checked").each(function () {
+		// 			users.push($(this).parents('tr').data('candidate_id'));
+		// 		});
+		// 		var job_id = {{ job_id | json | safe }};
+		// 		$.post('/selectedCandidates/accept', {users: users, job_id: job_id}, function () {
+		// 			location.reload(true);
+		// 		});
+		// 	}
+		// });
 
 
 	//	var dTable = $('.dataTable').DataTable({
@@ -76,15 +90,38 @@
 	//		]
 	//	});
 
+	$("#form-email").submit(function(e) {
+		e.preventDefault();
+
+		sendEmail($("#shortlist"), $(this));
 	});
+});
 
 
-	function controlActionBtn() {
-		if ($(".user-checkbox:checked").size() > 0) {
-			$(".action-btn").prop("disabled", false);
-		} else {
-			$(".action-btn").prop("disabled", true);
-		}
+function sendEmail($table, $form) {   
+    $form.find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
+    var users = [];
+    $table.find(".user-checkbox:checked").each(function() {
+        users.push($(this).parents('tr').find('td.email').text());
+    });
+
+    tinymce.triggerSave();
+
+    $.post('/admin/sendemail', $form.serialize() + '&users=' + users, function(d) {
+        if (d.status.trim() == 'success') {
+            $(".alert-success").removeClass('hidden');
+            $form.find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
+        }
+    }, 'JSON');
+}
+
+
+function controlActionBtn() {
+	if ($(".user-checkbox:checked").size() > 0) {
+		$(".action-btn").prop("disabled", false);
+	} else {
+		$(".action-btn").prop("disabled", true);
 	}
+}
 </script>
 {% endblock %}
