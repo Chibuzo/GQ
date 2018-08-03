@@ -18,7 +18,7 @@ transporter.use('compile', hbs(options));
 
 const BASE_URL = 'https://getqualified.work/';
 const GQ_EMAIL = 'support@getqualified.work';
-const PRODUCTIVE_PEOPLE_EMAIL = 'info@productivepeople.org';
+const PRODUCTIVE_PEOPLE_EMAIL = 'sefinatu.atta@productivepeople.org';
 
 module.exports = {
     companyVerification: function(coy) {
