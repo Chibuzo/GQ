@@ -42,9 +42,15 @@ module.exports = {
        const proctor_id = req.param('proctor_id');
 
         ProctorRecord.find({ proctor: proctor_id }).exec(function(err, files) {
+            if (err) {
+                return res.json(400, { status: 'error', message: err });
+            }
             // also fetch profile picture (passport)
             Resume.find({ user: req.param('candidate_id') }).exec(function(err, user) {
-                return res.json(200, { status: 'success', files: files, profile_pic: user[0].photo });
+                if (err) {
+                    return res.json(400, { status: 'error', message: err });
+                }
+                return res.json(200, { status: 'success', files: files, profile_pic: user[0] ? user[0].photo : '' });
             });
         });
     },
@@ -53,19 +59,24 @@ module.exports = {
     acceptTest: function(req, res) {
         if (req.param('test_type') == 'GQAptitude') {
             GQAptitudeTestResult.update({ user: req.param('candidate_id') }, { status: 'Accepted' }).exec(function(err, test) {
+                if (err) {
+                    console.log(err);
+                    return res.serverError(err);
+                }
                 if (test.length > 0) {
                     // delete proctor files
                     [1,2,3].forEach(function(test) {
                         ProctorService.deleteProctorFiles(test);
                     });
                 }
+                return res.json(200, { status: 'success' });
             });
         } else if (req.param('test_type') == 'job-test') {
             ProctorSession.update({ id: req.param('proctor_id') }, { status: 'Accepted' }).exec(function() {
                 ProctorService.deleteProctorFiles(req.param('proctor_id'));
+                return res.json(200, { status: 'success' });
             });
         }
-        return res.ok();
     },
 
 

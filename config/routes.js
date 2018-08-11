@@ -42,6 +42,8 @@ module.exports.routes = {
 
     'POST /resume/remove-referee': 'ResumeController.removeReferee',
 
+    'GET /resume/view/:user_id/:job_id': 'ResumeController.viewJobResume',
+
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
@@ -237,6 +239,8 @@ module.exports.routes = {
 
     'GET /job/:id': 'JobController.showJob',
 
+    'POST /job/enable-contactview': 'JobController.enableContactView',
+
     'GET /jobcategory/:id/*': 'JobController.findJobsByCategory',
 
     'GET /getJobTest/:category/:job_level': 'JobTestController.getJobTest',
@@ -305,6 +309,12 @@ module.exports.routes = {
 
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 
+    'POST /api/v1/job/apply': 'JobApiController.apply',
+
+    'GET /api/v1/getjobstat/:job_id': 'JobApiController.fetchJobStat',
+
+    'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
+
 
     'POST /api/v1/proctor/getsessionid': { 
         controller: 'ProctorRecordController', action: 'startSession', 
@@ -332,6 +342,15 @@ module.exports.routes = {
 
     'POST /api/v1/proctor/saveproctordata': {
         controller: 'ProctorRecordController', action: 'saveEvidenceData',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    // candidates
+    'POST /api/v1/candidates/fetchgqresults': {
+        controller: 'GQTestController', action: 'getAptitudeTestResults',
         cors: {
             allowOrigins: ['*'],
             allowCredentials: false

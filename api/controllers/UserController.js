@@ -86,7 +86,7 @@ module.exports = {
                         req.session.fname = user.fullname;
                         req.session.userEmail = user.email;
 
-                        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+                        //const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
                         var me = {
                             fname: user.fullname.split(' ')[0],
@@ -97,7 +97,6 @@ module.exports = {
 
                         if (user.user_type == 'Applicant') {
                             // create their resume
-
 							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id })
 								.then(() => {
 									sendMail.welcomeNewCandidate(user);
@@ -114,8 +113,7 @@ module.exports = {
 											passwordSet: passwordSet
 										});
 									}
-								})
-
+								});
 
                         } else if (user.user_type == 'company') {
                             return res.view('company/users/profile', { user: user, me: me });

@@ -1,4 +1,4 @@
-$(".fetch-proctor-details").click(function() {
+$(".table").on("click", ".fetch-proctor-details", function() {
     var proctor_id = $(this).attr('id');
     var candidate_id = $(this).parents('tr').attr('id');
 
@@ -76,7 +76,7 @@ $(".fetch-proctor-details").click(function() {
 });
 
 
-$(".accept-test").click(function(e) {
+$(".table").on("click", ".accept-test", function(e) {
     e.preventDefault();
     if (confirm("Are you sure you want to accept this test score?")) {
         var candidate_id = $(this).parents('tr').attr('id');
@@ -95,7 +95,7 @@ $(".accept-test").click(function(e) {
 });
 
 
-$(".reject-test").click(function(e) {
+$(".table").on("click", ".reject-test", function(e) {
     e.preventDefault();
     if (confirm("Are you sure you want to reject this test score?")) {
         var $parentTd = $(this).parents('td');
@@ -103,7 +103,6 @@ $(".reject-test").click(function(e) {
         var job_title = '';
         var proctor_id = 0;
         var test_type = $parentTd.data('test-type');
-        alert(test_type)
         if (test_type == 'job-test') {
             job_title = $parentTd.data('job-title');
             proctor_id = $parentTd.data('proctor-id');
@@ -117,7 +116,7 @@ $(".reject-test").click(function(e) {
 });
 
 
-$(".trash-can").click(function(e) {
+$(".table").on("click", ".trash-can", function(e) {
     e.preventDefault();
     var candidateId = $(this).parents('tr').attr('id');
     var candidateName = $(this).parents('.opt-icons').data('user_name');

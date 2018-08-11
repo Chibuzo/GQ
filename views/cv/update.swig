@@ -298,7 +298,7 @@
 								<a href="#video" class="{{ disableVideoTabClass }}"data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-							<div class="row loader-container-row">
+							<div class="row loader-container-row hidden">
 								<div class="col-xs-2 col-xs-offset-5">
 									<p class="loader-text">Loading...</p>
 									<div class="loader">
@@ -309,6 +309,11 @@
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12 div-cv">
+										<div id="cv-options" class="col-md-5 col-md-offset-3 hidden" style="margin-top: 70px">
+											<button class="btn btn-fill btn-danger btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
+											<small>* File must be in PDF, DOC or DOCX format</small><br><br>
+											<button class="btn btnfill btn-danger btn-lg btn-block"><i class="fa fa-edit"></i> Fill the Resume form</button>
+										</div>
 										{% include 'includes/resume-form.swig' %}
 										{% include 'includes/resume.swig' %}
 										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
@@ -352,7 +357,7 @@
 														<td>{{ result.verbal_percentage }}%</td>
 													</tr>
 													<tr id="maths">
-														<td>{{ result.maths_name }}<td>
+														<td>{{ result.maths_name }}</td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
 													</tr>
@@ -509,11 +514,10 @@
 											</div>
 										</div>
 									{% endif %}
-									<!--<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
-										<input type="hidden" name="video_name" value="{{ resume.video }}" />
+									<form action="/resume/extract" method="post" id="form-cv" enctype="multipart/form-data">
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
-										<input type="file" name="video" style="display: none" id="file-control" />
-									</form>-->
+										<input type="file" name="file" style="display: none" id="cv-file-control" accept=".pdf,.doc,.docx" />
+									</form>
 									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
@@ -839,6 +843,31 @@ $(document).ready(function() {
 	$("#videoRecorderModal").on("hidden.bs.modal", function () {
         pavp.stop();
     });
+
+
+	// CV Extractor 
+	$("#cv-upload-btn").click(function() {
+		$("#cv-file-control").click();
+	});
+
+	$("#cv-file-control").change(function() {
+		var form = new FormData($("#form-cv")[0]);
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": "https://api.neon.ventures/cvextractor/api/?i=gq/cv/upload",
+			"method": "POST",
+			"headers": {},
+			"processData": false,
+			"contentType": false,
+			"mimeType": "multipart/form-data",
+			"data": form
+		}
+
+		$.ajax(settings).done(function (response) {
+			console.log(response);
+		});
+	});
 });
 
 function uploadFile(video) {

@@ -11,7 +11,7 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
 
-       return Promise.all([
+        return Promise.all([
             CountryStateService.getCountries(),
             Honour.find(),
             ResumeService.viewResume(req.session.userId, 'user')
@@ -229,14 +229,39 @@ module.exports = {
             console.log(err);
         });
     },
+    
+    viewJobResume: function(req, res) {
+        Job.findOne(req.param('job_id')).exec(function(err, job) {
+            if (err) {
+                return res.serverError(err);
+            }
+            Resume.find({ user: req.param('user_id') })
+                .then(resume => {
+                    ResumeService.viewResume(resume[0].id).then(function(response) {
+                        var me = {
+                            fname: response.resume.user.fullname.split(' ')[0],
+                            lname: response.resume.user.fullname.split(' ')[1]
+                        };
+                        var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
+                        return res.view('company/gqprofileview', {
+                            resume: response.resume,
+                            me: me,
+                            result: result,
+                            test_title: response.test_title ? response.test_title : null,
+                            showContactInfo: job.paid === true ? true : false
+                        });
+                    }).catch(function(err) {
+                        return res.serverError(err);
+                    });
+
+                })
+                .catch(err => {
+                    return res.serverError(err);
+                });
+        });
+    },
 
     viewResumeByUser: function(req, res) {
-        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
-            folder = 'company';
-        } else if (req.session.user_type == 'admin') {
-            folder = 'admin';
-        }
-
         return Resume.find({ user: req.param('user_id') })
             .then(resume => {
                 ResumeService.viewResume(resume[0].id).then(function(response) {
@@ -245,13 +270,12 @@ module.exports = {
                         lname: response.resume.user.fullname.split(' ')[1]
                     };
                     var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
-                    return res.view(folder + '/gqprofileview', {
+                    return res.view('admin/gqprofileview', {
                         resume: response.resume,
                         me: me,
                         result: result,
                         test_title: response.test_title ? response.test_title : null,
-                        folder: folder,
-                        showContactInfo: folder === 'admin' ? true : false
+                        showContactInfo: true
                     });
                 }).catch(function(err) {
                     return res.serverError(err);
@@ -260,7 +284,7 @@ module.exports = {
             })
             .catch(err => {
                 return res.serverError(err);
-            })
+            });
     },
 
     removeEducation: function(req, res) {

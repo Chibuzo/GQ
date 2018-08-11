@@ -190,25 +190,24 @@ module.exports = {
             if (err) {
                 return res.badRequest(err);
             }
-
             try {
                 var parser = require('csv-parse');
                 const fs = require('fs');
                 fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
-                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, _data) {
                         if (err) {
                             var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
                             var company_id = job.company.id;
-                            async.eachSeries(data, function(entry, cb) {
+                            async.eachSeries(_data, function(entry, cb) {
                                 if (entry[0] == 'Fullname') {
                                     return cb();
                                 }
                                 var email = entry[1].replace(/\s+/g, '').trim();
                                 var data = {
                                     fullname: entry[0],
-                                    email:  email.replace(/\.\s*$/, ""),
+                                    email: email.replace(/\.\s*$/, ""),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
@@ -240,7 +239,7 @@ module.exports = {
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
                                             if (err) {
-                                                return res.serverError(err);
+                                                return cb();
                                             }
                                             if (resume.length > 0) {
                                                 if (resume[0].status === 'Complete') {
@@ -349,7 +348,6 @@ module.exports = {
             if (!job) {
                 return res.view('job', { status: 'false' });
             }
-
             let views = (!job.view_count) ? 1 : parseInt(job.view_count) + 1;
             Job.update({ id: job_id }, { view_count: views }).exec(function() {});
 
@@ -362,7 +360,6 @@ module.exports = {
                             active_jobs++;
                         }
                     });
-
                     jobCategories.push({
                         category: jobcat.category,
                         jobs: active_jobs,
@@ -388,14 +385,14 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
-                    AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
-                        jobId: job_id,
-                        resumeStatus: resume[0].status,
-                        profileStatus: resume[0].profile_status,
-                        photoStatus: resume[0].photo_status,
-                        videoStatus: resume[0].video_status,
-                        testStatus: resume[0].test_status
-                    });
+                    // AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
+                    //     jobId: job_id,
+                    //     resumeStatus: resume[0].status,
+                    //     profileStatus: resume[0].profile_status,
+                    //     photoStatus: resume[0].photo_status,
+                    //     videoStatus: resume[0].video_status,
+                    //     testStatus: resume[0].test_status
+                    // });
                     JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
                         if (status.status === false) {
                             return res.json(200, { status: 'error', msg: 'IncompleteResume' });
@@ -428,9 +425,9 @@ module.exports = {
                 }
             });
         } else {
-            AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
-                jobId: job_id
-            });
+            // AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
+            //     jobId: job_id
+            // });
             req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
@@ -441,6 +438,7 @@ module.exports = {
             return res.view('company/shortlist', {
                 selected_candidates: shortlistedData.results,
                 job_id: req.param('job_id'),
+                job_paid: shortlistedData.paid,
                 jobTitle: shortlistedData.jobTitle
             });
         })
@@ -484,7 +482,7 @@ module.exports = {
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
 					Application.find({ job: job_id }).populate('applicant'),
-					SelectedCandidate.find({job_id: job_id}).populate('candidate')
+					SelectedCandidate.find({ job_id: job_id })
 				]).then(results => {
 
 					let jobTest = results[0];
@@ -499,24 +497,23 @@ module.exports = {
 						}
 					});
 
-					let shortlistedIds = [];
-					selected_candidates.forEach(function (shortlisted) {
-						if (shortlisted.candidate) {
-							shortlistedIds.push(shortlisted.candidate.id);
-						}
-					});
+					CBTService.getJobTestResults(candidatesIds, jobTest).then(function(allCandidates) {
+                        // find shortlisted mo'fuckers
+                        let shortlistedCandidates = [];
+                        selected_candidates.forEach(function(shortlisted) {
+                            shortlistedCandidates.push(allCandidates.find(candidate => candidate.applicant.id == shortlisted.candidate));
+                        });
 
-
-					return Promise.all([
-						CBTService.getJobTestResults(candidatesIds, jobTest), // TODO: Kind of redundant. All shortlisted Candidates are Candidates
-						CBTService.getJobTestResults(shortlistedIds, jobTest)
-					]).then(jobTestResults => {
-
-						let allCandidates = jobTestResults[0];
-						let shortlistedCandidates = jobTestResults[1];
-
-                        _.each(shortlistedCandidates, (shortlistedCandidate) => {
-                            shortlistedCandidate.status = selected_candidates.find(x => x.candidate.id == shortlistedCandidate.applicant.id).status;
+                        //if (shortlistedCandidates.length < 1) shortlistedCandidates.push({ applicant: { id: 0 }});
+                        // remove shortlisted candidates from assessed candidates
+                        let unshortlisted = allCandidates.filter(function(el) {
+                            if (el)     // just in case
+                            if (shortlistedCandidates.length > 0) {
+                                return !shortlistedCandidates.some(function(obj) {
+                                    if (obj) // necessary
+                                    return el.applicant.id == obj.applicant.id;
+                                });
+                            }
                         });
 
                         let companyName;
@@ -525,14 +522,14 @@ module.exports = {
                         } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
                             companyName = job.company_name;
                         } else {
-                            companyName == 'Company';
+                            companyName = 'Company';
                         }
 
 						return res.view('admin/applicants-view.swig', {
 							jobTitle: job.job_title,
-							companyName: companyName,
+                            companyName: companyName,
                             applicants: applications,
-							results: allCandidates,
+							unshortlisted: unshortlisted,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id
 						});
@@ -709,6 +706,15 @@ module.exports = {
         var backdate = today.setDate(today.getDate() - 2);
         Job.update({ id: req.param('job_id') }, { closing_date: new Date(backdate).toISOString() }).exec(function(err, job) {
             return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+        });
+    },
+
+    enableContactView: function(req, res) {
+        Job.update({ id: req.param('job_id') }, { paid: 'true' }).exec(function(err) {
+            if (err) {
+                return res.json(400, { status: 'error', message: err });
+            }
+            return res.json(200, { status: 'success' });
         });
     },
 
