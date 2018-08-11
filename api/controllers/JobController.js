@@ -205,16 +205,19 @@ module.exports = {
                                 if (entry[0] == 'Fullname') {
                                     return cb();
                                 }
+                                var email = entry[1].replace(/\s+/g, '').trim();
                                 var data = {
                                     fullname: entry[0],
-                                    email: entry[1],
-                                    phone: entry[2],
+                                    email:  email.replace(/\.\s*$/, ""),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
+                                    if (err) {
+                                        return cb();
+                                    }
                                     if (user.user_type == 'company-admin' || user.user_type == 'company') {
                                         // bad market
-                                        cb();
+                                        return cb();
                                     }
                                     if (user.user_type != 'Applicant') {
                                         // bad market
@@ -223,7 +226,12 @@ module.exports = {
                                     JobService.apply(job_id, user.id).then(function (resp) {
                                     }).catch(function (err) {
                                         console.log(err);
+                                        return cb();
                                     });
+                                    // cause a delay so amazon doesn't doesn't reject the emails
+                                    var waitTill = new Date(new Date().getTime() + 1 * 100);
+                                    while(waitTill > new Date()){}
+                                    
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
@@ -231,7 +239,10 @@ module.exports = {
                                         return cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
-                                            if (resume.length > 0) { console.log('Yes');
+                                            if (err) {
+                                                return res.serverError(err);
+                                            }
+                                            if (resume.length > 0) {
                                                 if (resume[0].status === 'Complete') {
                                                     msg_type = 'fyi'; // inform them
                                                 } else {
