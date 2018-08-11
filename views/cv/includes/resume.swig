@@ -1,6 +1,5 @@
 {% if resume.profile_status == true %}
-	{# if the resume profile is completed, start off showing the presentation
-	view #}
+	{# if the resume profile is completed, start off showing the presentation view #}
 	{% set className = '' %}
 {% else %}
 	{% set className = 'hidden' %}

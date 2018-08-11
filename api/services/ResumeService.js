@@ -36,5 +36,29 @@ module.exports = {
                     });
                 });
         });
+    },
+
+
+    createNewResume: function(data) {
+        return new Promise(function(resolve, reject) {
+            // let's see if user already exist
+            User.findOrCreate({ email: data.email }, { email: data.email, fullname: data.fullname, user_type: 'Applicant' }).exec(function(err, user) {
+                if (err) return reject(err);
+                // create resume
+                Resume.findOrCreate({ email: data.email }, data).exec(function(err, resume) {
+                    if (err) return reject(err);
+                    var msg_type;
+                    if (user.status == 'Inactive') {
+                        msg_type = 'new-user';
+                    } else if (resume.status == 'Complete') {
+                        msg_type = 'fyi';
+                    } else {
+                        msg_type = 'incomplete-profile';
+                    }
+                    user.user_status = msg_type;
+                    return resolve(user);
+                });
+            });
+        });
     }
 }

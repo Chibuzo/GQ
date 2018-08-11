@@ -11,7 +11,7 @@ module.exports = {
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
 
-       return Promise.all([
+        return Promise.all([
             CountryStateService.getCountries(),
             Honour.find(),
             ResumeService.viewResume(req.session.userId, 'user')

@@ -309,6 +309,12 @@ module.exports.routes = {
 
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 
+    'POST /api/v1/job/apply': 'JobApiController.apply',
+
+    'GET /api/v1/getjobstat/:job_id': 'JobApiController.fetchJobStat',
+
+    'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
+
 
     'POST /api/v1/proctor/getsessionid': { 
         controller: 'ProctorRecordController', action: 'startSession', 

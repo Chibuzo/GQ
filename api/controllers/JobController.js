@@ -195,26 +195,29 @@ module.exports = {
                 var parser = require('csv-parse');
                 const fs = require('fs');
                 fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
-                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, _data) {
                         if (err) {
                             var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
                             var company_id = job.company.id;
-                            async.eachSeries(data, function(entry, cb) {
+                            async.eachSeries(_data, function(entry, cb) {
                                 if (entry[0] == 'Fullname') {
                                     return cb();
                                 }
+                                var email = entry[1].replace(/\s+/g, '').trim();
                                 var data = {
                                     fullname: entry[0],
-                                    email: entry[1],
-                                    phone: entry[2],
+                                    email: email.replace(/\.\s*$/, ""),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
+                                    if (err) {
+                                        return cb();
+                                    }
                                     if (user.user_type == 'company-admin' || user.user_type == 'company') {
                                         // bad market
-                                        cb();
+                                        return cb();
                                     }
                                     if (user.user_type != 'Applicant') {
                                         // bad market
@@ -223,21 +226,22 @@ module.exports = {
                                     JobService.apply(job_id, user.id).then(function (resp) {
                                     }).catch(function (err) {
                                         console.log(err);
+                                        return cb()
                                     });
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
-                                        sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                        //sendMail.sendAppliedJobNotice(job, user, msg_type);
                                         return cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
-                                            if (resume.length > 0) { console.log('Yes');
+                                            if (resume.length > 0) {
                                                 if (resume[0].status === 'Complete') {
                                                     msg_type = 'fyi'; // inform them
                                                 } else {
                                                     msg_type = 'incomplete-profile';
                                                 }
-                                                sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                                //sendMail.sendAppliedJobNotice(job, user, msg_type);
                                             } else {
                                                 console.log('You are not a candidate');
                                             }
@@ -497,10 +501,15 @@ module.exports = {
                         });
 
                         //if (shortlistedCandidates.length < 1) shortlistedCandidates.push({ applicant: { id: 0 }});
+                        // remove shortlisted candidates from assessed candidates
                         let unshortlisted = allCandidates.filter(function(el) {
-                            return !shortlistedCandidates.some(function(obj) {
-                                return el.applicant.id == obj.applicant.id;
-                            });
+                            if (el)     // just in case
+                            if (shortlistedCandidates.length > 0) {
+                                return !shortlistedCandidates.some(function(obj) {
+                                    if (obj) // necessary
+                                    return el.applicant.id == obj.applicant.id;
+                                });
+                            }
                         });
 
                         let companyName;
