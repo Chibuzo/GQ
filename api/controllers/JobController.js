@@ -504,16 +504,10 @@ module.exports = {
                             shortlistedCandidates.push(allCandidates.find(candidate => candidate.applicant.id == shortlisted.candidate));
                         });
 
-                        //if (shortlistedCandidates.length < 1) shortlistedCandidates.push({ applicant: { id: 0 }});
                         // remove shortlisted candidates from assessed candidates
-                        let unshortlisted = allCandidates.filter(function(el) {
-                            if (el)     // just in case
-                            if (shortlistedCandidates.length > 0) {
-                                return !shortlistedCandidates.some(function(obj) {
-                                    if (obj) // necessary
-                                    return el.applicant.id == obj.applicant.id;
-                                });
-                            }
+                        let unshortlisted = []
+                        allCandidates.forEach(ele => {
+                            unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
                         });
 
                         let companyName;
