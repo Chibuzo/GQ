@@ -91,6 +91,7 @@
 						<th style="width:10px !important"><label class="group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
+						<th class="hidden">Email</th>
 						{#<th>Employment Status</th>#}
 						<th>Gen. Score</th>
 						<th>Gen. Proctor</th>
@@ -115,6 +116,7 @@
                                     {{ user.fullname }}
                                 </a>
                             </td>
+							<td class="email hidden">{{ user.email }}</td>
 							{#<td>{{ user.employment_status }}</td>#}
 							<td>{{ user.generalAbilityTest.score }}%</td>
 							<td>
@@ -219,9 +221,6 @@ $(document).ready(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
 
-//		for ( instance in tinymce.instances ) {
-//			tinymce.instances[instance].updateElement();
-//		}
 		tinymce.triggerSave();
 
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {

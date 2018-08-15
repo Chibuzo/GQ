@@ -1,11 +1,11 @@
-{% if resume.profile_status == true %}
-	{# if the resume profile is completed, start off hiding the form view #}
+{#{% if resume.profile_status == true %}
+	{# if the resume profile is completed, start off hiding the form view #
 	{% set className = 'hidden' %}
 {% else %}
 	{% set className = '' %}
-{% endif %}
+{% endif %}#}
 
-<div id="resumeForm-container" class="{{ className }}">
+<div id="resumeForm-container" class="hidden">
 	<div class="clearfix"><a href="/viewsampleresume" class="btn btn-danger pull-right"><i class="fa fa-file-pdf-o"></i> View Sample CV</a></div>
 	<small>Fields marked in asterisk are compulsory</small>
 	<form action="/resume/update" method="post" id="form-resume">
@@ -310,7 +310,7 @@
 						<div class="col-md-1 col-xs-12 delete-entry-col">
 							<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 							<div class="delete-entry-container">
-								<a href="" class="delete-entry remove-edu-btn ">
+								<a href="" class="delete-entry remove-edu-btn">
 									Remove
 								</a>
 							</div>
@@ -640,7 +640,7 @@
 							<div class="col-md-1 col-xs-12 delete-entry-col">
 								<label class="hidden-xs" style="visibility: hidden; width: 100%;">Remove</label>
 								<div class="delete-entry-container">
-									<a href="" class="delete-entry remove-reference-btn">
+									<a href="" data-id="{{ ref.id }}" class="delete-entry remove-reference-btn">
 										Remove
 									</a>
 								</div>

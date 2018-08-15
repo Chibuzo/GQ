@@ -79,7 +79,7 @@
 								<td>{{ job.status }}</td>
 								<td>{{ job.job.closing_date | date('d-m-Y') }}</td>
 								<td class="opt-icons text-center dropdown">
-									<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Take Test</a>
+									<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Competency Test</a>
 									<ul class='dropdown-menu dropdown-menu-right'>
 										<li class='dropdown-header'>Required Online Tests for the Job</li>
 										{% for test in job.tests %}

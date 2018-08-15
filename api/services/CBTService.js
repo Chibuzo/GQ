@@ -36,61 +36,42 @@ module.exports = {
                 var aptitude_test_results = []; // for computing aptitude test ranking
                 async.eachSeries(candidates, function(candidate_id, cb) {
                     // get their BEST aptitude test score
+					GQAptitudeTestResult.find({ user: candidate_id, status: 'Accepted' }).populate('user').sort('score desc').limit(1).exec(function(err, apt_score) {
+                        if (err) {
+                            cb(err);
+                        }
+                        if (apt_score.length > 0) {
+                            GQTestResult.find({test: [1, 2, 3], candidate: candidate_id}).exec(function(err1, gqTestResults) {
+                                if (err1) {
+                                    cb(err1);
+                                }
+                                let total_num_questions = 0;
+                                gqTestResults.forEach(function(test) {
+                                    total_num_questions += test.no_of_questions;
+                                });
+                                let percentage = ((apt_score[0].score / total_num_questions) * 100).toFixed(1);
+                                aptitude_test_results.push(apt_score[0].score);
 
-					Promise.all([
-						GQAptitudeTestResult.find({user: candidate_id}).populate('user').sort('score desc').limit(1),
-						GQTestResult.find({test: [1, 2, 3], candidate: candidate_id}).populate('proctor')
-					]).then(results => {
-						let apt_score = results[0];
-						let gqTestResults = results[1];
-
-						let proctorSessions = gqTestResults.map(gqTestResult => {
-							return gqTestResult.proctor;
-						});
-
-						let integrityScoreSum = _.sum(gqTestResults, (gqTestResult) => {
-							return gqTestResult.proctor.integrity_score;
-						});
-
-						let integrityScore = (integrityScoreSum / 3).toFixed(1);
-
-						let integrityStatuses = _.map(gqTestResults, (gqTestResult) => {
-							return gqTestResult.proctor.status;
-						});
-
-						let proctorStatus = 'Pending';
-
-						if (integrityStatuses.includes('Accepted')) {
-							proctorStatus = 'Accepted'
-						} else if (integrityStatuses.includes('Rejected')) {
-							proctorStatus = 'Rejected'
-						}
-
-						if (apt_score.length > 0) {
-							let aptScore = apt_score[0];
-
-                            let percentage = ((aptScore.score / 60) * 100).toFixed(1);
-                            aptitude_test_results.push(aptScore.score);
-
-                            gq_results.push({
-                                test_id: aptScore.id,
-                                applicant: aptScore.user,
-                                score: 'NA',
-                                percentage: percentage,
-                                test_result: percentage > 59 ? 'Passed' : 'Failed',
-                                composite_score: 'NA',
-								job_score: false,
-                                aptitude_test: aptScore.score,
-                                integrity_score: integrityScore,
-                                proctor_status: proctorStatus,
-                                proctor_id: 0,
-                                createdAt: aptScore.createdAt
-                            });
-                            cb();
+                                gq_results.push({
+                                    test_id: apt_score[0].id,
+                                    applicant: apt_score[0].user,
+                                    score: 'NA',
+                                    percentage: percentage,
+                                    test_result: percentage > 59 ? 'Passed' : 'Failed',
+                                    composite_score: percentage,
+                                    job_score: false,
+                                    aptitude_test: apt_score[0].score,
+                                    integrity_score: 'NA',
+                                    proctor_status: 'NA',
+                                    proctor_id: 0,
+                                    createdAt: apt_score[0].createdAt
+                                });
+                                cb();
+                            })
                         } else {
                             cb();
                         }
-					})
+					});
                 }, function(err) {
                     if (err) return reject(err);
                     gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b; });
@@ -131,18 +112,25 @@ module.exports = {
             async.eachSeries(results, function(result, cb) {
                 // get their BEST aptitude test score
                 GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
+                    if (err) {
+                        return reject(err);
+                    }
+                    // for jobs that require GQ Aptitude test
                     if (apt_score.length > 0) {
                         var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
                         var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
                         // if the job has a competency test, compute the two, else use only aptitude test score
-                        var composite_score;
-                        if (result.score) {
-                            composite_score = (gq_score / 2) + (percentage / 2);
-                            aptitude_test_results.push(composite_score);
-                        } else {
-                            composite_score = apt_score[0].score;
-                            aptitude_test_results.push(apt_score[0].score);
-                        }
+
+                        // if (result.score) {
+                        //     composite_score = (gq_score / 2) + (percentage / 2);
+                        //     aptitude_test_results.push(composite_score);
+                        // } else {
+                        //     composite_score = apt_score[0].score;
+                        //     aptitude_test_results.push(apt_score[0].score);
+                        // }
+                        let composite_score = (gq_score / 2) + (percentage / 2);
+                        aptitude_test_results.push(composite_score);
+
                         gq_results.push({
                             test_id: result.id,
                             applicant: result.candidate,
@@ -235,21 +223,24 @@ module.exports = {
                 if (candidate_score.length < 1) {
                     return resolve(false);
                 }
-                GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
-                    GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).sort('test asc').populate('candidate').populate('proctor').exec(function(err, tests) {
+                //GQAptitudeTestResult.find().sort('score desc').groupBy('score').sum('score').exec(function(err, result) {
+                    GQTestResult.find({ test: [1,2,3], candidate: candidate_id }).populate('test').populate('proctor').exec(function(err, tests) {
                         if (tests[0] && tests[1] && tests[2]) {
                             var c_score = candidate_score[0];
-                            c_score.percentage = ((c_score.score / 60) * 100).toFixed(1);
-                            c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
-                            c_score.candidates = result.length;
+                            c_score.total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+                            c_score.percentage = ((c_score.score / c_score.total_num_questions) * 100).toFixed(1);
+                            //c_score.rank = result.map(function (e) { return e.score; }).indexOf(candidate_score[0].score) + 1;
+                            // c_score.candidates = result.length;
+                            c_score.general_ability_name = tests[0].test.test_name;
                             c_score.general_ability = tests[0].score;
                             c_score.general_percentage = ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1);
-                            //c_score.general_rank =
+                            c_score.verbal_name = tests[1].test.test_name;
                             c_score.verbal = tests[1].score;
                             c_score.verbal_percentage = ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1);
+                            c_score.maths_name = tests[2].test.test_name;
                             c_score.maths = tests[2] ? tests[2].score : 0;
                             c_score.maths_percentage = ((c_score.maths / tests[2].no_of_questions) * 100).toFixed(1);
-                            c_score.total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+
                             return resolve(c_score);
                         } else {
                             // reset general score
@@ -258,7 +249,7 @@ module.exports = {
                             });
                         }
                     });
-                });
+                //});
             });
         });
     },

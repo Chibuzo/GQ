@@ -298,7 +298,7 @@
 								<a href="#video" class="{{ disableVideoTabClass }}"data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-							<div class="row loader-container-row">
+							<div class="row loader-container-row hidden">
 								<div class="col-xs-2 col-xs-offset-5">
 									<p class="loader-text">Loading...</p>
 									<div class="loader">
@@ -309,6 +309,11 @@
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12 div-cv">
+										<div id="cv-options" class="col-md-5 col-md-offset-3 hidden" style="margin-top: 70px">
+											<button class="btn btn-fill btn-danger btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
+											<small>* File must be in PDF, DOC or DOCX format</small><br><br>
+											<button class="btn btnfill btn-danger btn-lg btn-block"><i class="fa fa-edit"></i> Fill the Resume form</button>
+										</div>
 										{% include 'includes/resume-form.swig' %}
 										{% include 'includes/resume.swig' %}
 										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
@@ -342,17 +347,17 @@
 												</thead>
 												<tbody>
 													<tr id="general">
-														<td>General Ability</td>
+														<td>{{ result.general_ability_name }}</td>
 														<td>{{ result.general_ability }}</td>
 														<td>{{ result.general_percentage }}%</td>
 													</tr>
 													<tr id="verbal">
-														<td>Verbal Reasoning</td>
+														<td>{{ result.verbal_name }}</td>
 														<td>{{ result.verbal }}</td>
 														<td>{{ result.verbal_percentage }}%</td>
 													</tr>
 													<tr id="maths">
-														<td>Numerical Reasoning</td>
+														<td>{{ result.maths_name }}</td>
 														<td>{{ result.maths }}</td>
 														<td>{{ result.maths_percentage }}%</td>
 													</tr>
@@ -509,11 +514,10 @@
 											</div>
 										</div>
 									{% endif %}
-									<!--<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
-										<input type="hidden" name="video_name" value="{{ resume.video }}" />
+									<form action="/resume/extract" method="post" id="form-cv" enctype="multipart/form-data">
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
-										<input type="file" name="video" style="display: none" id="file-control" />
-									</form>-->
+										<input type="file" name="file" style="display: none" id="cv-file-control" accept=".pdf,.doc,.docx" />
+									</form>
 									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
@@ -661,12 +665,14 @@
 			});
 
 			// remove one row from institution
-			$("#institutions").on("click", ".remove-institution-btn", function(e) {
+			$("#institutions").on("click", ".remove-edu-btn", function(e) {
 				e.preventDefault();
 				if (confirm('Are you sure you want to remove this Educational entry?')) {
 					$(this).parents(".inst-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-education', { id: id });
 				}
 			});
 
@@ -689,6 +695,8 @@
 					$(this).parents(".qual-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-certification', { id: id });
 				}
 			});
 
@@ -709,6 +717,8 @@
 					$(this).parents(".employment-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-employment', { id: id });
 				}
 			});
 
@@ -728,6 +738,8 @@
 					$(this).parents(".reference-row").slideUp(function() {
 						$(this).remove();
 					});
+					var id = $(this).data('id');
+					$.post('/resume/remove-referee', { id: id });
 				}
 			});
 
@@ -768,8 +780,8 @@
 
 
 			$(".question-title").click(function() {
-				$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
-				$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
+				//$('.fa-caret-down').removeClass('fa-caret-down').addClass('fa-caret-right');
+				//$(this).find('.fa').removeClass('fa-caret-right').addClass('fa-caret-down');
 				var id = $(this).attr('id');
 				$(".quest-instruction").slideUp();
 				$('#' + id + "-text").slideDown();
@@ -781,7 +793,7 @@
 					keyboard: true
 				});
 
-                amplitude.getInstance().logEvent("Sample Video Link Clicked");
+                //amplitude.getInstance().logEvent("Sample Video Link Clicked");
 			});
 
 			$('#modal-sample-video').on('hide.bs.modal', function(e) {
@@ -797,18 +809,16 @@
 				$frame.attr('src', vidsrc);
 			});
 
-            $('.nav.nav-tabs a').on('click', function(evt) {
-                var href = $(this).attr('href');
-                href = href.substr(1);
-                amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
-            });
+            // $('.nav.nav-tabs a').on('click', function(evt) {
+            //     var href = $(this).attr('href');
+            //     href = href.substr(1);
+            //     amplitude.getInstance().logEvent("Profile/Resume " + href + " Tab");
+            // });
 		});
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<!--<script src="https://api.neon.ventures/proctor/js/adapter-latest.js"></script>-->
 	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
-	<!--<script src="/js/youtubeUpload.js"></script>-->
 
 <script>
 $(document).ready(function() {
@@ -829,11 +839,35 @@ $(document).ready(function() {
 		});
 	});
 
-		//var vd = new FormData($("#form-video-upload")[0]);
 
 	$("#videoRecorderModal").on("hidden.bs.modal", function () {
         pavp.stop();
     });
+
+
+	// CV Extractor 
+	$("#cv-upload-btn").click(function() {
+		$("#cv-file-control").click();
+	});
+
+	$("#cv-file-control").change(function() {
+		var form = new FormData($("#form-cv")[0]);
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": "https://api.neon.ventures/cvextractor/api/?i=gq/cv/upload",
+			"method": "POST",
+			"headers": {},
+			"processData": false,
+			"contentType": false,
+			"mimeType": "multipart/form-data",
+			"data": form
+		}
+
+		$.ajax(settings).done(function (response) {
+			console.log(response);
+		});
+	});
 });
 
 function uploadFile(video) {

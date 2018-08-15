@@ -71,24 +71,28 @@ module.exports = {
             answer: req.param('answer')
         };
         if (req.param('question_id') && _.isNumber(parseInt(req.param('question_id')))) {
-            GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
-                data.image_file = resp;
-                GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
+            GQTestQuestions.update({ id: req.param('question_id') }, data).exec(function (err, quest) {
+                if (err) return res.json(200, {status: 'error', msg: err});
+                //return res.json(200, {status: 'success'});
+            });
+            GQTestService.addImageToQuestion(req.file('question_image')).then(function(resp) {
+                GQTestQuestions.update({ id: req.param('question_id') }, { image_file: resp }).exec(function (err, quest) {
                     if (err) return res.json(200, {status: 'error', msg: err});
                     return res.json(200, {status: 'success'});
                 });
             }).catch(function(err) {
-                if (err) return res.json(200, { status: 'error', 'msg': err });
+                return res.json(200, {status: 'success'});
             });
         } else {
             GQTestQuestions.create(data).exec(function (err, quest) {
                 if (err) return res.json(200, {status: 'error', msg: err});
-                GQTestService.addImageToQuestion(req.file('question_image'), req.param('image_file')).then(function(resp) {
+                GQTestService.addImageToQuestion(req.file('question_image')).then(function(resp) {
                     GQTestQuestions.update({ id: quest.id }, { image_file: resp }).exec(function() {});
                     return res.json(200, {status: 'success'});
                 }).catch(function(err) {
-                    if (err) return res.json(200, { status: 'error', 'msg': err });
-                });;
+                    return res.json(200, {status: 'success'});
+                    //if (err) return res.json(200, { status: 'error', 'msg': err });
+                });
             });
         }
     },
@@ -494,17 +498,6 @@ module.exports = {
         } catch(err) {
 
         }
-
-        // let proctorSessId = req.param('proctorSessId');
-        // if (proctorSessId && proctorSessId != req.session.proctor) {
-        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-        //         location: 'GQTestController.uploadProctorAudio()',
-        //         filename: filename,
-        //         sessionProctor: req.session.proctor,
-        //         requestProctor: proctorSessId
-        //     });
-        // }
-
         // check source
         var session_id = false;
         var path = req.path.split('/')[1];
@@ -541,24 +534,12 @@ module.exports = {
         fs.writeFileSync(path, buff);
 
         // copy the uploaded photo to the public folder
-        //const uploadedpic = path + '/' + filename;
         try {
             const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
             fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
         } catch(err) {
 
         }
-
-        // let proctorSessId = req.param('proctorSessId');
-        // if (proctorSessId && proctorSessId != req.session.proctor) {
-        //     AmplitudeService.trackEvent('Proctor Session ID Mismatch (File)', req.session.userEmail, {
-        //         location: 'GQTestController.uploadProctorPicture()',
-        //         filename: filename,
-        //         sessionProctor: req.session.proctor,
-        //         requestProctor: proctorSessId
-        //     });
-        // }
-
         // check source
         var session_id = false;
         var path = req.path.split('/')[1];
@@ -581,6 +562,40 @@ module.exports = {
                 sails.log.error(err);
                 return res.json(400, { status: 'error', message: err });
             });
+        }
+    },
+    
+    getAptitudeTestResults: function(req, res) {
+        let start = req.param('start');
+        let rows = req.param('length');
+        let draw = req.param('draw');
+        switch (req.param('mode')) {
+            case 'job_applicants':
+                if (req.param('job_id') && !isNaN(req.param('job_id'))) {
+                    Application.find({ job: req.param('job_id') }).exec(function(err, applicants) {
+                        if (err) {
+                            return res.json(400, { status: 'error', message: err });
+                        }
+                        let candidatesIds = [];
+                        applicants.forEach(function (applicant) {
+                            if (applicant.applicant) {
+                                candidatesIds.push(applicant.applicant);
+                            }
+                        });
+
+                        GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows).then(function(candidates) {
+                            return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
+                        })
+                        .catch(function(err) {
+                            return json(400, { status: 'error', message: err });
+                        });
+                    });
+                } else {
+                    return res.json(404, { status: 'error', message: 'job_id must be numeric' });
+                }
+                break;
+            default:    
+                break;    
         }
     }
 };
