@@ -36,5 +36,78 @@ module.exports = {
                     });
                 });
         });
+    },
+
+
+    createNewResume: function(data) {
+        return new Promise(function(resolve, reject) {
+            // let's see if user already exist
+            User.findOrCreate({ email: data.email }, { email: data.email, fullname: data.fullname, user_type: 'Applicant' }).exec(function(err, user) {
+                if (err) return reject(err);
+                // create resume
+                Resume.findOrCreate({ email: data.email }, data).exec(function(err, resume) {
+                    if (err) return reject(err);
+                    var msg_type;
+                    if (user.status == 'Inactive') {
+                        msg_type = 'new-user';
+                    } else if (resume.status == 'Complete') {
+                        msg_type = 'fyi';
+                    } else {
+                        msg_type = 'incomplete-profile';
+                    }
+                    user.user_status = msg_type;
+                    return resolve(user);
+                });
+            });
+        });
+    },
+
+
+    fetchScrappedCV: function(user_id) {
+        var request = require("request");
+        var qs = require('querystring');
+
+        var data = { user_id: 47 };
+        var options = {
+            method: "POST",
+            url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/get",
+            form: JSON.stringify({ "user_id": user_id }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        return new Promise(function(resolve, reject) {
+            // var req = request(options, function (res) {
+            //     var chunks = [];
+
+            //     res.on("data", function (chunk) {
+            //         chunks.push(chunk);
+            //     });
+
+            //     res.on("end", function () {
+            //         var body = Buffer.concat(chunks);
+            //         console.log(body.toString());
+            //     });
+
+            //     res.on("error", function(err) {
+            //         console.log(err);
+            //         return reject(err);
+            //     })
+            // });
+
+            // req.write(JSON.stringify({ user_id: user_id }));
+            // req.end();
+            
+            
+            //console.log(qs.stringify(data));
+            request(options, function(err, res, body) {
+                if (err) {
+                    return reject(err);
+                }
+                var data = JSON.parse(body);
+                return resolve(data.data);
+            });
+        });
     }
 }

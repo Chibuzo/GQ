@@ -5,7 +5,7 @@
 	{% set className = '' %}
 {% endif %}
 
-<div id="resumeForm-container" class="{{ className }}">
+<div id="resumeForm-container" class="hidden">
 	<div class="clearfix"><a href="/viewsampleresume" class="btn btn-danger pull-right"><i class="fa fa-file-pdf-o"></i> View Sample CV</a></div>
 	<small>Fields marked in asterisk are compulsory</small>
 	<form action="/resume/update" method="post" id="form-resume">

@@ -334,7 +334,7 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-            return Company.find().sort('createdAt desc').then(coys => {
+            return Company.find().sort('company_name').then(coys => {
                 var companies = [];
                 var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {

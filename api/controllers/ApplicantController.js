@@ -52,7 +52,6 @@ module.exports = {
 
 
     addYoutubeVideoID: function(req, res) {
-
         if (req.session.userId) {
             return Resume.update({ user: req.session.userId }, { youtube_vid_id: req.param('video_id'), video_status: 'true' })
                 .then(resumes => {
@@ -159,6 +158,33 @@ module.exports = {
             });
         }).catch(function(err) {
             return res.json(400, { status: 'error', message: err });
+        });
+    },
+
+    // will deprecate this hot messy fix asap
+    uploadDownloadedVideo: function(req, res) {        
+        req.file('profile_video').upload({
+            adapter: require('skipper-better-s3'),
+            key: 'AKIAITZYZILPYGBFJWCA',
+            secret: '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',
+            region: 'us-east-1',
+            bucket: 'getqualified',
+            headers: {
+                ContentType: 'video/webm'
+            }
+        }, function (err, upfile) {
+            if (err) {
+                return res.json(400, { status: 'error', message: err });
+            }
+            // this is weird but let's check if a file was uploaded
+            if (!upfile) {
+                return res.json(400, { status: 'error', message: 'No file was uploaded' });
+            }
+            let fname = upfile[0].extra.Location;
+            
+            Resume.update({ user: req.session.userId }, { video_file: fname, youtube_vid_id: '', video_status: 'true' }).exec(function () {
+                return res.json(200, { status: 'success' });
+            });
         });
     },
 

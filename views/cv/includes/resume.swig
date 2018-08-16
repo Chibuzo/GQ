@@ -1,12 +1,11 @@
 {% if resume.profile_status == true %}
-	{# if the resume profile is completed, start off showing the presentation
-	view #}
+	{# if the resume profile is completed, start off showing the presentation view #}
 	{% set className = '' %}
 {% else %}
 	{% set className = 'hidden' %}
 {% endif %}
 
-<div class="{{ className }} tab-pane fade active in" id="resume">
+<div class="{{ className }}" id="resume-view">
 	{% if canEditResume == true %}
 		<div class="row text-center">
 			<button class="btn btn-primary" id="candidate-editResumeBtn"><i class="fa fa-user"></i> Edit Resume</button>

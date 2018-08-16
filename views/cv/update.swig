@@ -15,6 +15,7 @@
 <link href="/styles/proctor-style.css" rel="stylesheet" />
 <link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
 <!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
+{{ cv.css | safe }}
 <style>
 	#sample-vid-btn {
 		font-size: 1.2em;
@@ -208,6 +209,10 @@
 		padding: 1px 7px;
 	}
 
+	#page-container {
+		position: relative !important;
+	}
+
 
 	@keyframes spin {
 	    0% { transform: rotate(0deg); }
@@ -298,7 +303,7 @@
 								<a href="#video" class="{{ disableVideoTabClass }}"data-toggle="tab"> <i class="fa fa-video-camera"></i> &nbsp;My Video</a></li>
 						</ul>
 						<div class="tab-content">
-							<div class="row loader-container-row">
+							<div class="row loader-container-row hidden">
 								<div class="col-xs-2 col-xs-offset-5">
 									<p class="loader-text">Loading...</p>
 									<div class="loader">
@@ -309,9 +314,22 @@
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12 div-cv">
-										{% include 'includes/resume-form.swig' %}
-										{% include 'includes/resume.swig' %}
-										<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>
+										{% if resume.profile_status !== true %}
+											<div id="cv-options" class="col-md-5 col-md-offset-3" style="margin-top: 70px">
+												<button class="btn btn-fill btn-info btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
+												<small>* File must be in PDF, DOC or DOCX format</small><br><br>
+												<button class="btn btnfill btn-primary btn-lg btn-block" id="edit-cv-btn"><i class="fa fa-edit"></i> Fill the Resume form</button>
+												<br>
+												<div class="alert alert-danger hidden" id="cv-alert">Your CV upload was not successful, please make sure you are uploading a file in the correct format</div>
+											</div>
+										{% endif %}	
+										{% if resume.scrapped === true %}
+											{% include 'includes/scrapped-cv.swig' %}
+										{% else %}	
+											{% include 'includes/resume-form.swig' %}
+											{% include 'includes/resume.swig' %}
+										{% endif %}	
+										<!--<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>-->
 									</div>
 								</div>
 							</div>
@@ -452,7 +470,7 @@
 										<div class="col-md-5 gq-video-canvass">
 											<!--<iframe width="470" height="345" src="https://youtube.com/embed/{{ resume.youtube_vid_id }}"></iframe>-->
 											<div class="video-div">
-												<video width="470" height="345" controls>
+												<video width="570" height="345" controls>
 													{% if resume.youtube_vid_id.length > 5 %}
 														<source src="https://api.neon.ventures/gqyt/files/{{ resume.youtube_vid_id }}.mp4" type="video/mp4">
 													{% else %}
@@ -474,8 +492,8 @@
 											<div class="alert alert-warning hidden video-alert"></div>
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
-												<button class="btn btn-default selectfile-button hidden">Change Video</button>
-												<button class="btn btn-primary record-video">Record Video</button>
+												<button class="btn btn-info record-video btn-fill"><i class="fa fa-video-camera"></i> Record Video</button>												
+												<button class="btn btn-default selectfile-button btn-fill">Change Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 														<span class="sr-only">0%</span>
@@ -492,8 +510,8 @@
 												<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 												<i class="pe-7s-video"></i>
 												<p>
-													<button class="btn btn-danger selectfile-button hidden"><i class="fa fa-video-camera"></i> Upload Your Video</button>
-													<button class="btn btn-primary record-video">Record Video</button>	
+													<button class="btn btn-info record-video btn-fill"><i class="fa fa-video-camera"></i> Record Video</button>													
+													<button class="btn btn-danger selectfile-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
 												</p>
 												<br>
 												 <div class="progress" style="margin: 10px 5px;">
@@ -509,11 +527,14 @@
 											</div>
 										</div>
 									{% endif %}
-									<!--<form action="/applicant/add-profilevideo" method="post" id="form-video-upload" enctype="multipart/form-data">
-										<input type="hidden" name="video_name" value="{{ resume.video }}" />
+									<form action="" method="post" id="video-form" enctype="multipart/form-data">
+										<input type="file" name="profile_video" style="display: none" id="video-file-control" />
+										<input type="hidden" id="old_video" value="{{ resume.video_file }}" />
+									</form>
+									<form action="/resume/extract" method="post" id="form-cv" enctype="multipart/form-data">
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
-										<input type="file" name="video" style="display: none" id="file-control" />
-									</form>-->
+										<input type="file" name="file" style="display: none" id="cv-file-control" accept=".pdf,.doc,.docx" />
+									</form>
 									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
@@ -766,7 +787,7 @@
 				e.preventDefault();
 
 				// Hide the Resume presentation View
-				$("#resume").addClass('hidden');
+				$("#resume-view").addClass('hidden');
 
 				// Show the Resume Form View
 				$("#resumeForm-container").removeClass('hidden');
@@ -839,6 +860,95 @@ $(document).ready(function() {
 	$("#videoRecorderModal").on("hidden.bs.modal", function () {
         pavp.stop();
     });
+
+	// manual video upload
+	$(".selectfile-button").click(function() {
+		$("#video-file-control").click();
+	});
+
+	$("#video-file-control").change(function() {
+		// lets try and detect file MIME type
+		// if (window.FileReader && window.Blob) {
+		// 	var file = $("#video-file-control").files;
+		// 	console.log(file);
+		// 	if (file[0].type != 'video/webm') {
+		// 		$(".video-alert").text('Only video recorded on this platform are allowed').removeClass('hidden');
+		// 		return false;
+		// 	} 
+		// }
+		$(".selectfile-button").html("<i class='fa fa-cog fa-spin'></i> Uploading...").prop("disabled", true);
+		var vidForm = new FormData($("#video-form")[0]);
+		//vidForm.append('old_video', $("#old_video").val(), 'old_video');
+		$.ajax({
+			type: "POST",
+			url: '/applicant/upload-profilevideo',
+			data: vidForm,
+			success: function (data) {
+				location.reload(true);
+			},
+			processData: false,
+			contentType: false,
+			xhr: function(){
+				//Get XmlHttpRequest object
+				var xhr = $.ajaxSettings.xhr() ;
+				//Set onprogress event handler
+				xhr.upload.onprogress = function(data){
+					var perc = Math.round((data.loaded / data.total) * 100);
+					$('#progressBar span.sr-only').text(perc + '%');
+					$('#progressBar').css('width', perc + '%');
+				};
+				return xhr;
+			},
+			error: function (e) {
+				$(".video-alert").text(e.message).removeClass('hidden');
+				//HideLoad();
+				$(".selectfile-button").html("<i class='fa fa-video-camera'></i> Upload Your Video").prop("disabled", false);
+				console.log(e)
+				//console.error('Error has occurred while uploading the media file.');
+			}
+		});
+	})
+
+
+	// CV Extractor 
+	$("#cv-upload-btn").click(function() {
+		$("#cv-file-control").click();
+	});
+
+	$("#cv-file-control").change(function() {
+		$("#cv-upload-btn").html("<i class='fa fa-cog fa-spin'></i> Uploading...").prop("disabled", true);
+		var form = new FormData($("#form-cv")[0]);
+		var settings = {
+			"async": true,
+			"crossDomain": true,
+			"url": "https://api.neon.ventures/cvextractor/api/?i=gq/cv/upload",
+			"method": "POST",
+			"headers": {},
+			"processData": false,
+			"contentType": false,
+			"mimeType": "multipart/form-data",
+			"data": form
+		}
+
+		$.ajax(settings).done(function (response) {
+			var d = JSON.parse(response);
+			if (d.status == true) {
+				$.post('/resume/changetype', function(d) {
+					location.reload(true);
+				});
+			} else {
+				$("#cv-alert").removeClass('hidden');
+				$("#cv-upload-btn").html("<i class='fa fa-video-camera'></i> Record Video").prop("disabled", false);
+			}
+		});
+	});
+
+
+	$("#edit-cv-btn").click(function() {
+		$("#cv-options").fadeOut('fast', function() {
+			$("#resumeForm-container").hide().removeClass('hidden').fadeIn('fast');
+		});
+	});
 });
 
 function uploadFile(video) {

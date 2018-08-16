@@ -14,10 +14,12 @@ module.exports = {
             contact_phone: q('phone'),
             contact_email: q('email')
         };
-        CompanyRequest.create(data).exec(function(err, coy) {
-            if (err) return console.log(err);
-            sendMail.companySignUpRequest(coy);
-            return res.json(200, { status: 'success' });
+        CompanyService.signupRequest(data).then(status => {
+            if (status === true) {
+                return res.json(200, { status: 'success' });
+            }
+        }).catch(err => {
+            return json(400, { status: 'error', message: err });
         });
     },
 

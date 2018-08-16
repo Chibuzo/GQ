@@ -1,6 +1,7 @@
 {% set title = 'Candidate GQ Profile' %}
 
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
+{{ cv.css | safe }}
 <style>
 	.tab-pane {
 		overflow: hidden;
@@ -36,6 +37,10 @@
 
 	#cv-view .row {
 		padding: 1px 7px;
+	}
+
+	#page-container {
+		position: relative !important;
 	}
 
 
@@ -80,7 +85,15 @@
 						<div class="tab-content">
 							<!-- Resume -->
 							<div class="tab-pane fade in active" id="resume">
-								{% include 'includes/resume.swig' %}
+								{% if resume.scrapped === true %}
+									<div class="row">
+										<div class="col-md-12 div-cv">
+											{% include 'includes/scrapped-cv.swig' %}
+										</div>
+									</div>
+								{% else %}	
+									{% include 'includes/resume.swig' %}
+								{% endif %}
 							</div>
 
 							<div class="tab-pane fade in" id="photo">

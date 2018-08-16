@@ -44,13 +44,17 @@ module.exports.routes = {
 
     'GET /resume/view/:user_id/:job_id': 'ResumeController.viewJobResume',
 
+    'POST /resume/changetype': 'ResumeController.changeType',
+
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo', 
+    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo',
+    
+    'POST /applicant/upload-profilevideo': 'ApplicantController.uploadDownloadedVideo',
 
     'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
@@ -299,6 +303,10 @@ module.exports.routes = {
     //
     //'/states': 'BatchController.loadStates'
 
+    'GET /testapi': 'BatchController.testApi',
+
+    'POST /testupload': 'BatchController.acceptFiles',
+
     'GET /getstates': 'BatchController.getStates',
 
 
@@ -308,6 +316,12 @@ module.exports.routes = {
     'POST /api/v1/postjob': 'JobApiController.createJob',
 
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
+
+    'POST /api/v1/job/apply': 'JobApiController.apply',
+
+    'GET /api/v1/getjobstat/:job_id': 'JobApiController.fetchJobStat',
+
+    'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
 
 
     'POST /api/v1/proctor/getsessionid': { 
