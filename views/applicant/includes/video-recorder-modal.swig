@@ -20,6 +20,7 @@
 							<div class="header">
 								<a class="control left" data-reset>Cancel</a>
 								<a class="control right" data-upload>Upload</a>
+								<a class="control right" data-download>Download</a>
 							</div>
 
 							<span class="timer"></span>

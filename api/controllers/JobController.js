@@ -271,22 +271,27 @@ module.exports = {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
+                if (err) {
+                    return res.serverError(err);
+                }
                 var jobCategories = [];
-                job_categories.forEach(function(jobcat) {
-                    if (jobcat.jobs.length > 0) {
-                        var active_jobs = 0;
-                        jobcat.jobs.forEach(function(job) {
-                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++;
-                            }
-                        });
-                        jobCategories.push({
-                            category: jobcat.category,
-                            jobs: active_jobs,
-                            id: jobcat.id
-                        });
-                    }
-                });
+                if (job_categories.length > 0) {
+                    job_categories.forEach(function(jobcat) {
+                        if (jobcat.jobs.length > 0) {
+                            var active_jobs = 0;
+                            jobcat.jobs.forEach(function(job) {
+                                if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                    active_jobs++;
+                                }
+                            });
+                            jobCategories.push({
+                                category: jobcat.category,
+                                jobs: active_jobs,
+                                id: jobcat.id
+                            });
+                        }
+                    });
+                }
                 return res.view('jobs', { jobs: jobs, job_categories: jobCategories });
             });
         });
@@ -300,22 +305,27 @@ module.exports = {
             //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
+                if (err) {
+                    return res.serverError(err);
+                }
                 var jobCategories = [];
-                job_categories.forEach(function(jobcat) {
-                    if (jobcat.jobs.length > 0) {
-                        var active_jobs = 0;
-                        jobcat.jobs.forEach(function(job) {
-                            if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
-                                active_jobs++;
-                            }
-                        });
-                        jobCategories.push({
-                            category: jobcat.category,
-                            jobs: active_jobs,
-                            id: jobcat.id
-                        });
-                    }
-                });
+                if (job_categories.length > 0) {
+                    job_categories.forEach(function(jobcat) {
+                        if (jobcat.jobs.length > 0) {
+                            var active_jobs = 0;
+                            jobcat.jobs.forEach(function(job) {
+                                if (Date.parse(job.closing_date) >= Date.parse(today)) { // count active jobs
+                                    active_jobs++;
+                                }
+                            });
+                            jobCategories.push({
+                                category: jobcat.category,
+                                jobs: active_jobs,
+                                id: jobcat.id
+                            });
+                        }
+                    });
+                }
                 return res.view('jobs', { jobs: jobs, job_categories: jobCategories });
             });
         });
