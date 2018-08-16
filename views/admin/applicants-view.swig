@@ -18,6 +18,14 @@
 		width: 100%;
 	}
 
+    .proctor-pic {
+		position: relative;
+	}
+
+    #profile-pic .col-md-6 img {
+		width: 100%;
+	}
+
 	.filter-div {
 		padding-bottom: 25px;
 		overflow: auto;
@@ -265,7 +273,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script src="/js/proctorBackend.js"></script>
+<script src="/js/proctorBackend.js?v=1"></script>
 <script src="/js/plugins/datatables.min.js"></script>
 
 <script type="text/javascript">
@@ -390,11 +398,11 @@ $(document).ready(function() {
                     d.fullname_link = `<a target="_blank" href="/applicant/resume-user/${data[i].id}" class="view-resume" rel="tooltip" title="View Resume">${data[i].fullname}</a>`;
                     d.email = data[i].email;
                     d.general_ability_score = data[i].generalAbilityTest.score;
-                    d.general_ability_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].generalAbilityTest.proctorId}">${data[i].generalAbilityTest.proctorScore}</a>` : data[i].generalAbilityTest.proctorScore;
+                    d.general_ability_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].generalAbilityTest.proctorId}">${data[i].generalAbilityTest.proctorScore}%</a>` : data[i].generalAbilityTest.proctorScore;
                     d.verbal_score = data[i].verbalTest.score;
-                    d.verbal_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].verbalTest.proctorId}">${data[i].verbalTest.proctorScore}</a>` : data[i].verbalTest.proctorScore;
+                    d.verbal_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].verbalTest.proctorId}">${data[i].verbalTest.proctorScore}%</a>` : data[i].verbalTest.proctorScore;
                     d.maths_score = data[i].mathsTest.score; 
-                    d.maths_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].mathsTest.proctorId}">${data[i].mathsTest.proctorScore}</a>` : data[i].mathsTest.proctorScore;
+                    d.maths_proctor = data[i].status == 'Pending' || data[i].status == 'Rejected' ? `<a href="#proctorModal" data-toggle="modal" class="fetch-proctor-details" id="${data[i].mathsTest.proctorId}">${data[i].mathsTest.proctorScore}%</a>` : data[i].mathsTest.proctorScore;
                     d.percentage = data[i].percentage;
                     d.rank = data[i].rank;
                     d.integrity_score = data[i].integrity_score; 

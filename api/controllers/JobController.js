@@ -515,10 +515,12 @@ module.exports = {
                         });
 
                         // remove shortlisted candidates from assessed candidates
-                        let unshortlisted = []
-                        allCandidates.forEach(ele => {
-                            unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
-                        });
+                        let unshortlisted = [];
+                        if (selected_candidates.length > 0) {
+                            allCandidates.forEach(ele => {
+                                unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
+                            });
+                        }
 
                         let companyName;
                         if ((job.source === null || job.source === 'gq') && job.company) {
@@ -533,7 +535,7 @@ module.exports = {
 							jobTitle: job.job_title,
                             companyName: companyName,
                             applicants: applications,
-							unshortlisted: unshortlisted,
+							unshortlisted: unshortlisted.length > 0 ? unshortlisted : allCandidates,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id
 						});
