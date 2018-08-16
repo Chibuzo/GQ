@@ -482,6 +482,9 @@ module.exports = {
     },
 
     uploadProctorAudio: function(req, res) {
+        if (!req.param('data')) {
+            return json(400, { status: 'error', message: "Expected data (data) not found. Be consistent!" });
+        }
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
         var hr = process.hrtime();
         var filename = '/aud_' + hr[1] + '.wav';
@@ -524,6 +527,9 @@ module.exports = {
     },
 
     uploadProctorPicture: function(req, res) {
+        if (!req.param('imgBase64')) {
+            return json(400, { status: 'error', message: "Expected data (imgBase64) not found. Be consistent!" });
+        }
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
         var eventName = req.param('eventName') ?  req.param('eventName') + "_" : "";
         var hr = process.hrtime();
