@@ -13,10 +13,11 @@ module.exports = {
         } catch(err) {
             return res.json(400, { status: 'error', message: 'Invalid JSON body' });
         }
-        JobApiService.authenticate(data.authentication.email).then(function(auth) {
+        console.log(data)
+        JobApiService.authenticate(data.authentication.ID).then(function(auth) {
             if (auth.status === true) {
-                JobApiService.saveJob(data.job, auth.company.id).then(function(url) {
-                    return res.json(201, { status: 'success', joburl: url });
+                JobApiService.saveJob(data.job, auth.company.id).then(function(status) {
+                    return res.json(201, { status: 'success' });
                 }).catch(function(err) {
                     return res.json(400, { status: 'error', message: err });
                 });

@@ -34,12 +34,13 @@ module.exports = {
                 job_id: job.jobID,
                 source: 'GJ',
                 require_video: false,
-                closing_date: new Date('2/').toISOString()
+                closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
            
-            Job.findOrCreate({ job_id: job.jobID }, data).exec(function(err, new_job) {
+            Job.findOrCreate({ job_id: job.jobID, company: coy_id }, data).exec(function(err, new_job) {
                 if (err) return reject(err);
-                return resolve('https://getqualified.work/job/' + new_job.id + '/' + new_job.job_title.split(' ').join('-'));
+                return resolve(true);
+                //return resolve('https://getqualified.work/job/' + new_job.id + '/' + new_job.job_title.split(' ').join('-'));
             });
         });
     },
@@ -52,7 +53,7 @@ module.exports = {
 
     returnJobUrl: function(job_id) {
         return new Promise(function(resolve, reject) {
-            Job.findOne(job_id).exec(function(err, job) {
+            Job.findOne({ job_id: job_id}).exec(function(err, job) {
                 if (job) {
                     return resolve('https://getqualified.work/job/' + job.id + '/' + job.job_title.split(' ').join('-'));
                 } else {
@@ -67,7 +68,7 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             User.findOne({ email: email }).exec(function(err, foundUser) {
                 if (err) return reject({ status: 'error', message: err });
-                if (!foundUser) return reject({ status: 'error', message : 'User not found' });
+                if (!foundUser) return reject('User not found');
 
                 if (foundUser.status == 'Inactive') {
                     return reject({ status: 'error', message: 'This account is still pending confirmation' });

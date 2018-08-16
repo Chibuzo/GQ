@@ -14,13 +14,15 @@ module.exports = {
         return Promise.all([
             CountryStateService.getCountries(),
             Honour.find(),
-            ResumeService.viewResume(req.session.userId, 'user')
+            ResumeService.viewResume(req.session.userId, 'user'),
+            ResumeService.fetchScrappedCV(req.session.userId)
         ]).then(results => {
             let resp = results[0];
             let honours = results[1];
             let resume = results[2].resume;
             let test = results[2].result;
-
+            let cv = results[3];
+            
             var me = {
                 fname: resume.user.fullname.split(' ')[0],
                 lname: resume.user.fullname.split(' ')[1]
@@ -41,6 +43,7 @@ module.exports = {
             return res.view('cv/update', {
                 resume: resume,
                 me: me,
+                cv: cv,
                 honours: honours,
                 r_class: r_class,
                 countries: resp.countries,
@@ -218,13 +221,29 @@ module.exports = {
                     fname: response.resume.user.fullname.split(' ')[0],
                     lname: response.resume.user.fullname.split(' ')[1]
             };
-            return res.view('cv/viewresume', {
-                resume: response.resume,
-                                me: me,
-                result: response.result ? response.result : null,
-                test_title: response.test_title ? response.test_title : null,
-                folder: folder
-            });
+            if (response.resume.scrapped === true) {
+                ResumeService.fetchScrappedCV(response.resume.user.id).then(cv => {
+                    return res.view('admin/gqprofileview', {
+                        resume: response.resume,
+                        scrapped_cv: true,
+                        cv: cv,
+                        me: me,
+                        result: result,
+                        test_title: response.test_title ? response.test_title : null,
+                        showContactInfo: true
+                    });
+                }).catch(err => {
+                    return res.serverError(err);
+                });
+            } else {
+                return res.view('cv/viewresume', {
+                    resume: response.resume,
+                                    me: me,
+                    result: response.result ? response.result : null,
+                    test_title: response.test_title ? response.test_title : null,
+                    folder: folder
+                });
+            }
         }).catch(function(err) {
             console.log(err);
         });
@@ -270,17 +289,32 @@ module.exports = {
                         lname: response.resume.user.fullname.split(' ')[1]
                     };
                     var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
-                    return res.view('admin/gqprofileview', {
-                        resume: response.resume,
-                        me: me,
-                        result: result,
-                        test_title: response.test_title ? response.test_title : null,
-                        showContactInfo: true
-                    });
+                    if (resume[0].scrapped === true) {
+                        ResumeService.fetchScrappedCV(resume[0].user).then(cv => {
+                            return res.view('admin/gqprofileview', {
+                                resume: response.resume,
+                                scrapped_cv: true,
+                                cv: cv,
+                                me: me,
+                                result: result,
+                                test_title: response.test_title ? response.test_title : null,
+                                showContactInfo: true
+                            });
+                        }).catch(err => {
+                            return res.serverError(err);
+                        });
+                    } else {
+                        return res.view('admin/gqprofileview', {
+                            resume: response.resume,
+                            me: me,
+                            result: result,
+                            test_title: response.test_title ? response.test_title : null,
+                            showContactInfo: true
+                        });
+                    }
                 }).catch(function(err) {
                     return res.serverError(err);
                 });
-
             })
             .catch(err => {
                 return res.serverError(err);
@@ -305,6 +339,18 @@ module.exports = {
     removeReferee: function(req, res) {
         ReferenceContact.destroy({ id: req.param('id') }).exec(function() {});
         return res.ok();
+    },
+
+
+    changeType: function(req, res) {
+        if (req.session.userId) {
+            Resume.update({ user: req.session.userId }, { scrapped: 'true', profile_status: true }).exec(function(err) {
+                if (err) {
+                    return res.serverError(err);
+                }
+                return res.json(200, { status: 'success' });
+            });
+        }
     },
 
 

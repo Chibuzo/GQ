@@ -1,9 +1,9 @@
-{#{% if resume.profile_status == true %}
-	{# if the resume profile is completed, start off hiding the form view #
+{% if resume.profile_status == true %}
+	{# if the resume profile is completed, start off hiding the form view #}
 	{% set className = 'hidden' %}
 {% else %}
 	{% set className = '' %}
-{% endif %}#}
+{% endif %}
 
 <div id="resumeForm-container" class="hidden">
 	<div class="clearfix"><a href="/viewsampleresume" class="btn btn-danger pull-right"><i class="fa fa-file-pdf-o"></i> View Sample CV</a></div>

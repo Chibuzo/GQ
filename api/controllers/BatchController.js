@@ -50,6 +50,74 @@ module.exports = {
         States.find().sort('state_name asc').exec(function(err, states) {
             return res.json(200, { states: states });
         });
+    },
+
+    testApi: function(req, res) {
+        var request = require("request");
+        var qs = require('querystring');
+
+        var data = {       	
+            jobID: 60,
+            email: 'c.hibuzo.henry@gmail.com',
+            fullname: 'Frank Eneh',
+            phone: '0804885754',
+            gender: 'male',
+            dob: '1986-04-16',
+            address: 'No 3 moore street',
+            country: 'Nigeria',
+            state: 'Kwara',
+            city: 'Kuba',
+            professional_summary: 'I am me…',
+            employment_status: 'Not employed/Employed',
+            current_annual_salary: '1,000,000',
+            expected_annual_salary: '1,200,000'
+        };
+
+        // var data = {
+        //     "request": {
+        //         "authentication": {
+        //             "email": "uzo.systems@gmail.com"
+        //         },
+        //         "job":
+        //           {
+        //                 "company": {
+        //                         "company_name": "GetQualified",
+        //                         "contact_person": "John Doe",
+        //                         "contact_email": "email.com",
+        //                         "contact_phone": "09094758784"
+        //                 },
+        //               "job_title": "HR Manager",
+        //               "job_location": "Lagos, Ikeja",
+        //               "job_description": "This job  is job",
+        //               "requirements":  ["a degree","3 years experience"],
+        //               "qualifications": ["MBA"],
+        //               "job_level": "Entry Level",
+        //               "closing_date": "2018-08-20",
+        //               "jobID": "1234"
+        //           }
+        //     }
+        // };
+
+        var options = {
+            method: "POST",
+            uri: "http://35.177.19.130:1337/api/v1/job/apply",
+            json: true,
+            body: data,
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+        
+        request(options, function(err, resp, body) {
+            console.log(err);
+            console.log(body)
+            //var data = JSON.parse(body);
+            return res.ok();
+        });
+    },
+
+    acceptFiles: function(req, res) {
+        
     }
 };
 

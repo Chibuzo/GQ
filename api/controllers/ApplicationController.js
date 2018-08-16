@@ -14,7 +14,13 @@ module.exports = {
             .then(applications => {
                 let _applications = [];
                 async.eachSeries(applications, function (app, cb) {
+                    if (!app.job) {
+                        return cb();
+                    }
                     JobTest.find({ job_category_id: app.job.category, job_level: app.job.job_level }).populate('test').populate('gq_test').exec(function(err, tests) {
+                        if (err) {
+                            return res.serverError(err);
+                        }
                         app.tests = tests;
                         _applications.push(app);
                         cb();

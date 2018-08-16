@@ -144,7 +144,7 @@ module.exports = {
             }
             Passwords.checkPassword({
                 passwordAttempt: req.param('password'),
-                encryptedPassword: foundUser.password
+                encryptedPassword: foundUser.password ? foundUser.password : 'fail'
             }).exec({
                 error: function (err) {
                     return res.json(200, { status: 'Err', msg: err });
