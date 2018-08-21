@@ -201,13 +201,21 @@ module.exports = {
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
                             var company_id = job.company.id;
                             async.eachSeries(_data, function(entry, cb) {
-                                if (entry[0] == 'Fullname') {
+                                var fullname, email;
+                                if (entry.length > 1) {
+                                    fullname = entry[0];
+                                    email = entry[1];
+                                } else {
+                                    email = entry[0];
+                                    fullname = '';
+                                }
+                                if (entry[0] == 'Fullname' || email === undefined) {
                                     return cb();
                                 }
-                                var email = entry[1].replace(/\s+/g, '').trim();
+                                var _email = email.replace(/\s+/g, '').trim();
                                 var data = {
-                                    fullname: entry[0],
-                                    email: email.replace(/\.\s*$/, ""),
+                                    fullname: fullname,
+                                    email: _email.replace(/\.\s*$/, ""),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
@@ -228,13 +236,13 @@ module.exports = {
                                         return cb();
                                     });
                                     // cause a delay so amazon doesn't doesn't reject the emails
-                                    var waitTill = new Date(new Date().getTime() + 1 * 100);
-                                    while(waitTill > new Date()){}
+                                    // var waitTill = new Date(new Date().getTime() + 1 * 100);
+                                    // while(waitTill > new Date()){}
                                     
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
-                                        sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                        //sendMail.sendAppliedJobNotice(job, user, msg_type);
                                         return cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
@@ -247,7 +255,7 @@ module.exports = {
                                                 } else {
                                                     msg_type = 'incomplete-profile';
                                                 }
-                                                sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                                //sendMail.sendAppliedJobNotice(job, user, msg_type);
                                             } else {
                                                 console.log('You are not a candidate');
                                             }
@@ -512,10 +520,12 @@ module.exports = {
                         });
 
                         // remove shortlisted candidates from assessed candidates
-                        let unshortlisted = []
-                        allCandidates.forEach(ele => {
-                            unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
-                        });
+                        let unshortlisted = [];
+                        if (selected_candidates.length > 0) {
+                            allCandidates.forEach(ele => {
+                                unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
+                            });
+                        }
 
                         let companyName;
                         if ((job.source === null || job.source === 'gq') && job.company) {
@@ -530,7 +540,7 @@ module.exports = {
 							jobTitle: job.job_title,
                             companyName: companyName,
                             applicants: applications,
-							unshortlisted: unshortlisted,
+							unshortlisted: unshortlisted.length > 0 ? unshortlisted : allCandidates,
 							selected_candidates: shortlistedCandidates,
 							job_id: job_id
 						});
