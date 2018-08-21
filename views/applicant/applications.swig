@@ -79,17 +79,19 @@
 								<td>{{ job.status }}</td>
 								<td>{{ job.job.closing_date | date('d-m-Y') }}</td>
 								<td class="opt-icons text-center dropdown">
-									<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Competency Test</a>
-									<ul class='dropdown-menu dropdown-menu-right'>
-										<li class='dropdown-header'>Required Online Tests for the Job</li>
-										{% for test in job.tests %}
-											{% if test.test_source == 'gq' %}
-												<li><a href="/gqtest/gettest/{{ test.gq_test.id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
-											{% else %}
-												<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}/{{ test.test.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
-											{% endif %}
-										{% endfor %}
-									</ul>
+									{% if job.status == 'Take test' %}
+										<a href="" {{ btn_state }} class="view-tests btn btn-success btn-fill btn-xs" rel="tooltip" title="Tests" data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'> Competency Test</a>
+										<ul class='dropdown-menu dropdown-menu-right'>
+											<li class='dropdown-header'>Required Online Tests for the Job</li>
+											{% for test in job.tests %}
+												{% if test.test_source == 'gq' %}
+													<li><a href="/gqtest/gettest/{{ test.gq_test.id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
+												{% else %}
+													<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}/{{ test.test.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
+												{% endif %}
+											{% endfor %}
+										</ul>
+									{% endif %}	
 								</td>
 							</tr>
 						{% endfor %}

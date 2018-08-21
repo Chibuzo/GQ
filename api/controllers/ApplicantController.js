@@ -180,11 +180,15 @@ module.exports = {
             if (!upfile) {
                 return res.json(400, { status: 'error', message: 'No file was uploaded' });
             }
-            let fname = upfile[0].extra.Location;
+            try {
+                let fname = upfile[0].extra.Location;
             
-            Resume.update({ user: req.session.userId }, { video_file: fname, youtube_vid_id: '', video_status: 'true' }).exec(function () {
-                return res.json(200, { status: 'success' });
-            });
+                Resume.update({ user: req.session.userId }, { video_file: fname, youtube_vid_id: '', video_status: 'true' }).exec(function (err) {
+                    return res.json(200, { status: 'success' });
+                });
+            } catch(err) {
+                return res.json(400, { status: 'error', message: err.message });
+            }
         });
     },
 

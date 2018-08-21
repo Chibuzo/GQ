@@ -483,7 +483,7 @@ module.exports = {
 
     uploadProctorAudio: function(req, res) {
         if (!req.param('data')) {
-            return json(400, { status: 'error', message: "Expected data (data) not found. Be consistent!" });
+            return res.json(400, { status: 'error', message: "Expected data (data) not found. Be consistent!" });
         }
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
         var hr = process.hrtime();
@@ -499,7 +499,7 @@ module.exports = {
             const temp_aud = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + '/aud_' + hr[1] + '.wav';
             fs.createReadStream(path).pipe(fs.createWriteStream(temp_aud));
         } catch(err) {
-
+            return json(400, { status: 'error', message: err });
         }
         // check source
         var session_id = false;
@@ -528,7 +528,7 @@ module.exports = {
 
     uploadProctorPicture: function(req, res) {
         if (!req.param('imgBase64')) {
-            return json(400, { status: 'error', message: "Expected data (imgBase64) not found. Be consistent!" });
+            return res.json(400, { status: 'error', message: "Expected data (imgBase64) not found. Be consistent!" });
         }
         var path = require('path').resolve(sails.config.appPath + '/assets/proctorFiles');
         var eventName = req.param('eventName') ?  req.param('eventName') + "_" : "";
@@ -544,7 +544,7 @@ module.exports = {
             const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
             fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
         } catch(err) {
-
+            return json(400, { status: 'error', message: err });
         }
         // check source
         var session_id = false;

@@ -199,6 +199,9 @@ module.exports = {
                             var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                            if (j_err) {
+                                return res.serverError(j_err);
+                            }
                             var company_id = job.company.id;
                             async.eachSeries(_data, function(entry, cb) {
                                 var fullname, email;
@@ -235,9 +238,9 @@ module.exports = {
                                         console.log(err);
                                         return cb();
                                     });
-                                    // cause a delay so amazon doesn't doesn't reject the emails
-                                    // var waitTill = new Date(new Date().getTime() + 1 * 100);
-                                    // while(waitTill > new Date()){}
+                                    // cause a delay so amazon doesn't reject the emails
+                                    var waitTill = new Date(new Date().getTime() + 1 * 100);
+                                    while(waitTill > new Date()){}
                                     
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
@@ -289,6 +292,9 @@ module.exports = {
         //Job.find({}).populate('category').populate('company').exec(function(err, jobs) {
             if (err) return;
             JobCategory.find().populate('jobs').sort({ category: 'asc' }).exec(function(err, job_categories) {
+                if (err) {
+                    return res.serverError(err);
+                }
                 var jobCategories = [];
                 if (job_categories.length > 0) {
                     job_categories.forEach(function(jobcat) {

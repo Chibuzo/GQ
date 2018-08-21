@@ -1,5 +1,5 @@
 {% extends 'theme.swig' %}
-{% set title = job.title %}
+{% set title = job.job_title + ' | ' + job.company.company_name %}
 
 {% block head %}
   {% parent %}

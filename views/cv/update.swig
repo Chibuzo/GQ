@@ -346,7 +346,7 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								{% if resume.photo_status === true && resume.profile_status === true && completeResumeEducation === true %}
+								{% if resume.photo_status === true && resume.profile_status === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
 											<h3 class="test-title">{{ test_title }} Result</h3><br>
@@ -408,6 +408,7 @@
 														<li>Ensure you are in a well lit, QUIET room and ALONE. The presence of others and certain background noises may adversely affect your result.</li>
 														<li>Any irregularities observed while taking the test could lead to your test score being rejected, hence preventing you from being able to apply for jobs through our platform.</li>
 														<li>Your test is timed and will automatically be submitted upon expiration of the time limit. Upon completion, your score will immediately appear on the screen and saved in your Get Qualified profile </li>
+														<li><strong>Note that:</strong> while you have started any of the test sessions, refreshing or leaving the page will lead to automatic submission and scoring for that session, so you are adviced to finish each session you start.
 													</ol>
 												</p><br>
 												<p>Proceed to take the test and Good luck!</p>
@@ -429,9 +430,9 @@
                                         <div><div class="alert alert-warning">Your GQ profile not complete. Please upload a profile picture.</div></div>
                                     {% endif %}
 
-                                    {% if completeResumeEducation !== true %}
+                                    {#{% if completeResumeEducation !== true %}
                                         <div><div class="alert alert-warning">Your GQ profile not complete. Please provide us with the name of institutions you have attended, and your field of study.</div></div>
-                                    {% endif %}
+                                    {% endif %}#}
 								{% endif %}
 							</div>
 
@@ -835,7 +836,7 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/pavp2.js"></script>
+	<script src="https://api.neon.ventures/proctor/js/pavp2.js?v=1"></script>
 
 <script>
 $(document).ready(function() {
