@@ -346,7 +346,7 @@
 									{% set test_visibility = 'hidden' %}
 								{% endif %}
 
-								{% if resume.photo_status === true && resume.profile_status === true && completeResumeEducation === true %}
+								{% if resume.photo_status === true && resume.profile_status === true %}
 									<div class="{{ result_visibility }} col-md-7 col-md-offset-2" id="result-div">
 										<div class="result">
 											<h3 class="test-title">{{ test_title }} Result</h3><br>
@@ -430,9 +430,9 @@
                                         <div><div class="alert alert-warning">Your GQ profile not complete. Please upload a profile picture.</div></div>
                                     {% endif %}
 
-                                    {% if completeResumeEducation !== true %}
+                                    {#{% if completeResumeEducation !== true %}
                                         <div><div class="alert alert-warning">Your GQ profile not complete. Please provide us with the name of institutions you have attended, and your field of study.</div></div>
-                                    {% endif %}
+                                    {% endif %}#}
 								{% endif %}
 							</div>
 

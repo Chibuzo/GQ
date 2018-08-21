@@ -90,7 +90,7 @@ module.exports.routes = {
 
     'GET /admin/manage-courses': 'CourseController.getCourses',
 
-    'GET /admin/applicants': 'ApplicantController.fetchApplicants',
+    //'GET /admin/applicants': 'ApplicantController.fetchApplicants',
 
     'GET /gqtest/manage': 'GQTestController.manageTest',
 

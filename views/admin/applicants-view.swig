@@ -381,7 +381,6 @@ $(document).ready(function() {
             "type": 'POST',
             "draw": 1,
             "length": 30,
-            "search": true,
             "data": function(d) {
                 d.mode = 'job_applicants';
                 d.job_id = job_id;
@@ -426,18 +425,18 @@ $(document).ready(function() {
         },
          "columns": [
             { "data": "checkbox" }, 
-            { "data": "test_date" }, 
+            { "data": "test_date", "orderable": true }, 
             { "data": "fullname_link", "searchable": true, "orderable": true },
             { "data": "email", "searchable": true },
-            { "data": "general_ability_score" },
+            { "data": "general_ability_score", "orderable": true },
             { "data": "general_ability_proctor" },
-            { "data": "verbal_score" },
+            { "data": "verbal_score", "orderable": true },
             { "data": "verbal_proctor" },
-            { "data": "maths_score" },
+            { "data": "maths_score", "orderable": true },
             { "data": "maths_proctor" },
             { "data": "percentage" },
             { "data": "rank", "orderable": true },
-            { "data": "integrity_score" },
+            { "data": "integrity_score", "orderable": true },
             { "data": "status" },
             { "data": "actionbtn" }
         ],

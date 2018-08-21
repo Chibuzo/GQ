@@ -78,35 +78,16 @@ module.exports = {
         };
 
         return new Promise(function(resolve, reject) {
-            // var req = request(options, function (res) {
-            //     var chunks = [];
-
-            //     res.on("data", function (chunk) {
-            //         chunks.push(chunk);
-            //     });
-
-            //     res.on("end", function () {
-            //         var body = Buffer.concat(chunks);
-            //         console.log(body.toString());
-            //     });
-
-            //     res.on("error", function(err) {
-            //         console.log(err);
-            //         return reject(err);
-            //     })
-            // });
-
-            // req.write(JSON.stringify({ user_id: user_id }));
-            // req.end();
-            
-            
-            //console.log(qs.stringify(data));
             request(options, function(err, res, body) {
                 if (err) {
                     return reject(err);
                 }
-                var data = JSON.parse(body);
-                return resolve(data.data);
+                try {
+                    var data = JSON.parse(body);
+                    return resolve(data.data);
+                } catch(err) {
+                    reject(err.message);
+                }
             });
         });
     }

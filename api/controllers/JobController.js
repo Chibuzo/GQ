@@ -199,15 +199,26 @@ module.exports = {
                             var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
                         Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                            if (j_err) {
+                                return res.serverError(j_err);
+                            }
                             var company_id = job.company.id;
                             async.eachSeries(_data, function(entry, cb) {
-                                if (entry[0] == 'Fullname') {
+                                var fullname, email;
+                                if (entry.length > 1) {
+                                    fullname = entry[0];
+                                    email = entry[1];
+                                } else {
+                                    email = entry[0];
+                                    fullname = '';
+                                }
+                                if (entry[0] == 'Fullname' || email === undefined) {
                                     return cb();
                                 }
-                                var email = entry[1].replace(/\s+/g, '').trim();
+                                var _email = email.replace(/\s+/g, '').trim();
                                 var data = {
-                                    fullname: entry[0],
-                                    email: email.replace(/\.\s*$/, ""),
+                                    fullname: fullname,
+                                    email: _email.replace(/\.\s*$/, ""),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
@@ -227,7 +238,7 @@ module.exports = {
                                         console.log(err);
                                         return cb();
                                     });
-                                    // cause a delay so amazon doesn't doesn't reject the emails
+                                    // cause a delay so amazon doesn't reject the emails
                                     var waitTill = new Date(new Date().getTime() + 1 * 100);
                                     while(waitTill > new Date()){}
                                     
