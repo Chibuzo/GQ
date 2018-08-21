@@ -216,7 +216,7 @@ module.exports = {
 
     fetchAll: function() {
         return new Promise(function(resolve) {
-            User.find({user_type: 'Applicant'}).limit(500).exec(function (err, applicants) {
+            User.find({user_type: 'Applicant'}).sort('createdAt desc').limit(1000).exec(function (err, applicants) {
                 return resolve(applicants);
             });
         });
@@ -225,23 +225,23 @@ module.exports = {
 
     fectchActiveStatus: function(status) {
         return new Promise(function(resolve) {
-            User.find({user_type: 'Applicant', status: status}).exec(function (err, inactive) {
+            User.find({user_type: 'Applicant', status: status}).sort('createdAt desc').limit(2000).exec(function (err, inactive) {
                 return resolve(inactive);
             });
         });
     },
 
     fetchResumeStatusByQuery: function(statusQuery) {
-        return Resume.find(statusQuery);
+        return Resume.find(statusQuery).sort('updatedAt desc').limit(2000);
     },
 
 
     fetchResumeStatus: function(status) {
-        return Resume.find({status: status});
+        return Resume.find({status: status}).sort('updatedAt desc').limit(2000);
     },
 
     fetchPhotoStatus: function(status) {
-        return Resume.find({photo_status: status});
+        return Resume.find({photo_status: status}).sort('updatedAt desc').limit(2000);
     },
 
     fetchNoTestsApplicants: fetchNoTestsApplicants,
