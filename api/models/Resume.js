@@ -119,6 +119,11 @@ module.exports = {
             defaultsTo: 'false'
         },
 
+        scrapped: {
+            type: 'boolean',
+            defaultsTo: 'false'
+        },
+
         user: {
             model: 'user'
         },

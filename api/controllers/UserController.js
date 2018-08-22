@@ -52,10 +52,10 @@ module.exports = {
                                 }
                                 return res.json(501, {status: 'error', msg: err}); // couldn't be completed
                             }
-                            AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
-                                userType: data.userType,
-                                signUpDate: new Date(Date.now())
-                            });
+                            // AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
+                            //     userType: data.userType,
+                            //     signUpDate: new Date(Date.now())
+                            // });
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });
@@ -66,11 +66,14 @@ module.exports = {
     },
 
     activateAccount: function(req, res) {
+        if (!req.param('email') || !req.param('hash')) {
+            return res.serverError('Wrong request');
+        }
         var email = new Buffer(req.param('email'), 'base64').toString('ascii');
         var hash = req.param('hash');
 
         User.findOne({ email : email }).exec(function(err, foundUser) {
-            if (err) return;
+            if (err) return res.serverError(err);
 
             if (foundUser) {
                 var crypto = require('crypto');
@@ -86,7 +89,7 @@ module.exports = {
                         req.session.fname = user.fullname;
                         req.session.userEmail = user.email;
 
-                        //const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
+                        const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
 
                         var me = {
                             fname: user.fullname.split(' ')[0],
@@ -97,24 +100,24 @@ module.exports = {
 
                         if (user.user_type == 'Applicant') {
                             // create their resume
-							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id })
-								.then(() => {
-									sendMail.welcomeNewCandidate(user);
+							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id }).then(() => {
+                                sendMail.welcomeNewCandidate(user);
 
-									if (passwordSet) {
-										return res.redirect('/applicant/dashboard');
-									} else {
-										return res.view('applicant/profile', {
-											user: user,
-											me: me,
-											enableAmplitude: enableAmplitude,
-											userEmail: user.email,
-											profilePage: true,
-											passwordSet: passwordSet
-										});
-									}
-								});
-
+                                if (passwordSet) {
+                                    return res.redirect('/applicant/dashboard');
+                                } else {
+                                    return res.view('applicant/profile', {
+                                        user: user,
+                                        me: me,
+                                        enableAmplitude: enableAmplitude,
+                                        userEmail: user.email,
+                                        profilePage: true,
+                                        passwordSet: passwordSet
+                                    });
+                                }
+                            }).catch(err => {
+                                return res.badRequest(err);
+                            });
                         } else if (user.user_type == 'company') {
                             return res.view('company/users/profile', { user: user, me: me });
                         }
@@ -122,6 +125,8 @@ module.exports = {
                 } else {
                     return res.badRequest('Incorrect activation code');
                 }
+            } else {
+                return res.badRequest('User details not found on this server');
             }
         });
     },
@@ -144,7 +149,7 @@ module.exports = {
             }
             Passwords.checkPassword({
                 passwordAttempt: req.param('password'),
-                encryptedPassword: foundUser.password
+                encryptedPassword: foundUser.password ? foundUser.password : 'fail'
             }).exec({
                 error: function (err) {
                     return res.json(200, { status: 'Err', msg: err });
@@ -198,12 +203,6 @@ module.exports = {
     profile: function(req, res) {
         const userEmail = req.session.userEmail;
         const enableAmplitude = sails.config.ENABLE_AMPLITUDE ? true : false;
-
-		console.log('PROFILE LOG');
-
-		console.info('PROFILE INFO');
-
-		console.error('PROFILE INFO error');
 
         return Promise.all([
             User.findOne(req.session.userId),
@@ -312,6 +311,9 @@ module.exports = {
         User.findOne({ email : email }).exec(function(err, user) {
             if (err) {
                 return res.badRequest("We don't even know what happened");
+            }
+            if (!user) {
+                return res.view('login', { msg: "This email address does not belong to any account on this platform" });
             }
             if (user.status == 'Inactive') {
                 sendMail.sendConfirmationEmail(user);

@@ -28,8 +28,8 @@
 								<p class="white-text col-md-8 col-md-offset-2">GetQualified uses state-of-the art artificial intelligence and video technology to identify the best candidate from thousands of applicants.</p>
 							</div>
 							<div class="row">
-								<button data-target="#requestModal" data-toggle="modal" class="white-btn">Get Started!</button>
-								<a href="#about" class="main-btn">Learn more</a>
+								<button data-target="#requestModal" data-toggle="modal" class="white-btn">Company Sign Up</button>
+								<a href="/signup" class="main-btn">Candidate Sign Up</a>
 							</div>
 
 

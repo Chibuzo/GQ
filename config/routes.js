@@ -44,13 +44,17 @@ module.exports.routes = {
 
     'GET /resume/view/:user_id/:job_id': 'ResumeController.viewJobResume',
 
+    'POST /resume/changetype': 'ResumeController.changeType',
+
     'GET /applicant/dashboard': 'ApplicantController.dashboard',
 
     'GET /applicant/view-applications': 'ApplicationController.viewApplications',
 
     'GET /applicant/video': 'ApplicantController.videoPage',
 
-    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo', 
+    'POST /applicant/add-profilevideo': 'ApplicantController.uploadVideo',
+    
+    'POST /applicant/upload-profilevideo': 'ApplicantController.uploadDownloadedVideo',
 
     'POST /applicant/updateYoutubeId': 'ApplicantController.addYoutubeVideoID',
 
@@ -86,7 +90,7 @@ module.exports.routes = {
 
     'GET /admin/manage-courses': 'CourseController.getCourses',
 
-    'GET /admin/applicants': 'ApplicantController.fetchApplicants',
+    //'GET /admin/applicants': 'ApplicantController.fetchApplicants',
 
     'GET /gqtest/manage': 'GQTestController.manageTest',
 
@@ -298,6 +302,10 @@ module.exports.routes = {
     //'GET /countries': 'BatchController.countries',
     //
     //'/states': 'BatchController.loadStates'
+
+    'GET /testapi': 'BatchController.testApi',
+
+    'POST /testupload': 'BatchController.acceptFiles',
 
     'GET /getstates': 'BatchController.getStates',
 

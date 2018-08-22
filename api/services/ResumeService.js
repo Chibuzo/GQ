@@ -60,5 +60,35 @@ module.exports = {
                 });
             });
         });
+    },
+
+
+    fetchScrappedCV: function(user_id) {
+        var request = require("request");
+        var qs = require('querystring');
+
+        var data = { user_id: 47 };
+        var options = {
+            method: "POST",
+            url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/get",
+            form: JSON.stringify({ "user_id": user_id }),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        return new Promise(function(resolve, reject) {
+            request(options, function(err, res, body) {
+                if (err) {
+                    return reject(err);
+                }
+                try {
+                    var data = JSON.parse(body);
+                    return resolve(data.data);
+                } catch(err) {
+                    reject(err.message);
+                }
+            });
+        });
     }
 }
