@@ -502,10 +502,9 @@ module.exports = {
 			.then(job => {
                 return Promise.all([
 					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
-					Application.find({ job: job_id }).populate('applicant'),
+					Application.find({ job: job_id }).populate('applicant').limit(2000),
 					SelectedCandidate.find({ job_id: job_id })
 				]).then(results => {
-
 					let jobTest = results[0];
 					let applications = results[1];
                     selected_candidates = results[2];
