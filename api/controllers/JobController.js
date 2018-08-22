@@ -218,7 +218,7 @@ module.exports = {
                                 var _email = email.replace(/\s+/g, '').trim();
                                 var data = {
                                     fullname: fullname,
-                                    email: _email.replace(/\.\s*$/, ""),
+                                    email: _email.replace(/\.\s*$/, ''),
                                     user_type: 'Applicant'
                                 };
                                 User.findOrCreate({ email: data.email }, data).exec(function (err, user) {
@@ -245,7 +245,7 @@ module.exports = {
                                     var msg_type; // for determining the content of the invite email to send
                                     if (user.status == 'Inactive') {
                                         msg_type = 'new-user';
-                                        //sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                        sendMail.sendAppliedJobNotice(job, user, msg_type);
                                         return cb();
                                     } else {
                                         Resume.find({user: user.id}).exec(function (err, resume) {
@@ -258,7 +258,7 @@ module.exports = {
                                                 } else {
                                                     msg_type = 'incomplete-profile';
                                                 }
-                                                //sendMail.sendAppliedJobNotice(job, user, msg_type);
+                                                sendMail.sendAppliedJobNotice(job, user, msg_type);
                                             } else {
                                                 console.log('You are not a candidate');
                                             }
@@ -420,9 +420,9 @@ module.exports = {
                         } else {
                             JobService.apply(job_id, req.session.userId).then(function(resp) {
                                 if (resp) {
-                                    AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
-                                        jobId: job_id
-                                    });
+                                    // AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                                    //     jobId: job_id
+                                    // });
                                     return res.json(200, { status: 'success' });
                                 } else {
                                     // your village people don't want you to be great
@@ -435,9 +435,9 @@ module.exports = {
                 } else {
                     JobService.apply(job_id, req.session.userId).then(function(resp) {
                         if (resp) {
-                            AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
-                                jobId: job_id
-                            });
+                            // AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
+                            //     jobId: job_id
+                            // });
                             return res.json(200, { status: 'success' });
                         } else {
                             // your village people don't want you to be great

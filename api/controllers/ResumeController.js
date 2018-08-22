@@ -15,13 +15,11 @@ module.exports = {
             CountryStateService.getCountries(),
             Honour.find(),
             ResumeService.viewResume(req.session.userId, 'user'),
-            ResumeService.fetchScrappedCV(req.session.userId)
         ]).then(results => {
             let resp = results[0];
             let honours = results[1];
             let resume = results[2].resume;
             let test = results[2].result;
-            let cv = results[3];
             
             var me = {
                 fname: resume.user.fullname.split(' ')[0],
@@ -40,26 +38,69 @@ module.exports = {
                 { name: "1st Class", id: 1 }, { name: "2nd Class Upper", id: 2 }, { name: "2nd Class Lower", id: 3 }, { name: "3rd Class", id: 4 }
             ];
 
-            return res.view('cv/update', {
-                resume: resume,
-                me: me,
-                cv: cv,
-                honours: honours,
-                r_class: r_class,
-                countries: resp.countries,
-                states: resp.states,
-                result: test,
-                test_title: results[2].test_title,
-                canEditResume: true,
-                showContactInfo: true,
-                completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
-                userEmail: userEmail,
-                enableAmplitude: enableAmplitude,
-                disablePhotoTabClass,
-                disableTestTabClass,
-                disableVideoTabClass
-            });
-
+            if (resume.scrapped === true) {
+                ResumeService.fetchScrappedCV(req.session.userId).then(function(resp) {
+                    return res.view('cv/update', {
+                        resume: resume,
+                        me: me,
+                        cv: resp,
+                        honours: honours,
+                        r_class: r_class,
+                        countries: resp.countries,
+                        states: resp.states,
+                        result: test,
+                        test_title: results[2].test_title,
+                        canEditResume: true,
+                        showContactInfo: true,
+                        completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                        userEmail: userEmail,
+                        enableAmplitude: enableAmplitude,
+                        disablePhotoTabClass,
+                        disableTestTabClass,
+                        disableVideoTabClass
+                    });
+                }).catch(err => {
+                    // keep quiet for now
+                    //return res.serverError(err);
+                    return res.view('cv/update', {
+                        resume: resume,
+                        me: me,
+                        honours: honours,
+                        r_class: r_class,
+                        countries: resp.countries,
+                        states: resp.states,
+                        result: test,
+                        test_title: results[2].test_title,
+                        canEditResume: true,
+                        showContactInfo: true,
+                        completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                        userEmail: userEmail,
+                        enableAmplitude: enableAmplitude,
+                        disablePhotoTabClass,
+                        disableTestTabClass,
+                        disableVideoTabClass
+                    });
+                });
+            } else {
+                return res.view('cv/update', {
+                    resume: resume,
+                    me: me,
+                    honours: honours,
+                    r_class: r_class,
+                    countries: resp.countries,
+                    states: resp.states,
+                    result: test,
+                    test_title: results[2].test_title,
+                    canEditResume: true,
+                    showContactInfo: true,
+                    completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                    userEmail: userEmail,
+                    enableAmplitude: enableAmplitude,
+                    disablePhotoTabClass,
+                    disableTestTabClass,
+                    disableVideoTabClass
+                });
+            }
         }).catch(err => {
             return res.serverError(err);
         });
