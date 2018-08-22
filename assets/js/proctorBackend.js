@@ -10,9 +10,10 @@ $(".table").on("click", ".fetch-proctor-details", function() {
             $("#profilePhoto").html("<img src='/applicant_profilephoto/" + d.profile_pic + "' />");
             var audios = '', photos = '';
             d.files.forEach(function(file) {
+                var url = file.filename.indexOf('https') == -1 ? `/proctorFiles${file.filename}` : file.filename;
                 if (file.file_type == 'audio') {
                     audios += "<div class='col-md-6'>"
-                        +"<audio src='/proctorFiles" + file.filename + "' controls='controls'></audio>"
+                        +"<audio src='" + url + "' controls='controls'></audio>"
                         +"</div>";
                 } else {
                     var span = "";
@@ -24,7 +25,7 @@ $(".table").on("click", ".fetch-proctor-details", function() {
                         span = "<span class='image-tag'>multiFace</span>"
                     }
                     photos += "<div class='col-md-6'>"
-                        + "<div class='proctor-pic'><img src='/proctorFiles" + file.filename + "' />"
+                        + "<div class='proctor-pic'><img src='" + url + "' />"
                         + span
                         + "</div>"
                         + "</div>";

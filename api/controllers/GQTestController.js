@@ -493,37 +493,38 @@ module.exports = {
         var buff = new Buffer(audio, 'base64');
         fs.writeFileSync(path, buff);
 
-        // copy the uploaded audio to the public folder
-        //const uploadedAud = path + '/' + filename;
-        try {
-            const temp_aud = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + '/aud_' + hr[1] + '.wav';
-            fs.createReadStream(path).pipe(fs.createWriteStream(temp_aud));
-        } catch(err) {
-            return json(400, { status: 'error', message: err });
-        }
-        // check source
-        var session_id = false;
-        var path = req.path.split('/')[1];
-        if (path == 'api') {
-            session_id = req.param('session_id');
-        } else {
-            session_id = req.session.proctor;
-        }
+        // copy the uploaded audio to S3
+        S3Service.uploadProtorFile(path, 'audio/wav').then(function(resp) {        
+            // check source
+            var session_id = false;
+            var uri_path = req.path.split('/')[1];
+            if (uri_path == 'api') {
+                session_id = req.param('session_id');
+            } else {
+                session_id = req.session.proctor;
+            }
 
-        // save audio filename
-        if (session_id) {
-            var data = {
-                filename: filename,
-                file_type: 'audio',
-                proctor: session_id
-            };
-            ProctorRecord.create(data).then(function() {
-                return res.json(201, { status: 'success' });
-            }).catch(function(err) {
-                sails.log.error(err);
-                return res.json(400, { status: 'error', message: err });
-            });
-        }
+            // save audio filename
+            if (session_id) {
+                var data = {
+                    filename: resp.url,
+                    file_type: 'audio',
+                    proctor: session_id
+                };
+                ProctorRecord.create(data).then(function() {
+                    return res.json(201, { status: 'success' });
+                }).catch(function(err) {
+                    sails.log.error(err);
+                    return res.json(400, { status: 'error', message: err });
+                });
+            }
+            // delete file from GQ
+            if (fs.existsSync(path)) {
+                fs.unlinkSync(path);
+            }
+        }).catch(err => {
+            return res.json(400, { status: 'error', message: err });
+        });
     },
 
     uploadProctorPicture: function(req, res) {
@@ -539,36 +540,38 @@ module.exports = {
         var buff = new Buffer(photo, 'base64');
         fs.writeFileSync(path, buff);
 
-        // copy the uploaded photo to the public folder
-        try {
-            const temp_pic = require('path').resolve(sails.config.appPath, '.tmp/public/proctorFiles') + `/pic_${eventName}${hr[1]}.png`;
-            fs.createReadStream(path).pipe(fs.createWriteStream(temp_pic));
-        } catch(err) {
-            return json(400, { status: 'error', message: err });
-        }
-        // check source
-        var session_id = false;
-        var path = req.path.split('/')[1];
-        if (path == 'api') {
-            session_id = req.param('session_id');
-        } else {
-            session_id = req.session.proctor;
-        }
+        // copy the uploaded photo to S3
+        S3Service.uploadProtorFile(path, 'image/png').then(function(resp) {
+            // check source
+            var session_id = false;
+            var uri_path = req.path.split('/')[1];
+            if (uri_path == 'api') {
+                session_id = req.param('session_id');
+            } else {
+                session_id = req.session.proctor;
+            }
 
-        // save photo filename
-        if (session_id) {
-            var data = {
-                filename: filename,
-                file_type: 'photo',
-                proctor: session_id
-            };
-            ProctorRecord.create(data).then(function() {
-                return res.json(201, { status: 'success' });
-            }).catch(function(err) {
-                sails.log.error(err);
-                return res.json(400, { status: 'error', message: err });
-            });
-        }
+            // save photo filename
+            if (session_id) {
+                var data = {
+                    filename: resp.url,
+                    file_type: 'photo',
+                    proctor: session_id
+                };
+                ProctorRecord.create(data).then(function() {
+                    return res.json(201, { status: 'success' });
+                }).catch(function(err) {
+                    sails.log.error(err);
+                    return res.json(400, { status: 'error', message: err });
+                });
+            }
+            if (fs.existsSync(path)) {
+                fs.unlinkSync(path);
+            }
+        }).catch(err => {
+            //console.log(err);
+            return res.json(400, { status: 'error', message: err });
+        });
     },
     
     getAptitudeTestResults: function(req, res) {
