@@ -13,7 +13,8 @@
 {% block body %}
 <link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
 <link href="/styles/proctor-style.css" rel="stylesheet" />
-<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />
+<!--<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />-->
+<link href="/ext/pavp.css" rel="stylesheet" />
 <!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
 {{ cv.css | safe }}
 <style>
@@ -607,19 +608,27 @@
 	<!-- Defaults: resumable not necessary depending on how uploading goes -->
 
 	<!-- Facial tracking -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js?v=2"></script>
+	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/tracking-new.js?v=2"></script>
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/face-min.js?v=2"></script>
 	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/eye-min.js?v=2"></script>
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js?v=2"></script>
+	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/mouth-min.js?v=2"></script>-->
+
+	<script type="text/javascript" src="/ext/tracking_new.js?v=2"></script>
+	<script type="text/javascript" src="/ext/face-min.js?v=2"></script>
+	<script type="text/javascript" src="/ext/eye-min.js?v=2"></script>
+	<script type="text/javascript" src="/ext/mouth-min.js?v=2"></script>
 
 	<!-- Audio Volume metering -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js?v=2"></script>
+	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/volume-meter.js?v=2"></script>-->
+	<script type="text/javascript" src="/ext/volume-meter.js"></script>
 
 	<!-- Audio tracking -->
     {#<script type="text/javascript" src="/js/proctor/recorder-new.js"></script>#}
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js?v=1"></script>
+	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/RecordRTC.js?v=1"></script>-->
+	<script type="text/javascript" src="/ext/RecordRTC.js"></script>
 	<!-- Main Setup -->
-	<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>
+	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
+		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
 	<script type="text/javascript" src="/js/gqTestFrontend.js?v=23"></script>
 
@@ -836,7 +845,8 @@
 	</script>
 
 	<script src="https://apis.google.com/js/api.js"></script>
-	<script src="https://api.neon.ventures/proctor/js/pavp2.js?v=1"></script>
+	<!--<script src="https://api.neon.ventures/proctor/js/pavp2.js?v=1"></script>-->
+	<script src="/ext/pavp.js"></script>
 
 <script>
 $(document).ready(function() {
@@ -980,5 +990,4 @@ function uploadFile(video) {
 	});
 }
 </script>
-<!--<script src="https://vjs.zencdn.net/7.0.5/video.js"></script>-->
 {% endblock %}
