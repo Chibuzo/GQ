@@ -7,7 +7,7 @@ var s3 = new AWS.S3({apiVersion: '2006-03-01'});
 module.exports = {
     uploadProfileVideo: function(video) {
         // call S3 to retrieve upload file to specified bucket
-        var uploadParams = {Bucket: 'getqualified', Key: '', Body: '', ContentType: 'video/webm'};
+        var uploadParams = { Bucket: 'getqualified', Key: '', Body: '', ContentType: 'video/webm' };
         var file = video;
 
         var fs = require('fs');
@@ -37,7 +37,7 @@ module.exports = {
 
 
     uploadProtorFile: function(pfile, type) {
-        var uploadParams = {Bucket: 'getqualified', Key: '', Body: '', ContentType: type };
+        var uploadParams = { Bucket: 'getqualified', Key: '', Body: '', ContentType: type };
         var file = pfile;
 
         var fs = require('fs');
@@ -65,7 +65,7 @@ module.exports = {
     },
     
 
-    deleteProfileVideo: function(video) {
+    deleteFile: function(file) {
         var params = {
             Bucket: 'getqualified', 
             Key: video

@@ -83,20 +83,16 @@ module.exports = {
 
     // candidate's profile photo
     uploadPhoto: function(req, res) {
-        var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-        var filename = false;
-        var hr = process.hrtime();
+        // var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
+        // var hr = process.hrtime();
         req.file('photo').upload({
-            dirname: require('path').resolve(sails.config.appPath, 'assets/applicant_profilephoto/'),
-            saveAs: function (file, cb) {
-                if (allowedVidTypes.indexOf(file.headers['content-type']) === -1) {
-                    //return res.badRequest('Unsupported photo format.');
-                    //cb(new Error('01'));
-                    return;
-                }
-                var ext = file.filename.split('.').pop();
-                filename = hr[1] + '_photo.' + ext;
-                return cb(null, filename);
+            adapter: require('skipper-better-s3'),
+            key: 'AKIAITZYZILPYGBFJWCA',
+            secret: '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',
+            region: 'us-east-1',
+            bucket: 'getqualified',
+            headers: {
+                ContentType: 'image/*'
             },
             maxBytes: 2 * 1024 * 1024
         },
@@ -107,25 +103,20 @@ module.exports = {
                 return res.view('misc/error-page', { error: 'Photo file size must not be more than 2MB', url: '/applicant/resume-page' })
             }
             // this is weird but let's check if a file was uploaded
-            if (!upfile || !filename) {
+            if (!upfile) {
                 return res.redirect('/applicant/resume-page#photo');
             }
-            // copy the uploaded photo to the public folder
-            const fs = require('fs');
-            const path = require('path');
-            const uploadedpic = path.resolve(sails.config.appPath, 'assets/applicant_profilephoto') + '/' + filename;
-            const temp_pic = path.resolve(sails.config.appPath, '.tmp/public/applicant_profilephoto') + '/' + filename;
-            fs.createReadStream(uploadedpic).pipe(fs.createWriteStream(temp_pic));
+            let fname;
+            try {
+                fname = upfile[0].extra.Location;
+            } catch (err) {
+                console.log(err)
+            }
 
-            Resume.update({ user: req.session.userId }, { photo: filename, photo_status: 'true' }).exec(function () {
+            Resume.update({ user: req.session.userId }, { photo: fname, photo_status: 'true' }).exec(function () {
                 AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
                 return res.redirect('/applicant/resume-page#photo');
             });
-            // delete previous photo if any
-            const assetPath = path.resolve(sails.config.appPath + 'assets/applicant_profilephoto') + '/' + req.param('photo_name');
-            if (fs.existsSync(assetPath)) {
-                fs.unlinkSync(assetPath);
-            }
         });
     },
 

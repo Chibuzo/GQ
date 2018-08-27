@@ -25,7 +25,12 @@
 					<div class="author">
 						<a href="" id="change-pic">
 							{% if resume.photo_status == true %}
-								<img class="avatar border-gray" src="/applicant_profilephoto/{{ resume.photo }}" alt="..."/>
+								{% if resume.photo.indexOf('https') === -1 %}
+									{% set photo_url = '/applicant_profilephoto/' + resume.photo %}
+								{% else %}	
+									{% set photo_url = resume.photo %}
+								{% endif %}	
+								<img class="avatar border-gray" src="{{ photo_url }}" alt="..."/>
 							{% else %}
 								<img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
 							{% endif %}

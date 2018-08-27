@@ -10,7 +10,7 @@ $(".table").on("click", ".fetch-proctor-details", function() {
             $("#profilePhoto").html("<img src='/applicant_profilephoto/" + d.profile_pic + "' />");
             var audios = '', photos = '';
             d.files.forEach(function(file) {
-                var url = file.filename.indexOf('https') == -1 ? `/proctorFiles${file.filename}` : file.filename;
+                var url = file.filename.indexOf('https') === -1 ? `/proctorFiles${file.filename}` : file.filename;
                 if (file.file_type == 'audio') {
                     audios += "<div class='col-md-6'>"
                         +"<audio src='" + url + "' controls='controls'></audio>"
