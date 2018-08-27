@@ -1,5 +1,4 @@
 $(document).ready(function() {
-
     var allDTable = $('.applicantsDataTable').DataTable({
 		pageLength: 50,
 		responsive: true,

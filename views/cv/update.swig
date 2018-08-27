@@ -317,7 +317,7 @@
 									<div class="col-md-12 div-cv">
 										{% if resume.profile_status !== true %}
 											<div id="cv-options" class="col-md-5 col-md-offset-3" style="margin-top: 70px">
-												<button class="btn btn-fill btn-info btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
+												<button class="btn btn-fill btn-info btn-lg btn-block hidden" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
 												<small>* File must be in PDF, DOC or DOCX format</small><br><br>
 												<button class="btn btnfill btn-primary btn-lg btn-block" id="edit-cv-btn"><i class="fa fa-edit"></i> Fill the Resume form</button>
 												<br>
