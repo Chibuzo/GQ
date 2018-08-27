@@ -204,6 +204,7 @@ module.exports = {
                             }
                             var company_id = job.company.id;
                             async.eachSeries(_data, function(entry, cb) {
+                                console.log(entry)
                                 var fullname, email;
                                 if (entry.length > 1) {
                                     fullname = entry[0];
@@ -280,7 +281,7 @@ module.exports = {
                 });
             } catch (e) {
                 console.log(e);
-                return res.ok();
+                return res.serverError(e);
             }
         });
     },
@@ -406,23 +407,12 @@ module.exports = {
             // check resume completion status
             Resume.find({ user: req.session.userId }).exec(function(err, resume) {
                 if (resume[0].status === undefined || resume[0].status == 'Incomplete') {
-                    // AmplitudeService.trackEvent("Applied to Job with Incomplete Resume", req.session.userEmail, {
-                    //     jobId: job_id,
-                    //     resumeStatus: resume[0].status,
-                    //     profileStatus: resume[0].profile_status,
-                    //     photoStatus: resume[0].photo_status,
-                    //     videoStatus: resume[0].video_status,
-                    //     testStatus: resume[0].test_status
-                    // });
                     JobService.checkEligibility(job_id, req.session.userId).then(function(status) {
                         if (status.status === false) {
                             return res.json(200, { status: 'error', msg: 'IncompleteResume' });
                         } else {
                             JobService.apply(job_id, req.session.userId).then(function(resp) {
                                 if (resp) {
-                                    // AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
-                                    //     jobId: job_id
-                                    // });
                                     return res.json(200, { status: 'success' });
                                 } else {
                                     // your village people don't want you to be great
@@ -435,9 +425,6 @@ module.exports = {
                 } else {
                     JobService.apply(job_id, req.session.userId).then(function(resp) {
                         if (resp) {
-                            // AmplitudeService.trackEvent("Applied to Job", req.session.userEmail, {
-                            //     jobId: job_id
-                            // });
                             return res.json(200, { status: 'success' });
                         } else {
                             // your village people don't want you to be great
@@ -446,9 +433,6 @@ module.exports = {
                 }
             });
         } else {
-            // AmplitudeService.trackEvent("Unknown User Attempted to Apply to Job", "unknown@user.com", {
-            //     jobId: job_id
-            // });
             req.session.job_id = job_id;
             return res.json(200, { status: 'login' });
         }
@@ -487,154 +471,144 @@ module.exports = {
     },
 
 	viewApplicantsforAdmin: function(req, res) {
-		if (req.session.user_type !== 'admin') {
-			return res.forbidden();
-		}
 		const job_id =  req.param('job_id');
-
 		if (!job_id) {
 			return res.badRequest();
 		}
-
-        let selected_candidates;
-
-		return Job.findOne({ id: job_id }).populate('company')
-			.then(job => {
-                return Promise.all([
-					JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test'),
-					Application.find({ job: job_id }).populate('applicant').limit(2000),
-					SelectedCandidate.find({ job_id: job_id })
-				]).then(results => {
-					let jobTest = results[0];
-					let applications = results[1];
-                    selected_candidates = results[2];
-
-					// fetch candidate ids for use in finding/computing their test result
-					let candidatesIds = [];
-					applications.forEach(function (application) {
-						if (application.applicant) {
-							candidatesIds.push(application.applicant.id);
-						}
-					});
-
-					CBTService.getJobTestResults(candidatesIds, jobTest).then(function(allCandidates) {
-                        // find shortlisted mo'fuckers
-                        let shortlistedCandidates = [];
-                        selected_candidates.forEach(function(shortlisted) {
-                            shortlistedCandidates.push(allCandidates.find(candidate => candidate.applicant.id == shortlisted.candidate));
-                        });
-
-                        // remove shortlisted candidates from assessed candidates
-                        let unshortlisted = [];
-                        if (selected_candidates.length > 0) {
-                            allCandidates.forEach(ele => {
-                                unshortlisted.push(shortlistedCandidates.find(sc => sc.applicant.id != ele.applicant.id));                            
-                            });
+		Job.findOne({ id: job_id }).populate('company').then(job => {
+            JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test').then(jobTest => {
+                const sql = `SELECT score, fullname, u.id AS uid, gq.id AS test_id, gq.createdAt, u.email FROM application ap 
+                        JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+                        JOIN user u ON u.id = gq.user WHERE job = ? AND gq.status = 'Accepted' ORDER BY score DESC`;
+            
+                GQAptitudeTestResult.query(sql, [ job_id ], function(err, candidates) {            
+                    if (err) {
+                        return res.serverError(err);
+                    }
+                    // filter out shortlisted candidates before processing result
+                    SelectedCandidate.find({ job_id: job_id }).exec(function(err, shortlist) {
+                        if (err) {
+                            return res.serverError(err);
                         }
+                        let shortlist_ids = shortlist.map(sl => sl.candidate);
+                        let filtered_candidates = candidates.filter(c => shortlist_ids.indexOf(c.uid) === -1);
 
-                        let companyName;
-                        if ((job.source === null || job.source === 'gq') && job.company) {
-                            companyName = job.company.company_name;
-                        } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
-                            companyName = job.company_name;
-                        } else {
-                            companyName = 'Company';
-                        }
-
-						return res.view('admin/applicants-view.swig', {
-							jobTitle: job.job_title,
-                            companyName: companyName,
-                            applicants: applications,
-							unshortlisted: unshortlisted.length > 0 ? unshortlisted : allCandidates,
-							selected_candidates: shortlistedCandidates,
-							job_id: job_id
-						});
-					}).catch(err => {
-						return res.serverError(err);
-					});
-				})
-				.catch(err => {
-					return res.serverError(err);
-				});
-			})
-			.catch(err => {
-				return res.serverError(err);
-			});
-	},
-
-    // fetches all candidates that applied for the job
-    // fetches the test results
-    // fetches shortlisted candidates
-    // This is for both companies and GQ admin - and i'm not sure that's a good idea, but then, fuck it!
-    viewApplicants: function(req, res) {
-        // hold on, let's knows who's viewing this
-        var folder;
-        if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
-            folder = 'company';
-        } else if (req.session.user_type == 'admin') {
-            folder = 'admin';
-        } else {
-            return res.redirect('/');
-        }
-
-        var job_id =  req.param('job_id');
-        Job.find({ id: job_id, status: 'Active' }).exec(function(err, job) {
-            // let's prevent companies from viewing this data while the job is still active
-            var today = new Date().toISOString();
-            if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
-                return res.view('company/applicants-view.swig', { job_active: true });
-            }
-
-            JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
-                // find those who applied for this job
-                Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
-                    // fetch candidate ids for use in finding/computing their test result
-                    var candidates = [];
-                    applications.forEach(function (application) {
-                        if (application.applicant) {
-                            candidates.push(application.applicant.id);
-                        } else {
-                            // this shouldn't happen
-                            console.log('Problem');
-                            console.log(application);
-                        }
-                    });
-                    CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
-                        SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
-                            if (selected_candidates.length > 0) {
-                                var candidates = [];    // redeclared, haha!
-                                selected_candidates.forEach(function (candidate) {
-                                    candidates.push(candidate.candidate.id);
-                                });
-                                CBTService.getJobTestResults(candidates, test[0]).then(function (selected_candidates_test_result) {
-                                    return res.view(folder + '/applicants-view.swig', {
-                                        applicants: applications,
-                                        results: all_text_result,
-                                        selected_candidates: selected_candidates_test_result,
-                                        job_id: job_id,
-                                        job: job,
-                                        folder: folder
-                                    });
-                                }).catch(function (err) {
-                                    console.log(err);
-                                });
+                        CBTService.getJobTestResults(filtered_candidates, jobTest).then(function(allCandidates) {
+                            let companyName;
+                            if ((job.source === null || job.source === 'gq') && job.company) {
+                                companyName = job.company.company_name;
+                            } else if (job.source == 'Jobberman' || job.source == 'Ngcareers') {
+                                companyName = job.company_name;
                             } else {
-                                return res.view(folder + '/applicants-view.swig', {
-                                    applicants: applications,
-                                    results: all_text_result,
-                                    job_id: job_id,
-                                    job: job,
-                                    folder: folder
-                                });
+                                companyName = 'Company';
                             }
+                            return res.view('admin/applicants-view.swig', {
+                                jobTitle: job.job_title,
+                                companyName: companyName,
+                                qualified_candidates: allCandidates,
+                                job_id: job_id
+                            });
+                        }).catch(err => {
+                            return res.serverError(err);
                         });
-                    }).catch(function (err) {
-                        console.log(err);
                     });
-                });
+				});
+			}).catch(err => {
+				return res.serverError(err);
             });
+        }).catch(err => {
+            return res.serverError(err);
         });
     },
+    
+
+    fetchJobApplicants: function(req, res) {
+        const job_id =  req.param('job_id');
+		if (!job_id) {
+			return res.json(400, { status: 'error', message: 'Job ID required' });
+        }
+        let start = req.param('start');
+        let rows = req.param('length');
+        let draw = req.param('draw');
+        let search = req.param('search');
+
+        JobService.fetchJobApplicants(job_id, start, rows, search.value).then(applicants => {
+            return res.json(200, { status: 'success', draw: draw, recordsTotal: applicants.num, recordsFiltered: applicants.num, data: applicants });
+        }).catch(err => {
+            return res.json(400, { status: 'error', message: err });
+        });
+    },
+
+    // Deprecated for good!
+    // viewApplicants: function(req, res) {
+    //     // hold on, let's knows who's viewing this
+    //     var folder;
+    //     if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
+    //         folder = 'company';
+    //     } else if (req.session.user_type == 'admin') {
+    //         folder = 'admin';
+    //     } else {
+    //         return res.redirect('/');
+    //     }
+
+    //     var job_id =  req.param('job_id');
+    //     Job.find({ id: job_id, status: 'Active' }).exec(function(err, job) {
+    //         // let's prevent companies from viewing this data while the job is still active
+    //         var today = new Date().toISOString();
+    //         if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
+    //             return res.view('company/applicants-view.swig', { job_active: true });
+    //         }
+
+    //         JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
+    //             // find those who applied for this job
+    //             Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
+    //                 // fetch candidate ids for use in finding/computing their test result
+    //                 var candidates = [];
+    //                 applications.forEach(function (application) {
+    //                     if (application.applicant) {
+    //                         candidates.push(application.applicant.id);
+    //                     } else {
+    //                         // this shouldn't happen
+    //                         console.log('Problem');
+    //                         console.log(application);
+    //                     }
+    //                 });
+    //                 CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
+    //                     SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
+    //                         if (selected_candidates.length > 0) {
+    //                             var candidates = [];    // redeclared, haha!
+    //                             selected_candidates.forEach(function (candidate) {
+    //                                 candidates.push(candidate.candidate.id);
+    //                             });
+    //                             CBTService.getJobTestResults(candidates, test[0]).then(function (selected_candidates_test_result) {
+    //                                 return res.view(folder + '/applicants-view.swig', {
+    //                                     applicants: applications,
+    //                                     results: all_text_result,
+    //                                     selected_candidates: selected_candidates_test_result,
+    //                                     job_id: job_id,
+    //                                     job: job,
+    //                                     folder: folder
+    //                                 });
+    //                             }).catch(function (err) {
+    //                                 console.log(err);
+    //                             });
+    //                         } else {
+    //                             return res.view(folder + '/applicants-view.swig', {
+    //                                 applicants: applications,
+    //                                 results: all_text_result,
+    //                                 job_id: job_id,
+    //                                 job: job,
+    //                                 folder: folder
+    //                             });
+    //                         }
+    //                     });
+    //                 }).catch(function (err) {
+    //                     console.log(err);
+    //                 });
+    //             });
+    //         });
+    //     });
+    // },
 
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');

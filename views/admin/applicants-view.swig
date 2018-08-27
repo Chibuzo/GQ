@@ -89,7 +89,7 @@
                     <div class="tab-pane in fade" id="all-applications">
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 30px; margin-left:1px; padding-top: 15px;">
-                                <table class="table table-striped dataTable">
+                                <table class="table table-striped applicantsDataTable">
                                     <thead>
                                         <tr>
                                             <td class="" colspan="4">
@@ -108,26 +108,8 @@
                                             <th>Name</th>
                                             <th>Email</th>
                                             <th>Status</th>
-                                            <th></th>
                                         </tr>
-                                    </thead>
-                                    <tbody id="tb-applications">
-                                        {% for app in applicants %}
-                                            <tr>
-                                                <td style="width:10px !important"><label class=""><input type="checkbox" class="form-control user-checkbox" /></label></td>
-                                                <td>
-                                                    {% if app.applicant.status == 'Active' %}
-                                                        <a target="_blank" href="/applicant/resume-user/{{ app.applicant.id }}" class="" rel="tooltip" title="View Resume">{{ app.applicant.fullname }}</a>
-                                                    {% else %}
-                                                        {{ app.applicant.fullname }}
-                                                    {% endif %}    
-                                                </td>
-                                                <td class="email">{{ app.applicant.email }}</td>
-                                                <td>{{ app.applicant.status }}</td>
-                                                <td></td>
-                                            </tr>
-                                        {% endfor %}        
-                                    </tbody>        
+                                    </thead>      
                                 </table>
                             </div>
                         </div>
@@ -178,8 +160,8 @@
                         <div class="row">
                             <div class="col-md-12 table-responsive table-full-width" style="padding: 50px; padding-top: 15px;">
 
-								{% if unshortlisted.length  == 0 %}
-                                    <div class="test alert alert-info">None of the applid candidates have taken the required test.</div>
+								{% if qualified_candidates.length  == 0 %}
+                                    <div class="test alert alert-info">None of the applied candidates is qualified for shortlisting</div>
                                 {% else %}
 									<table class="table table-striped assessedDataTable">
 										<thead>
@@ -208,7 +190,7 @@
 										</thead>
 										<tbody id="tb-assessed">
 										{% set n = 0 %}
-										{% for result in unshortlisted %}
+										{% for result in qualified_candidates %}
 											{% set n = n + 1 %}
                                             {#{% if result.gqtest_status == 'Accepted' %}#}
                                                 <tr  id="{{ result.applicant.id }}" data-test_id="{{ result.test_id }}">
@@ -276,11 +258,11 @@
 <script src="/js/proctorBackend.js?v=2"></script>
 <script src="/js/plugins/datatables.min.js"></script>
 
-<script type="text/javascript">
-$(document).ready(function() {
-    var activeDTable = null;    // for the DataTable last clicked on
 
-    var job_id = {{ job_id | json | safe }};
+<script type="text/javascript">
+ var job_id = {{ job_id | json | safe }};
+var activeDTable = null;    // for the DataTable last clicked on
+$(document).ready(function() {
 
     $(".short-list").click(function(e) {
         e.preventDefault();
@@ -358,11 +340,6 @@ $(document).ready(function() {
         }
     });
 
-
-	var allDTable = $('.dataTable').DataTable({
-		pageLength: 25,
-		responsive: true
-	});
 
     var assessedDTable = $('.assessedDataTable').DataTable({
 		pageLength: 25,
@@ -490,22 +467,8 @@ $(document).ready(function() {
 	});
 
 
-    $(".all-group-check").click(function() {
-		if ($(this).find('input[type=checkbox]').is(':checked')) {
-			allDTable.$(".user-checkbox").prop('checked', true);
-		} else {
-			allDTable.$(".user-checkbox").prop('checked', false);
-		}
-		controlActionBtn($(this).parents('.table'));
-        activeDTable = allDTable;
-	});
-
     $(".ajaxDataTable tbody").prop("id", "tb-test-result");
 
-    $("#tb-applications").on('click', ".user-checkbox", function() {
-		controlActionBtn($(this).parents('.table'));
-        activeDTable = allDTable;
-	});
 
     $("#tb-assessed").on('click', ".user-checkbox", function() {
 		controlActionBtn($(this).parents('.table'));
@@ -566,3 +529,7 @@ function controlActionBtn($parent) {
 	}
 }
 </script>
+
+<script src="/js/allJobApplicantsDataTable.js"></script>
+
+{% endblock %}

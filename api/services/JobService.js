@@ -138,6 +138,39 @@ module.exports = {
     },
 
 
+    fetchJobApplicants: function(job_id, start, rows, search = undefined) {
+        var query = { job: job_id };
+        return new Promise(function(resolve, reject) {
+            if (search && search.length > 2) {
+                let sql = "SELECT DISTINCT email, fullname, u.status, u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? ";
+                Application.query(sql, [ job_id, search + '%', search + '%' ], function(err, result) {
+                    if (err) {
+                        console.log(err);
+                    }
+                    let applicants = [];
+                    applicants.num = result.length;
+                    result.forEach(function(row) {
+                        applicants.push({ applicant: row });
+                    });
+                    return resolve(applicants);
+                });
+            } else {
+                criteria = { where: query, limit: rows, skip: start };
+                return Promise.all([
+                    Application.find(criteria).populate('applicant').sort('createdAt desc'),
+                    Application.count(query)
+                ]).then(result => {
+                    let applicants = result[0];
+                    applicants.num = result[1];
+                    return resolve(applicants);
+                }).catch(err => {
+                    return reject(err);
+                });
+            }
+        });
+    },
+
+
     fetchShortlistedCandidates: function (job_id, coy_id) {
         return new Promise(function (resolve, reject) {
             // Companies can only view shortlist for their jobs
