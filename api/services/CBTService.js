@@ -34,44 +34,37 @@ module.exports = {
                 // get the average integrity score for the 3 proctor sessions
                 var gq_results = [];
                 var aptitude_test_results = []; // for computing aptitude test ranking
-                async.eachSeries(candidates, function(candidate_id, cb) {
-                    // get their BEST aptitude test score
-					GQAptitudeTestResult.find({ user: candidate_id, status: 'Accepted' }).populate('user').sort('score desc').limit(1).exec(function(err, apt_score) {
-                        if (err) {
-                            cb(err);
+                async.eachSeries(candidates, function(candidate, cb) {
+                    GQTestResult.find({test: [1, 2, 3], candidate: candidate.uid}).exec(function(err1, gqTestResults) {
+                        if (err1) {
+                            cb(err1);
                         }
-                        if (apt_score.length > 0) {
-                            GQTestResult.find({test: [1, 2, 3], candidate: candidate_id}).exec(function(err1, gqTestResults) {
-                                if (err1) {
-                                    cb(err1);
-                                }
-                                let total_num_questions = 0;
-                                gqTestResults.forEach(function(test) {
-                                    total_num_questions += test.no_of_questions;
-                                });
-                                let percentage = ((apt_score[0].score / total_num_questions) * 100).toFixed(1);
-                                aptitude_test_results.push(apt_score[0].score);
+                        // lets make sure this candidate has completed the 3 tests. Yeah because we may manually reset one score without removing the total score from GQAptitudeTestResult table
+                        if (gqTestResults.length < 3) return cb();
 
-                                gq_results.push({
-                                    test_id: apt_score[0].id,
-                                    applicant: apt_score[0].user,
-                                    score: 'NA',
-                                    percentage: percentage,
-                                    test_result: percentage > 59 ? 'Passed' : 'Failed',
-                                    composite_score: percentage,
-                                    job_score: false,
-                                    aptitude_test: apt_score[0].score,
-                                    integrity_score: 'NA',
-                                    proctor_status: 'NA',
-                                    proctor_id: 0,
-                                    createdAt: apt_score[0].createdAt
-                                });
-                                cb();
-                            })
-                        } else {
-                            cb();
-                        }
-					});
+                        let total_num_questions = 0;
+                        gqTestResults.forEach(function(test) {
+                            total_num_questions += test.no_of_questions;
+                        });
+                        let percentage = ((candidate.score / total_num_questions) * 100).toFixed(1);
+                        aptitude_test_results.push(candidate.score);
+
+                        gq_results.push({
+                            test_id: candidate.test_id,
+                            applicant: { fullname: candidate.fullname, email: candidate.email, id: candidate.uid },
+                            score: 'NA',
+                            percentage: percentage,
+                            test_result: percentage > 59 ? 'Passed' : 'Failed',
+                            composite_score: percentage,
+                            job_score: false,
+                            aptitude_test: candidate.score,
+                            integrity_score: 'NA',
+                            proctor_status: 'NA',
+                            proctor_id: 0,
+                            createdAt: candidate.createdAt
+                        });
+                        cb();
+                    });
                 }, function(err) {
                     if (err) return reject(err);
                     gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b; });

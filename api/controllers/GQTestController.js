@@ -575,30 +575,51 @@ module.exports = {
     },
     
     getAptitudeTestResults: function(req, res) {
+        let job_id = req.param('job_id');
         let start = req.param('start');
         let rows = req.param('length');
         let draw = req.param('draw');
+        let search = req.param('search').value;
+
         switch (req.param('mode')) {
             case 'job_applicants':
-                if (req.param('job_id') && !isNaN(req.param('job_id'))) {
-                    Application.find({ job: req.param('job_id') }).exec(function(err, applicants) {
-                        if (err) {
-                            return res.json(400, { status: 'error', message: err });
-                        }
-                        let candidatesIds = [];
-                        applicants.forEach(function (applicant) {
-                            if (applicant.applicant) {
-                                candidatesIds.push(applicant.applicant);
+                if (req.param('job_id') && !isNaN(job_id)) {
+                    if (search && search.length > 2) {
+                        let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? ";
+                        Application.query(sql, [ job_id, search + '%', search + '%' ], function(err, result) {
+                            if (err) {
+                                console.log(err);
                             }
+                            let applicants = [];
+                            result.forEach(function(row) {
+                                applicants.push(row.id);
+                            });
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(applicants, start, rows).then(function(candidates) {
+                                return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
+                            })
+                            .catch(function(err) {
+                                return json(400, { status: 'error', message: err });
+                            });
                         });
-
-                        GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows).then(function(candidates) {
-                            return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
-                        })
-                        .catch(function(err) {
-                            return json(400, { status: 'error', message: err });
+                    } else {
+                        Application.find({ job: job_id }).exec(function(err, applicants) {
+                            if (err) {
+                                return res.json(400, { status: 'error', message: err });
+                            }
+                            let candidatesIds = [];
+                            applicants.forEach(function (applicant) {
+                                if (applicant.applicant) {
+                                    candidatesIds.push(applicant.applicant);
+                                }
+                            });
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows).then(function(candidates) {
+                                return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
+                            })
+                            .catch(function(err) {
+                                return json(400, { status: 'error', message: err });
+                            });
                         });
-                    });
+                    }
                 } else {
                     return res.json(404, { status: 'error', message: 'job_id must be numeric' });
                 }

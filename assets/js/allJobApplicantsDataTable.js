@@ -23,7 +23,7 @@ $(document).ready(function() {
                     let d = {};
                     d.id = data[i].applicant.id;
                     d.checkbox = '<label class=""><input type="checkbox" class="form-control user-checkbox" /></label>';
-                    d.fullname = data[i].applicant.fullname;
+                    d.fullname = data[i].applicant.status == 'Active' ? `<a target="_blank" href="/applicant/resume-user/${data[i].applicant.id}" class="view-resume" rel="tooltip" title="View Resume">${data[i].applicant.fullname}</a>` : data[i].applicant.fullname;
                     d.email = data[i].applicant.email;
                     d.status = data[i].applicant.status;
                     processed_data.push(d);
@@ -65,7 +65,7 @@ $(document).ready(function() {
     });
     
 
-    $("#tb-applications").on('click', ".user-checkbox", function() {
+    $(".applicantsDataTable").on('click', ".user-checkbox", function() {
 		controlActionBtn($(this).parents('.table'));
         activeDTable = allDTable;
 	});

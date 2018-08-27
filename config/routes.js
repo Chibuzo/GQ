@@ -225,7 +225,7 @@ module.exports.routes = {
 
     'POST /job/set-test-rating': 'JobTestController.setJobTestRating',
 
-    'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
+    //'GET /job/view-applicants/:job_id': 'JobController.viewApplicants',
 
 	'GET /admin/job/:job_id/view-applicants': 'JobController.viewApplicantsforAdmin',
 
@@ -322,6 +322,8 @@ module.exports.routes = {
     'GET /api/v1/getjobstat/:job_id': 'JobApiController.fetchJobStat',
 
     'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
+
+    'POST /api/v1/job/fetchapplicants': 'JobController.fetchJobApplicants',
 
 
     'POST /api/v1/proctor/getsessionid': { 
