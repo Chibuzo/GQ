@@ -486,7 +486,7 @@ module.exports = {
                         return res.serverError(err);
                     }
                     // filter out shortlisted candidates before processing result
-                    SelectedCandidate.find({ job_id: job_id }).exec(function(err, shortlist) {
+                    SelectedCandidate.find({ job_id: job_id }).populate('candidate').exec(function(err, shortlist) {
                         if (err) {
                             return res.serverError(err);
                         }
@@ -506,6 +506,7 @@ module.exports = {
                                 jobTitle: job.job_title,
                                 companyName: companyName,
                                 qualified_candidates: allCandidates,
+                                selected_candidates: shortlist,
                                 job_id: job_id
                             });
                         }).catch(err => {

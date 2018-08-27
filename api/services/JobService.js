@@ -178,32 +178,36 @@ module.exports = {
                 if (job) {
                     return Promise.all([
                         JobTest.findOne({ job_level: job.job_level, job_category_id: job.category}).populate('test'),
-                        SelectedCandidate.find({job_id: job_id})
+                        //SelectedCandidate.find({job_id: job_id}).populate('candidate')
                     ]).then(testAndCandidates => {
                         let test = testAndCandidates[0];
-                        let selected_candidates = testAndCandidates[1];
+                        //let selected_candidates = testAndCandidates[1];
 
-                        var candidates = [];
-                        selected_candidates.forEach(function (candidate) {
-                            candidates.push(candidate.candidate);
-                        });
-
-                        return CBTService.getJobTestResults(candidates, test).then(function (results) {
-                            // add shortlisting status to the result
-                            var _results = [];
-                            results.forEach(function(result) {
-                                var status = selected_candidates.find(x => x.candidate == result.applicant.id).status;
-                                result.status = status;
-                                _results.push(result);
+                        const sql = `SELECT score, fullname, u.id AS uid, gq.id AS test_id, gq.createdAt, u.email, sc.status FROM selectedcandidate sc 
+                                    JOIN gqaptitudetestresult gq ON sc.candidate = gq.user 
+                                    JOIN user u ON u.id = gq.user WHERE job_id = ? AND gq.status = 'Accepted' ORDER BY score DESC`;
+            
+                        GQAptitudeTestResult.query(sql, [ job_id ], function(err, candidates) {            
+                            if (err) {
+                                return res.serverError(err);
+                            }
+                            return CBTService.getJobTestResults(candidates, test).then(function (results) {
+                                // add shortlisting status to the result
+                                var _results = [];
+                                results.forEach(function(result) {
+                                    var status = candidates.find(x => x.uid == result.applicant.id).status;
+                                    result.status = status;
+                                    _results.push(result);
+                                });
+                                return resolve({
+                                    results: _results,
+                                    paid: job.paid,
+                                    jobTitle: job.job_title,
+                                    companyName: job.company.company_name
+                                });
                             });
-                            return resolve({
-                                results: _results,
-                                paid: job.paid,
-                                jobTitle: job.job_title,
-                                companyName: job.company.company_name
-                            });
                         });
-                    })
+                    });
                 } else {
                     return resolve({
                         results: []
@@ -212,7 +216,7 @@ module.exports = {
             }).catch(err => {
                 console.error(err);
                 reject(err);
-            })
+            });
         });
     }
 }
