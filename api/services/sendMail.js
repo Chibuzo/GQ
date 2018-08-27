@@ -104,7 +104,8 @@ module.exports = {
             newuser: newuser,
             incompleteprofile: incompleteprofile,
             closing_date: job.closing_date.toLocaleDateString('en-US', date_opt),
-            url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash
+            activation_url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash,
+            url: BASE_URL
         };
         var subject = "Application for the position of " + job.job_title + " at " + job.company.company_name;
         var template = 'appliedJobNotice';

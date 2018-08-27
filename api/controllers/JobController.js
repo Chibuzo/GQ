@@ -262,7 +262,7 @@ module.exports = {
                                             } else {
                                                 console.log('You are not a candidate');
                                             }
-                                            cb();
+                                            return cb();
                                         });
                                     }
                                 });
