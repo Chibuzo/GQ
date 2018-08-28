@@ -305,7 +305,7 @@ module.exports.routes = {
 
     'GET /testapi': 'BatchController.testApi',
 
-    'POST /testupload': 'BatchController.acceptFiles',
+    'GET /jobreport/:job_id': 'BatchController.report',
 
     'GET /getstates': 'BatchController.getStates',
 

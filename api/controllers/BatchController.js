@@ -116,8 +116,105 @@ module.exports = {
         });
     },
 
-    acceptFiles: function(req, res) {
-        
+    report: function(req, res) {
+        const job_id = req.param('job_id');
+        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, dob, programme, available_date FROM application ap 
+                    JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+                    JOIN resume r ON r.user = gq.user 
+                    JOIN education e ON e.resume = r.id
+                    WHERE job = ? AND gq.status = 'Accepted' GROUP BY email ORDER BY score DESC`;
+
+        GQAptitudeTestResult.query(sql, [ job_id ], function(err, results) {
+            let candidates = [];
+            async.eachSeries(results, function(result, cb) {
+                GQTestResult.find({ test: [1,2,3], candidate: result.uid }).sort('test').exec(function(err, tests) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    //console.log(tests)
+                    if (tests.length < 3) return cb();
+
+                    candidates.push({
+                        fullname: result.fullname,
+                        age: getAge(result.dob),
+                        qualification: result.programme,
+                        logic: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(0),
+                        verbal: ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(0),
+                        maths: ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(0),
+                        total: tests[0].score + tests[1].score + tests[2].score,
+                        available_date: result.available_date
+                    });
+                    cb();
+                }); 
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                }
+                const Excel = require('exceljs');
+                const workbook = new Excel.Workbook();
+
+                workbook.creator = 'getqualified.work';
+                workbook.created = new Date();
+
+                let sheet = workbook.addWorksheet('My Sheet');
+                sheet.columns = [
+                    { header: 'S/No', key: 's_no', width: 5 },
+                    { header: 'Fullname', key: 'fullname', width: 30 },
+                    { header: 'Age', key: 'age', width: 8 },
+                    { header: 'Qualification', key: 'qualification', width: 60 },
+                    { header: 'Available Date', key: 'available_date', width: 15 },
+                    { header: 'Verbal (%)', key: 'verbal', width: 15 },
+                    { header: 'Numerical (%)', key: 'numeric', width: 20 },
+                    { header: 'Critical (%)', key: 'critical', width: 17 },
+                    { header: 'Total (%)', key: 'total', width: 6 }
+                ];
+
+                let row1 = sheet.getRow(1);
+                row1.height = 30;
+                row1.font = { name: 'Arial', size: 11, bold: true };
+                row1.alignment = { vertical: 'middle' };
+
+                let n = 0;
+                candidates.forEach(function(user) {
+                    n++;
+                    sheet.addRow({
+                        s_no: n,
+                        fullname: user.fullname,
+                        age: user.age,
+                        qualification: user.qualification,
+                        available_date: user.available_date,
+                        verbal: user.verbal,
+                        numeric: user.maths,
+                        critical: user.logic,
+                        total: user.total
+                    }).commit();
+                });
+                sheet.getColumn(3).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(6).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(7).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(8).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(9).alignment = { vertical: 'middle', horizontal: 'center' };
+                var file_name = sails.config.appPath + '/assets/csv-files/wema_report.xlsx';
+                workbook.xlsx.writeFile(file_name).then(function() {
+                    return console.log(true);
+                }).catch(function(err) {
+                    return console.log(err);
+                });
+            });
+        }); 
+        return res.ok();      
     }
 };
+
+function getAge(dateString) {
+    var today = new Date();
+    var birthDate = new Date(dateString);
+    var age = today.getFullYear() - birthDate.getFullYear();
+    var m = today.getMonth() - birthDate.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
+    {
+        age--;
+    }
+    return age;
+}
 
