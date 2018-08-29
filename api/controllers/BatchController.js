@@ -118,11 +118,11 @@ module.exports = {
 
     report: function(req, res) {
         const job_id = req.param('job_id');
-        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, dob, programme, available_date FROM application ap 
+        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, phone, dob, programme, r_class, available_date FROM application ap 
                     JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
                     JOIN resume r ON r.user = gq.user 
                     JOIN education e ON e.resume = r.id
-                    WHERE job = ? AND gq.status = 'Accepted' GROUP BY email ORDER BY score DESC`;
+                    WHERE job = ? GROUP BY email ORDER BY score DESC`;
 
         GQAptitudeTestResult.query(sql, [ job_id ], function(err, results) {
             let candidates = [];
@@ -134,14 +134,31 @@ module.exports = {
                     //console.log(tests)
                     if (tests.length < 3) return cb();
 
+                    let total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+
+                    let r_class = [
+                        { name: "1", id: 1 }, { name: "2.1", id: 2 }, { name: "2.2", id: 3 }, { name: "3", id: 4 }
+                    ];
+
+                    let rclass = '-';
+                    if (result.r_class)
+                        rclass = r_class.find(r_clas => r_clas.id == result.r_class).name;
+
                     candidates.push({
                         fullname: result.fullname,
                         age: getAge(result.dob),
                         qualification: result.programme,
-                        logic: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(0),
-                        verbal: ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(0),
-                        maths: ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(0),
-                        total: tests[0].score + tests[1].score + tests[2].score,
+                        degree: rclass,
+                        location: result.address,
+                        email: result.email,
+                        phone: result.phone,
+                        // logic: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(0),
+                        // verbal: ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(0),
+                        // maths: ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(0),
+                        logic: tests[0].score,
+                        verbal: tests[1].score,
+                        maths: tests[2].score,
+                        total: (((tests[0].score + tests[1].score + tests[2].score) / total_num_questions) * 100).toFixed(1) + '%',
                         available_date: result.available_date
                     });
                     cb();
@@ -162,11 +179,15 @@ module.exports = {
                     { header: 'Fullname', key: 'fullname', width: 30 },
                     { header: 'Age', key: 'age', width: 8 },
                     { header: 'Qualification', key: 'qualification', width: 60 },
+                    { header: 'Class of Degree', key: 'degree_class', width: 15 },
+                    { header: 'Location (as shown in the address on CV)', key: 'location', width: 60 },
                     { header: 'Available Date', key: 'available_date', width: 15 },
-                    { header: 'Verbal (%)', key: 'verbal', width: 15 },
-                    { header: 'Numerical (%)', key: 'numeric', width: 20 },
-                    { header: 'Critical (%)', key: 'critical', width: 17 },
-                    { header: 'Total (%)', key: 'total', width: 6 }
+                    { header: 'Verbal Reasoning', key: 'verbal', width: 15 },
+                    { header: 'Numerical Reasoning', key: 'numeric', width: 20 },
+                    { header: 'Critical Reasoning', key: 'critical', width: 17 },
+                    { header: 'Total Score', key: 'total', width: 20 },
+                    { header: 'Contact Phone', key: 'phone', width: 15 },
+                    { header: 'Email Address', key: 'email', width: 30 }
                 ];
 
                 let row1 = sheet.getRow(1);
@@ -182,18 +203,23 @@ module.exports = {
                         fullname: user.fullname,
                         age: user.age,
                         qualification: user.qualification,
+                        degree_class: user.degree,
+                        location: user.location,
                         available_date: user.available_date,
                         verbal: user.verbal,
                         numeric: user.maths,
                         critical: user.logic,
-                        total: user.total
+                        total: user.total,
+                        phone: user.phone,
+                        email: user.email
                     }).commit();
                 });
                 sheet.getColumn(3).alignment = { vertical: 'middle', horizontal: 'center' };
-                sheet.getColumn(6).alignment = { vertical: 'middle', horizontal: 'center' };
-                sheet.getColumn(7).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(8).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(9).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(10).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(11).alignment = { vertical: 'middle', horizontal: 'center' };
+
                 var file_name = sails.config.appPath + '/assets/csv-files/wema_report.xlsx';
                 workbook.xlsx.writeFile(file_name).then(function() {
                     return console.log(true);

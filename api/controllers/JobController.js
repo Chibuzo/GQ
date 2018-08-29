@@ -486,14 +486,11 @@ module.exports = {
                         return res.serverError(err);
                     }
                     // filter out shortlisted candidates before processing result
-                    SelectedCandidate.find({ job_id: job_id }).populate('candidate').exec(function(err, shortlist) {
+                    SelectedCandidate.find({ job_id: job_id }).exec(function(err, shortlist) {
                         if (err) {
                             return res.serverError(err);
                         }
-                        let shortlist_ids = shortlist.map(sl => sl.candidate);
-                        let filtered_candidates = candidates.filter(c => shortlist_ids.indexOf(c.uid) === -1);
-
-                        CBTService.getJobTestResults(filtered_candidates, jobTest).then(function(allCandidates) {
+                        CBTService.getJobTestResults(candidates, jobTest).then(function(allCandidates) {
                             let companyName;
                             if ((job.source === null || job.source === 'gq') && job.company) {
                                 companyName = job.company.company_name;
@@ -502,11 +499,15 @@ module.exports = {
                             } else {
                                 companyName = 'Company';
                             }
+                            
+                            let shortlist_ids = shortlist.map(sl => sl.candidate);
+                            let shortlisted = allCandidates.filter(c => shortlist_ids.indexOf(c.applicant.id) !== -1);
+
                             return res.view('admin/applicants-view.swig', {
                                 jobTitle: job.job_title,
                                 companyName: companyName,
                                 qualified_candidates: allCandidates,
-                                selected_candidates: shortlist,
+                                selected_candidates: shortlisted,
                                 job_id: job_id
                             });
                         }).catch(err => {

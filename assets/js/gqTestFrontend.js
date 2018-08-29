@@ -477,11 +477,11 @@ function removeNotification() {
 // ------- START WINDOW EVENT HANDLERS ------ //
 
 function removeWindowsCloseEvent() {
-    window.removeEventListener("beforeunload", submitTest);
+    //window.removeEventListener("beforeunload", submitTest);
 }
 
 function addWindowsCloseEvent() {
-    window.addEventListener("beforeunload", submitTest);
+    //window.addEventListener("beforeunload", submitTest);
 }
 
 var wentOffline = false;
