@@ -318,7 +318,7 @@
 										{% if resume.profile_status !== true %}
 											<div id="cv-options" class="col-md-5 col-md-offset-3" style="margin-top: 70px">
 												<button class="btn btn-fill btn-info btn-lg btn-block hidden" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
-												<small>* File must be in PDF, DOC or DOCX format</small><br><br>
+												{#<small>* File must be in PDF, DOC or DOCX format</small><br><br>#}
 												<button class="btn btnfill btn-primary btn-lg btn-block" id="edit-cv-btn"><i class="fa fa-edit"></i> Fill the Resume form</button>
 												<br>
 												<div class="alert alert-danger hidden" id="cv-alert">Your CV upload was not successful, please make sure you are uploading a file in the correct format</div>
@@ -630,7 +630,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=23"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=24"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
