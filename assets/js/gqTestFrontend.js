@@ -481,12 +481,12 @@ function removeWindowsCloseEvent() {
 }
 
 function addWindowsCloseEvent() {
+    // save test state
     //window.addEventListener("beforeunload", submitTest);
 }
 
 var wentOffline = false;
 window.addEventListener('online', () => {
-    // TODO: this is going to create another proctor session
 	if (GQTestStatus.isInProgress()) {
 		PROCTOR = startProctor(PROCTOR_CURRENT_DATA.noFace, PROCTOR_CURRENT_DATA.multipleFaces, PROCTOR_CURRENT_DATA.noise, PROCTOR_CURRENT_DATA.integrityScore);
 
