@@ -75,39 +75,39 @@
 		<div class="row">
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Applicants </p>
-					<a href="/admin/candidates/all" class="btn btnlg btn-info btn-fill">All : {{ statistics.applicants }}</a>
-					<a href="/admin/candidates/active" class="btn btnlg btn-info btn-fill">Active: {{ statistics.active }}</a>
-					<a href="/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive: {{ statistics.inactive }}</a>
+					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill">All : {{ statistics.applicants }}</a>
+					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill">Active: {{ statistics.active }}</a>
+					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive: {{ statistics.inactive }}</a>
 				</div>
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Resumes </p>
-					<a href="/admin/candidates/complete" class="btn btnlg btn-info btn-fill">Complete: {{ statistics.complete }}</a>
-					<a href="/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete: {{ statistics.incomplete }}</a>
+					<a href="#/admin/candidates/complete" class="btn btnlg btn-info btn-fill">Complete: {{ statistics.complete }}</a>
+					<a href="#/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete: {{ statistics.incomplete }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Photos </p>
-					<a href="/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill">No Photo: {{ statistics.nophotos }}</a>
-					<a href="/admin/candidates/photos" class="btn btnlg btn-info btn-fill">Photo: {{ statistics.photos }}</a>
+					<a href="#/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill">No Photo: {{ statistics.nophotos }}</a>
+					<a href="#/admin/candidates/photos" class="btn btnlg btn-info btn-fill">Photo: {{ statistics.photos }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Videos </p>
-					<a href="/admin/candidates/novideos" class="btn btnlg btn-info btn-fill">No Videos: {{ statistics.novideos }}</a>
-					<a href="/admin/candidates/videos" class="btn btnlg btn-info btn-fill">Videos: {{ statistics.videos }}</a>
+					<a href="#/admin/candidates/novideos" class="btn btnlg btn-info btn-fill">No Videos: {{ statistics.novideos }}</a>
+					<a href="#/admin/candidates/videos" class="btn btnlg btn-info btn-fill">Videos: {{ statistics.videos }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Test </p>
-					<a href="/admin/candidates/notests" class="btn btnlg btn-info btn-fill">No Tests: {{ statistics.notests }}</a>
-					<a href="/admin/candidates/sometests" class="btn btnlg btn-info btn-fill">In Progress: {{ statistics.sometests }}</a>
-					<a href="/admin/candidates/tests" class="btn btnlg btn-info btn-fill">Completed: {{ statistics.tests }}</a>
+					<a href="#/admin/candidates/notests" class="btn btnlg btn-info btn-fill">No Tests: {{ statistics.notests }}</a>
+					<a href="#/admin/candidates/sometests" class="btn btnlg btn-info btn-fill">In Progress: {{ statistics.sometests }}</a>
+					<a href="#/admin/candidates/tests" class="btn btnlg btn-info btn-fill">Completed: {{ statistics.tests }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Job Applications </p>
-					<a href="/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill">No Applications: {{ statistics.nojobs }}</a>
-					<a href="/admin/candidates/jobs" class="btn btnlg btn-info btn-fill">With Applications: {{ statistics.jobs }}</a>
+					<a href="#/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill">No Applications: {{ statistics.nojobs }}</a>
+					<a href="#/admin/candidates/jobs" class="btn btnlg btn-info btn-fill">With Applications: {{ statistics.jobs }}</a>
 				</div>
 		</div>
 	</div>
