@@ -1,5 +1,5 @@
 // globals, yes shoot me
-var TEST_ID, duration, questions = [], PROCTOR, PROCTOR_CURRENT_DATA, proctorSessId, MOBILE = false;
+var TEST_ID, duration = false, questions = [], PROCTOR, PROCTOR_CURRENT_DATA, proctorSessId, SAVED_INTEGRITY_SCORE, RESUMED = false, MOBILE = false;
 
 var ANSWERS_KEY = "test-user-answers";
 
@@ -71,10 +71,36 @@ $("#start-test").click(function() {
 
     $(this).text('Loading test...').prop('disabled', true);
 
-    // register proctor session
-    createProctorSession(function() {
-        // start test proctoring
-        PROCTOR = startProctor();
+    localStorage.clear();
+
+    // check if user have attempted this test without finishing it
+    $.get('/gqtest/findSavedTest', { test_id: TEST_ID }, function(d) {
+        if (d.status.trim() == 'success') {
+            if (typeof d.data === "object") {
+                RESUMED = true;
+                // initialize old test
+                proctorSessId = d.data.proctor_session;
+                questions = d.questions;
+
+                // set timer
+                var time = d.data.time_elapsed.split(':');
+                var hr = parseInt(time[0]) > 0 ? time[0] * 60 : 0;
+                duration = parseInt(time[1]) + 1 + hr;
+
+                // restore answered questions, halleluya
+                if (d.data.answered_questions.length > 0) localStorage.setItem(ANSWERS_KEY, d.data.answered_questions);
+               
+                // start test proctoring
+                SAVED_INTEGRITY_SCORE = d.data.proctor_data.integrityScore;
+                let proc = d.data.proctor_data;
+                PROCTOR = startProctor(+proc.noFace, +proc.multipleFaces, +proc.noise, +proc.integrityScore);
+            } else {
+                createProctorSession(function() {
+                    // start test proctoring
+                    PROCTOR = startProctor();
+                });
+            }
+        }
     });
 });
 
@@ -143,6 +169,7 @@ function fetchNextQuestion(questions, next_quest) {
 
     // save the state of the current question
     saveAnswer();
+   
     // clear previous question image, if any
     $(".question-image").html('');
 
@@ -200,6 +227,7 @@ function disableButtons(currQuestion, totalQuestions) {
 function saveAnswer() {
     var quest_id = $("#current_quest").data('quest-id');
     var ans = $("input[name=opt]:checked").val();
+
     var cur_question = $("#current_quest").text();
 
     // Save Answer in local storage
@@ -345,11 +373,7 @@ function shuffleArray(array) {
 //}
 
 function createProctorSession(cb) {
-    $.post('/gqtest/createProctorSession',
-        {
-            test_id: TEST_ID
-        },
-        function(response) {
+    $.post('/gqtest/createProctorSession', { test_id: TEST_ID }, function(response) {
             if (response.status && response.status.trim() === 'success') {
                 proctorSessId = parseInt(response.proctor_id);
 
@@ -359,16 +383,14 @@ function createProctorSession(cb) {
                 });
             }
         }
-    )
-    .fail(function(response) {
+    ).fail(function(response) {
          amplitude.getInstance().logEvent("Failed to Create Proctor Session", {
             testId: TEST_ID,
             err: response.responseJSON.message
         });
-    })
-    .always(function() {
+    }).always(function() {
         cb();
-    })
+    });
 }
 
 function blockTest(reason) {
@@ -390,18 +412,16 @@ function startTest() {
         return;
     }
 
-    localStorage.clear();
-
     $.get('/gqtest/load-test/' + TEST_ID, function(d) {
         if (d.status.trim() == 'success') {
             GQTestStatus.startProgress();
 
-            questions = d.questions;
+            questions = questions.length > 0 ? questions : d.questions;
             shuffleArray(questions);
-            duration = d.duration;
+            duration = duration ? duration : d.duration; // it could be set from a saved test
 
             var total_quests = d.questions.length;
-            //TEST_ID = d.test_id;
+            
             $("#total_questions").text(total_quests);
 
             $(".test-blocked-screen").addClass('hidden');
@@ -422,9 +442,15 @@ function startTest() {
 
             fetchNextQuestion(questions);
             startTimer();
-            updateIntegrityBar(100);
+            let integrity_score = SAVED_INTEGRITY_SCORE ? SAVED_INTEGRITY_SCORE : 100
+            updateIntegrityBar(integrity_score);
+            
             // register window onclose/leave event
             addWindowsCloseEvent();
+
+            if (RESUMED === true) {
+                markAnsweredQuestions();
+            }
 
             // set/reset controls
             $("#next-question").html("Next <i class='fa fa-caret-right'></i> ");
@@ -477,12 +503,12 @@ function removeNotification() {
 // ------- START WINDOW EVENT HANDLERS ------ //
 
 function removeWindowsCloseEvent() {
-    //window.removeEventListener("beforeunload", submitTest);
+    window.removeEventListener("beforeunload", saveTestState);
 }
 
 function addWindowsCloseEvent() {
     // save test state
-    //window.addEventListener("beforeunload", submitTest);
+    window.addEventListener("beforeunload", saveTestState);
 }
 
 var wentOffline = false;
@@ -616,9 +642,42 @@ var updateIntegrityBar = function(integrityScore) {
     //animate({ width: integrityScore + "%" }, 1500);
 }
 
-// ----- END INTEGRITY SCORE FUNCTIONS ---- //
 
-function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integrityScore = 0) {
+// ----- SAVE TEST STATE ON WINDOWS LEAVE/UNLOAD EVENT ----- //
+function saveTestState() { alert('Ipku')
+    // get proctor data
+    var proctorFeedback = PROCTOR.getFeedback();
+    var proctor_data = {
+        noFace: proctorFeedback.video.counter.noFace,
+        noise: proctorFeedback.audio.counter.noise,
+        multipleFaces: proctorFeedback.video.counter.multiFace,
+        integrityScore: proctorFeedback.integrityScore
+    };
+    stopProctor();
+    var test_status_data = {
+        test_id: TEST_ID,
+        answered_questions: localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [],
+        current_time: $("#countdowntimer").text(),
+        proctor_session: proctorSessId,
+        proctor_data: proctor_data
+    };
+
+    $.post('/gqtest/saveTestState', test_status_data);
+}
+
+
+// ----- MARK ANSWERED QUESTIONS FOR RESUMED TEST ----- //
+function markAnsweredQuestions() {
+    var answers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
+    answers.forEach(function(ans) {
+        $("[data-quest_id='" + ans.quest_id + "']").addClass('answered_q');
+        // save answer on localstorage
+        localStorage.setItem('questID-' + ans.quest_id, ans.ans); 
+    });
+}
+
+// ----- END INTEGRITY SCORE FUNCTIONS ---- //
+function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0, integrityScore = 0) {
     amplitude.getInstance().logEvent("Starting Proctor");
 
 	// make sure proctor canvas is showing
@@ -671,8 +730,8 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                  }, error: function() {
                      if (this.retry > 0) {
                         amplitude.getInstance().logEvent(eventName + " photo upload retry count: " + this.retry);
-                        $.ajax(this);
                         this.retry--;
+                        $.ajax(this);
                         return;
                      }
                      amplitude.getInstance().logEvent(eventName + " upload failed");
@@ -697,8 +756,8 @@ function startProctor(noFaceN = 0, multiFaceN = 0, ambientNoiseN = 0,integritySc
                 }, error: function() {
                     if (this.retry > 0) {
                         amplitude.getInstance().logEvent("Audio upload retry countdown: " + this.retry);
-                        $.ajax(this);
                         this.retry--;
+                        $.ajax(this);
                         return;
                      }
                      amplitude.getInstance().logEvent("Audio upload failed");
@@ -791,7 +850,6 @@ function stopProctor() {
             error: JSON.stringify(err)
         });
     } finally {
-
         PROCTOR =  null;
     }
 }

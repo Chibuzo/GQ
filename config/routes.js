@@ -141,6 +141,10 @@ module.exports.routes = {
 
     'POST /gqtest/uploadProctorPicture': 'GQTestController.uploadProctorPicture',
 
+    'POST /gqtest/saveTestState': 'GQTestController.saveTestState',
+
+    'GET /gqtest/findSavedTest': 'GQTestController.findSavedTest',
+
     'POST /gqtest/createProctorSession': 'ProctorRecordController.startSession',
 
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',

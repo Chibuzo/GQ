@@ -630,7 +630,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=24"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=25"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
