@@ -502,11 +502,12 @@ module.exports = {
                             
                             let shortlist_ids = shortlist.map(sl => sl.candidate);
                             let shortlisted = allCandidates.filter(c => shortlist_ids.indexOf(c.applicant.id) !== -1);
+                            let unshortlisted = allCandidates.filter(c => shortlist_ids.indexOf(c.applicant.id) === -1);
 
                             return res.view('admin/applicants-view.swig', {
                                 jobTitle: job.job_title,
                                 companyName: companyName,
-                                qualified_candidates: allCandidates,
+                                qualified_candidates: unshortlisted,
                                 selected_candidates: shortlisted,
                                 job_id: job_id
                             });
