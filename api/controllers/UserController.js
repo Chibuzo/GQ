@@ -52,10 +52,7 @@ module.exports = {
                                 }
                                 return res.json(501, {status: 'error', msg: err}); // couldn't be completed
                             }
-                            // AmplitudeService.trackEvent('User Sign Up', data.email, {}, {
-                            //     userType: data.userType,
-                            //     signUpDate: new Date(Date.now())
-                            // });
+                            GeneralReportService.updateField('all_applicants');
                             sendMail.sendConfirmationEmail(newUser);
                             return res.json(200, {status: 'success'});
                         });
@@ -79,6 +76,7 @@ module.exports = {
                 var crypto = require('crypto');
                 var confirm_hash = crypto.createHash('md5').update(email + 'okirikwenEE129Okpkenakai').digest('hex');
                 if (hash == confirm_hash) {
+                    if (foundUser.status == 'Inactive') GeneralReportService.updateField('active_applicants');
                     User.update({ id: foundUser.id }, { status: 'Active' }).exec(function(err, userArr) {
                         let user = userArr[0];
                         if (err) {

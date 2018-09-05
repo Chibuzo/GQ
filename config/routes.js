@@ -329,6 +329,8 @@ module.exports.routes = {
 
     'POST /api/v1/job/fetchapplicants': 'JobController.fetchJobApplicants',
 
+    'POST /api/v1/applicants/fetch': 'CandidateReportController.fetchAllCandidates',
+
 
     'POST /api/v1/proctor/getsessionid': { 
         controller: 'ProctorRecordController', action: 'startSession', 

@@ -64,7 +64,6 @@ module.exports = {
                                 return res.serverError(err);
                             });
                     }
-
                     return res.ok();
                 }).catch(err => {
                     return res.serverError(err);
@@ -117,6 +116,9 @@ module.exports = {
                 AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
                 return res.redirect('/applicant/resume-page#photo');
             });
+            if (_.isUndefined(req.param('photo_name')) || req.param('photo_name').length < 1) {
+                GeneralReportService.updateField('photos');
+            }
         });
     },
 
@@ -145,6 +147,7 @@ module.exports = {
                     fs.unlinkSync(uploadedvid);
                 }
                 AmplitudeService.trackEvent('Uploaded Profile Video', req.session.userEmail);
+                if (req.param('video_status') === false) GeneralReportService.updateField('videos'); 
                 return res.redirect('/applicant/resume-page#video');
             });
         }).catch(function(err) {
@@ -205,15 +208,11 @@ module.exports = {
         return ApplicantService.getApplicantStatistics().then(function(stats) {
             switch (req.param('query')) {
                 case 'all':
-                    ApplicantService.fetchAll().then(function(all) {
-                        return res.view('admin/candidates-stat', {
-                            statistics: stats,
-                            users: all,
-                            filter: 'All Users',
-                            info: 'All the user who have signed up with Get Qualified.'
-                        });
+                    return res.view('admin/candidates-stat', {
+                        statistics: stats,
+                        filter: 'All Users',
+                        info: 'All the user who have signed up with Get Qualified.'
                     });
-                    break;
 
                 case 'active':
                     ApplicantService.fectchActiveStatus("Active").then(function(active) {

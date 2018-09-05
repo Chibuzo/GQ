@@ -227,6 +227,9 @@ module.exports = {
             status: status
         };
 
+        // count resume only when it hasn't been updated for the first time
+        if (q(profile_status === false)) GeneralReportService.updateField('complete_resume');
+
         Resume.update({ id: q('resume_id') }, data).then(resume => {
             // just update fullname on user table
             User.update({ id: resume[0].user }, { fullname: data.fullname }).exec(function() {});

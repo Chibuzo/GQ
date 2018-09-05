@@ -266,7 +266,7 @@ module.exports = {
                 });
             });
         } else {
-            console.log('Wrong hash')
+            console.log('Wrong hash');
         }
     },
 

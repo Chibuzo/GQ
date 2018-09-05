@@ -229,6 +229,41 @@ module.exports = {
             });
         }); 
         return res.ok();      
+    },
+
+
+    crudeReport: function(req, res) {
+        const job_id = req.param('job_id');
+        const sql = `SELECT dob, email, gq.user AS uid FROM application ap 
+                    JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+                    JOIN resume r ON r.user = gq.user 
+                    WHERE job = ? GROUP BY email`;
+
+        GQAptitudeTestResult.query(sql, [ job_id ], function(err, results) {
+            let stat = {
+                complete_test: 0,
+                age: 0
+            };
+            async.eachSeries(results, function(result, cb) {
+                GQTestResult.find({ test: [1,2,3], candidate: result.uid }).sort('test').exec(function(err, tests) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    //console.log(tests)
+                    if (tests.length < 3) return cb();
+                    
+                    stat.complete_test++;
+
+                    // filter by age
+                    let ages = 0;
+                    if (getAge(result.dob) <= 27) {
+                        stat.age++;
+                    }
+                });
+            }, function(err) {
+                console.log(stat)
+            });
+        });
     }
 };
 

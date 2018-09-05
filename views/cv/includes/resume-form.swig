@@ -760,6 +760,7 @@
 
 		<input type="hidden" name="resume_id" value="{{ resume.id }}" />
 		<input type="hidden" name="status" value="{{ resume.status }}" />
+		<input type="hidden" name="profile_status" value="{{ resume.profile_status }}" />		
 		<input type="hidden" name="video_status" value="{{ video_status }}" />
 		<input type="hidden" name="test_status" value="{{ test_status }}" />
 		<button type="submit" class="btn btn-info btn-fill pull-right btn-lg" id="btn-submit">Update Profile</button>
