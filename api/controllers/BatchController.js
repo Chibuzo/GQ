@@ -229,6 +229,21 @@ module.exports = {
             });
         }); 
         return res.ok();      
+    },
+
+
+    shortlistedReport: function(req, res) {
+        const job_id = req.param('job_id');
+        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email FROM application ap 
+                    JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+                    JOIN resume r ON r.user = gq.user 
+                    WHERE job = ? GROUP BY email ORDER BY score DESC`;
+
+        GQAptitudeTestResult.query(sql, [ job_id ], function(err, results) {
+            let candidates = [];
+            results.forEach(function(d) {
+
+            })
     }
 };
 
