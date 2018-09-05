@@ -6,17 +6,21 @@ var options = {
     viewPath: sails.config.appPath + '/views/emails/'
 };
 let transporter = nodemailer.createTransport({
-    host: 'email-smtp.us-east-1.amazonaws.com',
+    //host: 'email-smtp.us-east-1.amazonaws.com',
+    host: 'smtp.zoho.com',
     port: 465,
     secure: true, // true for 465, false for other ports
     auth: {
-        user: 'AKIAJWG4GYVXU25FAE3Q',
-        pass: 'An1W3fla+EB6cCgehn+rLukdFxzO7DgoSz/oMg4cAvqU'
+        // user: 'AKIAJWG4GYVXU25FAE3Q',
+        // pass: 'An1W3fla+EB6cCgehn+rLukdFxzO7DgoSz/oMg4cAvqU'
+        user: 'noreply@getqualified.work',
+        pass: 'GQ+18#n3w@pzwd&'
     }
 });
 transporter.use('compile', hbs(options));
 
 const BASE_URL = 'https://getqualified.work/';
+const SENT_FROM = 'noreply@getqualified.work';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'sefinatu.atta@productivepeople.org';
 
@@ -27,7 +31,7 @@ module.exports = {
         var hash = crypto.createHash('md5').update(coy.contact_email + 'thishastobesomethingextremelynonsensicalanduseless').digest('hex');
 
         let mailOptions = {
-            from: '"Get Qualified" <noreply@getqualified.work>',
+            from: '"Get Qualified" <' + SENT_FROM + '>',
             to: coy.contact_person + ', ' + coy.contact_email,
             subject: 'Welcome to GetQualified: Activate your account',
             template: 'company_verification',
@@ -259,7 +263,7 @@ module.exports = {
 
         var template = 'emailCandidates';
         let mailOptions = {
-            from: '"Get Qualified" <noreply@getqualified.work>',
+            from: '"Get Qualified" <' + SENT_FROM + '>',
             to: 'support@getqualified.work',
             subject: subject,
             bcc: emails,
@@ -278,7 +282,7 @@ module.exports = {
 
     sendMail: function(to, subject, template, data) {
         let mailOptions = {
-            from: '"Get Qualified" <noreply@getqualified.work>',
+            from: '"Get Qualified" <' + SENT_FROM + '>',
             to: to,
             subject: subject,
             template: template,
