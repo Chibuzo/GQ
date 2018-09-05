@@ -142,8 +142,8 @@ module.exports = {
         var query = { job: job_id };
         return new Promise(function(resolve, reject) {
             if (search && search.length > 2) {
-                let sql = "SELECT DISTINCT email, fullname, u.status, u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? ";
-                Application.query(sql, [ job_id, search + '%', search + '%' ], function(err, result) {
+                let sql = "SELECT DISTINCT email, fullname, u.status, u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? AND job = ?";
+                Application.query(sql, [ job_id, search + '%', search + '%', job_id ], function(err, result) {
                     if (err) {
                         console.log(err);
                     }

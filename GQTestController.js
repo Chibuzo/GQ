@@ -174,90 +174,13 @@ module.exports = {
 
     loadTest: function(req, res) {
         var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).populate('questions').exec(function(err, gqtest) {
-            if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
-            let questions = [];
-
-            // exclude answer from questions
-            gqtest[0].questions.forEach(function(quest) {
-                questions.push({
-                    id: quest.id,
-                    question: quest.question,
-                    image_file: quest.image_file,
-                    opt_a: quest.opt_a,
-                    opt_b: quest.opt_b,
-                    opt_c: quest.opt_c,
-                    opt_d: quest.opt_d,
-                    opt_e: quest.opt_e
-                });
-            });
+        GQTest.find({ id: test_id }).populate('questions').exec(function(err, test) {
+            if (err) return res.json(200, { status: 'error', msg: "Couldn't load test questions at this time" });
             return res.json(200, {
                 status: 'success',
-                questions: questions,
-                test_id: gqtest[0].id,
-                duration: gqtest[0].duration
-            });
-        });
-    },
-
-    saveTestState: function(req, res) {
-        var q = req.param;
-        var data = {
-            candidate: req.session.userId,
-            test: q('test_id'),
-            time_elapsed: q('current_time'),
-            answered_questions: q('answered_questions') ? JSON.stringify(q('answered_questions')) : '',
-            proctor_data: JSON.stringify(q('proctor_data')),
-            proctor_session: q('proctor_session')
-        };
-        console.log(data)
-        TestState.find({ candidate: req.session.userId, test: q('test_id') }).exec(function(err, test) {
-            if (err) {
-                console.error(err);
-            }
-            if (test.length > 0) {
-                TestState.update({ id: test[0].id }, data).exec(function() {});
-            } else {
-                TestState.create(data).exec(function() {});
-            }
-        });
-        return res.ok();
-    },
-
-    findSavedTest: function(req, res) {
-        let sql = "SELECT answered_questions, time_elapsed, proctor_data, proctor_session FROM teststate WHERE candidate = ? AND test = ?";
-        TestState.query(sql, [ req.session.userId, req.param('test_id') ], function(err, old_test) {    
-            if (err) {
-                return res.json(400, { status: 'error', message: err });
-            }
-            GQTest.find({ id: req.param('test_id') }).populate('questions').exec(function(err, gqtest) {
-                if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
-                let questions = [];
-    
-                // exclude answer from questions
-                gqtest[0].questions.forEach(function(quest) {
-                    questions.push({
-                        id: quest.id,
-                        question: quest.question,
-                        image_file: quest.image_file,
-                        opt_a: quest.opt_a,
-                        opt_b: quest.opt_b,
-                        opt_c: quest.opt_c,
-                        opt_d: quest.opt_d,
-                        opt_e: quest.opt_e
-                    });
-                });
-
-                let prev_attempt = ''; 
-                if (old_test.length > 0) {
-                    prev_attempt = {
-                        answered_questions: old_test[0].answered_questions,
-                        time_elapsed: old_test[0].time_elapsed,
-                        proctor_data: JSON.parse(old_test[0].proctor_data),
-                        proctor_session: old_test[0].proctor_session
-                    };
-                }
-                return res.json(200, { status: 'success', questions: questions, data: prev_attempt });
+                questions: test[0].questions,
+                test_id: test[0].id,
+                duration: test[0].duration
             });
         });
     },
@@ -272,36 +195,36 @@ module.exports = {
 
         var score = 0;
 
-        GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
-            if (err) {
-                console.error(err);
-                return;
-            }
-
-            userAnswers.forEach(function(userAnswer) {
-                var question = _.find(questions, function(q) {
-                    return q.id == userAnswer.quest_id;
-                });
-
-                if (!question) {
-                    // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
-                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+            GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
+                if (err) {
+                    console.error(err);
                     return;
                 }
 
-                if (question.answer === userAnswer.ans) {
-                    score++;
-                }
-            });
+                userAnswers.forEach(function(userAnswer) {
+                    var question = _.find(questions, function(q) {
+                        return q.id == userAnswer.quest_id;
+                    });
 
-            // fall back for user who don't refresh their JS during this release
-            if (_.isEmpty(invigilationTracking)) {
-                invigilationTracking = {
-                    noFace: -1,
-                    noise: -1,
-                    multipleFaces: -1
-                };
-            }
+                    if (!question) {
+                        // TODO: when starting a subsequent test, it submits the most recent answered question if last question wasn't skipped
+                        console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+                        return;
+                    }
+
+                    if (question.answer === userAnswer.ans) {
+                        score++;
+                    }
+                });
+
+                // fall back for user who don't refresh their JS during this release
+                if (_.isEmpty(invigilationTracking)) {
+                    invigilationTracking = {
+                        noFace: -1,
+                        noise: -1,
+                        multipleFaces: -1
+                    };
+                }
 
             // update integrity score and invigilationTracking data
             ProctorSession.update({ id: req.session.proctor },
@@ -321,6 +244,8 @@ module.exports = {
                 // update application
                 if (req.session.application_id) {
                     Application.update({ id: req.session.application_id }, { status: 'Under Review' }).exec(function(err, app) {
+                        console.log(err)
+                        console.log(app)
                         req.session.application_id = null;
                     });
                 }
@@ -470,19 +395,21 @@ module.exports = {
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
                     var state = resp === true ? 'Done' : 'On';
-                    if (test_id == 1) GeneralReportService.updateField('test_in_progress');
-                    if (test_id == 3) {
+                    if (test_id === 3) {
                         // update candidate's resume
                         Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                             if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                                 Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                             }
                         });
-                        GeneralReportService.updateField('test');
-                        GeneralReportService.updateField('test_in_progress', 'minus');
+    
+                        // CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+                        //     return res.json(200, { status: 'success', result: result, state: state });
+                        // }).catch(function(err) {
+                        //     console.log(err);
+                        //     return res.serverError(err);
+                        // });
                     }
-                    // clean up any save test data
-                    TestState.destroy({ candidate: req.session.userId, test: test_id }).exec(function() {});
                     return res.json(200, { status: 'success', state: state });
                 }).catch(function(err) {
                     console.log(err);
@@ -658,8 +585,8 @@ module.exports = {
             case 'job_applicants':
                 if (req.param('job_id') && !isNaN(job_id)) {
                     if (search && search.length > 2) {
-                        let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? AND job = ?";
-                        Application.query(sql, [ job_id, search + '%', search + '%', job_id ], function(err, result) {
+                        let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? ";
+                        Application.query(sql, [ job_id, search + '%', search + '%' ], function(err, result) {
                             if (err) {
                                 console.log(err);
                             }

@@ -141,6 +141,10 @@ module.exports.routes = {
 
     'POST /gqtest/uploadProctorPicture': 'GQTestController.uploadProctorPicture',
 
+    'POST /gqtest/saveTestState': 'GQTestController.saveTestState',
+
+    'GET /gqtest/findSavedTest': 'GQTestController.findSavedTest',
+
     'POST /gqtest/createProctorSession': 'ProctorRecordController.startSession',
 
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',
@@ -324,6 +328,8 @@ module.exports.routes = {
     'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
 
     'POST /api/v1/job/fetchapplicants': 'JobController.fetchJobApplicants',
+
+    'POST /api/v1/applicants/fetch': 'CandidateReportController.fetchAllCandidates',
 
 
     'POST /api/v1/proctor/getsessionid': { 

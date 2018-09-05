@@ -102,8 +102,10 @@ module.exports.policies = {
     },
 
     CompanyController: {
+        'dashboard': 'isAdminOrCompany',
         'viewCompanyJobs': 'isAdmin',
-        'viewCompanies': 'isAdmin'
+        'viewCompanies': 'isAdmin',
+        'addUser': 'isAdminOrCompany'
     },
 
     CompanyRequestController: {

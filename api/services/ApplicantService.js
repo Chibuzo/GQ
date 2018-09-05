@@ -176,42 +176,30 @@ module.exports = {
 	},
 
     getApplicantStatistics: function() {
-
-        return Promise.all([
-                User.count({user_type: 'Applicant'}),
-                User.count({user_type: 'Applicant', status: 'Active'}),
-                User.count({user_type: 'Applicant', status: 'Inactive'}),
-                Resume.count({profile_status: true}),
-                Resume.count({profile_status: false}),
-                Resume.count({photo_status: true}),
-                Resume.count({photo_status: false}),
-                Resume.count({video_status: true}),
-                Resume.count({video_status: false, test_status: true}),
-                fetchNoTestsApplicants(),
-                fetchSomeTestsApplicants(),
-                fetchCompleteTestsApplicants(),
-                fetchJobApplicants(),
-                fetchNoJobApplicants()
-            ]).then(results => {
-                return {
-                    applicants: results[0],
-                    active: results[1],
-                    inactive: results[2],
-                    complete: results[3],
-                    incomplete: results[4],
-                    photos: results[5],
-                    nophotos: results[6],
-                    videos: results[7],
-                    novideos: results[8],
-                    notests: results[9].length,
-                    sometests: results[10].length,
-                    tests: results[11].length,
-                    jobs: results[12].length,
-                    nojobs: results[13].length
+        return new Promise(function(resolve, reject) {
+            UserStatistics.find().exec(function(err, stat) {
+                if (err) {
+                    return reject(err);
                 }
-            }).catch(err => {
-                throw err;
+                const st = stat[0];
+                return resolve({
+                    applicants: st.all_applicants,
+                    active: st.active_applicants,
+                    inactive: st.all_applicants - st.active_applicants,
+                    complete: st.complete_resume,
+                    incomplete: st.active_applicants - st.complete_resume,
+                    photos: st.photos,
+                    nophotos: st.active_applicants - st.photos,
+                    videos: st.videos,
+                    novideos: st.test - st.videos,
+                    notests: st.photos - st.test,
+                    sometests: st.test_in_progress,
+                    tests: st.test,
+                    //jobs: results[12].length,
+                    //nojobs: results[13].length
+                });
             });
+        });
     },
 
     fetchAll: function() {
