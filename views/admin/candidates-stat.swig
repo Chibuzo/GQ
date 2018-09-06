@@ -76,38 +76,38 @@
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Applicants </p>
 					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill" id="all" data-title="All candidates" data-desc="All candidates both active and inactive">All: {{ statistics.applicants }}</a>
-					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill" id="active" data-title="All active candidates" data-desc="All candidates that have confirmed their email address">Active: {{ statistics.active }}</a>
-					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill" id="inactive" data-title="All inactive candidates" data-desc="Candidates yet to confirm their email address">Inactive: {{ statistics.inactive }}</a>
+					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill" id="active" data-title="All active candidates" data-desc="All candidates that have confirmed their email address">Active: {{ statistics.active | formatCurrency }}</a>
+					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill" id="inactive" data-title="All inactive candidates" data-desc="Candidates yet to confirm their email address">Inactive: {{ statistics.inactive | formatCurrency }}</a>
 				</div>
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Resumes </p>
-					<a href="#/admin/candidates/complete" class="btn btnlg btn-info btn-fill" id="complete" data-title="Candidates with complete resume" data-desc="All candidates that have completed the resume part of their profile">Complete: {{ statistics.complete }}</a>
-					<a href="#/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill" id="incomplete" data-title="Candidate with incomplete resume" data-desc="Candidates yet to fill their resume form">Incomplete: {{ statistics.incomplete }}</a>
+					<a href="#/admin/candidates/complete" class="btn btnlg btn-info btn-fill" id="complete" data-title="Candidates with complete resume" data-desc="All candidates that have completed the resume part of their profile">Complete: {{ statistics.complete | formatCurrency }}</a>
+					<a href="#/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill" id="incomplete" data-title="Candidate with incomplete resume" data-desc="Candidates yet to fill their resume form">Incomplete: {{ statistics.incomplete | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Photos </p>
-					<a href="#/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill" id="no-photo" data-title="Candidates with no photo" data-desc="All candidates without profile photo">No Photo: {{ statistics.nophotos }}</a>
-					<a href="#/admin/candidates/photos" class="btn btnlg btn-info btn-fill" id="photo" data-title="Candidates with profile photos" data-desc="All candidates with profile photo">Photo: {{ statistics.photos }}</a>
+					<a href="#/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill" id="no-photo" data-title="Candidates with no photo" data-desc="All candidates without profile photo">No Photo: {{ statistics.nophotos | formatCurrency }}</a>
+					<a href="#/admin/candidates/photos" class="btn btnlg btn-info btn-fill" id="photo" data-title="Candidates with profile photos" data-desc="All candidates with profile photo">Photo: {{ statistics.photos | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Test </p>
-					<a href="#/admin/candidates/notests" class="btn btnlg btn-info btn-fill" id="no-test" data-title="All Candidates with no test" data-desc="All candidates yet to take the General Aptitude test">No Tests: {{ statistics.notests }}</a>
-					<a href="#/admin/candidates/sometests" class="btn btnlg btn-info btn-fill" id="in-progess" data-title="Candidates with test in progress" data-desc="Unserious candidates that have started but will not complete their General Aptitude test">In Progress: {{ statistics.sometests }}</a>
-					<a href="#/admin/candidates/tests" class="btn btnlg btn-info btn-fill" id="test-completed" data-title="Candidates with complete test" data-desc="Candidates that have completed the 3 sections of the General Aptitude Test">Completed: {{ statistics.tests }}</a>
+					<a href="#/admin/candidates/notests" class="btn btnlg btn-info btn-fill" id="no-test" data-title="All Candidates with no test" data-desc="All candidates yet to take the General Aptitude test">No Tests: {{ statistics.notests | formatCurrency }}</a>
+					<a href="#/admin/candidates/sometests" class="btn btnlg btn-info btn-fill" id="in-progess" data-title="Candidates with test in progress" data-desc="Unserious candidates that have started but will not complete their General Aptitude test">In Progress: {{ statistics.sometests | formatCurrency }}</a>
+					<a href="#/admin/candidates/tests" class="btn btnlg btn-info btn-fill" id="test-completed" data-title="Candidates with complete test" data-desc="Candidates that have completed the 3 sections of the General Aptitude Test">Completed: {{ statistics.tests | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Videos </p>
-					<a href="" class="btn btnlg btn-info btn-fill" id="no-video" data-title="Candidates with no video" data-desc="All Candidates without profile video">No Videos: {{ statistics.novideos }}</a>
-					<a href="#/admin/candidates/videos" class="btn btnlg btn-info btn-fill" id="video" data-title="Candidates with video" data-desc="All candidates with a profile video">Videos: {{ statistics.videos }}</a>
+					<a href="" class="btn btnlg btn-info btn-fill" id="no-video" data-title="Candidates with no video" data-desc="All Candidates without profile video">No Videos: {{ statistics.novideos | formatCurrency }}</a>
+					<a href="#/admin/candidates/videos" class="btn btnlg btn-info btn-fill" id="video" data-title="Candidates with video" data-desc="All candidates with a profile video">Videos: {{ statistics.videos | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Job Applications </p>
-					<a href="#/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill" id="" disabled>No Applications: {{ statistics.nojobs }}</a>
-					<a href="#/admin/candidates/jobs" class="btn btnlg btn-info btn-fill" id="" disabled>With Applications: {{ statistics.jobs }}</a>
+					<a href="#/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill" id="" disabled>No Applications: {{ statistics.nojobs | formatCurrency }}</a>
+					<a href="#/admin/candidates/jobs" class="btn btnlg btn-info btn-fill" id="" disabled>With Applications: {{ statistics.jobs | formatCurrency }}</a>
 				</div>
 		</div>
 	</div>

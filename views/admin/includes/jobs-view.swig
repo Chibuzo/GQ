@@ -49,11 +49,11 @@
 					<td>{{ job.company_name }}</td>
 				{% endif %}
 				<td>{{ job.job_level }}</td>
-				<td>{{ job.view_count }}</td>
+				<td>{{ job.view_count | formatCurrency }}</td>
 				{% if isAdmin == true %}
-					<td><a href="/admin/job/{{ job.id }}/view-applicants">{{ applications }}</a></td>
+					<td><a href="/admin/job/{{ job.id }}/view-applicants">{{ applications | formatCurrency }}</a></td>
 				{% else %}
-					<td><a href="/job/view-applicants/{{ job.id }}">{{ applications }}</a></td>
+					<td><a href="/job/view-applicants/{{ job.id }}">{{ applications | formatCurrency }}</a></td>
 				{% endif %}
 				{% if job.shortlisted == false %}
 					<td> - </td>
