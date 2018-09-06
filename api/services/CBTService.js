@@ -84,6 +84,9 @@ module.exports = {
                 });
             } else if (jobtest.test_source == 'expertrating') {
                 TestResult.find({ test_id: jobtest.test.test_id, applicant: candidates }).populate('applicant').exec(function(err, results) {
+                    if (err) {
+                        return reject(err);
+                    }
                     if (results.length > 0) {
                         module.exports.processJobResult(results).then(function(_results) {
                             resolve(_results);

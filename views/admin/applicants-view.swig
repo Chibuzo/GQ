@@ -255,7 +255,7 @@
 {% endblock %}
 
 {% block scriptTag %}
-<script src="/js/proctorBackend.js?v=2"></script>
+<script src="/js/proctorBackend.js?v=3"></script>
 <script src="/js/plugins/datatables.min.js"></script>
 
 
