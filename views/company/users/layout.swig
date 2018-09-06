@@ -61,16 +61,9 @@
 
             <ul class="nav">
                 <li clas="active">
-                    <a href="#/applicant/dashboard">
+                    <a href="/company/dashboard">
                         <i class="pe-7s-graph"></i>
                         <p>Dashboard</p>
-                    </a>
-                </li>
-
-                <li class="">
-                    <a href="/job/manage">
-                        <i class="pe-7s-timer"></i>
-                        <p>Job Board</p>
                     </a>
                 </li>
 

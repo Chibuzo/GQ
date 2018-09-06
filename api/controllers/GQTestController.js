@@ -470,20 +470,16 @@ module.exports = {
             CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
                 CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
                     var state = resp === true ? 'Done' : 'On';
-                    if (test_id === 3) {
+                    if (test_id == 1) GeneralReportService.updateField('test_in_progress');
+                    if (test_id == 3) {
                         // update candidate's resume
                         Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
                             if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                                 Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                             }
                         });
-    
-                        // CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                        //     return res.json(200, { status: 'success', result: result, state: state });
-                        // }).catch(function(err) {
-                        //     console.log(err);
-                        //     return res.serverError(err);
-                        // });
+                        GeneralReportService.updateField('test');
+                        GeneralReportService.updateField('test_in_progress', 'minus');
                     }
                     // clean up any save test data
                     TestState.destroy({ candidate: req.session.userId, test: test_id }).exec(function() {});
@@ -662,8 +658,8 @@ module.exports = {
             case 'job_applicants':
                 if (req.param('job_id') && !isNaN(job_id)) {
                     if (search && search.length > 2) {
-                        let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? ";
-                        Application.query(sql, [ job_id, search + '%', search + '%' ], function(err, result) {
+                        let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? AND job = ?";
+                        Application.query(sql, [ job_id, search + '%', search + '%', job_id ], function(err, result) {
                             if (err) {
                                 console.log(err);
                             }

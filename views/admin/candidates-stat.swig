@@ -72,42 +72,42 @@
 <div class="row">
 	<div class="controls col-xs-12" style="overflow: auto; margin-bottom: 20px;">
 
-		<div class="row">
+		<div class="row" id="filter-div">
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Applicants </p>
-					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill">All : {{ statistics.applicants }}</a>
-					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill">Active: {{ statistics.active }}</a>
-					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill">Inactive: {{ statistics.inactive }}</a>
+					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill" id="all" data-title="All candidates" data-desc="All candidates both active and inactive">All: {{ statistics.applicants }}</a>
+					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill" id="active" data-title="All active candidates" data-desc="All candidates that have confirmed their email address">Active: {{ statistics.active | formatCurrency }}</a>
+					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill" id="inactive" data-title="All inactive candidates" data-desc="Candidates yet to confirm their email address">Inactive: {{ statistics.inactive | formatCurrency }}</a>
 				</div>
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Resumes </p>
-					<a href="#/admin/candidates/complete" class="btn btnlg btn-info btn-fill">Complete: {{ statistics.complete }}</a>
-					<a href="#/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill">Incomplete: {{ statistics.incomplete }}</a>
+					<a href="#/admin/candidates/complete" class="btn btnlg btn-info btn-fill" id="complete" data-title="Candidates with complete resume" data-desc="All candidates that have completed the resume part of their profile">Complete: {{ statistics.complete | formatCurrency }}</a>
+					<a href="#/admin/candidates/incomplete" class="btn btnlg btn-info btn-fill" id="incomplete" data-title="Candidate with incomplete resume" data-desc="Candidates yet to fill their resume form">Incomplete: {{ statistics.incomplete | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Photos </p>
-					<a href="#/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill">No Photo: {{ statistics.nophotos }}</a>
-					<a href="#/admin/candidates/photos" class="btn btnlg btn-info btn-fill">Photo: {{ statistics.photos }}</a>
-				</div>
-
-				<div class="col-md-2 col-xs-3 funnel-item">
-					<p> Videos </p>
-					<a href="#/admin/candidates/novideos" class="btn btnlg btn-info btn-fill">No Videos: {{ statistics.novideos }}</a>
-					<a href="#/admin/candidates/videos" class="btn btnlg btn-info btn-fill">Videos: {{ statistics.videos }}</a>
+					<a href="#/admin/candidates/nophotos" class="btn btnlg btn-info btn-fill" id="no-photo" data-title="Candidates with no photo" data-desc="All candidates without profile photo">No Photo: {{ statistics.nophotos | formatCurrency }}</a>
+					<a href="#/admin/candidates/photos" class="btn btnlg btn-info btn-fill" id="photo" data-title="Candidates with profile photos" data-desc="All candidates with profile photo">Photo: {{ statistics.photos | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Test </p>
-					<a href="#/admin/candidates/notests" class="btn btnlg btn-info btn-fill">No Tests: {{ statistics.notests }}</a>
-					<a href="#/admin/candidates/sometests" class="btn btnlg btn-info btn-fill">In Progress: {{ statistics.sometests }}</a>
-					<a href="#/admin/candidates/tests" class="btn btnlg btn-info btn-fill">Completed: {{ statistics.tests }}</a>
+					<a href="#/admin/candidates/notests" class="btn btnlg btn-info btn-fill" id="no-test" data-title="All Candidates with no test" data-desc="All candidates yet to take the General Aptitude test">No Tests: {{ statistics.notests | formatCurrency }}</a>
+					<a href="#/admin/candidates/sometests" class="btn btnlg btn-info btn-fill" id="in-progess" data-title="Candidates with test in progress" data-desc="Unserious candidates that have started but will not complete their General Aptitude test">In Progress: {{ statistics.sometests | formatCurrency }}</a>
+					<a href="#/admin/candidates/tests" class="btn btnlg btn-info btn-fill" id="test-completed" data-title="Candidates with complete test" data-desc="Candidates that have completed the 3 sections of the General Aptitude Test">Completed: {{ statistics.tests | formatCurrency }}</a>
+				</div>
+
+				<div class="col-md-2 col-xs-3 funnel-item">
+					<p> Videos </p>
+					<a href="" class="btn btnlg btn-info btn-fill" id="no-video" data-title="Candidates with no video" data-desc="All Candidates without profile video">No Videos: {{ statistics.novideos | formatCurrency }}</a>
+					<a href="#/admin/candidates/videos" class="btn btnlg btn-info btn-fill" id="video" data-title="Candidates with video" data-desc="All candidates with a profile video">Videos: {{ statistics.videos | formatCurrency }}</a>
 				</div>
 
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Job Applications </p>
-					<a href="#/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill">No Applications: {{ statistics.nojobs }}</a>
-					<a href="#/admin/candidates/jobs" class="btn btnlg btn-info btn-fill">With Applications: {{ statistics.jobs }}</a>
+					<a href="#/admin/candidates/nojobs" class="btn btnlg btn-info btn-fill" id="" disabled>No Applications: {{ statistics.nojobs | formatCurrency }}</a>
+					<a href="#/admin/candidates/jobs" class="btn btnlg btn-info btn-fill" id="" disabled>With Applications: {{ statistics.jobs | formatCurrency }}</a>
 				</div>
 		</div>
 	</div>
@@ -129,7 +129,7 @@
 		{% set search_pg = 'stat' %}
 		{% include 'includes/candidate-search-form.swig' %}
 		<div class="content table-responsive table-full-width">
-			<table class="table table-striped dataTable">
+			<table class="table table-striped applicantsDataTable">
 				<thead>
 					<tr>
 						<td class="">
@@ -145,52 +145,13 @@
 						</td>
 					</tr>
 					<tr>
-						<th style="width:10px"><label class=" group-check" rel"tooltip" title="Note that this will check/uncheck for all the records on the pages"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
-						<th><i class="fa fa-calendar"></i> Date</th>
+						<th style="width:10px"><label class="all-group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+						<!--<th><i class="fa fa-calendar"></i> Date</th>-->
 						<th>Name</th>
 						<th>Email</th>
-						<th>Phone</th>
-						<th class="text-center">Action</th>
+						<th>Status</th>
 					</tr>
 				</thead>
-				<tbody id="tb-users">
-					{% for user in users %}
-					{% if resume == true %}
-						{% set user_id = user.user %}
-						{% set user.status = 'Active' %}
-						<tr id="{{ user.user }}">
-					{% else %}
-						{% set user_id = user.id %}
-						<tr id="{{ user.id }}">
-					{% endif %}
-							<td style="width: 10px"><label class=""><input type="checkbox" class="form-control user-checkbox" datatoggle="checkbox" /></label></td>
-							<td data-order="{{ user.createdAt | date('Y/m/d') }}">{{ user.createdAt | date('d.m.Y') }}</td>
-							{% if resume == true %}
-								<td class="name">
-									<a href='/applicant/resume-user/{{user.user}}' target="_blank">{{ user.fullname }} </a>
-								</td>
-							{% else %}
-								<td class="name">{{ user.fullname }}</td>
-							{% endif %}
-							<td class="email">{{ user.email }}</td>
-							<td>{{ user.phone }}</td>
-							<td class="text-center">
-								<div class="btn-group">
-									<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-										Menu &nbsp;<span class="caret"></span>
-									</button>
-									<ul class="dropdown-menu dropdown-menu-right">
-										{% set state = '' %}
-										{% if user.status !== 'Active' %}
-											{% set state = 'disabled' %}
-										{% endif %}
-										<li><a href="/editprofile/{{ user_id }}" target="_blank" class="{{ state }}"><i class="fa fa-wrench"></i> Edit Profile</a></li>
-									</ul>
-								</div>
-							</td>
-						</tr>
-					{% endfor %}
-				</tbody>
 			</table>
 		</div>
 	</div>
@@ -206,33 +167,36 @@
 {% block scriptTag %}
 <script src="/js/plugins/datatables.min.js"></script>
 <script>
+let dTable;
 $(document).ready(function() {
 	$('.candidate-filter').addClass('active');
 
+	// load data
+	fetchData('all');
+	$(".applicantsDataTable").css('width', '100%');
 
-	var dTable = $('.dataTable').DataTable({
-		pageLength: 50,
-		responsive: true,
-		"aoColumnDefs": [
-			{ 'bSortable': false, 'aTargets': [ 0, 3, 4, 5 ] }
-		],
-		"columnDefs": [
-			{ "width": "590px", "targets": 0 }
-		]
+	$("#filter-div .btn").click(function(e) {
+		e.preventDefault();
+		var query = $(this).attr('id');
+		dTable.destroy();
+		fetchData(query);
+		$(".applicantsDataTable").css('width', '100%');
+		$(".title").text($(this).data('title'));
+		$(".category").text($(this).data('desc'));
 	});
 
 
-	$(".group-check").click(function() {
+	$(".all-group-check").click(function() {
 		if ($(this).find('input[type=checkbox]').is(':checked')) {
-			dTable.$(".user-checkbox").prop('checked', true);
+			$(".user-checkbox").prop('checked', true);
 		} else {
-			dTable.$(".user-checkbox").prop('checked', false);
+			$(".user-checkbox").prop('checked', false);
 		}
 		controlActionBtn();
-	});
+    });
+    
 
-
-	$("#tb-users").on('click', ".user-checkbox", function() {
+    $(".applicantsDataTable").on('click', ".user-checkbox", function() {
 		controlActionBtn();
 	});
 
@@ -242,7 +206,7 @@ $(document).ready(function() {
 
 		$(this).find('button[type-submit]').html("<i class=fa fa-cog fa-spin></i> Sending...").prop('disabled', true);
 		var users = [];
-		dTable.$(".user-checkbox:checked").each(function() {
+		$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').find('td.email').text());
 		});
 
@@ -254,17 +218,22 @@ $(document).ready(function() {
 		$.post('/admin/sendemail', $(this).serialize() + '&users=' + users, function(d) {
 			if (d.status.trim() == 'success') {
 				$(".alert-success").removeClass('hidden');
-				$(this).find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
+				$('#form-email').find('button[type-submit]').html("<i class=fa fa-envelope></i> Send Email").prop('disabled', false);
 			}
 		}, 'JSON');
 	});
 
+	$("#emailModal").on("hidden.bs.modal", function () {
+        $("#form-email").find(".alert-success").addClass('hidden');
+    });
 
-	$(".delete-candidates").click(function(e) {
+
+	$(".applicantsDataTable").on("click", ".delete-candidates", function(e) {
 		e.preventDefault();
+		var $this = $(this);
 
 		var users = [];
-		dTable.$(".user-checkbox:checked").each(function() {
+		$(".user-checkbox:checked").each(function() {
 			users.push($(this).parents('tr').attr('id'));
 		});
 
@@ -280,7 +249,9 @@ $(document).ready(function() {
 					alert('Error Attempting to delete user(s): ' + textStatus + ', ' + errorThrown);
 				},
 				success: function() {
-					location.reload(true);
+					user.forEach(function(id) {
+						$(".table").find('tr#' + id).fadeOut();
+					});
 				}
 			});
 		}
@@ -314,5 +285,61 @@ function controlActionBtn() {
 		$(".action-btn").prop("disabled", true);
 	}
 }
+
+
+function fetchData(query) {
+	dTable = $('.applicantsDataTable').DataTable({
+		pageLength: 50,
+		responsive: true,
+        processing: true,
+        language: {
+            processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
+        },
+        serverSide: true,
+        ajax: {
+            "url": '/api/v1/applicants/fetch',
+            "type": 'POST',
+            "draw": 1,
+            "length": 50,
+            "data": function(d) {
+                d.query = query;
+            },
+            "dataSrc": function(_data) {
+                let data = _data.data;
+                let processed_data = [];
+                for (var i = 0, len = data.length; i < len; i++) {
+                    if (!data[i].applicant) continue;
+                    let d = {};
+                    d.id = data[i].applicant.id;
+                    d.checkbox = '<label class=""><input type="checkbox" class="form-control user-checkbox" /></label>';
+                    d.fullname = data[i].applicant.status !== 'Inactive' ? `<a target="_blank" href="/applicant/resume-user/${data[i].applicant.id}" class="view-resume" rel="tooltip" title="View Resume">${data[i].applicant.fullname}</a>` : data[i].applicant.fullname;
+                    d.email = data[i].applicant.email;
+                    d.status = data[i].applicant.status;
+                    processed_data.push(d);
+                }
+                return processed_data;
+            }
+        },
+         "columns": [
+            { "data": "checkbox" }, 
+            { "data": "fullname", "searchable": true },
+            { "data": "email", "searchable": true },
+            { "data": "status" }
+        ],
+        'createdRow': function( row, data, dataIndex ) {
+      		$(row).attr('id',  data.id);
+  		},
+        'columnDefs': [
+     		{
+        		'targets': 2,
+        		'createdCell':  function (td, cellData, rowData, row, col) {
+           			$(td).attr('class', 'email'); 
+        		}
+     		},
+        ]
+            
+	});
+}
 </script>
+
 {% endblock %}

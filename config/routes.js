@@ -309,7 +309,9 @@ module.exports.routes = {
 
     'GET /testapi': 'BatchController.testApi',
 
-    'GET /jobreport/:job_id': 'BatchController.report',
+    'GET /jobreport/qualified/:job_id': 'BatchController.qualifiedReport',
+
+    'GET /jobreport/shortlisted/:job_id': 'BatchController.shortlistedReport',
 
     'GET /getstates': 'BatchController.getStates',
 
@@ -328,6 +330,8 @@ module.exports.routes = {
     'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
 
     'POST /api/v1/job/fetchapplicants': 'JobController.fetchJobApplicants',
+
+    'POST /api/v1/applicants/fetch': 'CandidateReportController.fetchAllCandidates',
 
 
     'POST /api/v1/proctor/getsessionid': { 

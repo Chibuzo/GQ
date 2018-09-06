@@ -7,7 +7,7 @@
 
 module.exports = {
 
-  connection: 'MysqlServer',
+  //connection: 'MysqlServer',
   tableName: 'teststate',
     attributes: {
         id: {
