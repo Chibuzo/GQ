@@ -309,7 +309,9 @@ module.exports.routes = {
 
     'GET /testapi': 'BatchController.testApi',
 
-    'GET /jobreport/:job_id': 'BatchController.report',
+    'GET /jobreport/qualified/:job_id': 'BatchController.qualifiedReport',
+
+    'GET /jobreport/shortlisted/:job_id': 'BatchController.shortlistedReport',
 
     'GET /getstates': 'BatchController.getStates',
 

@@ -105,7 +105,7 @@ module.exports = {
     fetchResume: function(query, stat, start, rows) {
         let criteria = { where: { profile_status: query }, limit: rows, skip: start };
         return new Promise(function(resolve, reject) {
-            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'id' ] }).exec(function(err, resume) {
+            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'user' ] }).sort('createdAt desc').exec(function(err, resume) {
                 if (err) return reject(err);
 
                 let candidates = [];
@@ -122,7 +122,7 @@ module.exports = {
     fetchPhoto: function(query, stat, start, rows) {
         let criteria = { where: query, limit: rows, skip: start };
         return new Promise(function(resolve, reject) {
-            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'id' ] }).exec(function(err, resume) {
+            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'user' ] }).sort('createdAt desc').exec(function(err, resume) {
                 if (err) return reject(err);
 
                 let candidates = [];
@@ -139,7 +139,7 @@ module.exports = {
     fetchTest: function(query, stat, start, rows) {
         let criteria = { where: query, limit: rows, skip: start };
         return new Promise(function(resolve, reject) {
-            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'id' ] }).exec(function(err, resume) {
+            Resume.find(criteria, { select: [ 'fullname', 'email', 'status', 'user' ] }).sort('createdAt desc').exec(function(err, resume) {
                 if (err) return reject(err);
 
                 let candidates = [];
