@@ -116,7 +116,7 @@ module.exports = {
         });
     },
 
-    report: function(req, res) {
+    qualifiedReport: function(req, res) {
         const job_id = req.param('job_id');
         const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, phone, dob, programme, r_class, available_date FROM application ap 
                     JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
@@ -220,7 +220,7 @@ module.exports = {
                 sheet.getColumn(10).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(11).alignment = { vertical: 'middle', horizontal: 'center' };
 
-                var file_name = sails.config.appPath + '/assets/csv-files/wema_report.xlsx';
+                var file_name = sails.config.appPath + '/assets/csv-files/GQ_assessment_report.xlsx';
                 workbook.xlsx.writeFile(file_name).then(function() {
                     return console.log(true);
                 }).catch(function(err) {
@@ -232,6 +232,81 @@ module.exports = {
     },
 
 
+    shortlistedReport: function(req, res) {
+        const job_id = req.param('job_id');
+        const sql = `SELECT score, fullname, r.email, phone, dob, gender, programme, r_class FROM selectedcandidate sc 
+                        JOIN gqaptitudetestresult gq ON sc.candidate = gq.user 
+                        JOIN resume r ON r.user = gq.user 
+                        JOIN education e ON e.resume = r.id
+                        WHERE job_id = ? ORDER BY score DESC`;
+
+        SelectedCandidate.query(sql, [ job_id ], function(err, results) {
+            if (err) {
+                return console.log(err);
+            }
+
+            const Excel = require('exceljs');
+            const workbook = new Excel.Workbook();
+
+            workbook.creator = 'getqualified.work';
+            workbook.created = new Date();
+
+            let sheet = workbook.addWorksheet('My Sheet');
+            sheet.columns = [
+                { header: 'S/No', key: 's_no', width: 5 },
+                { header: 'Fullname', key: 'fullname', width: 28 },
+                { header: 'Gender', key: 'gender', width: 13 },
+                { header: 'Age', key: 'age', width: 8 },
+                { header: 'Qualification', key: 'qualification', width: 40 },
+                { header: 'Class of Degree', key: 'degree_class', width: 17 },
+                { header: 'Aptitude Test', key: 'aptitude_test', width: 15 },
+                { header: 'Contact Phone', key: 'phone', width: 18 },
+                { header: 'Email Address', key: 'email', width: 30 }
+            ];
+
+            let row1 = sheet.getRow(1);
+            row1.height = 30;
+            row1.font = { name: 'Arial', size: 11, bold: true };
+            row1.alignment = { vertical: 'middle' };
+
+            let candidates = [];
+            let n = 0;
+            results.forEach(function(user) {
+                let r_class = [
+                    { name: "1", id: 1 }, { name: "2.1", id: 2 }, { name: "2.2", id: 3 }, { name: "3", id: 4 }
+                ];
+
+                let rclass = '-';
+                if (user.r_class)
+                    rclass = r_class.find(r_clas => r_clas.id == user.r_class).name;
+
+                n++;
+                sheet.addRow({
+                    s_no: n,
+                    fullname: user.fullname,
+                    gender: user.gender,
+                    age: getAge(user.dob),
+                    qualification: user.programme,
+                    degree_class: rclass,
+                    aptitude_test: ((user.score / 60) * 100).toFixed(1),
+                    phone: user.phone,
+                    email: user.email
+                }).commit();
+            });
+            sheet.getColumn(4).alignment = { vertical: 'middle', horizontal: 'left' };
+            sheet.getColumn(7).alignment = { vertical: 'middle', horizontal: 'center' };
+
+            var file_name = sails.config.appPath + '/assets/csv-files/GQ_shortlist.xlsx';
+            workbook.xlsx.writeFile(file_name).then(function() {
+                console.log(true);
+                return res.ok();
+            }).catch(function(err) {
+                return console.log(err);
+            });
+        });
+    },
+
+    
     crudeReport: function(req, res) {
         const job_id = req.param('job_id');
         const sql = `SELECT dob, email, gq.user AS uid FROM application ap 
