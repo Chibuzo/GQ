@@ -7,6 +7,9 @@ module.exports = {
             //    });
             //    description += "</ul>";
             //}
+
+            // validate filter category
+
             var requirements = '<ul>';
             if (job.requirements) {
                 job.requirements.forEach(function (req) {
@@ -34,6 +37,7 @@ module.exports = {
                 job_id: job.jobID,
                 source: 'GJ',
                 require_video: false,
+                subscription: job.filter_category,
                 closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
            

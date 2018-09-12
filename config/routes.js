@@ -90,8 +90,6 @@ module.exports.routes = {
 
     'GET /admin/manage-courses': 'CourseController.getCourses',
 
-    //'GET /admin/applicants': 'ApplicantController.fetchApplicants',
-
     'GET /gqtest/manage': 'GQTestController.manageTest',
 
     'GET /admin/view-companies': 'CompanyController.viewCompanies',
@@ -99,6 +97,8 @@ module.exports.routes = {
     'GET /admin/coy-jobs/:coy_id/:status': 'CompanyController.viewCompanyJobs',
 
     'GET /admin/candidates/:query': 'ApplicantController.fetchStatisticsPage',
+
+    'GET /admin/testResults': 'GQTestController.showAptitudeTestResults',
 
     'POST /admin/sendemail': 'ApplicantController.sendEmail',
 
@@ -125,7 +125,7 @@ module.exports.routes = {
 
     'POST /gqtest/mark/gq': 'GQTestController.markGQ',
 
-    'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
+    //'POST /gqtest/markGQAptitude': 'GQTestController.markGQTest',
 
     'GET /gqtest/viewresults/:test_id': 'GQTestController.viewResults',
 
@@ -310,6 +310,8 @@ module.exports.routes = {
     'GET /testapi': 'BatchController.testApi',
 
     'GET /jobreport/qualified/:job_id': 'BatchController.qualifiedReport',
+
+    'GET /jobreport/bystate/:job_id': 'BatchController.qualifiedByStateReport',
 
     'GET /jobreport/shortlisted/:job_id': 'BatchController.shortlistedReport',
 

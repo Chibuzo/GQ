@@ -31,6 +31,7 @@
     "machinepack-emailaddresses": "^0.4.0",
     "machinepack-http": "^3.1.2",
     "machinepack-passwords": "^2.3.0",
+    "node-zip": "^1.1.1",
     "nodemailer": "^4.6.4",
     "nodemailer-express-handlebars": "^2.0.0",
     "querystring": "^0.2.0",
@@ -42,6 +43,7 @@
     "sails-mysql": "^0.11.5",
     "skipper": "^0.8.4",
     "skipper-better-s3": "^2.3.0",
+    "skipper-disk": "^0.5.12",
     "skipper-s3": "^0.5.11",
     "swig": "^1.4.2"
   },

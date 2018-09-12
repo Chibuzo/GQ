@@ -83,7 +83,6 @@ module.exports = {
     // candidate's profile photo
     uploadPhoto: function(req, res) {
         // var allowedVidTypes = ['image/jpg', 'image/jpeg', 'image/png'];
-        // var hr = process.hrtime();
         req.file('photo').upload({
             adapter: require('skipper-better-s3'),
             key: 'AKIAITZYZILPYGBFJWCA',
@@ -194,14 +193,6 @@ module.exports = {
         });
     },
 
-
-    fetchApplicants: function(req, res) {
-        GQTestService.fetchAllCandidatesAptitudeTestResult().then(function(candidates) {
-            return res.view('admin/candidates', { candidates: candidates });
-        }).catch(function(err) {
-            return res.serverError(err);
-        });
-    },
 
     fetchStatisticsPage: function(req, res) {
         ApplicantService.getApplicantStatistics().then(function(stats) {

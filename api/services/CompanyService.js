@@ -3,7 +3,7 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             CompanyRequest.findOrCreate(data).exec(function(err, coy) {
                 if (err) return reject(err);
-                sendMail.companySignUpRequest(coy);
+                //sendMail.companySignUpRequest(coy);
                 return resolve(true);
             });
         });

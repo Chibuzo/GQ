@@ -158,8 +158,8 @@
                     </a>
                 </li>
 
-                <li class="applicants hidden">
-                    <a href="/admin/applicants">
+                <li class="applicants">
+                    <a href="/admin/testResults">
                         <i class="pe-7s-graph2"></i>
                         <p>Test Results</p>
                     </a>
