@@ -490,6 +490,7 @@ module.exports = {
                         if (err) {
                             return res.serverError(err);
                         }
+
                         CBTService.getJobTestResults(candidates, jobTest).then(function(allCandidates) {
                             let companyName;
                             if ((job.source === null || job.source === 'gq') && job.company) {
@@ -512,7 +513,7 @@ module.exports = {
                                 job_id: job_id
                             });
                         }).catch(err => {
-                            return res.serverError(err);
+                            //return res.serverError(err);
                         });
                     });
 				});

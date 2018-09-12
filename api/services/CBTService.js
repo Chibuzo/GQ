@@ -30,6 +30,7 @@ module.exports = {
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
             if (!jobtest) {
+                console.log('ikpu!')
                 // use only GQ aptitude test
                 // get the average integrity score for the 3 proctor sessions
                 var gq_results = [];
@@ -71,7 +72,8 @@ module.exports = {
                     return resolve(gq_results);
                 });
             } else if (jobtest.test_source == 'gq') {
-                GQTestResult.find({ test: jobtest.gq_test, candidate: candidates }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
+                let applicants = candidates.map(c => c.uid);
+                GQTestResult.find({ test: jobtest.gq_test, candidate: applicants }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
                     if (results.length > 0) {
                         module.exports.processJobResult(results).then(function(_results) {
                             resolve(_results);
@@ -83,7 +85,8 @@ module.exports = {
                     }
                 });
             } else if (jobtest.test_source == 'expertrating') {
-                TestResult.find({ test_id: jobtest.test.test_id, applicant: candidates }).populate('applicant').exec(function(err, results) {
+                let applicants = candidates.map(c => c.uid);
+                TestResult.find({ test_id: jobtest.test.test_id, applicant: applicants }).populate('applicant').exec(function(err, results) {
                     if (err) {
                         return reject(err);
                     }

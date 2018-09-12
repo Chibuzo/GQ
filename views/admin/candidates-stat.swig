@@ -75,7 +75,7 @@
 		<div class="row" id="filter-div">
 				<div class="col-md-2 col-xs-3 funnel-item">
 					<p> Applicants </p>
-					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill" id="all" data-title="All candidates" data-desc="All candidates both active and inactive">All: {{ statistics.applicants }}</a>
+					<a href="#/admin/candidates/all" class="btn btnlg btn-info btn-fill" id="all" data-title="All candidates" data-desc="All candidates both active and inactive">All: {{ statistics.applicants | formatCurrency }}</a>
 					<a href="#/admin/candidates/active" class="btn btnlg btn-info btn-fill" id="active" data-title="All active candidates" data-desc="All candidates that have confirmed their email address">Active: {{ statistics.active | formatCurrency }}</a>
 					<a href="#/admin/candidates/inactive" class="btn btnlg btn-info btn-fill" id="inactive" data-title="All inactive candidates" data-desc="Candidates yet to confirm their email address">Inactive: {{ statistics.inactive | formatCurrency }}</a>
 				</div>
@@ -146,10 +146,11 @@
 					</tr>
 					<tr>
 						<th style="width:10px"><label class="all-group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
-						<!--<th><i class="fa fa-calendar"></i> Date</th>-->
+						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						<th>Email</th>
 						<th>Status</th>
+						<th>Action</th>
 					</tr>
 				</thead>
 			</table>
@@ -309,29 +310,47 @@ function fetchData(query) {
                 let processed_data = [];
                 for (var i = 0, len = data.length; i < len; i++) {
                     if (!data[i].applicant) continue;
+
+					let uid = data[i].applicant.user ? data[i].applicant.user : data[i].applicant.id;	// since we can be fetching from either user/resume table
+					
+					let edit_link_class = 'disabled';
+					let profile_link = data[i].applicant.fullname;
+					if (data[i].applicant.status !== 'Inactive') {
+						edit_link_class = '';
+						profile_link = `<a target="_blank" href="/applicant/resume-user/${uid}" class="view-resume" rel="tooltip" title="View Resume">${data[i].applicant.fullname}</a>`;
+					}
                     let d = {};
                     d.id = data[i].applicant.id;
+					d.date = new Date(data[i].applicant.createdAt).toLocaleDateString();
                     d.checkbox = '<label class=""><input type="checkbox" class="form-control user-checkbox" /></label>';
-                    d.fullname = data[i].applicant.status !== 'Inactive' ? `<a target="_blank" href="/applicant/resume-user/${data[i].applicant.id}" class="view-resume" rel="tooltip" title="View Resume">${data[i].applicant.fullname}</a>` : data[i].applicant.fullname;
+                    d.fullname = profile_link;
                     d.email = data[i].applicant.email;
                     d.status = data[i].applicant.status;
+					d.menu = `<button type="button" class="btn btn-info btn-xs btn-fill dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Menu &nbsp;<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu dropdown-menu-right">
+								<li><a href="/editprofile/${uid}" target="_blank" class="${edit_link_class}"><i class="fa fa-wrench"></i> Edit Profile</a></li>
+							</ul>`;
                     processed_data.push(d);
                 }
                 return processed_data;
             }
         },
          "columns": [
-            { "data": "checkbox" }, 
+            { "data": "checkbox", orderable: false },
+			{ "data": "date" }, 
             { "data": "fullname", "searchable": true },
             { "data": "email", "searchable": true },
-            { "data": "status" }
+            { "data": "status" },
+			{ "data": "menu" }
         ],
         'createdRow': function( row, data, dataIndex ) {
       		$(row).attr('id',  data.id);
   		},
         'columnDefs': [
      		{
-        		'targets': 2,
+        		'targets': 3,
         		'createdCell':  function (td, cellData, rowData, row, col) {
            			$(td).attr('class', 'email'); 
         		}

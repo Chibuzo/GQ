@@ -3,9 +3,9 @@ module.exports = {
     name      : 'gq',
     script    : 'app.js',
     instances: 2,
-    kill_timeout: 300000,
+    //kill_timeout: 300000,
     wait_ready: true,
-    listen_timeout: 300000, // wait for 5 minutes
+    //listen_timeout: 300000, // wait for 5 minutes
     env: {
       NODE_ENV: 'development'
     },
