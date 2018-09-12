@@ -349,6 +349,9 @@ function cleanupTest() {
     // hide the video canvas
     proctorCanvas.remove();
 
+    questions = [];
+    duration = false;
+    RESUMED = false;
     localStorage.clear();
     $(".question-nums").empty();
     $("#current_quest").empty();

@@ -415,7 +415,7 @@ module.exports = {
                         JOIN gqaptitudetestresult gq ON sc.candidate = gq.user 
                         JOIN resume r ON r.user = gq.user 
                         JOIN education e ON e.resume = r.id
-                        WHERE job_id = ? ORDER BY score DESC`;
+                        WHERE job_id = ? GROUP BY email ORDER BY score DESC`;
 
         SelectedCandidate.query(sql, [ job_id ], function(err, results) {
             if (err) {
