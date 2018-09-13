@@ -120,9 +120,24 @@ module.exports = {
         var data = {
             user: name,
         };
-        var subject = "AIRTEL ENTRY LEVEL JOB ALERT!!!!";
+        var subject = "GetQualified - Congratulations!!!";
         var template = 'customAppliedJobNotice';
-        module.exports.sendMail(email, subject, template, data);
+        let mailOptions = {
+            from: '"Get Qualified" <' + SENT_FROM + '>',
+            to: email,
+            replyTo: 'support@getqualified.work',
+            subject: subject,
+            template: template,
+            context: data
+        };
+        // send mail with defined transport object
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                return console.log(error);
+            }
+            //console.log('Message sent: %s', info.messageId);
+        });
+        //module.exports.sendMail(email, subject, template, data);
     },
 
     // sent after company account activation

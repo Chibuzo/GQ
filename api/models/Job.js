@@ -147,6 +147,10 @@ module.exports = {
             defaultsTo: 'false'
         },
 
+        subscription: {
+            type: 'string'
+        },
+
         paid: {
             type: 'boolean',
             defaultsTo: 'false'

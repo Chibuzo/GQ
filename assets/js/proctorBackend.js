@@ -7,7 +7,8 @@ $(".table").on("click", ".fetch-proctor-details", function() {
 
     $.get('/proctor/fetchFiles', { proctor_id: proctor_id, candidate_id: candidate_id }, function(d) {
         if (d.status.trim() == 'success') {
-            $("#profilePhoto").html("<img src='/applicant_profilephoto/" + d.profile_pic + "' />");
+            var profile_pic = d.profile_pic.indexOf('https') === -1 ? `/applicant_profilephoto/${d.profile_pic}` : d.profile_pic;
+            $("#profilePhoto").html("<img src='" + profile_pic + "' />");
             var audios = '', photos = '';
             d.files.forEach(function(file) {
                 var url = file.filename.indexOf('https') === -1 ? `/proctorFiles${file.filename}` : file.filename;

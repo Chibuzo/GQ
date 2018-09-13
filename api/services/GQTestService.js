@@ -118,12 +118,9 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined, start = undefined, rows = undefined) {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined, start = undefined, rows = undefined, mode = 'all') {
         return new Promise(function(resolve, reject) {
             const candidates = [];
-            // if (start !== undefined) query.start = start;
-            // if (rows !== undefined) query.rows = rows;
-            // if (_candidates !== undefined) query.user = _candidates;
             let skip = start === undefined ? 1 : start;
             let limit = rows === undefined ? -1 : rows;
             let query = _candidates === undefined ? {}: {user: _candidates};
@@ -135,16 +132,20 @@ module.exports = {
                 paginate = true;
                 criteria = { where: query, limit: limit, skip: skip };
             }
+            let sort = 'createdAt desc';
+            if (mode == 'job') {
+                sort = 'score desc';
+            }
             return Promise.all([
-                GQAptitudeTestResult.find(criteria).populate('user').sort('score desc'), //.exec(function(err, apt_results) {
+                GQAptitudeTestResult.find(criteria).populate('user').sort(sort), //.exec(function(err, apt_results) {
                 GQAptitudeTestResult.find(query).sort('score desc')
             ]).then(results => {
                 var apt_results = results[0];
                 var count = results[1].length;
                 var all_scores = results[1];
-                //var count = apt_results.length;
+
                 var apt_scores = all_scores.map(function(e) { return e.score; });
-                apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores
+                apt_scores = Array.from(new Set(apt_scores)); // remove duplicate scores; important for ranking
                 async.eachSeries(apt_results, function(apt_result, cb) {
                     if (!apt_result.user) return cb();
                     GQTestResult.find({ test: [1,2,3], candidate: apt_result.user.id }).populate('proctor').sort('test').exec(function(err, tests) {

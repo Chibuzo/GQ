@@ -100,17 +100,17 @@ module.exports = {
     },
 
     requestPremium: function(req, res) {
-        if (isNaN(req.param('jobID'))) {
-            return res.json(400, { status: 'error', message: 'Job ID must be a number' });
-        }
+        // if (isNaN(req.param('jobID'))) {
+        //     return res.json(400, { status: 'error', message: 'Job ID must be a number' });
+        // }
         // lets make sure this is an actual {GJ} job
-        Job.findOne({ id: req.param('jobID'), source: 'GJ' }).exec(function(err, job) {
-            if (err) {
-                return res.json(400, { status: 'error' });
-            }
-            if (!job) {
-                return res.json(400, { status: 'error', message: "The supplied job ID doesn't match any existing job" });
-            }
+        // Job.findOne({ id: req.param('jobID'), source: 'GJ' }).exec(function(err, job) {
+        //     if (err) {
+        //         return res.json(400, { status: 'error' });
+        //     }
+        //     if (!job) {
+        //         return res.json(400, { status: 'error', message: "The supplied job ID doesn't match any existing job" });
+        //     }
             // make sure the sent company email is in fact email
             var Emailaddresses = require('machinepack-emailaddresses');
             Emailaddresses.validate({
@@ -133,11 +133,12 @@ module.exports = {
                         if (status === true) {
                             return res.json(200, { status: 'success' });
                         }
+                        // send email to GQ
                     }).catch(err => {
                         return json(400, { status: 'error', message: err });
                     });
                 }
             });
-        });
+        //});
     }
 };

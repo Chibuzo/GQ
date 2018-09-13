@@ -210,7 +210,6 @@ module.exports = {
             proctor_data: JSON.stringify(q('proctor_data')),
             proctor_session: q('proctor_session')
         };
-        console.log(data)
         TestState.find({ candidate: req.session.userId, test: q('test_id') }).exec(function(err, test) {
             if (err) {
                 console.error(err);
@@ -337,79 +336,79 @@ module.exports = {
 
     // Deprecated
     // called when the last section of GQ aptitude test gets submitted
-    markGQTest: function(req, res) {
-        var test_id = req.param('test_id');
-        var no_of_questions = req.param('no_of_questions');
-        var integrity_score = req.param('integrity_score');
-        var userAnswers = req.param("userAnswers") || [];
-        var invigilationTracking = req.param('invigilationTracking') || {};
+    // markGQTest: function(req, res) {
+    //     var test_id = req.param('test_id');
+    //     var no_of_questions = req.param('no_of_questions');
+    //     var integrity_score = req.param('integrity_score');
+    //     var userAnswers = req.param("userAnswers") || [];
+    //     var invigilationTracking = req.param('invigilationTracking') || {};
 
-        var score = 0;
+    //     var score = 0;
 
-        GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
-            if (err) {
-                console.error(err);
-                return;
-            }
+    //     GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
+    //         if (err) {
+    //             console.error(err);
+    //             return;
+    //         }
 
-            userAnswers.forEach(function(userAnswer) {
-                var question = _.find(questions, function(q) {
-                    return q.id == userAnswer.quest_id;
-                });
+    //         userAnswers.forEach(function(userAnswer) {
+    //             var question = _.find(questions, function(q) {
+    //                 return q.id == userAnswer.quest_id;
+    //             });
 
-                if (!question) { // candidate didn't answer
-                    console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
-                    return;
-                }
+    //             if (!question) { // candidate didn't answer
+    //                 console.error(`Coundn't find question for ${userAnswer.quest_id} in test: ${test_id}`);
+    //                 return;
+    //             }
 
-                if (question.answer === userAnswer.ans) {
-                    score++;
-                }
-            });
+    //             if (question.answer === userAnswer.ans) {
+    //                 score++;
+    //             }
+    //         });
 
-            // fall back for user who don't refresh their JS during this release
-            if (_.isEmpty(invigilationTracking)) {
-                invigilationTracking = {
-                    noFace: -1,
-                    noise: -1,
-                    multipleFaces: -1
-                };
-            }
+    //         // fall back for user who don't refresh their JS during this release
+    //         if (_.isEmpty(invigilationTracking)) {
+    //             invigilationTracking = {
+    //                 noFace: -1,
+    //                 noise: -1,
+    //                 multipleFaces: -1
+    //             };
+    //         }
 
-            // save integrity score
-            ProctorSession.update({ id: req.session.proctor },
-                {
-                    integrity_score: integrity_score,
-                    noFaceCount: invigilationTracking.noFace,
-                    noiseCount: invigilationTracking.noise,
-                    multipleFacesCount: invigilationTracking.multipleFaces
-                }
-            ).exec(function() {});
+    //         // save integrity score
+    //         ProctorSession.update({ id: req.session.proctor },
+    //             {
+    //                 integrity_score: integrity_score,
+    //                 noFaceCount: invigilationTracking.noFace,
+    //                 noiseCount: invigilationTracking.noise,
+    //                 multipleFacesCount: invigilationTracking.multipleFaces
+    //             }
+    //         ).exec(function() {});
 
-            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-                CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
-                    // end proctor session
-                    req.session.proctor = false;
+    //         CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
+    //             CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+    //                 // end proctor session
+    //                 req.session.proctor = false;
 
-                    // update candidate's resume
-                    Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
-                        if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
-                            Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
-                        }
-                    });
-                    CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
-                        return res.json(200, { status: 'success', result: result });
-                    }).catch(function(err) {
-                        console.log(err)
-                    });
-                }).catch(function(err) {
-                    console.log(err)
-                });
-            }).catch(function(err) {
-                console.log(err)
-            });
-        });
-    },
+    //                 // update candidate's resume
+    //                 Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+    //                     if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
+    //                         Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
+    //                     }
+    //                 });
+    //                 CBTService.candidateGeneralTestResult(req.session.userId).then(function(result) {
+    //                     return res.json(200, { status: 'success', result: result });
+    //                 }).catch(function(err) {
+    //                     console.log(err)
+    //                 });
+    //             }).catch(function(err) {
+    //                 console.log(err)
+    //             });
+    //         }).catch(function(err) {
+    //             console.log(err)
+    //         });
+    //     });
+    // },
 
     markGQ: function(req, res) {
         let test_id = req.param('test_id');
@@ -646,9 +645,12 @@ module.exports = {
             return res.json(400, { status: 'error', message: err });
         });
     },
+
+    showAptitudeTestResults: function(req, res) {
+        return res.view('admin/testresult');
+    },
     
     getAptitudeTestResults: function(req, res) {
-        let job_id = req.param('job_id');
         let start = req.param('start');
         let rows = req.param('length');
         let draw = req.param('draw');
@@ -656,7 +658,8 @@ module.exports = {
 
         switch (req.param('mode')) {
             case 'job_applicants':
-                if (req.param('job_id') && !isNaN(job_id)) {
+                let job_id = req.param('job_id');
+                if (job_id && !isNaN(job_id)) {
                     if (search && search.length > 2) {
                         let sql = "SELECT DISTINCT u.id FROM application ap JOIN user u ON u.id = ap.applicant WHERE job = ? AND fullname LIKE ? OR email LIKE ? AND job = ?";
                         Application.query(sql, [ job_id, search + '%', search + '%', job_id ], function(err, result) {
@@ -667,7 +670,7 @@ module.exports = {
                             result.forEach(function(row) {
                                 applicants.push(row.id);
                             });
-                            GQTestService.fetchAllCandidatesAptitudeTestResult(applicants, start, rows).then(function(candidates) {
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(applicants, start, rows, 'job').then(function(candidates) {
                                 return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                             })
                             .catch(function(err) {
@@ -685,7 +688,7 @@ module.exports = {
                                     candidatesIds.push(applicant.applicant);
                                 }
                             });
-                            GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows).then(function(candidates) {
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows, 'job').then(function(candidates) {
                                 return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                             })
                             .catch(function(err) {
@@ -697,6 +700,35 @@ module.exports = {
                     return res.json(404, { status: 'error', message: 'job_id must be numeric' });
                 }
                 break;
+
+            case 'all':
+                if (search && search.length > 2) {
+                    let sql = "SELECT id FROM user WHERE fullname LIKE ? OR email LIKE ?";
+                    User.query(sql, [ search + '%', search + '%'], function(err, result) {
+                        if (err) {
+                            console.log(err);
+                        }
+                        let users = [];
+                        result.forEach(function(row) {
+                            users.push(row.id);
+                        });
+                        GQTestService.fetchAllCandidatesAptitudeTestResult(users, start, rows).then(function(candidates) {
+                            return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
+                        })
+                        .catch(function(err) {
+                            return json(400, { status: 'error', message: err });
+                        });
+                    });
+                } else {
+                    GQTestService.fetchAllCandidatesAptitudeTestResult(undefined, start, rows).then(function(candidates) {
+                        return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
+                    })
+                    .catch(function(err) {
+                        return json(400, { status: 'error', message: err });
+                    });
+                }
+                break;
+
             default:    
                 break;    
         }

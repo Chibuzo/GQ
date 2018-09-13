@@ -131,51 +131,54 @@ module.exports = {
     //    });
     //},
 
-    // readApplicationCSV: function(req, res) {
-    //     var job_id = req.param('job_id');
-    //     var filename, csvpath = 'assets/csv-files';
-    //     req.file('csv').upload({
-    //         dirname: require('path').resolve(sails.config.appPath, csvpath),
-    //         saveAs: function(file, cb) {
-    //             var ext = file.filename.split('.').pop();
-    //             filename = 'job_' + job_id + '.' + ext;
-    //             return cb(null, filename);
-    //         }
-    //     },
-    //     function(err) {
-    //         if (err) {
-    //             return res.badRequest(err);
-    //         }
-
-    //         try {
-    //             var parser = require('csv-parse');
-    //             const fs = require('fs');
-    //             fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
-    //                 parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
-    //                     if (err) {
-    //                         var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
-    //                     }
-    //                     var n = 0;
-    //                     data.forEach(function(entry) {
-    //                         if (entry[0] == 'Fullname') {
-    //                             return;
-    //                         }
-    //                         if (entry[1].length > 4) {
-    //                             sendMail.customSendAppliedJobNotice('Candidate', entry[1]);
-    //                             n++;
-    //                         }
-    //                     });
-    //                     console.log('Sent: ' + n + ' emails');
-    //                 });
-    //             });
-    //             return res.redirect(req.path);
-    //         } catch(err) {
-    //             console.log(err);
-    //         }       
-    //     });
-    // },
-
     readApplicationCSV: function(req, res) {
+        var job_id = req.param('job_id');
+        var filename, csvpath = 'assets/csv-files';
+        req.file('csv').upload({
+            dirname: require('path').resolve(sails.config.appPath, csvpath),
+            saveAs: function(file, cb) {
+                var ext = file.filename.split('.').pop();
+                filename = 'job_' + job_id + '.' + ext;
+                return cb(null, filename);
+            }
+        },
+        function(err) {
+            if (err) {
+                return res.badRequest(err);
+            }
+
+            try {
+                var parser = require('csv-parse');
+                const fs = require('fs');
+                fs.readFile(csvpath + '/' + filename, 'utf8', function(err, csv_data) {
+                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                        if (err) {
+                            var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
+                        }
+                        var n = 0;
+                        data.forEach(function(entry) {
+                            console.log(entry)
+                            if (entry[0] && entry[0] == 'Fullname') {
+                                return res.serverError();
+                            }
+                            if (entry[1] && entry[1].length > 4) {
+                                sendMail.customSendAppliedJobNotice(entry[0], entry[1]);
+                                n++;
+                            }
+                        });
+                        console.log('Sent: ' + n + ' emails');
+                    });
+                });
+                return res.ok();
+                //return res.redirect(req.path);
+            } catch(err) {
+                console.log('JERE')
+                console.log(err);
+            }       
+        });
+    },
+
+    read_ApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');
         var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({
@@ -488,6 +491,7 @@ module.exports = {
                         if (err) {
                             return res.serverError(err);
                         }
+
                         CBTService.getJobTestResults(candidates, jobTest).then(function(allCandidates) {
                             let companyName;
                             if ((job.source === null || job.source === 'gq') && job.company) {
@@ -510,7 +514,7 @@ module.exports = {
                                 job_id: job_id
                             });
                         }).catch(err => {
-                            return res.serverError(err);
+                            //return res.serverError(err);
                         });
                     });
 				});
