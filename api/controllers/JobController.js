@@ -207,7 +207,6 @@ module.exports = {
                             }
                             var company_id = job.company.id;
                             async.eachSeries(_data, function(entry, cb) {
-                                console.log(entry)
                                 var fullname, email;
                                 if (entry.length > 1) {
                                     fullname = entry[0];
@@ -488,7 +487,6 @@ module.exports = {
                     if (err) {
                         return res.serverError(err);
                     }
-                    // filter out shortlisted candidates before processing result
                     SelectedCandidate.find({ job_id: job_id }).exec(function(err, shortlist) {
                         if (err) {
                             return res.serverError(err);
@@ -546,77 +544,7 @@ module.exports = {
         });
     },
 
-    // Deprecated for good!
-    // viewApplicants: function(req, res) {
-    //     // hold on, let's knows who's viewing this
-    //     var folder;
-    //     if (req.session.user_type == 'company' || req.session.user_type == 'company-admin') {
-    //         folder = 'company';
-    //     } else if (req.session.user_type == 'admin') {
-    //         folder = 'admin';
-    //     } else {
-    //         return res.redirect('/');
-    //     }
-
-    //     var job_id =  req.param('job_id');
-    //     Job.find({ id: job_id, status: 'Active' }).exec(function(err, job) {
-    //         // let's prevent companies from viewing this data while the job is still active
-    //         var today = new Date().toISOString();
-    //         if (folder === 'company' && Date.parse(job[0].closing_date) >= Date.parse(today)) {
-    //             return res.view('company/applicants-view.swig', { job_active: true });
-    //         }
-
-    //         JobTest.find({ job_level: job[0].job_level, job_category_id: job[0].category }).populate('test').exec(function(err, test) {
-    //             // find those who applied for this job
-    //             Application.find({ job: job_id }).populate('applicant').exec(function(err, applications) {
-    //                 // fetch candidate ids for use in finding/computing their test result
-    //                 var candidates = [];
-    //                 applications.forEach(function (application) {
-    //                     if (application.applicant) {
-    //                         candidates.push(application.applicant.id);
-    //                     } else {
-    //                         // this shouldn't happen
-    //                         console.log('Problem');
-    //                         console.log(application);
-    //                     }
-    //                 });
-    //                 CBTService.getJobTestResults(candidates, test[0]).then(function(all_text_result) {
-    //                     SelectedCandidate.find({job_id: job_id}).populate('candidate').exec(function (err, selected_candidates) {
-    //                         if (selected_candidates.length > 0) {
-    //                             var candidates = [];    // redeclared, haha!
-    //                             selected_candidates.forEach(function (candidate) {
-    //                                 candidates.push(candidate.candidate.id);
-    //                             });
-    //                             CBTService.getJobTestResults(candidates, test[0]).then(function (selected_candidates_test_result) {
-    //                                 return res.view(folder + '/applicants-view.swig', {
-    //                                     applicants: applications,
-    //                                     results: all_text_result,
-    //                                     selected_candidates: selected_candidates_test_result,
-    //                                     job_id: job_id,
-    //                                     job: job,
-    //                                     folder: folder
-    //                                 });
-    //                             }).catch(function (err) {
-    //                                 console.log(err);
-    //                             });
-    //                         } else {
-    //                             return res.view(folder + '/applicants-view.swig', {
-    //                                 applicants: applications,
-    //                                 results: all_text_result,
-    //                                 job_id: job_id,
-    //                                 job: job,
-    //                                 folder: folder
-    //                             });
-    //                         }
-    //                     });
-    //                 }).catch(function (err) {
-    //                     console.log(err);
-    //                 });
-    //             });
-    //         });
-    //     });
-    // },
-
+    
     getApplicantsResults: function(req, res) {
         var job_id =  req.param('job_id');
         Job.find({ id: job_id }).populate('applications').exec(function(err, job) {
