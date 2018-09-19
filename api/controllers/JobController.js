@@ -131,7 +131,7 @@ module.exports = {
     //    });
     //},
 
-    readApplicationCSV: function(req, res) {
+    readCustomCSV: function(req, res) {
         var job_id = req.param('job_id');
         var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({
@@ -178,7 +178,7 @@ module.exports = {
         });
     },
 
-    read_ApplicationCSV: function(req, res) {
+    readApplicationCSV: function(req, res) {
         var job_id = req.param('job_id');
         var filename, csvpath = 'assets/csv-files';
         req.file('csv').upload({

@@ -127,7 +127,7 @@ module.exports = {
         if (split_by_state === true) {
             let states = [{"state_name":"Abia"}, {"state_name":"Abuja"}, {"state_name":"Adamawa"}, {"state_name":"Akwa Ibom"}, {"state_name":"Anambra"}, {"state_name":"Bauchi"}, {"state_name":"Bayelsa"}, {"state_name":"Benue"}, {"state_name":"Borno"}, {"state_name":"Cross River"}, {"state_name":"Delta"}, {"state_name":"Ebonyi"}, {"state_name":"Edo"}, {"state_name":"Ekiti"}, {"state_name":"Enugu"}, {"state_name":"Gombe"}, {"state_name":"Imo"}, {"state_name":"Jigawa"}, {"state_name":"Kaduna"}, {"state_name":"Kano"}, {"state_name":"Katsina"}, {"state_name":"Kebbi"}, {"state_name":"Kogi"}, {"state_name":"Kwara"}, {"state_name":"Lagos"}, {"state_name":"Nasarawa"}, {"state_name":"Niger"}, {"state_name":"Ogun"}, {"state_name":"Ondo"}, {"state_name":"Osun"}, {"state_name":"Oyo"}, {"state_name":"Plateau"}, {"state_name":"Rivers"}, {"state_name":"Sokoto"}, {"state_name":"Taraba"}, {"state_name":"Yobe"}, {"state_name":"Zamfara"}];
         }
-        const criteria = `AND dob >= '1992-01-01' AND score > 49`;
+        const criteria = `AND dob >= '1992-01-01' AND score > '29' AND r_class <= '2'`;
 
         const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, r_state, phone, dob, programme, r_class, available_date FROM application ap 
                     JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
@@ -161,6 +161,7 @@ module.exports = {
                         qualification: result.programme,
                         degree: rclass,
                         location: result.address,
+                        state: result.r_state,
                         email: result.email,
                         phone: result.phone,
                         // logic: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(0),
@@ -193,16 +194,17 @@ module.exports = {
                     { header: 'S/No', key: 's_no', width: 5 },
                     { header: 'Fullname', key: 'fullname', width: 30 },
                     { header: 'Age', key: 'age', width: 8 },
-                    { header: 'Qualification', key: 'qualification', width: 60 },
-                    { header: 'Class of Degree', key: 'degree_class', width: 15 },
-                    { header: 'Location (as shown in the address on CV)', key: 'location', width: 60 },
+                    { header: 'Qualification', key: 'qualification', width: 40 },
+                    { header: 'Class of Degree', key: 'degree_class', width: 16 },
+                    { header: 'Location', key: 'location', width: 50 },
                     { header: 'Available Date', key: 'available_date', width: 15 },
-                    { header: 'Verbal Reasoning', key: 'verbal', width: 15 },
-                    { header: 'Numerical Reasoning', key: 'numeric', width: 20 },
-                    { header: 'Critical Reasoning', key: 'critical', width: 17 },
+                    { header: 'Verbal Reasoning', key: 'verbal', width: 18 },
+                    { header: 'Numerical Reasoning', key: 'numeric', width: 22 },
+                    { header: 'Critical Reasoning', key: 'critical', width: 19 },
                     { header: 'Total Score', key: 'total', width: 20 },
                     { header: 'Contact Phone', key: 'phone', width: 15 },
-                    { header: 'Email Address', key: 'email', width: 30 }
+                    { header: 'Email Address', key: 'email', width: 30 },
+                    { header: 'State', key: 'state', width: 10 }
                 ];
 
                 let row1 = sheet.getRow(1);
@@ -226,7 +228,8 @@ module.exports = {
                         critical: user.logic,
                         total: user.total,
                         phone: user.phone,
-                        email: user.email
+                        email: user.email,
+                        state: user.state
                     }).commit();
                 });
                 sheet.getColumn(3).alignment = { vertical: 'middle', horizontal: 'center' };

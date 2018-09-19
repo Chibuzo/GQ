@@ -100,7 +100,16 @@
 								<div class='row'>
 									{% if resume.photo_status == true %}
 										<div class='col-sm-10 col-sm-offset-1 col-md-offset-4 col-md-4'>
-											<img class="profile-image" src="/applicant_profilephoto/{{ resume.photo }}" alt="..."/>
+											{% if resume.photo_status == true %}
+												{% if resume.photo.indexOf('http') === -1 %}
+													{% set photo_url = '/applicant_profilephoto/' + resume.photo %}
+												{% else %}	
+													{% set photo_url = resume.photo %}
+												{% endif %}	
+											{% else %}
+												<img class="avatar border-gray" src="/images/face-0.jpg" alt="..."/>
+											{% endif %}
+											<img class="profile-image" src="{{ photo_url }}" alt="..."/>
 										</div>
 									{% else %}
 										<div class='col-xs-12'>
