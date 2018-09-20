@@ -655,6 +655,8 @@ module.exports = {
         let rows = req.param('length');
         let draw = req.param('draw');
         let search = req.param('search').value;
+        let order_field = req.param('order')[0].column;
+        let order_direction = req.param('order')[0].dir;
 
         switch (req.param('mode')) {
             case 'job_applicants':
@@ -670,7 +672,7 @@ module.exports = {
                             result.forEach(function(row) {
                                 applicants.push(row.id);
                             });
-                            GQTestService.fetchAllCandidatesAptitudeTestResult(applicants, start, rows, 'job').then(function(candidates) {
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(applicants, start, rows, 'job', order_field, order_direction).then(function(candidates) {
                                 return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                             })
                             .catch(function(err) {
@@ -688,7 +690,7 @@ module.exports = {
                                     candidatesIds.push(applicant.applicant);
                                 }
                             });
-                            GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows, 'job').then(function(candidates) {
+                            GQTestService.fetchAllCandidatesAptitudeTestResult(candidatesIds, start, rows, 'job', order_field, order_direction).then(function(candidates) {
                                 return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                             })
                             .catch(function(err) {
@@ -712,7 +714,7 @@ module.exports = {
                         result.forEach(function(row) {
                             users.push(row.id);
                         });
-                        GQTestService.fetchAllCandidatesAptitudeTestResult(users, start, rows).then(function(candidates) {
+                        GQTestService.fetchAllCandidatesAptitudeTestResult(users, start, rows, 'all', order_field, order_direction).then(function(candidates) {
                             return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                         })
                         .catch(function(err) {
@@ -720,7 +722,7 @@ module.exports = {
                         });
                     });
                 } else {
-                    GQTestService.fetchAllCandidatesAptitudeTestResult(undefined, start, rows).then(function(candidates) {
+                    GQTestService.fetchAllCandidatesAptitudeTestResult(undefined, start, rows, 'all', order_field, order_direction).then(function(candidates) {
                         return res.json(200, { status: 'success', draw: draw, recordsTotal: candidates.num, recordsFiltered: candidates.num, data: candidates });
                     })
                     .catch(function(err) {

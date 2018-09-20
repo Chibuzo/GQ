@@ -5,7 +5,6 @@ function drawDTable() {
         language: {
             processing: '<i class="fa fa-spinner fa-spin fa-3x fa-fw"></i><span class="sr-only">Loading...</span>'
         },
-        //dom: '<"top"i>rt<"bottom"flp><"clear">',
         serverSide: true,
         ajax: {
             "url": '/api/v1/candidates/fetchgqresults',
