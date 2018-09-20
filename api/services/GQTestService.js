@@ -118,7 +118,7 @@ module.exports = {
         });
     },
 
-    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined, start = undefined, rows = undefined, mode = 'all') {
+    fetchAllCandidatesAptitudeTestResult: function(_candidates = undefined, start = undefined, rows = undefined, mode = 'all', order_field = null, order_direction = null) {
         return new Promise(function(resolve, reject) {
             const candidates = [];
             let skip = start === undefined ? 1 : start;
@@ -135,6 +135,9 @@ module.exports = {
             let sort = 'createdAt desc';
             if (mode == 'job') {
                 sort = 'score desc';
+            }
+            if (order_field == 11) {
+                sort = 'score ' + order_direction;
             }
             return Promise.all([
                 GQAptitudeTestResult.find(criteria).populate('user').sort(sort), //.exec(function(err, apt_results) {

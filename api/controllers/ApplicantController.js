@@ -215,7 +215,7 @@ module.exports = {
             if (q('page') == 'test') {
                 // for test result page
                 GQTestService.fetchAllCandidatesAptitudeTestResult(users).then(function(results) {
-                    return res.view('admin/candidates', { candidates: results });
+                    return res.view('admin/testresult', { candidates: results });
                 }).catch(function(err) {
                     return res.serverError(err);
                 });

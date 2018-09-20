@@ -8,6 +8,8 @@ module.exports.routes = {
 
     '/login': { view: 'login' },
 
+    '/faq': { view: 'faq' },
+
     '/login/:base64_url': 'UserController.specialLoginPage',
 
     '/admin': { view: 'admin/login' },

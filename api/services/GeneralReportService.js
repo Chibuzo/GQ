@@ -6,6 +6,6 @@ module.exports = {
         else
             sql =  `UPDATE userstatistics SET ${field} = ${field} - 1`;
 
-        UserStatistics.query(sql, function(err) {});    
+        UserStatistics.query(sql, function() {});    
     }
 }

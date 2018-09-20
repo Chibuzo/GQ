@@ -67,11 +67,11 @@
 				<h4 class="title">Candidates' GQ Test Result</h4>
 				<p class="category">You can filter candidates</p>
 			</div>
-			<div class="col-md-4 pull-right"><button class="btn btn-info btn-fill pull-right" id="search-cv"><i class="fa fa-search"></i> Search CV</button></div>
+			<!--<div class="col-md-4 pull-right"><button class="btn btn-info btn-fill pull-right" id="search-cv"><i class="fa fa-search"></i> Search CV</button></div>-->
 		</div>
 
-		{% set search_pg = 'test' %}
-		{% include 'includes/candidate-search-form.swig' %}
+		{#{% set search_pg = 'test' %}
+		{% include 'includes/candidate-search-form.swig' %}#}
 		<div class="content table-responsive table-full-width">
 			<table class="table table-striped ajaxDataTable">
 				<thead>
@@ -88,7 +88,7 @@
 						</td>
 					</tr>
 					<tr>
-						<th style="width:10px !important"><label class="group-check"><input type="checkbox" class="form-control" datatoggle="checkbox" /></label></th>
+						<th style="width:10px !important"><label class="group-check"><input type="checkbox" class="form-control" /></label></th>
 						<th><i class="fa fa-calendar"></i> Date</th>
 						<th>Name</th>
 						<th class="hidden">Email</th>
