@@ -40,7 +40,7 @@
 				{#{% set scrapedJob = true %}#}
 			{#{% endif %}#}
 			{% set applications = job.applications.length %}
-			{% set path = job.job_title.replace(/pay/g, 'or').split(' ') %}
+			{% set path = job.job_title.split(' ') %}
 			<tr id="{{ job.id }}">
 				<td style="width: 30px"><input type="checkbox" class="user-checkbox" /></td>
 				<td data-order="{{ job.createdAt | date('Y/m/d') }}">{{ job.createdAt | date('d.m.Y') }}</td>
