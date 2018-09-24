@@ -519,6 +519,94 @@ module.exports = {
                 console.log(stat)
             });
         });
+    },
+
+    exportCandidatesData: function(req, res) {
+        var filename, csvpath = 'assets/csv-files';
+        req.file('csv').upload({
+            dirname: require('path').resolve(sails.config.appPath, csvpath)
+            // saveAs: function(file, cb) {
+            //     var ext = file.filename.split('.').pop();
+            //     filename = 'job_' + job_id + '.' + ext;
+            //     return cb(null, filename);
+            // }
+        },
+        function(err, file) {
+            if (err) {
+                return res.badRequest(err);
+            }
+            try {
+                var parser = require('csv-parse');
+                const fs = require('fs');
+                const path = require('path');
+                fs.readFile(csvpath + '/' + path.basename(file[0].fd), 'utf8', function(err, csv_data) {
+                    parser(csv_data, {relax_column_count: true, rtrim: true, ltrim: true, skip_lines_with_empty_values: true}, function (err, data) {
+                        if (err) return console.log(err);
+                        let emails = data.map(d => d[0]);
+                        Resume.find({ email: emails }).populate('educations').populate('qualifications').populate('employments').populate('referencecontacts').populate('user').exec(function(err, resumes) {
+                            if (err) return console.log(err);
+                            fs.writeFile("resume.json", JSON.stringify(resumes), 'utf8', (err)=>{
+                                if(err) console.log(err)
+                                else console.log('File saved');
+                                return res.ok();
+                            });
+                        });
+                    });
+                });
+            } finally {
+                console.log('We are done')
+            }
+        });
+    },
+
+    importCandidatesData: function(req, res) {
+        const fs = require('fs');
+        //const path = require('path');
+        fs.readFile('resume.json', 'utf8', function(err, data) {
+            let resumes = JSON.parse(data);
+            resumes.forEach(function(d) {
+                //let user = d.user;
+                let edu = d.educations;
+                let qual = d.qualifications;
+                let emp = d.employments;
+                let referee = d.referencecontacts;
+               
+                // create user and resume
+                var data = {
+                    fullname: d.fullname,
+                    email:d.email,
+                    gender: d.gender,
+                    dob: d.dob ? new Date(Date.parse(d.dob)).toISOString() : new Date().toISOString(),
+                    phone: d.phone,
+                    country: d.country,
+                    r_state: d.state,
+                    city: d.city,
+                    address: d.address,
+                    introduction: d.introduction,
+                    employment_status: d.employment_status,
+                    available_date: d.available_date ? new Date(Date.parse(d.available_date)).toISOString() : new Date().toISOString(),
+                    current_salary: d.current_salary ? d.current_salary : 0.0,
+                    expected_salary: d.expected_salary ? d.expected_salary : 0.0,
+                    profile_status: d.profile_status,
+                    video_file: d.youtube_vid_id && d.youtube_vid_id.length > 5 ? 'https://api.neon.ventures/gqyt/files/' + d.youtube_vid_id + '.mp4' : d.video_file,
+                    video_status: d.video_status,
+                    photo: d.photo && d.photo.indexOf('http') === -1 ? 'https://getqualified.work/applicant_profilephoto/' + d.photo : d.photo,
+                    photo_status: d.photo_status,
+                    status: d.status
+                };
+                ResumeService.createNewResume(data).then(user => {
+                    let resume_id = user.resume_id;
+                    edu.forEach(ed => { ResumeService.saveEducation(ed.institution, ed.honour, ed.r_class, ed.programme, ed.start_date, ed.end_date, resume_id); });
+                    qual.forEach(qual => { ResumeService.saveQualification(qual.qualification, qual.institution, qual.date_obtained, resume_id); });
+                    emp.forEach(emp => { ResumeService.saveEmploymentHistory(emp.company, emp.role, emp.location, emp.duties, emp.start_date, emp.end_date, resume_id); });
+                    referee.forEach(referee => { ResumeService.saveReferee(referee.name, referee.company, referee.job_title, referee.email, referee.phone, resume_id); });
+                }).catch(err => {
+                    console.log('Error creating resume for ' + d.email);
+                    console.log(err);
+                });
+            });
+            return res.ok();
+        });
     }
 };
 
@@ -527,8 +615,7 @@ function getAge(dateString) {
     var birthDate = new Date(dateString);
     var age = today.getFullYear() - birthDate.getFullYear();
     var m = today.getMonth() - birthDate.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) 
-    {
+    if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
         age--;
     }
     return age;

@@ -309,6 +309,12 @@ module.exports.routes = {
     //
     //'/states': 'BatchController.loadStates'
 
+    'POST /export': 'BatchController.exportCandidatesData',
+
+    'GET /importdata': 'BatchController.importCandidatesData',
+
+    '/samplepage': { view: 'samplepage' },
+
     'GET /testapi': 'BatchController.testApi',
 
     'GET /jobreport/qualified/:job_id': 'BatchController.qualifiedReport',

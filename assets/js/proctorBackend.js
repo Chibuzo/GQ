@@ -2,6 +2,9 @@ $(".table").on("click", ".fetch-proctor-details", function() {
     var proctor_id = $(this).attr('id');
     var candidate_id = $(this).parents('tr').attr('id');
 
+    var candidateName = $(this).parents('tr').find('td:nth-child(3)').text();
+    $(".modal-title").text(candidateName);
+
     $("#proctor-id").text(proctor_id);
     $("#candidate-id").text(candidate_id);
 
@@ -132,7 +135,7 @@ $(".table").on("click", ".trash-can", function(e) {
           alert('Error Attempting to delete test score: ' + textStatus + ', ' + errorThrown);
         },
         success: function() {
-            location.reload();
+            $("tr#" + candidateId).fadeOut();
         }
       });
     }
