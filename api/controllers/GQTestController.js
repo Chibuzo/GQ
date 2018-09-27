@@ -166,7 +166,7 @@ module.exports = {
                         instructions: test[0].instructions
                     });
                 } else {
-                    return res.json(400, { status: 'error' });
+                    return res.json(404, { status: 'error', message: 'Test not found' });
                 }
             });
         }
@@ -176,6 +176,10 @@ module.exports = {
         var test_id = req.param('test_id');
         GQTest.find({ id: test_id }).populate('questions').exec(function(err, gqtest) {
             if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
+
+            if (gqtest.length < 0) {
+                return res.json(404, { status: 'error', message: 'Test not found' });
+            }
             let questions = [];
 
             // exclude answer from questions
@@ -202,15 +206,19 @@ module.exports = {
 
     saveTestState: function(req, res) {
         var q = req.param;
+        let user_id = q('user_id') ? q('user_id') : req.session.user_id;
+        if (isNaN(user_id)) {
+            return res.json(400, { status: 'error', message: 'User ID must be a number' });
+        }
         var data = {
-            candidate: req.session.userId,
+            candidate: user_id,
             test: q('test_id'),
             time_elapsed: q('current_time'),
             answered_questions: q('answered_questions') ? JSON.stringify(q('answered_questions')) : '',
             proctor_data: JSON.stringify(q('proctor_data')),
             proctor_session: q('proctor_session')
         };
-        TestState.find({ candidate: req.session.userId, test: q('test_id') }).exec(function(err, test) {
+        TestState.find({ candidate: user_id, test: q('test_id') }).exec(function(err, test) {
             if (err) {
                 console.error(err);
             }
@@ -220,12 +228,14 @@ module.exports = {
                 TestState.create(data).exec(function() {});
             }
         });
-        return res.ok();
+        return res.json(200, { status: 'success' });
     },
 
     findSavedTest: function(req, res) {
+        let user_id = req.session.userId ? req.session.userId : req.param('user_id');
+
         let sql = "SELECT answered_questions, time_elapsed, proctor_data, proctor_session FROM teststate WHERE candidate = ? AND test = ?";
-        TestState.query(sql, [ req.session.userId, req.param('test_id') ], function(err, old_test) {    
+        TestState.query(sql, [ user_id, req.param('test_id') ], function(err, old_test) {    
             if (err) {
                 return res.json(400, { status: 'error', message: err });
             }
@@ -247,7 +257,7 @@ module.exports = {
                     });
                 });
 
-                let prev_attempt = ''; 
+                let prev_attempt = {}; 
                 if (old_test.length > 0) {
                     prev_attempt = {
                         answered_questions: old_test[0].answered_questions,
@@ -411,14 +421,15 @@ module.exports = {
     // },
 
     markGQ: function(req, res) {
-        let test_id = req.param('test_id');
-        test_id = parseInt(test_id);
-
+        let user_id = req.param('user_id') ? req.param('user_id') : req.session.user_id;
+        if (isNaN(user_id)) {
+            return res.json(400, { status: 'error', message: 'User ID must be a number' });
+        }
+        let test_id = parseInt(req.param('test_id'));
         let no_of_questions = req.param('no_of_questions');
-        let integrity_score = req.param('integrity_score');
         let userAnswers = req.param("userAnswers") || [];
 		let invigilationTracking = req.param('invigilationTracking') || {};
-        let proctorSessId = req.param('proctorSessId');
+        let proctorSessId = req.param('proctor_session');
 
         let score = 0;
 
@@ -431,9 +442,9 @@ module.exports = {
             });
         }
         // update integrity score and invigilationTracking data
-        ProctorSession.update({ id: req.session.proctor },
+        ProctorSession.update({ id: proctorSessId },
             {
-                integrity_score: integrity_score,
+                integrity_score: invigilationTracking.integrityScore,
                 noFaceCount: invigilationTracking.noFace,
                 noiseCount: invigilationTracking.noise,
                 multipleFacesCount: invigilationTracking.multipleFaces
@@ -446,7 +457,7 @@ module.exports = {
         GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
             if (err) {
                 console.error(err);
-                return res.serverError(err);
+                return res.json(400, { status: 'error', message: err });
             }
 
             userAnswers.forEach(function(userAnswer) {
@@ -466,13 +477,13 @@ module.exports = {
             });
 
             // save or update candidate's test score
-            CBTService.saveTestScore(test_id, score, no_of_questions, req.session.userId, req.session.proctor).then(function() {
-                CBTService.saveGeneralTestScore(req.session.userId).then(function(resp) {
+            CBTService.saveTestScore(test_id, score, no_of_questions, user_id, proctorSessId).then(function() {
+                CBTService.saveGeneralTestScore(user_id).then(function(resp) {
                     var state = resp === true ? 'Done' : 'On';
                     if (test_id == 1) GeneralReportService.updateField('test_in_progress');
                     if (test_id == 3) {
                         // update candidate's resume
-                        Resume.update({user: req.session.userId}, {test_status: 'true'}).exec(function (err, resume) {
+                        Resume.update({user: user_id}, {test_status: 'true'}).exec(function (err, resume) {
                             if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                                 Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                             }
@@ -480,8 +491,8 @@ module.exports = {
                         GeneralReportService.updateField('test');
                         GeneralReportService.updateField('test_in_progress', 'minus');
                     }
-                    // clean up any save test data
-                    TestState.destroy({ candidate: req.session.userId, test: test_id }).exec(function() {});
+                    // clean up any saved test data
+                    TestState.destroy({ candidate: user_id, test: test_id }).exec(function() {});
                     return res.json(200, { status: 'success', state: state });
                 }).catch(function(err) {
                     console.log(err);
@@ -489,6 +500,7 @@ module.exports = {
                 });
             }).catch(function(err) {
                 console.error(err);
+                return res.json(400, { status: 'error', message: err });
                 //return res.serverError(err);
             });
         });

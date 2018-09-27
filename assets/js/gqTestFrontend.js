@@ -76,7 +76,7 @@ $("#start-test").click(function() {
     // check if user have attempted this test without finishing it
     $.get('/gqtest/findSavedTest', { test_id: TEST_ID }, function(d) {
         if (d.status.trim() == 'success') {
-            if (typeof d.data === "object") {
+            if (Object.getOwnPropertyNames(d.data).length > 0) {
                 RESUMED = true;
                 // initialize old test
                 proctorSessId = d.data.proctor_session;
@@ -290,20 +290,20 @@ function sendAnswers(proctorFeedback) {
     var aptitudeTest = TEST_ID == 3 ? true : false;
 
     var invigilationTracking = {
+        integrityScore: proctorFeedback.integrityScore,
         noFace: proctorFeedback.video.counter.noFace,
         noise: proctorFeedback.audio.counter.noise,
         multipleFaces: proctorFeedback.video.counter.multiFace
     };
 
     var userAnswers = localStorage.getItem(ANSWERS_KEY) ? JSON.parse(localStorage.getItem(ANSWERS_KEY)) : [];
-
+   
     $.post('/gqtest/' + markUrl, {
         test_id: TEST_ID,
         no_of_questions: questions.length,
-        integrity_score: proctorFeedback.integrityScore,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
-        proctorSessId: proctorSessId
+        proctor_session: proctorSessId
     }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
@@ -319,7 +319,7 @@ function sendAnswers(proctorFeedback) {
                 //TODO Call a function that does this
                 $(".load-test").click();
             } else if (aptitudeTest) {
-                window.location.reload(true);
+                //window.location.reload(true);
             } else {
                 $("#score").text(d.result.score + '/' + questions.length);
                 $("#percentage").text(d.result.percentage + '%');
@@ -647,7 +647,7 @@ var updateIntegrityBar = function(integrityScore) {
 
 
 // ----- SAVE TEST STATE ON WINDOWS LEAVE/UNLOAD EVENT ----- //
-function saveTestState() { alert('Ipku')
+function saveTestState() {
     // get proctor data
     var proctorFeedback = PROCTOR.getFeedback();
     var proctor_data = {

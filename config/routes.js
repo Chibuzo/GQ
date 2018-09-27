@@ -383,5 +383,46 @@ module.exports.routes = {
             allowOrigins: ['*'],
             allowCredentials: false
         }
+    },
+
+    // GQ Aptitude Test Routes (this is bullshit)
+    'GET /api/v1/gqtest/getinstruction/:test_id': {
+        controller: 'GQTestController', action: 'loadTestInstruction',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'GET /api/v1/gqtest/fetchquestions/:test_id': {
+        controller: 'GQTestController', action: 'loadTest',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/gqtest/submittest': {
+        controller: 'GQTestController', action: 'markGQ',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/gqtest/saveteststate': {
+        controller: 'GQTestController', action: 'saveTestState',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/gqtest/findsavedtest': {
+        controller: 'GQTestController', action: 'findSavedTest',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
     }
 };

@@ -82,12 +82,12 @@ module.exports.policies = {
     },
 
     GQTestController: {
-        loadTestInstruction: 'isLoggedIn',
-        loadTest: 'isLoggedIn',
+        //loadTestInstruction: 'isLoggedIn',
+        //loadTest: 'isLoggedIn',
         getTest: 'isLoggedIn',
         markTest: 'isLoggedIn',
         markGQTest: 'isLoggedIn',
-        markGQ: 'isLoggedIn',
+        //markGQ: 'isLoggedIn',
         deleteTest: 'isAdminOrCompany',
         deleteQuestion: 'isAdminOrCompany',
         manageTest: 'isAdminOrCompany',
