@@ -172,7 +172,7 @@ module.exports = {
 
     searchCandidates: function(search) {
         return new Promise(function(resolve, reject) {
-            let sql = "SELECT DISTINCT email, fullname, status, id, createdAt FROM user WHERE fullname LIKE ? OR email LIKE ? ";
+            let sql = "SELECT DISTINCT email, fullname, status, id, createdAt FROM user WHERE user_type = 'Applicant' AND fullname LIKE ? OR email LIKE ? AND user_type = 'Applicant'";
             User.query(sql, [ search + '%', search + '%' ], function(err, result) {
                 if (err) {
                     return reject(err);
