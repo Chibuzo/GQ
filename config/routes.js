@@ -191,7 +191,9 @@ module.exports.routes = {
 
     'GET /company/profile': 'CompanyController.profile',
 
-    'POST /company/upload-csv': 'JobController.readApplicationCSV',
+    //'POST /company/upload-csv': 'JobController.readApplicationCSV',
+
+    'POST /company/upload-csv': 'JobController.readCustomCSV',
 
     'GET /company/users': 'CompanyController.getUsers',
 

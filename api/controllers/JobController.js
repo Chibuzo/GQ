@@ -155,22 +155,55 @@ module.exports = {
                         if (err) {
                             var msg = new Buffer("ERROR: Invalid CSV file. Please download and use the sample CSV file on this page").toString('base64');
                         }
-                        var n = 0;
-                        data.forEach(function(entry) {
-                            console.log(entry)
-                            if (entry[0] && entry[0] == 'Fullname') {
-                                return res.serverError();
+                        Job.findOne({id: job_id}).populate('company').exec(function (j_err, job) {
+                            if (j_err) {
+                                return res.serverError(j_err);
                             }
-                            if (entry[1] && entry[1].length > 4) {
-                                sendMail.customSendAppliedJobNotice(entry[0], entry[1]);
-                                n++;
-                            }
+                            var company_id = job.company.id;
+                            async.eachSeries(data, function(entry, cb) {
+                                var fullname, email;
+                                if (entry.length > 1) {
+                                    fullname = entry[0];
+                                    email = entry[1];
+                                } else {
+                                    email = entry[0];
+                                    fullname = '';
+                                }
+                                if (entry[0] == 'Fullname' || email === undefined) {
+                                    return cb();
+                                }
+                                var _email = email.replace(/\s+/g, '').trim();
+                                
+                                User.find({ email: _email }).exec(function (err, user) {
+                                    if (err) {
+                                        console.log(err)
+                                        return cb();
+                                    }
+                                    if (user.length < 1) return cb();
+
+                                    JobService.apply(job_id, user[0].id).then(function (resp) {
+                                    }).catch(function (err) {
+                                        console.log(err);
+                                        return cb();
+                                    });
+                                    // cause a delay so amazon doesn't reject the emails
+                                    var waitTill = new Date(new Date().getTime() + 1 * 100);
+                                    while(waitTill > new Date()){}
+                                    sendMail.customSendAppliedJobNotice(fullname, _email);
+                                    return cb();
+                                });
+                            },
+                            function(err) {
+                                if (err) return console.log(err);
+                                if (req.session.user_type == 'admin') {
+                                    return res.redirect('/admin/coy-jobs/' + company_id + '/open');
+                                } else {
+                                    return res.redirect('/company/dashboard/' + msg);
+                                }
+                            });
                         });
-                        console.log('Sent: ' + n + ' emails');
                     });
                 });
-                return res.ok();
-                //return res.redirect(req.path);
             } catch(err) {
                 console.log('JERE')
                 console.log(err);
