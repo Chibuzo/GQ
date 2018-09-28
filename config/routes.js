@@ -333,6 +333,8 @@ module.exports.routes = {
      * */
     'POST /api/v1/postjob': 'JobApiController.createJob',
 
+    'POST /api/v1/job/changefiltercategory': 'JobApiController.changeSubscription',
+
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 
     'POST /api/v1/job/apply': 'JobApiController.apply',

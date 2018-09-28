@@ -13,7 +13,6 @@ module.exports = {
         } catch(err) {
             return res.json(400, { status: 'error', message: 'Invalid JSON body' });
         }
-        console.log(data)
         JobApiService.authenticate(data.authentication.ID).then(function(auth) {
             if (auth.status === true) {
                 JobApiService.saveJob(data.job, auth.company.id).then(function(status) {
@@ -81,22 +80,30 @@ module.exports = {
         if (isNaN(req.param('job_id'))) {
             return res.json(400, { status: 'error', message: 'Job ID must be a number' });
         }
-        Job.findOne({ id: req.param('job_id') }).populate('applications').exec(function(err, job) {
-            if (err) {
-                return res.json(400, { status: 'error', message: err });
-            }
-            if (!job)  return res.json(400, { status: 'error', message: "The supplied job ID doesn't match any existing job" });
-            const applications = [];
-            job.applications.forEach(function(app) {
-                applications.push(app.applicant);
-            });
-            
-            JobApiService.returnFilteredStat(applications, job.id).then(stats => {
+           
+        JobApiService.returnFilteredStat(job.id).then(stats => {
+            return res.json(200, { status: 'success', data: stats });
+        }).catch(err => {
+            return res.json(400, { status: 'error', message: err });
+        });
+    },
+
+    changeSubscription: function(req, res) {
+        let job_id = req.param('job_id');
+        let filter = req.param('filter_category');
+
+        if (isNaN(job_id)) {
+            return res.json(400, { status: 'error', message: 'Job ID must be a number' });
+        }
+        if (JobApiService.isValidJobFilter(filter) === true) {
+            JobApiService.changeSubscription(job_id, filter).then(stats => {
                 return res.json(200, { status: 'success', data: stats });
             }).catch(err => {
                 return res.json(400, { status: 'error', message: err });
             });
-        });
+        } else {
+            return res.json(400, { status: 'error', message: 'Invalid job filtering category' });
+        }
     },
 
     requestPremium: function(req, res) {
