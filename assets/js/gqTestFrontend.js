@@ -319,7 +319,7 @@ function sendAnswers(proctorFeedback) {
                 //TODO Call a function that does this
                 $(".load-test").click();
             } else if (aptitudeTest) {
-                //window.location.reload(true);
+                window.location.reload(true);
             } else {
                 $("#score").text(d.result.score + '/' + questions.length);
                 $("#percentage").text(d.result.percentage + '%');
@@ -329,6 +329,8 @@ function sendAnswers(proctorFeedback) {
                     $("#result-div").hide().removeClass('hidden').fadeIn('fast');
                 });
             }
+        } else {
+            window.location.reload(true);
         }
     });
 

@@ -191,7 +191,9 @@ module.exports.routes = {
 
     'GET /company/profile': 'CompanyController.profile',
 
-    'POST /company/upload-csv': 'JobController.readApplicationCSV',
+    //'POST /company/upload-csv': 'JobController.readApplicationCSV',
+
+    'POST /company/upload-csv': 'JobController.readCustomCSV',
 
     'GET /company/users': 'CompanyController.getUsers',
 
@@ -330,6 +332,8 @@ module.exports.routes = {
      * GQ API v1 routes
      * */
     'POST /api/v1/postjob': 'JobApiController.createJob',
+
+    'POST /api/v1/job/changefiltercategory': 'JobApiController.changeSubscription',
 
     'GET /api/v1/joburl/:job_id': 'JobApiController.returnJobUrl',
 

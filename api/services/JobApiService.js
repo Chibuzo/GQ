@@ -202,35 +202,71 @@ module.exports = {
     },
 
 
-    returnFilteredStat(applicants, job_id, mode = 'basic') {
-        return Promise.all([
-            module.exports.getJobTestStat(applicants, mode),
-            module.exports.getGenderStat(applicants),
-            module.exports.getGeographicalStat(applicants)
-        ]).then(results => {
-            var test_stat = results[0];
-            var gender_stat = results[1];
-            var states = [];
-            results[2].forEach(function(state) {
-                states.push({
-                    state: state.r_state,
-                    num: state.num
+    returnFilteredStat(job_id, mode = 'basic') {
+        return new Promise(function(resolve, reject) {
+            Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
+                if (err) {
+                    return reject(eer);
+                }
+                if (!job)  return reject("The supplied job ID doesn't match any existing job");
+                
+                let applicants = job.applications.map(app => app.applicant);
+            
+                return Promise.all([
+                    module.exports.getJobTestStat(applicants, mode),
+                    module.exports.getGenderStat(applicants),
+                    module.exports.getGeographicalStat(applicants)
+                ]).then(results => {
+                    var test_stat = results[0];
+                    var gender_stat = results[1];
+                    var states = [];
+                    results[2].forEach(function(state) {
+                        states.push({
+                            state: state.r_state,
+                            num: state.num
+                        });
+                    });
+                    var data = {
+                        jobID: job_id,
+                        applications: applicants.length,
+                        assessed_candidates: test_stat.assessed_candidates,
+                        average_score: test_stat.average_score,
+                        number_of_males: gender_stat[1].num,
+                        number_of_females: gender_stat[0].num,
+                        geographical_stat: states,
+                        top_five_scores: test_stat.top_five_scores,
+                        least_five_scores: test_stat.least_five_scores
+                    };
+                    return resolve(data);
+                }).catch(err => {
+                    console.log(err);
+                    return reject(err);
                 });
             });
-            var data = {
-                jobID: job_id,
-                applications: applicants.length,
-                assessed_candidates: test_stat.assessed_candidates,
-                average_score: test_stat.average_score,
-                number_of_males: gender_stat[1].num,
-                number_of_females: gender_stat[0].num,
-                geographical_stat: states,
-                top_five_scores: test_stat.top_five_scores,
-                least_five_scores: test_stat.least_five_scores
-            };
-            return data;
-        }).catch(err => {
-            console.log(err);
         });
+    },
+
+    changeSubscription: function(job_id, filter) {
+        return new Promise(function(resolve, reject) {
+            Job.update({ id: job_id }, { subscription: filter }).exec(function(err, job) {
+                if (err) {
+                    return reject(eer);
+                }
+                if (!job || job.length < 1)  return reject("The supplied job ID doesn't match any existing job");
+                
+                // return filter stat based on the new filter
+                module.exports.returnFilteredStat(job_id, filter).then(stat => {
+                    return resolve(stat);
+                }).catch(err => {
+                    return reject(err);
+                });
+            });
+        });
+    },
+
+    isValidJobFilter: function(filter) {
+        const valid_filters = ['basic', 'standard', 'premium'];
+        if (valid_filters.indexOf(filter) === -1) return false;
+        return true;
     }
 }

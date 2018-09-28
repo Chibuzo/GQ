@@ -133,6 +133,7 @@ module.exports = {
         // send mail with defined transport object
         transporter.sendMail(mailOptions, (error, info) => {
             if (error) {
+                console.log(email);
                 return console.log(error);
             }
             //console.log('Message sent: %s', info.messageId);
