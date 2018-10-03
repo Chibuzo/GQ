@@ -286,7 +286,6 @@ module.exports = {
                 console.error(err);
                 return;
             }
-
             userAnswers.forEach(function(userAnswer) {
                 var question = _.find(questions, function(q) {
                     return q.id == userAnswer.quest_id;
@@ -746,5 +745,14 @@ module.exports = {
             default:    
                 break;    
         }
+    },
+
+    fetchGQAptitudeTestResult: function(req, res) {
+        this.fetchGQAptitudeTestResult.find({ user: req.param('user_id') }).exec(function(err, result) {
+            if (err) {
+                return res.json(400, { status: 'error', message: err });
+            }
+            return res.json(200, { status: 'success', data: resuilt });
+        });
     }
 };

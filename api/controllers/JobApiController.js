@@ -89,7 +89,7 @@ module.exports = {
     },
 
     changeSubscription: function(req, res) {
-        let job_id = req.param('job_id');
+        let job_id = req.param('jobID');
         let filter = req.param('filter_category');
 
         if (isNaN(job_id)) {

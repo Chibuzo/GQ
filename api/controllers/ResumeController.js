@@ -114,7 +114,8 @@ module.exports = {
 
        // lets handle associative data
        // Education
-        for (var i = 0; i < q('institution').length; i++) {
+        let institution = q('institution') || [];
+        for (var i = 0; i < institution.length; i++) {
             if (q('institution')[i].length < 1) continue;   // cus we don't add no school name
 
             var education = {
@@ -140,7 +141,8 @@ module.exports = {
         }
 
         // Qualifications
-        for (var i = 0; i < q('qualification').length; i++) {
+        let qualifications = q('qualification') || [];
+        for (var i = 0; i < qualifications.length; i++) {
             if (q('qualification')[i].length < 1) continue;
 
             var qualification = {
@@ -159,7 +161,8 @@ module.exports = {
         }
 
         // Employments
-        for (var i = 0; i < q('company').length; i++) {
+        let coy = q('company') || [];
+        for (var i = 0; i < coy.length; i++) {
             if (q('company')[i].length < 1) continue;
 
             var employment = {
@@ -184,7 +187,8 @@ module.exports = {
         }
 
         // Reference Contact, not compulsory
-        for (var i = 0; i < q('reference_fname').length; i++) {
+        let references = q('reference_fname') || [];
+        for (var i = 0; i < references.length; i++) {
             if (q('reference_fname')[i].length < 1) continue;
 
             var reference = {
