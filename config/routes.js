@@ -191,9 +191,9 @@ module.exports.routes = {
 
     'GET /company/profile': 'CompanyController.profile',
 
-    //'POST /company/upload-csv': 'JobController.readApplicationCSV',
+    'POST /company/upload-csv': 'JobController.readApplicationCSV',
 
-    'POST /company/upload-csv': 'JobController.readCustomCSV',
+    //'POST /company/upload-csv': 'JobController.readCustomCSV',
 
     'GET /company/users': 'CompanyController.getUsers',
 
@@ -428,5 +428,13 @@ module.exports.routes = {
             allowOrigins: ['*'],
             allowCredentials: false
         }
-    }
+    },
+
+    'GET /api/v1/gqtest/getresult/:user_id': {
+        controller: 'GQTestController', action: 'fetchGQAptitudeTestResult',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
 };

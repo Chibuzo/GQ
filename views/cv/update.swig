@@ -317,12 +317,13 @@
 									<div class="col-md-12 div-cv">
 										{% if resume.profile_status !== true %}
 											<div id="cv-options" class="col-md-5 col-md-offset-3" style="margin-top: 70px">
-												<button class="btn btn-fill btn-info btn-lg btn-block hidden" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
-												{#<small>* File must be in PDF, DOC or DOCX format</small><br><br>#}
+												<button class="btn btn-fill btn-info btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
+												<small>* File must be in PDF, DOC or DOCX format</small><br><br>
 												<button class="btn btnfill btn-primary btn-lg btn-block" id="edit-cv-btn"><i class="fa fa-edit"></i> Fill the Resume form</button>
 												<br>
 												<div class="alert alert-danger hidden" id="cv-alert">Your CV upload was not successful, please make sure you are uploading a file in the correct format</div>
 											</div>
+											{% include 'includes/short-form.swig' %}
 										{% endif %}	
 										{% if resume.scrapped === true %}
 											{% include 'includes/scrapped-cv.swig' %}
@@ -414,7 +415,7 @@
 												</p><br>
 												<p>Proceed to take the test and Good luck!</p>
 												<br>
-												<button class="btn btn-primary btn-lg load-test" data-test_id="1">Take test</button>
+												<button class="btn btn-primary btn-lg loadtest" data-test_id="1">Take test</button>
 											</div>
 										</div>
 
@@ -633,7 +634,7 @@
 	<script type="text/javascript" src="/js/gqTestFrontend.js?v=26"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
-	<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>
+	<!--<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>-->
 
 	<script type="text/javascript">
 		$(document).ready(function() {
@@ -663,22 +664,22 @@
 
 
 			//fetch universities
-			var schools = [], options = [];
-			$.get('/get-schools', function(d) {
-				if (d.status == 'success') {
-					d.schools.forEach(function(schl) {
-						schools.push(schl.school_name);
-					});
+			// var schools = [], options = [];
+			// $.get('/get-schools', function(d) {
+			// 	if (d.status == 'success') {
+			// 		d.schools.forEach(function(schl) {
+			// 			schools.push(schl.school_name);
+			// 		});
 
-					options = {
-						data: schools,
-						list: {
-							match: { enabled: true }
-						}
-					};
-					$(".school").easyAutocomplete(options);
-				}
-			});
+			// 		options = {
+			// 			data: schools,
+			// 			list: {
+			// 				match: { enabled: true }
+			// 			}
+			// 		};
+			// 		$(".school").easyAutocomplete(options);
+			// 	}
+			// });
 
 			// add one row to institution
 			$("#institutions").on("click", ".add-institution", function(e) {
@@ -688,7 +689,7 @@
 
 				initDatepickerField();
 
-				$(".school").easyAutocomplete(options);
+				//$(".school").easyAutocomplete(options);
 			});
 
 			// remove one row from institution
@@ -771,7 +772,7 @@
 			});
 
 
-			$("#form-resume").submit(function(e) {
+			$("#form-resume, #short-resume-form").submit(function(e) {
 				e.preventDefault();
 
 				$("#btn-submit").html("<i class='fa fa-cog fa-spin'></i> Updating...").prop('disabled', true);
@@ -945,7 +946,11 @@ $(document).ready(function() {
 			var d = JSON.parse(response);
 			if (d.status == true) {
 				$.post('/resume/changetype', function(d) {
-					location.reload(true);
+					//location.reload(true);
+					// hide cv option buttons and show mini form
+					$("#cv-options").fadeOut(function() {
+						$("#short-form").hide().removeClass("hidden").fadeIn();
+					});
 				});
 			} else {
 				$("#cv-alert").removeClass('hidden');
@@ -959,6 +964,17 @@ $(document).ready(function() {
 		$("#cv-options").fadeOut('fast', function() {
 			$("#resumeForm-container").hide().removeClass('hidden').fadeIn('fast');
 		});
+	});
+
+
+	$(".loadtest").click(function() {
+		const user_id = $(this).data('user_id');
+		const base64_user = btoa(encodeURIComponent('user_id=' + user_id).replace(/%([0-9A-F]{2})/g,
+			function toSolidBytes(match, p1) {
+				return String.fromCharCode('0x' + p1);
+			}
+		));
+		location.replace('https://api.neon.ventures/gq/cbt/?' + base64_user);
 	});
 });
 

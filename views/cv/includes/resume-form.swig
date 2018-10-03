@@ -154,7 +154,7 @@
 						<div class="row">
 							<div class="col-md-4">
 								<label>Institution</label>
-								<input type="text" name="institution[]" class="form-control school" placeholder="Name of Institution" value="{{ edu.institution }}" required>
+								<input type="text" name="institution[]" class="form-control" placeholder="Name of Institution" value="{{ edu.institution }}" required>
 							</div>
 							<div class="col-md-2">
 								<label>Honour</label>
@@ -227,7 +227,7 @@
 						<div class="row">
 							<div class="col-md-4">
 								<label>Institution</label>
-								<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution" required>
+								<input type="text" name="institution[]" class="form-control is-required" placeholder="Name of Institution" required>
 							</div>
 							<div class="col-md-2">
 								<label>Honour</label>
@@ -271,7 +271,7 @@
 					<div class="row">
 						<div class="col-md-4">
 							<label>Institution</label>
-							<input type="text" name="institution[]" class="form-control school is-required" placeholder="Name of Institution">
+							<input type="text" name="institution[]" class="form-control is-required" placeholder="Name of Institution">
 						</div>
 						<div class="col-md-2">
 							<label>Honour</label>
