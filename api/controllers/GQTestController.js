@@ -138,9 +138,13 @@ module.exports = {
 
     loadTestInstruction: function(req, res) {
         var test_id = req.param('test_id');
+        let user_id = req.param('user_id') || req.session.user_id;
+        if (isNaN(user_id)) {
+            return res.json(400, { status: 'error', message: 'User ID must be a number' });
+        }
         // dirty hack for resuming test that has sections. Currently, only applicable to GQ general test
         if (test_id == 1) {
-            GQTestService.determineTestId(req.session.userId).then(function (next_test) {
+            GQTestService.determineTestId(user_id).then(function (next_test) {
                 GQTest.find({id: next_test}).exec(function (err, test) {
                     if (err) return console.log(err);
                     if (test.length > 0) {
@@ -455,7 +459,6 @@ module.exports = {
         // Get all the answers for the test and mark user's answers
         GQTestQuestions.find({test: test_id}).exec(function(err, questions) {
             if (err) {
-                console.error(err);
                 return res.json(400, { status: 'error', message: err });
             }
 
@@ -483,6 +486,12 @@ module.exports = {
                     if (test_id == 3) {
                         // update candidate's resume
                         Resume.update({user: user_id}, {test_status: 'true'}).exec(function (err, resume) {
+                            if (err) {
+                                return res.json(400, { status: 'error', message: err });
+                            }
+                            if (resume.length < 1) {
+                                return res.json(400, { status: 'error', message: 'Something unsual happened - User likely doesn\'t exist' });
+                            }
                             if (resume[0].status != 'Complete' && resume[0].video_status == true && resume[0].profile_status == true) {
                                 Resume.update({ id: resume.id }, { status: 'Complete' }).exec(function () {});
                             }

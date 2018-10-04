@@ -163,7 +163,7 @@ module.exports = {
             region: 'us-east-1',
             bucket: 'getqualified',
             headers: {
-                ContentType: 'video/webm'
+                ContentType: 'video/*'
             }
         }, function (err, upfile) {
             if (err) {

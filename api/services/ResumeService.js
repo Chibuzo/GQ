@@ -75,10 +75,10 @@ module.exports = {
 
 
     fetchScrappedCV: function(user_id) {
-        var request = require("request");
-        var qs = require('querystring');
+        const request = require("request");
+        //var qs = require('querystring');
 
-        var data = { user_id: user_id };
+        //var data = { user_id: user_id };
         var options = {
             method: "POST",
             url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/get",

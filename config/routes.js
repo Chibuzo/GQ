@@ -390,7 +390,7 @@ module.exports.routes = {
     },
 
     // GQ Aptitude Test Routes (this is bullshit)
-    'GET /api/v1/gqtest/getinstruction/:test_id': {
+    'POST /api/v1/gqtest/getinstruction': {
         controller: 'GQTestController', action: 'loadTestInstruction',
         cors: {
             allowOrigins: ['*'],

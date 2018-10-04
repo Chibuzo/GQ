@@ -607,6 +607,33 @@ module.exports = {
             });
             return res.ok();
         });
+    },
+
+    getTestInProgress: function(req, res) {
+        return GQTestResult.find({test: [1, 2, 3]})
+            .then(gqTestResults => {
+                let usersWithTests = _.groupBy(gqTestResults, (testResult) => {
+                    return testResult.candidate;
+                });
+
+                let usersWithSomeTests = _.filter(usersWithTests, (tests, candidateId) => {
+                    return tests.length < 3;
+                });
+
+                let usersWithSomeTestsIds = _.map(usersWithSomeTests, (testsArr, candidateId) => {
+                    // just in case there by a result without a candidate
+                    var id = parseInt(testsArr[0].candidate);
+                    if (id > 0) return id;
+                });
+                //console.log(usersWithSomeTestsIds);
+                const fs = require('fs');
+                fs.writeFile("sometest.json", JSON.stringify(usersWithSomeTestsIds), 'utf8', (err)=>{
+                    if(err) console.log(err)
+                    else console.log('File saved');
+                    return res.ok();
+                });
+
+            });
     }
 };
 
