@@ -296,6 +296,15 @@ module.exports = {
         //module.exports.sendMail(emails, subject, template, data);
     },
 
+    notifyMe: function(count) {
+        var data = {
+            count: count,
+        };
+        var subject = "GQ Weekly Job Statistics Sent to Guardian";
+        var template = 'GJstat';
+        module.exports.sendMail('chibuxo.henry@gmail.com', subject, template, data);
+    },
+
     sendMail: function(to, subject, template, data) {
         let mailOptions = {
             from: '"Get Qualified" <' + SENT_FROM + '>',

@@ -1,7 +1,10 @@
 const schedule = require('node-schedule');
 
 module.exports.registerCronJobs = function() {
-    scheduleGuardianJobsFilteringUpdates();
+    // send filtering statistics every monday by 7:58am
+    schedule.scheduleJob({ hour: 6, minute: 58, dayOfWeek: 1 }, function() {
+        scheduleGuardianJobsFilteringUpdates();
+    });
 }
 
 function scheduleGuardianJobsFilteringUpdates() {
@@ -10,20 +13,19 @@ function scheduleGuardianJobsFilteringUpdates() {
         if (err) {
             return;
         }
-        console.log('Number of jobs: ' + jobids.length);
         const request = require("request");
         jobids.forEach(id => {
-            JobApiService.returnFilteredStat(id, 'standard').then(stat => {
+            JobApiService.returnFilteredStat(id.id, 'standard').then(stat => {
                 let options = {
                     method: "POST",
                     url: "http://jobs.guardian.ng/v1/api/job-statistics",
-                    form: {
-                        "uathentication": {
+                    form: JSON.stringify({
+                        "authentication": {
                             "email": "webmaster@getqualified.work",
                             "password": "G3tQu@lified"
                         },
                         "data": stat,
-                    },
+                    }),
                     headers: {
                         "Content-Type": "application/json"
                     }
@@ -33,8 +35,8 @@ function scheduleGuardianJobsFilteringUpdates() {
                         return;
                     }
                     try {
-                        var data = JSON.parse(body);
-                        return console.log(data.data);
+                        //var data = JSON.parse(body);
+                        return; //console.log(data);
                     } catch(err) {
                         console.log(err.message);
                     }
@@ -43,5 +45,6 @@ function scheduleGuardianJobsFilteringUpdates() {
                 // umuazi!
             });
         });
+        sendMail.notifyMe(jobids.length);
     });
 }

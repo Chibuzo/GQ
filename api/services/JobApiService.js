@@ -210,7 +210,7 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
                 if (err) {
-                    return reject(eer);
+                    return reject(err);
                 }
                 if (!job)  return reject("The supplied job ID doesn't match any existing job");
                 
