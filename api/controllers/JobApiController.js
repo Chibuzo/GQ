@@ -68,7 +68,7 @@ module.exports = {
 
 
     returnJobUrl: function(req, res) {
-        var job_id = req.param('job_id');
+        var job_id = req.param('jobID');
         JobApiService.returnJobUrl(job_id).then(function(url) {
             return res.json(200, { status: 'success', jobID: job_id, joburl: url });
         }).catch(function(err) {
@@ -77,7 +77,7 @@ module.exports = {
     },
 
     fetchJobStat: function(req, res) {
-        if (isNaN(req.param('job_id'))) {
+        if (isNaN(req.param('jobID'))) {
             return res.json(400, { status: 'error', message: 'Job ID must be a number' });
         }
            

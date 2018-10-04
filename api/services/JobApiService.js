@@ -169,7 +169,7 @@ module.exports = {
                         top_five_scores: first5,
                         least_five_scores: bottom5,
                         assessed_candidates: scores_length,
-                        average_score: (sum_score / scores_length).toFixed(1)
+                        average_score: scores_length > 0 ? (sum_score / scores_length).toFixed(1) : 0
                     };
                     return resolve(test_stat);
                 });
@@ -178,8 +178,10 @@ module.exports = {
     },
 
     getGenderStat: function(applicants) {
-        const sql = `SELECT gender, COUNT(*) AS num FROM resume WHERE user IN (${applicants.toString()}) GROUP BY gender ORDER by gender`;
         return new Promise(function(resolve, reject) {
+            if (applicants.length < 1) return resolve([]);
+
+            const sql = `SELECT gender, COUNT(*) AS num FROM resume WHERE user IN (${applicants.toString()}) GROUP BY gender ORDER BY gender`;
             Resume.query(sql, function(err, genders) {
                 if (err) {
                     return reject(err);
@@ -190,8 +192,10 @@ module.exports = {
     },
 
     getGeographicalStat: function(applicants) {
-        const sql = `SELECT r_state, COUNT(*) AS num FROM resume WHERE user IN (${applicants.toString()}) AND r_state <> '' GROUP BY r_state ORDER by num DESC`;
         return new Promise(function(resolve, reject) {
+            if (applicants.length < 1) return resolve([]);
+
+            const sql = `SELECT r_state, COUNT(*) AS num FROM resume WHERE user IN (${applicants.toString()}) AND r_state <> '' GROUP BY r_state ORDER by num DESC`;
             Resume.query(sql, function(err, states) {
                 if (err) {
                     return reject(err);
@@ -231,8 +235,8 @@ module.exports = {
                         applications: applicants.length,
                         assessed_candidates: test_stat.assessed_candidates,
                         average_score: test_stat.average_score,
-                        number_of_males: gender_stat[1].num,
-                        number_of_females: gender_stat[0].num,
+                        number_of_males: gender_stat.length < 1 ? 0 : gender_stat[1].num,
+                        number_of_females: gender_stat.length < 1 ? 0 : gender_stat[0].num,
                         geographical_stat: states,
                         top_five_scores: test_stat.top_five_scores,
                         least_five_scores: test_stat.least_five_scores
