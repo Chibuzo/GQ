@@ -10,10 +10,9 @@ function scheduleGuardianJobsFilteringUpdates() {
         if (err) {
             return;
         }
-        console.log('Number of jobs: ' + jobids.length);
         const request = require("request");
         jobids.forEach(id => {
-            JobApiService.returnFilteredStat(id, 'standard').then(stat => {
+            JobApiService.returnFilteredStat(id.id, 'standard').then(stat => {
                 let options = {
                     method: "POST",
                     url: "http://jobs.guardian.ng/v1/api/job-statistics",
@@ -34,7 +33,7 @@ function scheduleGuardianJobsFilteringUpdates() {
                     }
                     try {
                         var data = JSON.parse(body);
-                        return console.log(data.data);
+                        return; // console.log(data.data);
                     } catch(err) {
                         console.log(err.message);
                     }
