@@ -35,8 +35,8 @@ function scheduleGuardianJobsFilteringUpdates() {
                         return;
                     }
                     try {
-                        //var data = JSON.parse(body);
-                        return; //console.log(data);
+                        var data = JSON.parse(body);
+                        return; // console.log(data.data);
                     } catch(err) {
                         console.log(err.message);
                     }

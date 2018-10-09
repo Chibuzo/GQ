@@ -37,13 +37,13 @@ module.exports = {
                 job_id: job.jobID,
                 source: 'GJ',
                 require_video: false,
-                subscription: job.filter_category,
+                subscription: job.filter_category || 'basic',
                 closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
            
             Job.findOrCreate({ job_id: job.jobID, company: coy_id }, data).exec(function(err, new_job) {
                 if (err) return reject(err);
-                return resolve(true);
+                return resolve(new_job.id);
                 //return resolve('https://getqualified.work/job/' + new_job.id + '/' + new_job.job_title.split(' ').join('-'));
             });
         });
@@ -57,7 +57,7 @@ module.exports = {
 
     returnJobUrl: function(job_id) {
         return new Promise(function(resolve, reject) {
-            Job.findOne({ job_id: job_id}).exec(function(err, job) {
+            Job.findOne({ id: job_id }).exec(function(err, job) {
                 if (job) {
                     return resolve('https://getqualified.work/job/' + job.id + '/' + job.job_title.split(' ').join('-'));
                 } else {
@@ -212,7 +212,7 @@ module.exports = {
                 if (err) {
                     return reject(err);
                 }
-                if (!job)  return reject("The supplied job ID doesn't match any existing job");
+                if (!job) return reject("The supplied job ID doesn't match any existing job");
                 
                 let applicants = job.applications.map(app => app.applicant);
             

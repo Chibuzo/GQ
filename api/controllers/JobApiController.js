@@ -15,9 +15,10 @@ module.exports = {
         }
         JobApiService.authenticate(data.authentication.ID).then(function(auth) {
             if (auth.status === true) {
-                JobApiService.saveJob(data.job, auth.company.id).then(function(status) {
-                    return res.json(201, { status: 'success' });
+                JobApiService.saveJob(data.job, auth.company.id).then(function(job_id) {
+                    return res.json(201, { status: 'success', jobID: job_id });
                 }).catch(function(err) {
+                    console.log(err)
                     return res.json(400, { status: 'error', message: err });
                 });
             }
