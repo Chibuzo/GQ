@@ -208,7 +208,7 @@ module.exports = {
 
     returnFilteredStat(job_id, mode = 'basic') {
         return new Promise(function(resolve, reject) {
-            Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
+            Job.findOne({ job_id: job_id, source: 'GJ' }).populate('applications').exec(function(err, job) {
                 if (err) {
                     return reject(err);
                 }
