@@ -138,7 +138,7 @@ module.exports = {
 
     loadTestInstruction: function(req, res) {
         var test_id = req.param('test_id');
-        let user_id = req.param('user_id') || req.session.user_id;
+        let user_id = req.param('user_id') || req.session.userId;
         if (isNaN(user_id)) {
             return res.json(400, { status: 'error', message: 'User ID must be a number' });
         }
@@ -210,7 +210,7 @@ module.exports = {
 
     saveTestState: function(req, res) {
         var q = req.param;
-        let user_id = q('user_id') ? q('user_id') : req.session.user_id;
+        let user_id = q('user_id') ? q('user_id') : req.session.userId;
         if (isNaN(user_id)) {
             return res.json(400, { status: 'error', message: 'User ID must be a number' });
         }
@@ -424,7 +424,7 @@ module.exports = {
     // },
 
     markGQ: function(req, res) {
-        let user_id = req.param('user_id') ? req.param('user_id') : req.session.user_id;
+        let user_id = req.param('user_id') ? req.param('user_id') : req.session.userId;
         if (isNaN(user_id)) {
             return res.json(400, { status: 'error', message: 'User ID must be a number' });
         }

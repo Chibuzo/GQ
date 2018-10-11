@@ -415,7 +415,7 @@
 												</p><br>
 												<p>Proceed to take the test and Good luck!</p>
 												<br>
-												<button class="btn btn-primary btn-lg loadtest" data-user_id="{{ resume.user.id }}" data-test_id="1">Take test</button>
+												<button class="btn btn-primary btn-lg load-test" data-user_id="{{ resume.user.id }}" data-test_id="1">Take test</button>
 											</div>
 										</div>
 
@@ -631,7 +631,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=26"></script>
+	<script type="text/javascript" src="/js/gqTestFrontend.js?v=27"></script>
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<!--<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>-->
