@@ -61,47 +61,47 @@ module.exports = {
         var request = require("request");
         var qs = require('querystring');
 
-        var data = {       	
-            jobID: 60,
-            email: 'c.hibuzo.henry@gmail.com',
-            fullname: 'Frank Eneh',
-            phone: '0804885754',
-            gender: 'male',
-            dob: '1986-04-16',
-            address: 'No 3 moore street',
-            country: 'Nigeria',
-            state: 'Kwara',
-            city: 'Kuba',
-            professional_summary: 'I am me…',
-            employment_status: 'Not employed/Employed',
-            current_annual_salary: '1,000,000',
-            expected_annual_salary: '1,200,000'
-        };
-
-        // var data = {
-        //     "request": {
-        //         "authentication": {
-        //             "email": "uzo.systems@gmail.com"
-        //         },
-        //         "job":
-        //           {
-        //                 "company": {
-        //                         "company_name": "GetQualified",
-        //                         "contact_person": "John Doe",
-        //                         "contact_email": "email.com",
-        //                         "contact_phone": "09094758784"
-        //                 },
-        //               "job_title": "HR Manager",
-        //               "job_location": "Lagos, Ikeja",
-        //               "job_description": "This job  is job",
-        //               "requirements":  ["a degree","3 years experience"],
-        //               "qualifications": ["MBA"],
-        //               "job_level": "Entry Level",
-        //               "closing_date": "2018-08-20",
-        //               "jobID": "1234"
-        //           }
-        //     }
+        // var data = {       	
+        //     jobID: 60,
+        //     email: 'c.hibuzo.henry@gmail.com',
+        //     fullname: 'Frank Eneh',
+        //     phone: '0804885754',
+        //     gender: 'male',
+        //     dob: '1986-04-16',
+        //     address: 'No 3 moore street',
+        //     country: 'Nigeria',
+        //     state: 'Kwara',
+        //     city: 'Kuba',
+        //     professional_summary: 'I am me…',
+        //     employment_status: 'Not employed/Employed',
+        //     current_annual_salary: '1,000,000',
+        //     expected_annual_salary: '1,200,000'
         // };
+
+        var data = {
+            "request": {
+                "authentication": {
+                    "email": "uzo.systems@gmail.com"
+                },
+                "job":
+                  {
+                        "company": {
+                                "company_name": "GetQualified",
+                                "contact_person": "John Doe",
+                                "contact_email": "email.com",
+                                "contact_phone": "09094758784"
+                        },
+                      "job_title": "HR Manager",
+                      "job_location": "Lagos, Ikeja",
+                      "job_description": "This job  is job",
+                      "requirements":  ["a degree","3 years experience"],
+                      "qualifications": ["MBA"],
+                      "job_level": "Entry Level",
+                      "closing_date": "2018-08-20",
+                      "jobID": "1234"
+                  }
+            }
+        };
 
         var options = {
             method: "POST",
@@ -607,6 +607,33 @@ module.exports = {
             });
             return res.ok();
         });
+    },
+
+    getTestInProgress: function(req, res) {
+        return GQTestResult.find({test: [1, 2, 3]})
+            .then(gqTestResults => {
+                let usersWithTests = _.groupBy(gqTestResults, (testResult) => {
+                    return testResult.candidate;
+                });
+
+                let usersWithSomeTests = _.filter(usersWithTests, (tests, candidateId) => {
+                    return tests.length < 3;
+                });
+
+                let usersWithSomeTestsIds = _.map(usersWithSomeTests, (testsArr, candidateId) => {
+                    // just in case there by a result without a candidate
+                    var id = parseInt(testsArr[0].candidate);
+                    if (id > 0) return id;
+                });
+                //console.log(usersWithSomeTestsIds);
+                const fs = require('fs');
+                fs.writeFile("sometest.json", JSON.stringify(usersWithSomeTestsIds), 'utf8', (err)=>{
+                    if(err) console.log(err)
+                    else console.log('File saved');
+                    return res.ok();
+                });
+
+            });
     }
 };
 

@@ -22,13 +22,13 @@ module.exports = {
                         if (row.getCell('B').value.length < 5) continue;
                         var data = {
                             test: test_id,
-                            question: row.getCell('B').value,
-                            opt_a: row.getCell('C').value,
-                            opt_b: row.getCell('D').value,
-                            opt_c: row.getCell('E').value,
-                            opt_d: row.getCell('F').value,
-                            opt_e: row.getCell('G').value,
-                            answer: row.getCell('H').value
+                            question: row.getCell('A').value,
+                            opt_a: row.getCell('B').value,
+                            opt_b: row.getCell('C').value,
+                            opt_c: row.getCell('D').value,
+                            opt_d: row.getCell('E').value,
+                            opt_e: row.getCell('F').value,
+                            answer: row.getCell('G').value
                         };
                         GQTestQuestions.create(data).exec(function (err, quest) {});
                     }

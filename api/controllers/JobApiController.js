@@ -15,9 +15,10 @@ module.exports = {
         }
         JobApiService.authenticate(data.authentication.ID).then(function(auth) {
             if (auth.status === true) {
-                JobApiService.saveJob(data.job, auth.company.id).then(function(status) {
-                    return res.json(201, { status: 'success' });
+                JobApiService.saveJob(data.job, auth.company.id).then(function(job_id) {
+                    return res.json(201, { status: 'success', jobID: job_id });
                 }).catch(function(err) {
+                    console.log(err)
                     return res.json(400, { status: 'error', message: err });
                 });
             }
@@ -68,7 +69,7 @@ module.exports = {
 
 
     returnJobUrl: function(req, res) {
-        var job_id = req.param('job_id');
+        var job_id = req.param('jobID');
         JobApiService.returnJobUrl(job_id).then(function(url) {
             return res.json(200, { status: 'success', jobID: job_id, joburl: url });
         }).catch(function(err) {
@@ -77,7 +78,7 @@ module.exports = {
     },
 
     fetchJobStat: function(req, res) {
-        if (isNaN(req.param('job_id'))) {
+        if (isNaN(req.param('jobID'))) {
             return res.json(400, { status: 'error', message: 'Job ID must be a number' });
         }
            

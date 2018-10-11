@@ -204,7 +204,7 @@ module.exports = {
 
         var data = {
             user: user.fullname,
-            url: BASE_URL + 'user/resetpassword/' + email_b64 + '/' + hash
+            url: 'http://35.177.19.130:1337/user/resetpassword/' + email_b64 + '/' + hash
         };
         var subject = "Your GetQualified Password Reset Link";
         var template = 'passwordReset';
@@ -294,6 +294,15 @@ module.exports = {
             //console.log('Message sent: %s', info.messageId);
         });
         //module.exports.sendMail(emails, subject, template, data);
+    },
+
+    notifyMe: function(count) {
+        var data = {
+            count: count,
+        };
+        var subject = "GQ Weekly Job Statistics Sent to Guardian";
+        var template = 'GJstat';
+        module.exports.sendMail('chibuxo.henry@gmail.com', subject, template, data);
     },
 
     sendMail: function(to, subject, template, data) {
