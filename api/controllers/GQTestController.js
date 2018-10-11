@@ -763,5 +763,46 @@ module.exports = {
             }
             return res.json(200, { status: 'success', data: resuilt });
         });
+    },
+
+    createToken: function(req, res) {
+        User.find({ id: req.session.userId }).exec(function(err, user) {
+            if (err) return res.redirect('/login'); // nigga fucking around - we don't play here
+
+            if (user.length > 0) {
+                const crypto = require('crypto');
+                const secret = 'this is bullshit';
+                const token = crypto.createHmac('sha256', secret).update(user[0].email).digest('hex');
+
+                TestToken.destroy({ user_id: req.session.userId }).exec(function() {
+                    TestToken.create({ token: token, user_id: user[0].id }).exec(function(err) {
+                        if (err) return res.serverError(err);
+
+                        return res.redirect('https://api.neon.ventures/gq/cbt/' + token);
+                    });
+                });
+            }
+            return res.ok();
+        });
+    },
+
+    authencateExternalUser: function(req, res) {
+        const token = req.param('token');
+
+        TestToken.find({ token: token }).exec(function(err, tok) {
+            if (err) return res.json(400, { status: 'error', message: err });
+
+            if (tok.length > 0) {
+                let t = new Date(tok[0].createdAt);
+                t = t.setMinutes(t.getMinutes() + 60);
+                if (new Date().getTime() > new Date(t).getTime()) {
+                    return res.json(400, { status: 'error', message: 'Invalid token' });
+                } else {
+                    return res.json(200, { status: 'success', user_id: tok[0].user_id });
+                }
+            } else {
+                return res.json(404, { status: 'error', message: 'Token not found' });
+            }
+        });
     }
 };
