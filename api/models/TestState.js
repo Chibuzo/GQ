@@ -43,6 +43,11 @@ module.exports = {
         answered_questions: {
             type: 'string',
             columnName: 'answered_questions'
+        },
+
+        unanswered_questions: {
+            type: 'string',
+            columnName: 'unanswered_questions'
         }
     }
 };
