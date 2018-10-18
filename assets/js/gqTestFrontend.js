@@ -303,7 +303,7 @@ function sendAnswers(proctorFeedback) {
         no_of_questions: questions.length,
         userAnswers: userAnswers,
         invigilationTracking: invigilationTracking,
-        proctor_session: proctorSessId
+        proctorSessId: proctorSessId
     }, function (d) {        
         if (d.status.trim() == 'success') {
             amplitude.getInstance().logEvent("Successfully Submited Test " + TEST_ID, {
