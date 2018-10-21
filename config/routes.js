@@ -327,6 +327,10 @@ module.exports.routes = {
 
     'GET /getstates': 'BatchController.getStates',
 
+    'GET /viewresume/:id': 'BatchController.viewResume',
+
+    'GET /processcv': 'BatchController.processCVs',
+
 
     /*****************************************************
      * GQ API v1 routes
