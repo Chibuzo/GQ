@@ -208,9 +208,9 @@ module.exports = {
 
     returnFilteredStat(job_id, mode = 'basic') {
         return new Promise(function(resolve, reject) {
-            Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
+            Job.findOne({ id: job_id, source: 'GJ' }).populate('applications').exec(function(err, job) {
                 if (err) {
-                    return reject(eer);
+                    return reject(err);
                 }
                 if (!job) return reject("The supplied job ID doesn't match any existing job");
                 

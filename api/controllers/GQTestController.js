@@ -178,7 +178,8 @@ module.exports = {
 
     loadTest: function(req, res) {
         var test_id = req.param('test_id');
-        GQTest.find({ id: test_id }).populate('questions').exec(function(err, gqtest) {
+        //GQTest.find({ id: test_id }).populate('questions').exec(function(err, gqtest) {
+        GQTestQuestions.query('SELECT id, question, image_file, opt_a, opt_b, opt_c, opt_d, opt_e FROM gqtestquestions ORDER BY RAND() LIMIT 20', function(err, gqtest) {    
             if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
 
             if (gqtest.length < 0) {
@@ -187,7 +188,7 @@ module.exports = {
             let questions = [];
 
             // exclude answer from questions
-            gqtest[0].questions.forEach(function(quest) {
+            gqtest.forEach(function(quest) {
                 questions.push({
                     id: quest.id,
                     question: quest.question,
@@ -219,6 +220,7 @@ module.exports = {
             test: q('test_id'),
             time_elapsed: q('current_time'),
             answered_questions: q('answered_questions') ? JSON.stringify(q('answered_questions')) : '',
+            unanswered_questions: q('unanswered_questions') ? JSON.stringify(q('unanswered_questions')) : '',
             proctor_data: JSON.stringify(q('proctor_data')),
             proctor_session: q('proctor_session')
         };
@@ -238,28 +240,40 @@ module.exports = {
     findSavedTest: function(req, res) {
         let user_id = req.session.userId ? req.session.userId : req.param('user_id');
 
-        let sql = "SELECT answered_questions, time_elapsed, proctor_data, proctor_session FROM teststate WHERE candidate = ? AND test = ?";
+        let sql = "SELECT answered_questions, unanswered_questions, time_elapsed, proctor_data, proctor_session FROM teststate WHERE candidate = ? AND test = ?";
         TestState.query(sql, [ user_id, req.param('test_id') ], function(err, old_test) {    
             if (err) {
                 return res.json(400, { status: 'error', message: err });
             }
-            GQTest.find({ id: req.param('test_id') }).populate('questions').exec(function(err, gqtest) {
+            let unanswered_questions = JSON.parse(old_test[0].unanswered_questions);
+            //let limit = 20 - unanswered_questions.length;
+            // GQTestQuestions.find({ test: req.param('test_id'), id: { '!': unanswered_questions } }).limit(limit).exec(function(err, gqtest) {
+            GQTestQuestions.find({ test: req.param('test_id') }).exec(function(err, test_questions) {    
                 if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
-                let questions = [];
-    
+                
+                // remove unanswered questions
+                let fresh_questions = test_questions.filter(q => unanswered_questions.indexOf(q.id) === -1);
+
+                // complete answered questions with more fresh questions
+                let answered_questions_id = JSON.parse(old_test[0].answered_questions).map(aq => aq.quest_id);
+                let answered_questions = fresh_questions.filter(q => answered_questions_id.indexOf(q.id) !== -1);
+                    
                 // exclude answer from questions
-                gqtest[0].questions.forEach(function(quest) {
-                    questions.push({
-                        id: quest.id,
-                        question: quest.question,
-                        image_file: quest.image_file,
-                        opt_a: quest.opt_a,
-                        opt_b: quest.opt_b,
-                        opt_c: quest.opt_c,
-                        opt_d: quest.opt_d,
-                        opt_e: quest.opt_e
-                    });
-                });
+                for (i = 0; i < fresh_questions.length; i++) {    
+                    if (answered_questions_id.indexOf(fresh_questions[i].id) === -1) {
+                        answered_questions.push({
+                            id: fresh_questions[i].id,
+                            question: fresh_questions[i].question,
+                            image_file: fresh_questions[i].image_file,
+                            opt_a: fresh_questions[i].opt_a,
+                            opt_b: fresh_questions[i].opt_b,
+                            opt_c: fresh_questions[i].opt_c,
+                            opt_d: fresh_questions[i].opt_d,
+                            opt_e: fresh_questions[i].opt_e
+                        });
+                    }
+                    if (answered_questions.length === 20) break;
+                }
 
                 let prev_attempt = {}; 
                 if (old_test.length > 0) {
@@ -270,7 +284,7 @@ module.exports = {
                         proctor_session: old_test[0].proctor_session
                     };
                 }
-                return res.json(200, { status: 'success', questions: questions, data: prev_attempt });
+                return res.json(200, { status: 'success', questions: answered_questions, data: prev_attempt });
             });
         });
     },
@@ -762,6 +776,47 @@ module.exports = {
                 return res.json(400, { status: 'error', message: err });
             }
             return res.json(200, { status: 'success', data: resuilt });
+        });
+    },
+
+    createToken: function(req, res) {
+        User.find({ id: req.session.userId }).exec(function(err, user) {
+            if (err) return res.redirect('/login'); // nigga fucking around - we don't play here
+
+            if (user.length > 0) {
+                const crypto = require('crypto');
+                const secret = 'this is bullshit';
+                const token = crypto.createHmac('sha256', secret).update(user[0].email).digest('hex');
+
+                TestToken.destroy({ user_id: req.session.userId }).exec(function() {
+                    TestToken.create({ token: token, user_id: user[0].id }).exec(function(err) {
+                        if (err) return res.serverError(err);
+
+                        return res.redirect('https://api.neon.ventures/gq/cbt/' + token);
+                    });
+                });
+            }
+            return res.ok();
+        });
+    },
+
+    authencateExternalUser: function(req, res) {
+        const token = req.param('token');
+
+        TestToken.find({ token: token }).exec(function(err, tok) {
+            if (err) return res.json(400, { status: 'error', message: err });
+
+            if (tok.length > 0) {
+                let t = new Date(tok[0].createdAt);
+                t = t.setMinutes(t.getMinutes() + 60);
+                if (new Date().getTime() > new Date(t).getTime()) {
+                    return res.json(400, { status: 'error', message: 'Invalid token' });
+                } else {
+                    return res.json(200, { status: 'success', user_id: tok[0].user_id });
+                }
+            } else {
+                return res.json(404, { status: 'error', message: 'Token not found' });
+            }
         });
     }
 };

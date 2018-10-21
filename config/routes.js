@@ -149,6 +149,8 @@ module.exports.routes = {
 
     'POST /gqtest/createProctorSession': 'ProctorRecordController.startSession',
 
+    'GET /gqtest/createtoken': 'GQTestController.createToken',
+
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',
 
     'GET /proctor/session': 'ProctorSessionController.getProctorSession',
@@ -436,6 +438,14 @@ module.exports.routes = {
 
     'GET /api/v1/gqtest/getresult/:user_id': {
         controller: 'GQTestController', action: 'fetchGQAptitudeTestResult',
+        cors: {
+            allowOrigins: ['*'],
+            allowCredentials: false
+        }
+    },
+
+    'POST /api/v1/gqtest/validatetoken': {
+        controller: 'GQTestController', action: 'authencateExternalUser',
         cors: {
             allowOrigins: ['*'],
             allowCredentials: false

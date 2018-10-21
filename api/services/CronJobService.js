@@ -1,7 +1,10 @@
 const schedule = require('node-schedule');
 
 module.exports.registerCronJobs = function() {
-    scheduleGuardianJobsFilteringUpdates();
+    // send filtering statistics every monday by 7:58am
+    schedule.scheduleJob({ hour: 6, minute: 58, dayOfWeek: 1 }, function() {
+        scheduleGuardianJobsFilteringUpdates();
+    });
 }
 
 function scheduleGuardianJobsFilteringUpdates() {
@@ -16,13 +19,13 @@ function scheduleGuardianJobsFilteringUpdates() {
                 let options = {
                     method: "POST",
                     url: "http://jobs.guardian.ng/v1/api/job-statistics",
-                    form: {
-                        "uathentication": {
+                    form: JSON.stringify({
+                        "authentication": {
                             "email": "webmaster@getqualified.work",
                             "password": "G3tQu@lified"
                         },
                         "data": stat,
-                    },
+                    }),
                     headers: {
                         "Content-Type": "application/json"
                     }
@@ -42,5 +45,6 @@ function scheduleGuardianJobsFilteringUpdates() {
                 // umuazi!
             });
         });
+        sendMail.notifyMe(jobids.length);
     });
 }
