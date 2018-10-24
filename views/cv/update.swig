@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block body %}
-<link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
-<link href="/styles/proctor-style.css" rel="stylesheet" />
+<!--<link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
+<link href="/styles/proctor-style.css" rel="stylesheet" />-->
 <!--<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />-->
 <link href="/ext/pavp.css" rel="stylesheet" />
 <!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
@@ -325,7 +325,7 @@
 											</div>
 											{% include 'includes/short-form.swig' %}
 										{% endif %}	
-										{% if resume.scrapped === true %}
+										{% if cv && resume.scrapped === true %}
 											{% include 'includes/scrapped-cv.swig' %}
 										{% else %}	
 											{% include 'includes/resume-form.swig' %}
@@ -631,7 +631,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=27"></script>
+	<!--<script type="text/javascript" src="/js/gqTestFrontend.js?v=27"></script>-->
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<!--<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>-->

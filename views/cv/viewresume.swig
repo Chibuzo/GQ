@@ -85,7 +85,7 @@
 						<div class="tab-content">
 							<!-- Resume -->
 							<div class="tab-pane fade in active" id="resume">
-								{% if resume.scrapped === true %}
+								{% if cv && resume.scrapped === true %}
 									<div class="row">
 										<div class="col-md-12 div-cv">
 											{% include 'includes/scrapped-cv.swig' %}
@@ -198,7 +198,7 @@
 </div>
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
+<!--<script type="text/javascript" src="/js/gqTestFrontend.js"></script>-->
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".applicants").addClass('active');
