@@ -179,7 +179,8 @@ module.exports = {
     loadTest: function(req, res) {
         var test_id = req.param('test_id');
         //GQTest.find({ id: test_id }).populate('questions').exec(function(err, gqtest) {
-        GQTestQuestions.query('SELECT id, question, image_file, opt_a, opt_b, opt_c, opt_d, opt_e FROM gqtestquestions ORDER BY RAND() LIMIT 20', function(err, gqtest) {    
+        let sql = 'SELECT duration, gqt.id, question, image_file, opt_a, opt_b, opt_c, opt_d, opt_e FROM gqtest gq JOIN gqtestquestions gqt ON gq.id = gqt.test WHERE test = ? ORDER BY RAND() LIMIT 20';    
+        GQTestQuestions.query(sql, [ test_id ], function(err, gqtest) {    
             if (err) return res.json(200, { status: 'error', message: "Couldn't load test questions at this time" });
 
             if (gqtest.length < 0) {
@@ -203,7 +204,7 @@ module.exports = {
             return res.json(200, {
                 status: 'success',
                 questions: questions,
-                test_id: gqtest[0].id,
+                test_id: test_id,
                 duration: gqtest[0].duration
             });
         });
@@ -245,7 +246,9 @@ module.exports = {
             if (err) {
                 return res.json(400, { status: 'error', message: err });
             }
-            let unanswered_questions = JSON.parse(old_test[0].unanswered_questions);
+            if (old_test.length < 1) return res.json(200, { status: 'success', data: {} });
+
+            let unanswered_questions = old_test[0].unanswered_questions.length > 2 ? JSON.parse(old_test[0].unanswered_questions) : [];
             //let limit = 20 - unanswered_questions.length;
             // GQTestQuestions.find({ test: req.param('test_id'), id: { '!': unanswered_questions } }).limit(limit).exec(function(err, gqtest) {
             GQTestQuestions.find({ test: req.param('test_id') }).exec(function(err, test_questions) {    
@@ -255,7 +258,7 @@ module.exports = {
                 let fresh_questions = test_questions.filter(q => unanswered_questions.indexOf(q.id) === -1);
 
                 // complete answered questions with more fresh questions
-                let answered_questions_id = JSON.parse(old_test[0].answered_questions).map(aq => aq.quest_id);
+                let answered_questions_id = old_test[0].answered_questions.length > 2 ? JSON.parse(old_test[0].answered_questions).map(aq => aq.quest_id) : [];
                 let answered_questions = fresh_questions.filter(q => answered_questions_id.indexOf(q.id) !== -1);
                     
                 // exclude answer from questions
@@ -439,14 +442,25 @@ module.exports = {
 
     markGQ: function(req, res) {
         let user_id = req.param('user_id') ? req.param('user_id') : req.session.user_id;
+        let test_id = parseInt(req.param('test_id'));
+        let no_of_questions = req.param('no_of_questions');
+        let proctorSessId = req.param('proctorSessId');
+
         if (isNaN(user_id)) {
             return res.json(400, { status: 'error', message: 'User ID must be a number' });
         }
-        let test_id = parseInt(req.param('test_id'));
-        let no_of_questions = req.param('no_of_questions');
+        if (isNaN(test_id)) {
+            return res.json(400, { status: 'error', message: 'Test ID must be a number' });
+        }
+        if (isNaN(no_of_questions)) {
+            return res.json(400, { status: 'error', message: 'Number of questions must be a number' });
+        }
+        if (isNaN(proctorSessId)) {
+            return res.json(400, { status: 'error', message: 'Proctor session must be a number' });
+        }
+       
         let userAnswers = req.param("userAnswers") || [];
 		let invigilationTracking = req.param('invigilationTracking') || {};
-        let proctorSessId = req.param('proctor_session');
 
         let score = 0;
 
@@ -670,6 +684,8 @@ module.exports = {
                     sails.log.error(err);
                     return res.json(400, { status: 'error', message: err });
                 });
+            } else {
+                return res.json(400, { status: 'error', message: 'Invalid proctor session.' });
             }
             if (fs.existsSync(path)) {
                 fs.unlinkSync(path);
@@ -795,8 +811,9 @@ module.exports = {
                         return res.redirect('https://api.neon.ventures/gq/cbt/' + token);
                     });
                 });
+            } else {
+                return res.ok();
             }
-            return res.ok();
         });
     },
 

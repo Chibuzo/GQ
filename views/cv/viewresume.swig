@@ -198,7 +198,7 @@
 </div>
 
 {% block scriptTag %}
-<script type="text/javascript" src="/js/gqTestFrontend.js"></script>
+<!--<script type="text/javascript" src="/js/gqTestFrontend.js"></script>-->
 <script type="text/javascript">
 $(document).ready(function() {
 	$(".applicants").addClass('active');

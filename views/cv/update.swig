@@ -325,7 +325,7 @@
 											</div>
 											{% include 'includes/short-form.swig' %}
 										{% endif %}	
-										{% if resume.scrapped === true %}
+										{% if cv && resume.scrapped === true %}
 											{% include 'includes/scrapped-cv.swig' %}
 										{% else %}	
 											{% include 'includes/resume-form.swig' %}
@@ -629,7 +629,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<!--<script type="text/javascript" src="/js/gqTestFrontend.js?v=26"></script>-->
+	<!--<script type="text/javascript" src="/js/gqTestFrontend.js?v=27"></script>-->
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<!--<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>-->
