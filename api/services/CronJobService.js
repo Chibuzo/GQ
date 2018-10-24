@@ -13,6 +13,7 @@ function scheduleGuardianJobsFilteringUpdates() {
         if (err) {
             return;
         }
+        //jobids = [{ id: 520}];
         const request = require("request");
         jobids.forEach(id => {
             JobApiService.returnFilteredStat(id.id, 'standard').then(stat => {
@@ -34,12 +35,13 @@ function scheduleGuardianJobsFilteringUpdates() {
                     if (err) {
                         return;
                     }
-                    try {
-                        var data = JSON.parse(body);
-                        return; // console.log(data.data);
-                    } catch(err) {
-                        console.log(err.message);
-                    }
+                    // try {
+                    //     var data = JSON.parse(body);
+                    //     console.log(data);
+                    //     return;
+                    // } catch(err) {
+                    //     console.log(err.message);
+                    // }
                 });
             }).catch(err => {
                 // umuazi!

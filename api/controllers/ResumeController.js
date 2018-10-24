@@ -312,13 +312,28 @@ module.exports = {
                         lname: response.resume.user.fullname.split(' ')[1]
                     };
                     var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
-                    return res.view('company/gqprofileview', {
-                        resume: response.resume,
-                        me: me,
-                        result: result,
-                        test_title: response.test_title ? response.test_title : null,
-                        showContactInfo: job.paid === true ? true : false
-                    });
+                    if (response.resume.scrapped === true) {
+                        ResumeService.fetchScrappedCV(response.resume.user.id).then(cv => {
+                            return res.view('company/gqprofileview', {
+                                resume: response.resume,
+                                me: me,
+                                cv: cv,
+                                result: result,
+                                test_title: response.test_title ? response.test_title : null,
+                                showContactInfo: job.paid === true ? true : false
+                            });
+                        }).catch(err => {
+                            return res.serverError(err);
+                        });
+                    } else {
+                        return res.view('company/gqprofileview', {
+                            resume: response.resume,
+                                            me: me,
+                            result: response.result ? response.result : null,
+                            test_title: response.test_title ? response.test_title : null,
+                            folder: folder
+                        });
+                    }
                 }).catch(function(err) {
                     return res.serverError(err);
                 });
