@@ -11,8 +11,8 @@
 {% endblock %}
 
 {% block body %}
-<link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
-<link href="/styles/proctor-style.css" rel="stylesheet" />
+<!--<link href="/styles/gq-cbt.css?v=2" rel="stylesheet" />
+<link href="/styles/proctor-style.css" rel="stylesheet" />-->
 <!--<link href="https://api.neon.ventures/proctor/css/pavp.css" rel="stylesheet" />-->
 <link href="/ext/pavp.css" rel="stylesheet" />
 <!--<link href="https://vjs.zencdn.net/7.0.5/video-js.css" rel="stylesheet">-->
@@ -331,7 +331,6 @@
 											{% include 'includes/resume-form.swig' %}
 											{% include 'includes/resume.swig' %}
 										{% endif %}	
-										<!--<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>-->
 									</div>
 								</div>
 							</div>
@@ -538,7 +537,6 @@
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
 										<input type="file" name="file" style="display: none" id="cv-file-control" accept=".pdf,.doc,.docx" />
 									</form>
-									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
 
@@ -631,7 +629,7 @@
 	<!--<script type="text/javascript" src="https://api.neon.ventures/proctor/js/setup-new.js?v=3"></script>-->
 		<script type="text/javascript" src="/ext/setup-new.js"></script>
 
-	<script type="text/javascript" src="/js/gqTestFrontend.js?v=26"></script>
+	<!--<script type="text/javascript" src="/js/gqTestFrontend.js?v=26"></script>-->
 
 	<script type="text/javascript" src="/js/plugins/timer.jquery.min.js"></script>
 	<!--<script type="text/javascript" src="/js/plugins/jquery.easy-autocomplete.min.js"></script>-->
@@ -964,17 +962,6 @@ $(document).ready(function() {
 		$("#cv-options").fadeOut('fast', function() {
 			$("#resumeForm-container").hide().removeClass('hidden').fadeIn('fast');
 		});
-	});
-
-
-	$(".loadtest").click(function() {
-		const user_id = $(this).data('user_id');
-		const base64_user = btoa(encodeURIComponent('user_id=' + user_id).replace(/%([0-9A-F]{2})/g,
-			function toSolidBytes(match, p1) {
-				return String.fromCharCode('0x' + p1);
-			}
-		));
-		location.replace('https://api.neon.ventures/gq/cbt/?' + base64_user);
 	});
 });
 

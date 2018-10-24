@@ -334,7 +334,7 @@ module.exports = {
 
     // admin view
     viewCompanies: function(req, res) {
-            return Company.find().sort('company_name').then(coys => {
+            return Company.find({ status: 'Active' }).sort('company_name').then(coys => {
                 var companies = [];
                 var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
@@ -392,7 +392,32 @@ module.exports = {
 
     fetchCompanies: function(req, res) {
         Company.find({ status: 'Active' }).exec(function(err, companies) {
+            console.log(companies)
             return res.json({ status: 'success', companies: companies });
+        });
+    },
+
+
+    // this is obliteration!!!
+    destroyCompany: function(req, res) {
+        Company.update({ id: req.param('coy_id') }, { status: 'deleted' }).exec(function(err) {
+            if (err) {
+                return res.serverError(err);
+            }
+            Job.update({ company: req.param('coy_id') }, { status: 'Deleted' }).exec(function(err, jobs) {
+                if (err) {
+                    return res.serverError(err);
+                }
+                if (jobs.length > 0) {
+                    Application.update({ company: req.param('coy_id') }, { status: 'Cancelled' }).exec(function(err) {
+                        if (err) {
+                            return res.serverError(err);
+                        }
+                    });
+                }
+            });
+            CompanyUser.destroy({ company: req.param('coy_id') }).exec(function() {});
+            return res.json(200, { status: 'success' });
         });
     }
 };

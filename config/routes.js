@@ -209,6 +209,8 @@ module.exports.routes = {
 
     'POST /company/remove-user': 'CompanyController.removeUser',
 
+    'POST /company/delete': 'CompanyController.destroyCompany',
+
     'GET /get-companies': 'CompanyController.fetchCompanies',
 
     'GET /coy/setup/:hash/:email': 'CompanyController.initialSetup',

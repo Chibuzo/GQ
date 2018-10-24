@@ -62,24 +62,24 @@ module.exports = {
                 }).catch(err => {
                     // keep quiet for now
                     //return res.serverError(err);
-                    return res.view('cv/update', {
-                        resume: resume,
-                        me: me,
-                        honours: honours,
-                        r_class: r_class,
-                        countries: resp.countries,
-                        states: resp.states,
-                        result: test,
-                        test_title: results[2].test_title,
-                        canEditResume: true,
-                        showContactInfo: true,
-                        completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
-                        userEmail: userEmail,
-                        enableAmplitude: enableAmplitude,
-                        disablePhotoTabClass,
-                        disableTestTabClass,
-                        disableVideoTabClass
-                    });
+                    // return res.view('cv/update', {
+                    //     resume: resume,
+                    //     me: me,
+                    //     honours: honours,
+                    //     r_class: r_class,
+                    //     countries: resp.countries,
+                    //     states: resp.states,
+                    //     result: test,
+                    //     test_title: results[2].test_title,
+                    //     canEditResume: true,
+                    //     showContactInfo: true,
+                    //     completeResumeEducation: resume.profile_status && hasEducationName && hasEducationProgram,
+                    //     userEmail: userEmail,
+                    //     enableAmplitude: enableAmplitude,
+                    //     disablePhotoTabClass,
+                    //     disableTestTabClass,
+                    //     disableVideoTabClass
+                    // });
                 });
             } else {
                 return res.view('cv/update', {
@@ -231,6 +231,9 @@ module.exports = {
             status: status
         };
 
+        // send resume data 
+        ResumeService.sendShortForm(sendShortForm);
+
         // count resume only when it hasn't been updated for the first time
         if (q('profile_status') === false) GeneralReportService.updateField('complete_resume');
 
@@ -302,29 +305,26 @@ module.exports = {
             if (err) {
                 return res.serverError(err);
             }
-            Resume.find({ user: req.param('user_id') })
-                .then(resume => {
-                    ResumeService.viewResume(resume[0].id).then(function(response) {
-                        var me = {
-                            fname: response.resume.user.fullname.split(' ')[0],
-                            lname: response.resume.user.fullname.split(' ')[1]
-                        };
-                        var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
-                        return res.view('company/gqprofileview', {
-                            resume: response.resume,
-                            me: me,
-                            result: result,
-                            test_title: response.test_title ? response.test_title : null,
-                            showContactInfo: job.paid === true ? true : false
-                        });
-                    }).catch(function(err) {
-                        return res.serverError(err);
+            Resume.find({ user: req.param('user_id') }).then(resume => {
+                ResumeService.viewResume(resume[0].id).then(function(response) {
+                    var me = {
+                        fname: response.resume.user.fullname.split(' ')[0],
+                        lname: response.resume.user.fullname.split(' ')[1]
+                    };
+                    var result = response.result === undefined ? 'T_ERROR' : response.result; // T_ERROR - one of the tests wasn't taken
+                    return res.view('company/gqprofileview', {
+                        resume: response.resume,
+                        me: me,
+                        result: result,
+                        test_title: response.test_title ? response.test_title : null,
+                        showContactInfo: job.paid === true ? true : false
                     });
-
-                })
-                .catch(err => {
+                }).catch(function(err) {
                     return res.serverError(err);
                 });
+            }).catch(err => {
+                return res.serverError(err);
+            });
         });
     },
 

@@ -522,14 +522,9 @@ module.exports = {
     },
 
     exportCandidatesData: function(req, res) {
-        var filename, csvpath = 'assets/csv-files';
+        var csvpath = 'assets/csv-files';
         req.file('csv').upload({
             dirname: require('path').resolve(sails.config.appPath, csvpath)
-            // saveAs: function(file, cb) {
-            //     var ext = file.filename.split('.').pop();
-            //     filename = 'job_' + job_id + '.' + ext;
-            //     return cb(null, filename);
-            // }
         },
         function(err, file) {
             if (err) {
@@ -641,18 +636,18 @@ module.exports = {
         const puppeteer = require('puppeteer');
         const fs = require('fs');
 
-        Resume.find({scrapped: 0, profile_status: true}).limit(100).exec(function(err, cvs) {
+        Resume.find({ where: { scrapped: 0, profile_status: true }, limit: 22000, skip: 1000 }).exec(function(err, cvs) {
             if (err) return res.serverError(err);
 
             let job = async.queue(function(cv, cb) {
                 let convertHTMLToPDF = async () => {
 
-                    const browser = await puppeteer.launch();
+                    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
 
                     const page = await browser.newPage();
                     await page.goto('http://35.177.19.130:1337/viewresume/'+cv.id, { waitUntil: 'networkidle0' });
                     await page.pdf({path: 'resumePDF_'+cv.id+'.pdf'});
-                    S3Service.uploadFile('resumePDF_'+cv.id+'.pdf', 'resumePDFs', 'application/pdf').then(data => {
+                    S3Service.uploadFile('resumePDF_'+cv.id+'.pdf', 'resume_pdfs', 'application/pdf').then(data => {
                         let message = { 
                             filename: data.url,
                             user_id: cv.user,
@@ -673,6 +668,7 @@ module.exports = {
                             }
                         };
                         SQSService.sendJob(JSON.stringify(message));
+                        Resume.update({ id: cv.id }, { scrapped: 1 }).exec(function() {});
                         fs.unlink('resumePDF_'+cv.id+'.pdf', function(e) {});
                     }).catch(err => {
                         console.log(err);
@@ -682,7 +678,7 @@ module.exports = {
                 };
 
                 convertHTMLToPDF();
-            }, 10);
+            }, 7);
 
             job.push(cvs, function(e) {
                 if (e) return console.log(e);
