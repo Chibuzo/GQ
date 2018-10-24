@@ -204,7 +204,7 @@ module.exports = {
 
         var data = {
             user: user.fullname,
-            url: 'https://getqualified.work/user/resetpassword/' + email_b64 + '/' + hash
+            url: BASE_URL + 'user/resetpassword/' + email_b64 + '/' + hash
         };
         var subject = "Your GetQualified Password Reset Link";
         var template = 'passwordReset';

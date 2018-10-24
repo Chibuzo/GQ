@@ -58,6 +58,7 @@ assets/cbt-images/*
 assets/proctorFiles/*
 assets/textexcel/*
 views/emailTemplates/*
+ecosystem.config.js
 
 
 ################################################

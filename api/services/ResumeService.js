@@ -103,6 +103,37 @@ module.exports = {
         });
     },
 
+    sendShortForm: function(data) {
+        const request = require("request");
+        //var qs = require('querystring');
+
+        //var data = { user_id: user_id };
+        var options = {
+            method: "POST",
+            url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/get",
+            form: JSON.stringify(data),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        };
+
+        // return new Promise(function(resolve, reject) {
+        //     request(options, function(err, res, body) {
+        //         if (err) {
+        //             return reject(err);
+        //         }
+        //         // we are done
+        //         return resolve(true);
+        //         // try {
+        //         //     var data = JSON.parse(body);
+        //         //     return resolve(data.data);
+        //         // } catch(err) {
+        //         //     reject(err.message);
+        //         // }
+        //     });
+        // });
+    },
+
 
     saveEducation: function(institution, honour, r_class, programme, start_date, end_date, resume_id) {
         if (!institution || institution.length < 1) return;

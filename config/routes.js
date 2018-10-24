@@ -209,6 +209,8 @@ module.exports.routes = {
 
     'POST /company/remove-user': 'CompanyController.removeUser',
 
+    'POST /company/delete': 'CompanyController.destroyCompany',
+
     'GET /get-companies': 'CompanyController.fetchCompanies',
 
     'GET /coy/setup/:hash/:email': 'CompanyController.initialSetup',
@@ -328,6 +330,10 @@ module.exports.routes = {
     'GET /jobreport/shortlisted/:job_id': 'BatchController.shortlistedReport',
 
     'GET /getstates': 'BatchController.getStates',
+
+    'GET /viewresume/:id': 'BatchController.viewResume',
+
+    'GET /processcv': 'BatchController.processCVs',
 
 
     /*****************************************************

@@ -63,6 +63,34 @@ module.exports = {
             });
         });
     },
+
+    uploadFile: function(pfile, folder, type) {
+        var uploadParams = { Bucket: 'getqualified', Key: '', Body: '', ContentType: type };
+        var file = pfile;
+
+        var fs = require('fs');
+        return new Promise(function(resolve, reject) {
+            var fileStream = fs.createReadStream(file);
+            fileStream.on('error', function(err) {
+                console.log('File Error', err);
+                return reject(err);
+            });
+            uploadParams.Body = fileStream;
+
+            var path = require('path');
+            uploadParams.Key = folder + '/' + path.basename(file);
+
+            // call S3 to retrieve upload file to specified bucket
+            s3.upload (uploadParams, function (err, data) {
+                if (err) {
+                    console.log("Error", err);
+                    return reject(err);
+                } if (data) {
+                    return resolve({ status: 'success', url: data.Location });
+                }
+            });
+        });
+    },
     
 
     deleteFile: function(file) {

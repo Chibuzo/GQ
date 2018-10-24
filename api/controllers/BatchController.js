@@ -522,14 +522,9 @@ module.exports = {
     },
 
     exportCandidatesData: function(req, res) {
-        var filename, csvpath = 'assets/csv-files';
+        var csvpath = 'assets/csv-files';
         req.file('csv').upload({
             dirname: require('path').resolve(sails.config.appPath, csvpath)
-            // saveAs: function(file, cb) {
-            //     var ext = file.filename.split('.').pop();
-            //     filename = 'job_' + job_id + '.' + ext;
-            //     return cb(null, filename);
-            // }
         },
         function(err, file) {
             if (err) {
@@ -634,6 +629,76 @@ module.exports = {
                 });
 
             });
+    },
+
+
+    processCVs: function(req, res) {
+        const puppeteer = require('puppeteer');
+        const fs = require('fs');
+
+        Resume.find({ where: { scrapped: 0, profile_status: true }, limit: 22000, skip: 1000 }).exec(function(err, cvs) {
+            if (err) return res.serverError(err);
+
+            let job = async.queue(function(cv, cb) {
+                let convertHTMLToPDF = async () => {
+
+                    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
+
+                    const page = await browser.newPage();
+                    await page.goto('http://35.177.19.130:1337/viewresume/'+cv.id, { waitUntil: 'networkidle0' });
+                    await page.pdf({path: 'resumePDF_'+cv.id+'.pdf'});
+                    S3Service.uploadFile('resumePDF_'+cv.id+'.pdf', 'resume_pdfs', 'application/pdf').then(data => {
+                        let message = { 
+                            filename: data.url,
+                            user_id: cv.user,
+                            short_form: {
+                                fullname: cv.fullname,
+                                email: cv.email,
+                                gender: cv.gender,
+                                dob: cv.dob,
+                                phone: cv.phone,
+                                address: cv.address,
+                                resident_country: cv.country,
+                                state: cv.r_state,
+                                city: cv.city,
+                                profession_summary: cv.introduction,
+                                employment_status: cv.employment_status,
+                                current_annual_salary: cv.current_salary,
+                                expected_annual_salary: cv.expected_salary
+                            }
+                        };
+                        SQSService.sendJob(JSON.stringify(message));
+                        Resume.update({ id: cv.id }, { scrapped: 1 }).exec(function() {});
+                        fs.unlink('resumePDF_'+cv.id+'.pdf', function(e) {});
+                    }).catch(err => {
+                        console.log(err);
+                    });
+                    await browser.close();
+                    cb();
+                };
+
+                convertHTMLToPDF();
+            }, 7);
+
+            job.push(cvs, function(e) {
+                if (e) return console.log(e);
+            });
+
+            job.drain = function() {
+                console.log('Done');
+            }
+        });
+        return res.ok();
+    },
+
+    viewResume: function(req, res) {
+        Resume.findOne({ id: req.param('id') })
+                .populate('user').populate('educations').populate('qualifications').populate('employments').populate('referencecontacts')
+                .exec(function(err, resume) {
+                    if (err) return res.serverError(err);
+
+                    return res.view('cv/resume', { resume: resume });
+                });
     }
 };
 

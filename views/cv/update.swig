@@ -331,7 +331,6 @@
 											{% include 'includes/resume-form.swig' %}
 											{% include 'includes/resume.swig' %}
 										{% endif %}	
-										<!--<span id="candidate_fullname" class="hidden">{{ resume.fullname }}</span>-->
 									</div>
 								</div>
 							</div>
@@ -538,7 +537,6 @@
 										<input type="hidden" name="user_id" value="{{ resume.user.id }}">
 										<input type="file" name="file" style="display: none" id="cv-file-control" accept=".pdf,.doc,.docx" />
 									</form>
-									<!--<input id="select-file" type="file" style="display:none">-->
 								</div>
 							</div>
 
@@ -964,17 +962,6 @@ $(document).ready(function() {
 		$("#cv-options").fadeOut('fast', function() {
 			$("#resumeForm-container").hide().removeClass('hidden').fadeIn('fast');
 		});
-	});
-
-
-	$(".loadtest").click(function() {
-		const user_id = $(this).data('user_id');
-		const base64_user = btoa(encodeURIComponent('user_id=' + user_id).replace(/%([0-9A-F]{2})/g,
-			function toSolidBytes(match, p1) {
-				return String.fromCharCode('0x' + p1);
-			}
-		));
-		location.replace('https://api.neon.ventures/gq/cbt/?' + base64_user);
 	});
 });
 

@@ -43,11 +43,11 @@ module.exports.policies = {
 
     JobController: {
         'viewJobs': 'isLoggedIn',
-        'newJobForm':'isLoggedIn',
-        'editJob': 'isLoggedIn',
+        'newJobForm':'isAdminOrCompany',
+        'editJob': 'isAdminOrCompany',
         'viewJobs': 'isLoggedIn',
-        'saveJob': 'isLoggedIn',
-        'deleteJob': 'isLoggedIn',
+        'saveJob': 'isAdminOrCompany',
+        'deleteJob': 'isAdminOrCompany',
         'viewApplicantsforAdmin': 'isAdmin',
         'fetchShortlistedForAdmin': 'isAdmin',
         'viewScrapedJobs': 'isAdmin',
@@ -98,14 +98,15 @@ module.exports.policies = {
     },
 
     selectedCandidateController: {
-        '*': 'isLoggedIn'
+        '*': 'isAdminOrCompany'
     },
 
     CompanyController: {
         'dashboard': 'isAdminOrCompany',
         'viewCompanyJobs': 'isAdmin',
         'viewCompanies': 'isAdmin',
-        'addUser': 'isAdminOrCompany'
+        'addUser': 'isAdminOrCompany',
+        'destroyCompany': 'isAdmin'
     },
 
     CompanyRequestController: {

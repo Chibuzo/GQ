@@ -28,7 +28,7 @@
 						<th>Open Jobs</th>
 						<th>Closed</th>	
 						<th>Archive</th>					
-						<th class="hidden"></th>
+						<th class=""></th>
 					</tr>
 					</thead>
 					<tbody>
@@ -44,8 +44,8 @@
 							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/open">{{ coy.open_jobs }}</a></td>
 							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/closed">{{ coy.closed_jobs }}</a></td>
 							<td class="text-center"><a href="/admin/coy-jobs/{{ coy.id }}/archived">{{ coy.archived_jobs }}</a></td>							
-							<td class="hidden">
-								<a href="" class="btn btn-danger btn-sm btn-fill"><i class="fa fa-trash-o"></i> Delete</a>
+							<td class="text-right">
+								<a href="" class="btn btn-danger btn-xs btn-fill delete-company" rel="tooltip" title="Delete Company"><i class="fa fa-trash-o"></i></a>
 							</td>
 						</tr>
 					{% endfor %}
@@ -60,6 +60,19 @@
 <script>
 $(document).ready(function() {
 	$('.companies').addClass('active');
+
+	$(".delete-company").click(function(e) {
+		e.preventDefault();
+		if (confirm("This action will remove the seleted company, remove all the jobs added by and for this company. Are you sure you want to proceed?")) {
+			let $parentTr = $(this).parents('tr');
+			let coy_id = $parentTr.attr('id');
+			$.post('/company/delete', { coy_id: coy_id }, function(d) {
+				if (d.status.trim() === 'success') {
+					$parentTr.fadeOut();
+				}
+			}, 'JSON');
+		}
+	});
 });
 </script>
 {% endblock %}
