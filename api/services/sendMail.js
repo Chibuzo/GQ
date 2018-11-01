@@ -19,7 +19,7 @@ let transporter = nodemailer.createTransport({
 });
 transporter.use('compile', hbs(options));
 
-const BASE_URL = 'http://35.177.19.130:1337/';
+const BASE_URL = 'https://getqualified.work/';
 const SENT_FROM = 'noreply@getqualified.work';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'sefinatu.atta@productivepeople.org';
@@ -302,7 +302,7 @@ module.exports = {
         };
         var subject = "GQ Weekly Job Statistics Sent to Guardian";
         var template = 'GJstat';
-        module.exports.sendMail('chibuxo.henry@gmail.com', subject, template, data);
+        module.exports.sendMail('chibuzo.henry@gmail.com', subject, template, data);
     },
 
     sendMail: function(to, subject, template, data) {

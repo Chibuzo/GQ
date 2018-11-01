@@ -232,7 +232,7 @@ module.exports = {
         };
 
         // send resume data 
-        ResumeService.sendShortForm(sendShortForm);
+        ResumeService.sendShortForm(data, req.session.userId);
 
         // count resume only when it hasn't been updated for the first time
         if (q('profile_status') === false) GeneralReportService.updateField('complete_resume');

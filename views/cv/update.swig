@@ -495,7 +495,7 @@
 											<div class="alert alert-warning hidden vid-info"><strong>Note:</strong> After upload, your video won't be available for few minutes while we process it.</div>
 											<div class="row text-center"><br>
 												<button class="btn btn-info record-video btn-fill"><i class="fa fa-video-camera"></i> Record Video</button>												
-												<button class="btn btn-default selectfile-button btn-fill">Change Video</button>
+												<button class="btn btn-default selectfile-button btn-fill hidden">Change Video</button>
 												<div class="progress" style="margin: 10px 5px;">
 													<div class="progress-bar progress-bar-success progress-bar-striped active" style="width: 0%" id="progressBar" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">
 														<span class="sr-only">0%</span>
@@ -513,7 +513,7 @@
 												<i class="pe-7s-video"></i>
 												<p>
 													<button class="btn btn-info record-video btn-fill"><i class="fa fa-video-camera"></i> Record Video</button>													
-													<button class="btn btn-danger selectfile-button"><i class="fa fa-video-camera"></i> Upload Your Video</button>
+													<button class="btn btn-danger selectfile-button hidden"><i class="fa fa-video-camera"></i> Upload Your Video</button>
 												</p>
 												<br>
 												 <div class="progress" style="margin: 10px 5px;">

@@ -699,6 +699,13 @@ module.exports = {
 
                     return res.view('cv/resume', { resume: resume });
                 });
+    },
+    
+    saveShortForm: function(req, res) {
+        console.log(global.baseurl);
+        Resume.find({ id: 2 }).exec(function(err, resume) {
+            ResumeService.sendShortForm(resume, resume.user);
+        });
     }
 };
 

@@ -335,7 +335,7 @@ module.exports = {
     // admin view
     viewCompanies: function(req, res) {
             return Company.find({ status: 'Active' }).sort('company_name').then(coys => {
-                var companies = [];
+                //var companies = [];
                 var today = new Date().toISOString();
                 async.eachSeries(coys, function(coy, cb) {
                     Job.find({company: coy.id}).exec(function (err, jobs) {
@@ -392,7 +392,6 @@ module.exports = {
 
     fetchCompanies: function(req, res) {
         Company.find({ status: 'Active' }).exec(function(err, companies) {
-            console.log(companies)
             return res.json({ status: 'success', companies: companies });
         });
     },
