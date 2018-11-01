@@ -40,6 +40,15 @@ module.exports = {
                 subscription: job.filter_category || 'basic',
                 closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
+
+            // save company details
+            var comp = {
+                company_name: job.company.company_name,
+                contact_person: job.company.contact_person,
+                contact_phone: job.company.contact_phone,
+                contact_email: job.company.contact_email
+            };
+            CompanyRequest.findOrCreate(comp).exec(function() {});
            
             Job.findOrCreate({ job_id: job.jobID, company: coy_id }, data).exec(function(err, new_job) {
                 if (err) return reject(err);
@@ -208,7 +217,7 @@ module.exports = {
 
     returnFilteredStat(job_id, mode = 'basic') {
         return new Promise(function(resolve, reject) {
-            Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
+            Job.findOne({ id: job_id, source: 'GJ' }).populate('applications').exec(function(err, job) {
                 if (err) {
                     return reject(err);
                 }

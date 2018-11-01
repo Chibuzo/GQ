@@ -102,7 +102,7 @@ module.exports = {
         }
         // determine company name
         let company = '';
-        if (job.source !== 'GQ') {
+        if (job.source !== 'gq') {
             company = job.company_name;
         } else {
             company = job.company.company_name;
