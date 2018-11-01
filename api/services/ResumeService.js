@@ -107,13 +107,13 @@ module.exports = {
         const request = require("request");
         //var qs = require('querystring');
 
-        var _data = { 
+        var _data = {
             user_id: user_id,
             data: data
         };
         var options = {
             method: "POST",
-            url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/get",
+            url: "https://api.neon.ventures/cvextractor/api/?i=gq/cv/fill-shortform",
             form: JSON.stringify(_data),
             headers: {
                 "Content-Type": "application/json"
@@ -123,13 +123,18 @@ module.exports = {
         return new Promise(function(resolve, reject) {
             request(options, function(err, res, body) {
                 if (err) {
-                    console.log(err)
                     return reject(err);
                 }
                 // we are done
                 return resolve(true);
+                // try {
+                //     var data = JSON.parse(body);
+                //     return resolve(data.data);
+                // } catch(err) {
+                //     reject(err.message);
+                // }
             });
-        });                                                                        
+        });
     },
 
 

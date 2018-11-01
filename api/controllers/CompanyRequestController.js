@@ -44,7 +44,7 @@ module.exports = {
 
     cancel: function(req, res) {
         var id = req.param('id');
-        CompanyRequest.update({ id: id }, { status: 'Cancelled' }).exec(function(err, coy) {
+        CompanyRequest.destroy({ id: id }).exec(function(err, coy) {
             return res.json(200, { status: 'success' });
         });
     }
