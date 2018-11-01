@@ -223,6 +223,14 @@ module.exports = {
                 ]).then(results => {
                     var test_stat = results[0];
                     var gender_stat = results[1];
+                    let male_count, female_count;
+                    if (gender_stat.length === 1) {
+                        male_count = gender_stat[0].gender === 'Male' ? gender_stat[0].num : 0;
+                        female_count = gender_stat[0].gender === 'Female' ? gender_stat[0].num : 0;
+                    } else if (gender_stat.length === 2) {
+                        female_count = gender_stat[0].num;
+                        male_count = gender_stat[1].num;
+                    }
                     var states = [];
                     results[2].forEach(function(state) {
                         states.push({
@@ -230,13 +238,14 @@ module.exports = {
                             num: state.num
                         });
                     });
+                    
                     var data = {
                         jobID: job_id,
                         applications: applicants.length,
                         assessed_candidates: test_stat.assessed_candidates,
                         average_score: test_stat.average_score,
-                        number_of_males: gender_stat.length < 1 ? 0 : gender_stat[1].num,
-                        number_of_females: gender_stat.length < 1 ? 0 : gender_stat[0].num,
+                        number_of_males: male_count,
+                        number_of_females: female_count,
                         geographical_stat: states,
                         top_five_scores: test_stat.top_five_scores,
                         least_five_scores: test_stat.least_five_scores

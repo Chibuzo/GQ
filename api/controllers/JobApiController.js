@@ -56,8 +56,12 @@ module.exports = {
                             return res.json(400, { status: 'error', message: err });
                         }
                         sendMail.sendAppliedJobNotice(job, applicant, applicant.user_status);
-                        return res.json(200, { status: 'success' });
+                        JobApiService.returnFilteredStat(job.id, job.subscription).then(stats => {
+                            return res.json(200, { status: 'success', data: stats });
+                        });
                     });
+                } else {
+                    return res.json(400, { status: 'error', message: 'Couldn\'t apply for the job. Please make sure you are sending all correct details'});
                 }
             }).catch(err => {
                 return res.json(400, { status: 'error', message: err });

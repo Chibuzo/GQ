@@ -335,6 +335,8 @@ module.exports.routes = {
 
     'GET /processcv': 'BatchController.processCVs',
 
+    'GET /saveshortform': 'BatchController.saveShortForm',
+
 
     /*****************************************************
      * GQ API v1 routes

@@ -19,7 +19,7 @@ let transporter = nodemailer.createTransport({
 });
 transporter.use('compile', hbs(options));
 
-const BASE_URL = 'http://35.177.19.130:1337/';
+const BASE_URL = sails.config.baseurl;
 const SENT_FROM = 'noreply@getqualified.work';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'sefinatu.atta@productivepeople.org';
@@ -100,10 +100,17 @@ module.exports = {
             default:
                 break;
         }
+        // determine company name
+        let company = '';
+        if (job.source !== 'GQ') {
+            company = job.company_name;
+        } else {
+            company = job.company.company_name;
+        }
         var data = {
-            user: user.fullname.length > 1 ? user.fullnamae : 'Candidate',
+            user: user.fullname.length > 1 ? user.fullname : 'Candidate',
             job_title: job.job_title,
-            company: job.company.company_name,
+            company: company,
             fyi: fyi,
             newuser: newuser,
             incompleteprofile: incompleteprofile,
@@ -302,7 +309,7 @@ module.exports = {
         };
         var subject = "GQ Weekly Job Statistics Sent to Guardian";
         var template = 'GJstat';
-        module.exports.sendMail('chibuxo.henry@gmail.com', subject, template, data);
+        module.exports.sendMail('chibuzo.henry@gmail.com', subject, template, data);
     },
 
     sendMail: function(to, subject, template, data) {
