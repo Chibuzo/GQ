@@ -7,6 +7,9 @@
 
 module.exports = {
 	createJob: function(req, res) {
+        if (req.headers['content-type'] !== 'application/json') {
+            return res.json(400, { status: 'error', message: 'Acceptable content-type header is missing' });
+        }
         var data;
         try {
             data = req.body.request;
@@ -29,8 +32,21 @@ module.exports = {
     },
 
     apply: function(req, res) {
-        // sign up candidate
         var q = req.param;
+        if (req.headers['content-type'] !== 'application/x-www-form-urlencoded' && req.headers['content-type'] !== 'application/json') {
+            return res.json(400, { status: 'error', message: 'Acceptable content-type header is missing' });
+        }
+        if (!q('email')) {
+            return res.json(404, { status: 'error', message: 'Email not found' });
+        }
+        if (isNaN(q('jobID'))) {
+            return res.json(400, { status: 'error', message: 'Job ID must be a number' });
+        }
+        if (!q('cv_link')) {
+            return res.json(404, { status: 'error', message: 'CV link not found' });
+        }
+
+        // sign up candidate
         var data = {
             email: q('email'),
             fullname: q('fullname'),
@@ -55,9 +71,33 @@ module.exports = {
                         if (err) {
                             return res.json(400, { status: 'error', message: err });
                         }
+                        // queue up CV for ingesting
+                        let message = { 
+                            filename: q('cv_link'),
+                            user_id: applicant.id,
+                            short_form: {
+                                fullname: data.fullname,
+                                email: data.email,
+                                gender: data.gender,
+                                dob: data.dob,
+                                phone: data.phone,
+                                address: data.address,
+                                resident_country: data.country,
+                                state: data.r_state,
+                                city: data.city,
+                                profession_summary: data.introduction,
+                                employment_status: data.employment_status,
+                                current_annual_salary: data.current_salary,
+                                expected_annual_salary: data.expected_salary
+                            }
+                        };
+                        SQSService.sendJob(JSON.stringify(message));
+
                         sendMail.sendAppliedJobNotice(job, applicant, applicant.user_status);
                         JobApiService.returnFilteredStat(job.id, job.subscription).then(stats => {
                             return res.json(200, { status: 'success', data: stats });
+                        }).catch(err => {
+                            console.log(err);
                         });
                     });
                 } else {

@@ -702,27 +702,27 @@ module.exports = {
     },
 
     saveShortForm: function(req, res) {
-        Resume.find({ scrapped: 1, profile_status: true }).exec(function(err, cvs) {
-            if (err) return res.serverError(err);
+        // Resume.find({ scrapped: 1, profile_status: true }).exec(function(err, cvs) {
+        //     if (err) return res.serverError(err);
 
-            let n = 0;
-            let job = async.queue(function(cv, cb) {
-                ResumeService.sendShortForm(cv, cv.user).then(resp => {
-                    n++;
-                    cb();
-                }).catch(err => {
-                    console.log(err)
-                });
-            }, 7);
+        //     let n = 0;
+        //     let job = async.queue(function(cv, cb) {
+        //         ResumeService.sendShortForm(cv, cv.user).then(resp => {
+        //             n++;
+        //             cb();
+        //         }).catch(err => {
+        //             console.log(err)
+        //         });
+        //     }, 7);
 
-            job.push(cvs, function(e) {
-                if (e) return console.log(e);
-            });
+        //     job.push(cvs, function(e) {
+        //         if (e) return console.log(e);
+        //     });
 
-            job.drain = function() {
-                console.log('Done, ' + n + ' CVs processed.');
-            }
-        });
+        //     job.drain = function() {
+        //         console.log('Done, ' + n + ' CVs processed.');
+        //     }
+        // });
        
         return res.ok();
     }   
