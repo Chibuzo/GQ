@@ -91,6 +91,11 @@ module.exports = {
             type: 'string'
         },
 
+        source: {
+            type: 'string',
+            defaultsTo: 'GQ'
+        },
+
         youtube_vid_id: {
             type: 'string'
         },

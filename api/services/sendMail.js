@@ -1,4 +1,5 @@
 'use strict';
+
 const nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
 var options = {
@@ -102,8 +103,11 @@ module.exports = {
         }
         // determine company name
         let company = '';
+        //let source = 'GQ';
+        let GJ = false;
         if (job.source !== 'GQ') {
             company = job.company_name;
+            GJ = true;
         } else {
             company = job.company.company_name;
         }
@@ -112,6 +116,7 @@ module.exports = {
             job_title: job.job_title,
             company: company,
             fyi: fyi,
+            cobrand: GJ,
             newuser: newuser,
             incompleteprofile: incompleteprofile,
             closing_date: job.closing_date.toLocaleDateString('en-US', date_opt),

@@ -31,18 +31,22 @@ module.exports = {
                 job_description: job.job_description,
                 job_requirements: requirements,
                 qualifications: qualifications,
+                years_of_experience: job.years_of_experience,
                 job_level: job.job_level,
                 location: job.job_location,
-                salary: job.salary ? job.salary : '',
+                salary: job.salary || '',
+                salary_currency: 'NGN',
+                min_salary_budget: job.min_salary || 0.0,
+                max_salary_budget: job.max_salary || 0.0,
                 job_id: job.jobID,
                 source: 'GJ',
                 require_video: false,
                 subscription: job.filter_category || 'basic',
                 closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
-           
             Job.findOrCreate({ job_id: job.jobID, company: coy_id }, data).exec(function(err, new_job) {
                 if (err) return reject(err);
+                
                 return resolve(new_job.id);
                 //return resolve('https://getqualified.work/job/' + new_job.id + '/' + new_job.job_title.split(' ').join('-'));
             });
