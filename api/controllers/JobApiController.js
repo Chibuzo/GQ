@@ -18,6 +18,21 @@ module.exports = {
         }
         JobApiService.authenticate(data.authentication.ID).then(function(auth) {
             if (auth.status === true) {
+                
+                // company details
+                let coy_data = {
+                    company_name: data.job.company.company_name,
+                    contact_person: data.job.company.contact_person,
+                    contact_email: data.job.company.contact_email,
+                    contact_phone: data.job.company.contact_phone,
+                    description: data.job.company.tagline || '',
+                    logo_link: data.job.company.logo || '',
+                    website: data.job.company.website || '',
+                    linkedin: data.job.company.linkedin || ''
+                };
+                CompanyService.saveCompany(coy_data);
+
+                // save job
                 JobApiService.saveJob(data.job, auth.company.id).then(function(job_id) {
                     return res.json(201, { status: 'success', jobID: job_id });
                 }).catch(function(err) {
@@ -59,8 +74,8 @@ module.exports = {
             introduction: q('professional_summary'),
             employment_status: q('employment_status'),
             current_salary: q('current_annual_salary') ? q('current_annual_salary') : 0.0,
-            expected_salary: q('expected_annual_salary') ? q('expected_annual_salary') : 0.0
-            //cv_link: q('cv_link')
+            expected_salary: q('expected_annual_salary') ? q('expected_annual_salary') : 0.0,
+            source: q('source') || 'GQ'
         };
         ResumeService.createNewResume(data).then(applicant => {
             // apply to job
@@ -68,7 +83,7 @@ module.exports = {
                 if (status ===  true) {
                     // notify by email
                     Job.findOne(q('jobID')).populate('company').exec(function(err, job) {
-                        if (err) {
+                        if (err) { 
                             return res.json(400, { status: 'error', message: err });
                         }
                         // queue up CV for ingesting

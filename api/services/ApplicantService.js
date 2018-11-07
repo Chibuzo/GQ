@@ -112,15 +112,17 @@ module.exports = {
 
 				let checklist = [];
 
-				// Resume/CV
-				checklist.push({
-					title: 'Fill Out Resume/CV',
-					text: 'Your CV is the first chance you get to make a good impression on a potential employer.',
-					iconClass: userResume.profile_status == true ? 'fa fa-check-circle': 'fa fa-certificate',
-					action: '/applicant/resume-page#resume-tab',
-					completed: userResume.profile_status == true,
-					disbaledClass: ""
-				});
+                // Resume/CV
+                if (userResume.source !== 'GJ') {
+                    checklist.push({
+                        title: 'Fill Out Resume/CV',
+                        text: 'Your CV is the first chance you get to make a good impression on a potential employer.',
+                        iconClass: userResume.profile_status == true ? 'fa fa-check-circle': 'fa fa-certificate',
+                        action: '/applicant/resume-page#resume-tab',
+                        completed: userResume.profile_status == true,
+                        disbaledClass: ""
+                    });
+                }
 
 				// Profile Picture
 				checklist.push({
@@ -155,22 +157,24 @@ module.exports = {
 					disbaledClass: disabledVideo ? "disabled" : ""
 				});
 
-				// Apply to a job
-				let disableJob = !userResume.video_status || disabledVideo || !userResume.profile_status;
-				checklist.push({
-					title: 'Apply to a Job',
-					text: 'Look through our job postings and apply.',
-					iconClass: applications.length > 0 && disableJob != true ? 'fa fa-check-circle': 'fa fa-briefcase',
-					action: applications.length < 1 && disableJob ? "" : '/jobs',
-					completed: applications.length > 0 && disableJob != true,
-					disbaledClass: disableJob ? "disabled" : ""
-				});
+                // Apply to a job
+                if (userResume.source !== 'GJ') {
+                    let disableJob = !userResume.video_status || disabledVideo || !userResume.profile_status;
+                    checklist.push({
+                        title: 'Apply to a Job',
+                        text: 'Look through our job postings and apply.',
+                        iconClass: applications.length > 0 && disableJob != true ? 'fa fa-check-circle': 'fa fa-briefcase',
+                        action: applications.length < 1 && disableJob ? "" : '/jobs',
+                        completed: applications.length > 0 && disableJob != true,
+                        disbaledClass: disableJob ? "disabled" : ""
+                    });
+                }
 
 				return resolve(checklist);
 			}).catch(err => {
 				console.error(err);
 				reject(err);
-			})
+			});
 		});
 
 	},
