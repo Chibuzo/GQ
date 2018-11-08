@@ -17,11 +17,21 @@
 
 <body>
 <table style="border-collapse: collapse; border: #ccc solid thin; width: 400px; margin: auto; font: normal 14px 'Helvetica Neue', sans-serif" cellpadding="17">
+    {{#if cobrand }}
+    <tr>
+        <td style="text-align: center; padding-bottom: 15px;">
+            <img src="{{ url }}images/gdj_logo.png" style="padding: 30px; width: 160px; padding-top: 10px" alt="Get Qualified Logo" />
+        </td>
+    </tr>
+    {{/if}}
+    
+    {{#if nobrand }}
     <tr>
         <td style="text-align: center; padding-bottom: 15px;">
             <img src="https://getqualified.work/images/logo.png" style="padding: 30px; width: 160px;" alt="Get Qualified Logo" />
         </td>
     </tr>
+    {{/if}}
     <tr>
         <td>
             <p>Dear {{ user }},</p>
@@ -77,7 +87,7 @@
         <tr>
             <td style="text-align: center; padding-bottom: 15px;">
                 In partnership with:<br>
-                <img src="{{ url }}images/gdj_logo.png" style="padding: 30px; width: 160px; padding-top: 10px" alt="Get Qualified Logo" />
+                <img src="https://getqualified.work/images/logo.png" style="pading: 30px; width: 160px; padding-top: 10px" alt="Get Qualified Logo" />
             </td>
         </tr>
     {{/if}}    

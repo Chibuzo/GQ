@@ -105,11 +105,13 @@ module.exports = {
         let company = '';
         //let source = 'GQ';
         let GJ = false;
+        let GQ = false;
         if (job.source !== 'GQ') {
             company = job.company_name;
             GJ = true;
         } else {
             company = job.company.company_name;
+            GQ = true;
         }
         var data = {
             user: user.fullname.length > 1 ? user.fullname : 'Candidate',
@@ -117,6 +119,7 @@ module.exports = {
             company: company,
             fyi: fyi,
             cobrand: GJ,
+            nobrand: GQ,
             newuser: newuser,
             incompleteprofile: incompleteprofile,
             closing_date: job.closing_date.toLocaleDateString('en-US', date_opt),
