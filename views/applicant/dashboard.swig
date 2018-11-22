@@ -82,20 +82,26 @@
 	</style>
 	<div class="row">
 		<div class="col-md-12">
-			<div class="alert alert-info"style="overflow: auto">
-				<div class="col-md-1"><i class="fa fa-info-circle fa-4x"></i></div>
-				<div class="col-md-11"><p>By completing steps 1 to 4, you can apply to a wide array of job positions with leading local and international companies who are constantly looking to hire talented candidates through GetQualified.</p>
-				<p>Remember, all you need is one completed profile to apply for an endless number of jobs.</p>
-				<p>Let jobs find you!</p>
-				</div>
-			</div>
+            {% if userCheclist.source == 'GQ' %}
+                <div class="alert alert-info"style="overflow: auto">
+                    <div class="col-md-1"><i class="fa fa-info-circle fa-4x"></i></div>
+                    <div class="col-md-11"><p>By completing steps 1 to 4, you can apply to a wide array of job positions with leading local and international companies who are constantly looking to hire talented candidates through GetQualified.</p>
+                    <p>Remember, all you need is one completed profile to apply for an endless number of jobs.</p>
+                    <p>Let jobs find you!</p>
+                    </div>
+                </div>
+            {% endif %}    
 		</div>
 	</div>
 
 	<div class="row">
 		<div class="col-md-7 col-md-offset-2">
 			<h3 class="header-text hidden">Get started with Get Qualified</h3>
-			<h4 class="header-text">Complete your profile and start applying for jobs.</h4>
+            {% if userCheclist.source == 'GQ' %}
+			    <h4 class="header-text">Complete your profile and start applying for jobs.</h4>
+            {% else %}    
+                <h4 class="header-text">Complete the following steps</h4>
+            {% endif %}    
 		</div>
 	</div>
 

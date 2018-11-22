@@ -75,7 +75,7 @@ module.exports = {
             employment_status: q('employment_status'),
             current_salary: q('current_annual_salary') ? q('current_annual_salary') : 0.0,
             expected_salary: q('expected_annual_salary') ? q('expected_annual_salary') : 0.0,
-            source: q('source') || 'GQ'
+            source: q('source') || 'GJ'
         };
         ResumeService.createNewResume(data).then(applicant => {
             // apply to job
@@ -141,7 +141,7 @@ module.exports = {
             return res.json(400, { status: 'error', message: 'Job ID must be a number' });
         }
            
-        JobApiService.returnFilteredStat(job.id).then(stats => {
+        JobApiService.returnFilteredStat(req.param('jobID')).then(stats => {
             return res.json(200, { status: 'success', data: stats });
         }).catch(err => {
             return res.json(400, { status: 'error', message: err });
