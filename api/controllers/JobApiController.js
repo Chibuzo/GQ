@@ -141,7 +141,7 @@ module.exports = {
             return res.json(400, { status: 'error', message: 'Job ID must be a number' });
         }
            
-        JobApiService.returnFilteredStat(job.id).then(stats => {
+        JobApiService.returnFilteredStat(req.param('jobID')).then(stats => {
             return res.json(200, { status: 'success', data: stats });
         }).catch(err => {
             return res.json(400, { status: 'error', message: err });

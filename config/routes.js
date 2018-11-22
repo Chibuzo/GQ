@@ -349,7 +349,7 @@ module.exports.routes = {
 
     'POST /api/v1/job/apply': 'JobApiController.apply',
 
-    'GET /api/v1/getjobstat/:job_id': 'JobApiController.fetchJobStat',
+    'GET /api/v1/getjobstat/:jobID': 'JobApiController.fetchJobStat',
 
     'POST /api/v1/job/requestservice': 'JobApiController.requestPremium',
 
