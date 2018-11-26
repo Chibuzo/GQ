@@ -75,7 +75,8 @@ module.exports = {
             employment_status: q('employment_status'),
             current_salary: q('current_annual_salary') ? q('current_annual_salary') : 0.0,
             expected_salary: q('expected_annual_salary') ? q('expected_annual_salary') : 0.0,
-            source: q('source') || 'GQ'
+            source: q('source') || 'GQ',
+            profile_status: 'true'
         };
         ResumeService.createNewResume(data).then(applicant => {
             // apply to job
@@ -107,6 +108,11 @@ module.exports = {
                             }
                         };
                         SQSService.sendJob(JSON.stringify(message));
+
+                        // call Seyi to ingest...
+                        const request = require("request");
+
+                        request({ method: 'GET', url: 'http://api.neon.ventures/cvextractor/api/?i=gq/cv/process-sqs&limit=10' }, function(err) {});
 
                         sendMail.sendAppliedJobNotice(job, applicant, applicant.user_status);
                         JobApiService.returnFilteredStat(job.id, job.subscription).then(stats => {
