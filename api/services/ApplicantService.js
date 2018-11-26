@@ -131,7 +131,7 @@ module.exports = {
 					iconClass: userResume.photo_status == true ? 'fa fa-check-circle': 'fa fa-user-circle',
 					action: '/applicant/resume-page#photo',
 					completed: userResume.photo_status == true,
-					disbaledClass: userResume.profile_status == true ? '': 'disabled'
+					disbaledClass: userResume.profile_status == true || userResume.source == 'GJ' ? '': 'disabled'
 				});
 
 				// Test
@@ -169,7 +169,7 @@ module.exports = {
                         disbaledClass: disableJob ? "disabled" : ""
                     });
                 }
-
+                checklist.source = userResume.source;
 				return resolve(checklist);
 			}).catch(err => {
 				console.error(err);
