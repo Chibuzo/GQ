@@ -210,6 +210,7 @@ module.exports = {
     },
 
 
+    // mode has been deprecated. Job subscription is used instead
     returnFilteredStat(job_id, mode = 'basic') {
         return new Promise(function(resolve, reject) {
             Job.findOne({ id: job_id }).populate('applications').exec(function(err, job) {
@@ -221,7 +222,7 @@ module.exports = {
                 let applicants = job.applications.map(app => app.applicant);
             
                 return Promise.all([
-                    module.exports.getJobTestStat(applicants, mode),
+                    module.exports.getJobTestStat(applicants, job.subscription),
                     module.exports.getGenderStat(applicants),
                     module.exports.getGeographicalStat(applicants)
                 ]).then(results => {
