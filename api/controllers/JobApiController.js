@@ -48,6 +48,7 @@ module.exports = {
 
     apply: function(req, res) {
         var q = req.param;
+        console.log(q);
         if (req.headers['content-type'] !== 'application/x-www-form-urlencoded' && req.headers['content-type'] !== 'application/json') {
             return res.json(400, { status: 'error', message: 'Acceptable content-type header is missing' });
         }
