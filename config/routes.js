@@ -265,7 +265,7 @@ module.exports.routes = {
 
     //'GET /test': 'TestController.testApi',
 
-    'GET /gettest/:test_id/:job_id': 'TestController.getLandingPage',
+    'GET /gettest/:test_id/:job_id/:gqtest_id': 'TestController.getLandingPage',
 
     'POST /test/result': 'TestController.receiveAndSaveResult',
 
