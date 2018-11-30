@@ -6,7 +6,7 @@ module.exports = {
             video: false
         };
         return new Promise(function(resolve, reject) {
-            Job.find({ id: job_id}).exec(function(err, job) {
+            Job.find({ id: job_id }).exec(function(err, job) {
                 if (err || job.length < 1) return reject('Job not found');
                 Resume.find({ user: candidate_id }).exec(function(err, resume) {
                     // test requirement
@@ -21,6 +21,7 @@ module.exports = {
                     } else if (job[0].require_video === false) {
                         criteria.video = true;
                     }
+                    console.log(criteria);
                     return resolve({ status: criteria.test && criteria.video ? true : false });
                 });
             });
