@@ -174,17 +174,17 @@ module.exports = {
                             return reject(err1);
                         }
                         // find average
-                        let sql = "SELECT COUNT(*) AS num, AVG(score) AS average FROM gqaptitudetestresult WHERE user IN ?";
+                        let sql = "SELECT COUNT(*) AS num, AVG(score) AS average FROM gqaptitudetestresult WHERE user IN (?)";
                         GQAptitudeTestResult.query(sql, [ applicants ], function(err, result) {
                             if (err) {
                                 return reject(err);
                             }
-                            console.log(result)
+
                             let test_stat = {
                                 top_five_scores: first5,
                                 least_five_scores: bottom5,
-                                assessed_candidates: result.num,
-                                average_score: result.average
+                                assessed_candidates: result[0].num,
+                                average_score: result[0].average.toFixed(1)
                                 //average_score: scores_length > 0 ? (sum_score / scores_length).toFixed(1) : 0
                             };
                             return resolve(test_stat);
