@@ -87,7 +87,7 @@
 												{% if test.test_source == 'gq' %}
 													<li><a href="/gqtest/gettest/{{ test.gq_test.id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 												{% else %}
-													<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}/{{ test.test.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
+													<li><a href="/gettest/{{ test.test.test_id }}/{{ job.id }}" class=""><i class="fa fa-hand-o-right"></i> {{ test.test_title }}</a></li>
 												{% endif %}
 											{% endfor %}
 										</ul>
