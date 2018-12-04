@@ -31,27 +31,22 @@ module.exports = {
                 job_description: job.job_description,
                 job_requirements: requirements,
                 qualifications: qualifications,
+                years_of_experience: job.years_of_experience,
                 job_level: job.job_level,
                 location: job.job_location,
-                salary: job.salary ? job.salary : '',
+                salary: job.salary || '',
+                salary_currency: 'NGN',
+                min_salary_budget: job.min_salary || 0.0,
+                max_salary_budget: job.max_salary || 0.0,
                 job_id: job.jobID,
                 source: 'GJ',
                 require_video: false,
                 subscription: job.filter_category || 'basic',
                 closing_date: job.closing_date ? new Date(job.closing_date).toISOString() : new Date().toISOString()
             };
-
-            // save company details
-            var comp = {
-                company_name: job.company.company_name,
-                contact_person: job.company.contact_person,
-                contact_phone: job.company.contact_phone,
-                contact_email: job.company.contact_email
-            };
-            CompanyRequest.findOrCreate(comp).exec(function() {});
-           
             Job.findOrCreate({ job_id: job.jobID, company: coy_id }, data).exec(function(err, new_job) {
                 if (err) return reject(err);
+                
                 return resolve(new_job.id);
                 //return resolve('https://getqualified.work/job/' + new_job.id + '/' + new_job.job_title.split(' ').join('-'));
             });
@@ -126,34 +121,41 @@ module.exports = {
     // all applicants are passed into this function but only assessed come out  
     getJobTestStat: function(applicants, mode = 'basic') {
         return new Promise(function(resolve, reject) {
-            GQAptitudeTestResult.find({ user: applicants }).sort('score desc').exec(function(err, scores) { 
-                if (err) {
-                    return reject(err);
-                }
-                let scores_length = scores.length;
-                let first5 = [], bottom5 = [], f5_count = 0, l5_count = 0, l5_start = scores_length - 5, sum_score = 0;
-                async.eachSeries(scores, function(score, cb) {
-                    sum_score += score.score;
-                    l5_count++;
-                    if (f5_count <= 5) {
-                        GQTestResult.find({ test: [1,2,3], candidate: score.user }).populate('candidate').sort('test').exec(function(err, tests) {
-                            if (err) {
-                                return reject(err);
-                            }
-                            if (tests.length < 3) return cb();
-                            let total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
-                            first5.push({
-                                candidate_email: mode == 'basic' ? null : tests[0].candidate.email,
-                                logical_reasoning: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1),
-                                verbal_reasoning: ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1),
-                                numerical_reasoning: ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(1),
-                                overall: ((score.score / total_num_questions) * 100).toFixed(1)
-                            });
-                            f5_count++;
-                            return cb();
+            return Promise.all([
+                GQAptitudeTestResult.find({ user: applicants }).sort('score desc').limit(5),    // top 5
+                GQAptitudeTestResult.find({ user: applicants }).sort('score asc').limit(5)  // bottom 5
+            ]).then(results => {
+                let raw_f5 = results[0];
+                let raw_l5 = results[1];
+
+                let first5 = [], bottom5 = [], sum_score = 0;
+                
+                // collect top 5
+                async.eachSeries(raw_f5, function(score, cb) {
+                   
+                    GQTestResult.find({ test: [1,2,3], candidate: score.user }).populate('candidate').sort('test').exec(function(err, tests) {
+                        if (err) {
+                            return reject(err);
+                        }
+                        if (tests.length < 3) return cb();
+                        let total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
+                        first5.push({
+                            candidate_email: mode == 'basic' ? null : tests[0].candidate.email,
+                            logical_reasoning: ((tests[0].score / tests[0].no_of_questions) * 100).toFixed(1),
+                            verbal_reasoning: ((tests[1].score / tests[1].no_of_questions) * 100).toFixed(1),
+                            numerical_reasoning: ((tests[2].score / tests[2].no_of_questions) * 100).toFixed(1),
+                            overall: ((score.score / total_num_questions) * 100).toFixed(1)
                         });
-                    } else if (l5_count >= l5_start) {
-                        GQTestResult.find({ test: [1,2,3], candidate: score.user }).sort('test').exec(function(err, tests) {
+                        return cb();
+                    });
+                }, function(err) {
+                    if (err) {
+                        return reject(err);
+                    }
+
+                    // collect bottom 5
+                    async.eachSeries(raw_l5, function(score, cb) {
+                        GQTestResult.find({ test: [1,2,3], candidate: score.user }).populate('candidate').sort('test').exec(function(err, tests) {
                             if (err) {
                                 return reject(err);
                             }
@@ -167,20 +169,27 @@ module.exports = {
                             });
                             return cb();
                         });
-                    } else {
-                        return cb();
-                    }
-                }, function(err) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    let test_stat = {
-                        top_five_scores: first5,
-                        least_five_scores: bottom5,
-                        assessed_candidates: scores_length,
-                        average_score: scores_length > 0 ? (sum_score / scores_length).toFixed(1) : 0
-                    };
-                    return resolve(test_stat);
+                    }, function(err1) {
+                        if (err1) {
+                            return reject(err1);
+                        }
+                        // find average
+                        let sql = "SELECT COUNT(*) AS num, AVG(score) AS average FROM gqaptitudetestresult WHERE user IN (?)";
+                        GQAptitudeTestResult.query(sql, [ applicants ], function(err, result) {
+                            if (err) {
+                                return reject(err);
+                            }
+
+                            let test_stat = {
+                                top_five_scores: first5,
+                                least_five_scores: bottom5,
+                                assessed_candidates: result[0].num,
+                                average_score: result[0].average.toFixed(1)
+                                //average_score: scores_length > 0 ? (sum_score / scores_length).toFixed(1) : 0
+                            };
+                            return resolve(test_stat);
+                        });
+                    });
                 });
             });
         });
@@ -215,6 +224,7 @@ module.exports = {
     },
 
 
+    // mode has been deprecated. Job subscription is used instead
     returnFilteredStat(job_id, mode = 'basic') {
         return new Promise(function(resolve, reject) {
             Job.findOne({ id: job_id, source: 'GJ' }).populate('applications').exec(function(err, job) {
@@ -226,7 +236,7 @@ module.exports = {
                 let applicants = job.applications.map(app => app.applicant);
             
                 return Promise.all([
-                    module.exports.getJobTestStat(applicants, mode),
+                    module.exports.getJobTestStat(applicants, job.subscription),
                     module.exports.getGenderStat(applicants),
                     module.exports.getGeographicalStat(applicants)
                 ]).then(results => {

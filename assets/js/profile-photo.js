@@ -14,14 +14,15 @@ $("#form-profile").submit(function(e) {
         if (d.status.trim() == 'success') {
             var msg = "Your profile has been successfully updated! You will be redirected within 6 seconds";
             showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
-            if ($("#btn-submit").data('opt') == 'update-job-profile') {
-                setInterval(function() {
-                    location.href = '/applicant/resume-page';
-                }, 6000);
-            } else {
-                var msg = "Your profile has been successfully updated!";
-                showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
-            }
+            setInterval(function () {
+                location.href = '/applicant/resume-page';
+            }, 6000);
+            // if ($("#btn-submit").data('opt') == 'update-job-profile') {
+                
+            // } else {
+            //     var msg = "Your profile has been successfully updated!";
+            //     showNotification('top', 'left', 'success', msg, 'pe-7s-bell');
+            // }
         } else {
             showNotification('bottom', 'center', 'danger', d.msg, 'pe-7s-bell');
         }

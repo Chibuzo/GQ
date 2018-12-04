@@ -98,8 +98,8 @@ module.exports = {
 
                         if (user.user_type == 'Applicant') {
                             // create their resume
-							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id }).then(() => {
-                                sendMail.welcomeNewCandidate(user);
+							Resume.findOrCreate({ email: email}, { email: email, fullname: user.fullname, user: user.id }).then(resume => {
+                                if (resume.source == 'GQ') sendMail.welcomeNewCandidate(user);
 
                                 if (passwordSet) {
                                     return res.redirect('/applicant/dashboard');

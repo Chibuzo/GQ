@@ -17,11 +17,21 @@
 
 <body>
 <table style="border-collapse: collapse; border: #ccc solid thin; width: 400px; margin: auto; font: normal 14px 'Helvetica Neue', sans-serif" cellpadding="17">
+    {{#if cobrand }}
+    <tr>
+        <td style="text-align: center; padding-bottom: 15px;">
+            <img src="{{ url }}images/gdj_logo.png" style="padding: 30px; width: 160px; padding-top: 10px" alt="Get Qualified Logo" />
+        </td>
+    </tr>
+    {{/if}}
+    
+    {{#if nobrand }}
     <tr>
         <td style="text-align: center; padding-bottom: 15px;">
             <img src="https://getqualified.work/images/logo.png" style="padding: 30px; width: 160px;" alt="Get Qualified Logo" />
         </td>
     </tr>
+    {{/if}}
     <tr>
         <td>
             <p>Dear {{ user }},</p>
@@ -73,6 +83,14 @@
             <p>On behalf of {{ company }}, we thank you, again, for your interest in this role. We do appreciate the time that you invested in this application.</p>
         </td>
     </tr>
+    {{#if cobrand }}
+        <tr>
+            <td style="text-align: center; padding-bottom: 15px;">
+                In partnership with:<br>
+                <img src="https://getqualified.work/images/logo.png" style="pading: 30px; width: 160px; padding-top: 10px" alt="Get Qualified Logo" />
+            </td>
+        </tr>
+    {{/if}}    
     <tr>
         <td><br>
             <p>

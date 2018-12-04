@@ -70,11 +70,11 @@
                 </div>
                 <div class="col-md-5 pull-right text-right">
                     <a href="" class="btn btn-danger hidden"><i class="fa fa-caret-left"></i> Back to jobs</a>
-                    {% if job.status == 'Active' %}
+                    {#{% if job.status == 'Active' %}#}
                         <button class="btn btn-success btn-fill" id="archive-job"><i class="fa fa-archive"></i> Archive Job</button>
-                    {% else %}
+                    {#{% else %}
                         <button class="btn btn-success btn-fill" disabled><i class="fa fa-archive"></i> Archived Job</button>
-                    {% endif %}                            
+                    {% endif %}#}                            
                 </div>
             </div>
             <div class="content table-responsive table-full-width">
@@ -293,18 +293,18 @@ $(document).ready(function() {
 
 
     // enable company to view contact/send email
-    $(".enable-contact").click(function() {
-        if (confirm("Are you sure you it is okay for the company to contact these candidates?")) {
-            $.post('/job/enable-contactview', { job_id: job_id }, function(d) {
-                if (d.status.trim() == 'success') {
-                    showNotification('top', 'center', 'success', 'Contact details has been enabled for this shortlist', 'pe-7s-bell');
-                    $(".enable-contact").prop('disabled', true);
-                } else {
-                    showNotification('top', 'center', 'error', 'Something went wrong. Couldn\'t enable contact for this shortlist', 'pe-7s-bell');
-                }
-            });
-        }
-    });
+    // $(".enable-contact").click(function() {
+    //     if (confirm("Are you sure you it is okay for the company to contact these candidates?")) {
+    //         $.post('/job/enable-contactview', { job_id: job_id }, function(d) {
+    //             if (d.status.trim() == 'success') {
+    //                 showNotification('top', 'center', 'success', 'Contact details has been enabled for this shortlist', 'pe-7s-bell');
+    //                 $(".enable-contact").prop('disabled', true);
+    //             } else {
+    //                 showNotification('top', 'center', 'error', 'Something went wrong. Couldn\'t enable contact for this shortlist', 'pe-7s-bell');
+    //             }
+    //         });
+    //     }
+    // });
 
 
     $("#tb-users").on('click', '.unselect-candidate', function(e) {

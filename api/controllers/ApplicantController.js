@@ -111,7 +111,7 @@ module.exports = {
                 console.log(err)
             }
 
-            Resume.update({ user: req.session.userId }, { photo: fname, photo_status: 'true' }).exec(function () {
+            Resume.update({ user: req.session.userId }, { photo: fname, photo_status: 'true', profile_status: 'true' }).exec(function () {
                 AmplitudeService.trackEvent('Uploaded Profile Photo', req.session.userEmail);
                 return res.redirect('/applicant/resume-page#photo');
             });

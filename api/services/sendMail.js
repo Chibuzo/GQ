@@ -1,4 +1,5 @@
 'use strict';
+
 const nodemailer = require('nodemailer');
 var hbs = require('nodemailer-express-handlebars');
 var options = {
@@ -102,23 +103,30 @@ module.exports = {
         }
         // determine company name
         let company = '';
-        if (job.source !== 'gq') {
+        //let source = 'GQ';
+        let GJ = false;
+        let GQ = false;
+        if (job.source !== 'GQ') {
             company = job.company_name;
+            GJ = true;
         } else {
             company = job.company.company_name;
+            GQ = true;
         }
         var data = {
             user: user.fullname.length > 1 ? user.fullname : 'Candidate',
             job_title: job.job_title,
             company: company,
             fyi: fyi,
+            cobrand: GJ,
+            nobrand: GQ,
             newuser: newuser,
             incompleteprofile: incompleteprofile,
             closing_date: job.closing_date.toLocaleDateString('en-US', date_opt),
             activation_url: BASE_URL + 'user/activate/' + email_b64 + '/' + hash,
             url: BASE_URL
         };
-        var subject = "Application for the position of " + job.job_title + " at " + job.company.company_name;
+        var subject = "Application for the position of " + job.job_title + " at " + company;
         var template = 'appliedJobNotice';
         module.exports.sendMail(user.email, subject, template, data);
     },
