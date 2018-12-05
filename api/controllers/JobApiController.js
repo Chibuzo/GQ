@@ -77,7 +77,8 @@ module.exports = {
             current_salary: q('current_annual_salary') ? q('current_annual_salary') : 0.0,
             expected_salary: q('expected_annual_salary') ? q('expected_annual_salary') : 0.0,
             profile_status: 'true',
-            source: q('source') || 'GJ'
+            source: q('source') || 'GJ',
+            scrapped: '1'
         };
         ResumeService.createNewResume(data).then(applicant => {
             // apply to job
