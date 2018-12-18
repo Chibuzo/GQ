@@ -315,6 +315,7 @@
 						  	<div class="tab-pane fade in" id="resume-tab">
 								<div class="row">
 									<div class="col-md-12 div-cv">
+                                        {% include 'includes/short-form.swig' %}
 										{% if resume.profile_status !== true %}
 											<div id="cv-options" class="col-md-5 col-md-offset-3" style="margin-top: 70px">
 												<button class="btn btn-fill btn-info btn-lg btn-block" id="cv-upload-btn"><i class="fa fa-upload"></i> Upload Resume</button>
@@ -323,7 +324,6 @@
 												<br>
 												<div class="alert alert-danger hidden" id="cv-alert">Your CV upload was not successful, please make sure you are uploading a file in the correct format</div>
 											</div>
-											{% include 'includes/short-form.swig' %}
 										{% endif %}	
 										{% if cv && resume.scrapped === true %}
 											{% include 'includes/scrapped-cv.swig' %}
@@ -958,11 +958,19 @@ $(document).ready(function() {
 	});
 
 
+    // edit normal CV
 	$("#edit-cv-btn").click(function() {
 		$("#cv-options").fadeOut('fast', function() {
 			$("#resumeForm-container").hide().removeClass('hidden').fadeIn('fast');
 		});
 	});
+
+    // edit cv short form
+    $("#edit-cv-btn").click(function() {
+        $("#scrapped-cv").fadeOut(function() {
+            $("#short-form").hide().removeClass('hidden').fadeIn();
+        });
+    });
 });
 
 function uploadFile(video) {

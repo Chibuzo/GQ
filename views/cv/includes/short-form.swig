@@ -130,5 +130,6 @@
 		<input type="hidden" name="video_status" value="{{ video_status }}" />
 		<input type="hidden" name="test_status" value="{{ test_status }}" />
 		<button type="submit" class="btn btn-info btn-fill pull-right btn-lg" id="btn-submit">Update Profile</button>
+        <button type="button" class="btn btn-white btn-fill pull-right btn-lg hidden" id="btn-cancel-update">Cancel</button>
     </form>
 </div>    

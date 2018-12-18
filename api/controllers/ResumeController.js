@@ -16,7 +16,7 @@ module.exports = {
             Honour.find(),
             ResumeService.viewResume(req.session.userId, 'user'),
         ]).then(results => {
-            let resp = results[0];
+            let location = results[0];
             let honours = results[1];
             let resume = results[2].resume;
             let test = results[2].result;
@@ -46,8 +46,8 @@ module.exports = {
                         cv: resp,
                         honours: honours,
                         r_class: r_class,
-                        countries: resp.countries,
-                        states: resp.states,
+                        countries: location.countries,
+                        states: location.states,
                         result: test,
                         test_title: results[2].test_title,
                         canEditResume: true,
@@ -87,8 +87,8 @@ module.exports = {
                     me: me,
                     honours: honours,
                     r_class: r_class,
-                    countries: resp.countries,
-                    states: resp.states,
+                    countries: location.countries,
+                    states: location.states,
                     result: test,
                     test_title: results[2].test_title,
                     canEditResume: true,
