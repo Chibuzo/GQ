@@ -15,7 +15,7 @@
 				</div>
 			</div>
 			<div class="content table-responsive table-full-width">
-				<table class="table table-striped">
+				<table class="table table-striped dataTable">
 					<thead>
 					<tr>
 						<th style="width: 100px">Date Joined</th>
@@ -34,7 +34,7 @@
 					<tbody>
 					{% for coy in companies %}
 						<tr id="{{ coy.id }}">
-							<td>{{ coy.createdAt | date('d.m.Y') }}</td>
+							<td data-sort="{{ coy.createdAt | date('Y/m/d') }}">{{ coy.createdAt | date('d.m.Y') }}</td>
 							<td><a href="/companyprofile/{{ coy.id }}" target="_blank">{{ coy.company_name }}</a></td>
 							<td class="hidden">{{ coy.sector }}</td>
 							<td>{{ coy.r_state }}</td>
@@ -57,9 +57,18 @@
 {% endblock %}
 
 {% block scriptTag %}
+<script src="/js/plugins/datatables.min.js"></script>
 <script>
 $(document).ready(function() {
 	$('.companies').addClass('active');
+
+    $(".dataTable").DataTable({
+        pageLength: 30,
+        responsive: true,
+        "aoColumnDefs": [
+            { 'bSortable': false, 'aTargets': [ 2, 3, 4, 5, 6, 10 ] }
+        ]
+    });
 
 	$(".delete-company").click(function(e) {
 		e.preventDefault();
