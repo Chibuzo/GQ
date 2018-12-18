@@ -19,7 +19,7 @@ module.exports = {
                     var sheet = workbook.getWorksheet(1);
                     for (i = 2; i < sheet.actualRowCount + 1; i++) {
                         var row = sheet.getRow(i);
-                        if (row.getCell('B').value.length < 5) continue;
+                        //if (row.getCell('B').value.length < 5) continue;
                         var data = {
                             test: test_id,
                             question: row.getCell('A').value,

@@ -129,13 +129,17 @@ module.exports = {
         }
         const criteria = `AND dob >= '1992-01-01' AND score > '29' AND r_class <= '2'`;
 
-        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, r_state, phone, dob, programme, r_class, available_date FROM application ap 
-                    JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
-                    JOIN resume r ON r.user = gq.user 
-                    JOIN education e ON e.resume = r.id
-                    WHERE job = ? ${criteria} GROUP BY email ORDER BY score DESC`;
+        // const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, r_state, phone, dob, programme, r_class, available_date FROM application ap 
+        //             JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+        //             JOIN resume r ON r.user = gq.user 
+        //             JOIN education e ON e.resume = r.id
+        //             WHERE job = ? ${criteria} GROUP BY email ORDER BY score DESC`;
 
-        GQAptitudeTestResult.query(sql, [ job_id ], function(err, results) {
+        const sql = `SELECT score, fullname, r.user AS uid, gq.id AS test_id, r.email, address, r_state, phone, dob, available_date, gq.createdAt FROM gqaptitudetestresult gq  
+                    LEFT JOIN resume r ON r.user = gq.user 
+                    ORDER BY score DESC`;            
+
+        GQAptitudeTestResult.query(sql, function(err, results) {
             let candidates = [], states = [];
             async.eachSeries(results, function(result, cb) {
                 GQTestResult.find({ test: [1,2,3], candidate: result.uid }).sort('test').exec(function(err, tests) {
@@ -143,23 +147,27 @@ module.exports = {
                         return console.log(err);
                     }
                     //console.log(tests)
-                    if (tests.length < 3) return cb();
+                    if (tests.length < 3) {
+                        console.log(result)
+                        console.log(tests)
+                        return cb();
+                    }    
 
                     let total_num_questions = parseInt(tests[0].no_of_questions) + parseInt(tests[1].no_of_questions) + parseInt(tests[2].no_of_questions);
 
-                    let r_class = [
-                        { name: "1", id: 1 }, { name: "2.1", id: 2 }, { name: "2.2", id: 3 }, { name: "3", id: 4 }
-                    ];
+                    // let r_class = [
+                    //     { name: "1", id: 1 }, { name: "2.1", id: 2 }, { name: "2.2", id: 3 }, { name: "3", id: 4 }
+                    // ];
 
-                    let rclass = '-';
-                    if (result.r_class)
-                        rclass = r_class.find(r_clas => r_clas.id == result.r_class).name;
+                    // let rclass = '-';
+                    // if (result.r_class)
+                    //     rclass = r_class.find(r_clas => r_clas.id == result.r_class).name;
 
                     candidates.push({
                         fullname: result.fullname,
                         age: getAge(result.dob),
-                        qualification: result.programme,
-                        degree: rclass,
+                        // qualification: result.programme,
+                        // degree: rclass,
                         location: result.address,
                         state: result.r_state,
                         email: result.email,
@@ -171,7 +179,8 @@ module.exports = {
                         verbal: tests[1].score,
                         maths: tests[2].score,
                         total: (((tests[0].score + tests[1].score + tests[2].score) / total_num_questions) * 100).toFixed(1) + '%',
-                        available_date: result.available_date
+                        available_date: result.available_date,
+                        test_date: result.createdAt
                     });
                     // collect individual states
                     if (split_by_state === true) {
@@ -192,10 +201,11 @@ module.exports = {
                 let sheet = workbook.addWorksheet('My Sheet');
                 sheet.columns = [
                     { header: 'S/No', key: 's_no', width: 5 },
+                    { header: 'Test Date', key: 'test_date', width: 15 },
                     { header: 'Fullname', key: 'fullname', width: 30 },
                     { header: 'Age', key: 'age', width: 8 },
-                    { header: 'Qualification', key: 'qualification', width: 40 },
-                    { header: 'Class of Degree', key: 'degree_class', width: 16 },
+                    // { header: 'Qualification', key: 'qualification', width: 40 },
+                    // { header: 'Class of Degree', key: 'degree_class', width: 16 },
                     { header: 'Location', key: 'location', width: 50 },
                     { header: 'Available Date', key: 'available_date', width: 15 },
                     { header: 'Verbal Reasoning', key: 'verbal', width: 18 },
@@ -217,10 +227,11 @@ module.exports = {
                     n++;
                     sheet.addRow({
                         s_no: n,
+                        test_date: user.test_date,
                         fullname: user.fullname,
                         age: user.age,
-                        qualification: user.qualification,
-                        degree_class: user.degree,
+                        // qualification: user.qualification,
+                        // degree_class: user.degree,
                         location: user.location,
                         available_date: user.available_date,
                         verbal: user.verbal,
@@ -232,7 +243,7 @@ module.exports = {
                         state: user.state
                     }).commit();
                 });
-                sheet.getColumn(3).alignment = { vertical: 'middle', horizontal: 'center' };
+                sheet.getColumn(4).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(8).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(9).alignment = { vertical: 'middle', horizontal: 'center' };
                 sheet.getColumn(10).alignment = { vertical: 'middle', horizontal: 'center' };

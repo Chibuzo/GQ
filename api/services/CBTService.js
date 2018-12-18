@@ -30,7 +30,6 @@ module.exports = {
     getJobTestResults: function(candidates, jobtest) {
         return new Promise(function(resolve, reject) {
             if (!jobtest) {
-                console.log('ikpu!')
                 // use only GQ aptitude test
                 // get the average integrity score for the 3 proctor sessions
                 var gq_results = [];
