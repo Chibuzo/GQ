@@ -21,7 +21,6 @@ module.exports = {
                     } else if (job[0].require_video === false) {
                         criteria.video = true;
                     }
-                    console.log(criteria);
                     return resolve({ status: criteria.test && criteria.video ? true : false });
                 });
             });

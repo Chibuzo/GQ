@@ -796,19 +796,22 @@ module.exports = {
     },
 
     createToken: function(req, res) {
+        const test_id = req.param('test_id') || 1;
         User.find({ id: req.session.userId }).exec(function(err, user) {
             if (err) return res.redirect('/login'); // nigga fucking around - we don't play here
 
             if (user.length > 0) {
                 const crypto = require('crypto');
-                const secret = 'this is bullshit';
+                //const secret = 'this is bullshit';
+                const hr = process.hrtime();
+                const secret = hr[1].toString();
                 const token = crypto.createHmac('sha256', secret).update(user[0].email).digest('hex');
 
                 TestToken.destroy({ user_id: req.session.userId }).exec(function() {
                     TestToken.create({ token: token, user_id: user[0].id }).exec(function(err) {
                         if (err) return res.serverError(err);
 
-                        return res.redirect('https://api.neon.ventures/gq/cbt/' + token);
+                        return res.redirect('https://api.neon.ventures/gq/cbt/' + token + '/' + test_id);
                     });
                 });
             } else {

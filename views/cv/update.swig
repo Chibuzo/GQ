@@ -414,7 +414,7 @@
 												</p><br>
 												<p>Proceed to take the test and Good luck!</p>
 												<br>
-												<a href='/gqtest/createtoken' class="btn btn-primary btn-lg load__test" data-user_id="{{ resume.user.id }}" data-test_id="1">Take test</a>
+												<a href='/gqtest/createtoken/1' class="btn btn-primary btn-lg load__test" data-user_id="{{ resume.user.id }}" data-test_id="1">Take test</a>
 											</div>
 										</div>
 

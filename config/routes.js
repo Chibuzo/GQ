@@ -137,7 +137,7 @@ module.exports.routes = {
 
     'GET /gqtest/deleteResult': 'GQTestController.deleteResult',
 
-    'GET /gqtest/gettest/:test_id/:job_id/:gqtest_id': 'GQTestController.getTest',
+    'GET /gqtest/gettest/:test_id/:job_id': 'GQTestController.getTest',
 
     'POST /gqtest/uploadProctorAudio': 'GQTestController.uploadProctorAudio',
 
@@ -149,7 +149,7 @@ module.exports.routes = {
 
     'POST /gqtest/createProctorSession': 'ProctorRecordController.startSession',
 
-    'GET /gqtest/createtoken': 'GQTestController.createToken',
+    'GET /gqtest/createtoken/:test_id': 'GQTestController.createToken',
 
     'GET /proctor/fetchFiles': 'ProctorRecordController.getTestProctorFiles',
 
