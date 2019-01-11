@@ -27,133 +27,132 @@ module.exports = {
         });
     },
 
-    getJobTestResults: function(candidates, jobtest) {
+    getJobTestResults: function(candidates, jobtest, req_gq_test = true) {
         return new Promise(function(resolve, reject) {
-            if (!jobtest) {
-                // use only GQ aptitude test
-                // get the average integrity score for the 3 proctor sessions
-                var gq_results = [];
-                var aptitude_test_results = []; // for computing aptitude test ranking
-                async.eachSeries(candidates, function(candidate, cb) {
-                    GQTestResult.find({test: [1, 2, 3], candidate: candidate.uid}).exec(function(err1, gqTestResults) {
-                        if (err1) {
-                            cb(err1);
-                        }
+            let gq_results = [];
+            let aptitude_test_results = [], test_date;
+            let composite_score = 0;
+            let integrity_score = proctor_id = proctor_status = 'NA';
+
+            async.eachSeries(candidates, function(candidate, cb) {
+                return Promise.all([
+                    req_gq_test ? GQTestResult.find({test: [1, 2, 3], candidate: candidate.uid}) : [],
+                    jobtest && jobtest.test_source == 'gq' && GQTestResult.findOne({ test: jobtest.gq_test, candidate: candidate.uid }).populate('proctor'),
+                    jobtest && jobtest.test_source == 'expertrating' && TestResult.findOne({ test_id: jobtest.test.test_id, applicant: candidate.uid }).populate('proctor')
+                ]).then(result => {
+                    const gqTestResults = result[0];
+                    const test_result = result[1] || null;
+                    
+                    let gq_percentage, gq_score;
+                    if (req_gq_test) {
                         // lets make sure this candidate has completed the 3 tests. Yeah because we may manually reset one score without removing the total score from GQAptitudeTestResult table
                         if (gqTestResults.length < 3) return cb();
 
                         let total_num_questions = 0;
-                        gqTestResults.forEach(function(test) {
+                        gqTestResults.forEach(function (test) {
                             total_num_questions += test.no_of_questions;
+                            gq_score += test.score;
                         });
-                        let percentage = ((candidate.score / total_num_questions) * 100).toFixed(1);
-                        aptitude_test_results.push(candidate.score);
+                        composite_score = gq_percentage = ((gq_score / total_num_questions) * 100).toFixed(1);
+                        aptitude_test_results.push(gq_score);
+                        test_date = gqTestResults[3].createdAt;
+                    }
 
-                        gq_results.push({
-                            test_id: candidate.test_id,
-                            applicant: { fullname: candidate.fullname, email: candidate.email, id: candidate.uid },
-                            score: 'NA',
-                            percentage: percentage,
-                            test_result: percentage > 59 ? 'Passed' : 'Failed',
-                            composite_score: percentage,
-                            job_score: false,
-                            aptitude_test: candidate.score,
-                            integrity_score: 'NA',
-                            proctor_status: 'NA',
-                            proctor_id: 0,
-                            createdAt: candidate.createdAt
-                        });
-                        cb();
+                    let job_percentage = 'NA', test_id = false;
+                    if (jobtest) {
+                        // ALERT: necessary evil
+                        // test_result can come from one of two tables (testresult or gqtestresult)
+                        // testresult has percentage field, gqtestresult does not
+                        job_percentage = test_result.percentage ? parseInt(test_result.percentage) : ((parseInt(test_result.score) / parseInt(test_result.no_of_questions)) * 100).toFixed(1);
+                        composite_score = req_gq_test ? (job_percentage / 2) + (gq_percentage / 2) : job_percentage;
+
+                        // proctor details
+                        integrity_score = test_result.proctor.integrity_score;
+                        proctor_id = test_result.proctor.id;
+                        proctor_status = test_result.proctor.status;
+
+                        test_id = test_result.test;
+                        test_date = test_result.createdAt;
+                    }
+
+                    gq_results.push({
+                        test_id: test_id || null,
+                        applicant: { fullname: candidate.fullname, email: candidate.email, id: candidate.uid },
+                        score: job_percentage + '%',
+                        percentage: gq_percentage,
+                        test_result: composite_score > 59 ? 'Passed' : 'Failed',
+                        composite_score: composite_score,
+                        job_score: true,
+                        aptitude_test: gq_score,
+                        integrity_score: integrity_score,
+                        proctor_status: proctor_status,
+                        proctor_id: proctor_id,
+                        createdAt: test_date
                     });
-                }, function(err) {
-                    if (err) return reject(err);
-                    gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b; });
-                    return resolve(gq_results);
+                    cb();
+                }).catch(err => {
+                    return reject(err);
                 });
-            } else if (jobtest.test_source == 'gq') {
-                let applicants = candidates.map(c => c.uid);
-                GQTestResult.find({ test: jobtest.gq_test, candidate: applicants }).populate('candidate').populate('proctor').sort('score desc').exec(function(err, results) {
-                    if (results.length > 0) {
-                        module.exports.processJobResult(results).then(function(_results) {
-                            resolve(_results);
-                        }).catch(function(err) {
-                            return reject('Something went wrong. Please try again');
-                        });
-                    } else {
-                        return resolve([]);
-                    }
-                });
-            } else if (jobtest.test_source == 'expertrating') {
-                let applicants = candidates.map(c => c.uid);
-                TestResult.find({ test_id: jobtest.test.test_id, applicant: applicants }).populate('applicant').exec(function(err, results) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    if (results.length > 0) {
-                        module.exports.processJobResult(results).then(function(_results) {
-                            resolve(_results);
-                        }).catch(function(err) {
-                            return reject('Something went wrong. Please try again');
-                        });
-                    } else {
-                        return resolve([]);
-                    }
-                });
-            }
-        });
-    },
-
-    processJobResult: function(results) {
-        return new Promise(function(resolve, reject) {
-            var gq_results = [];
-            var aptitude_test_results = []; // for computing aptitude test ranking
-            async.eachSeries(results, function(result, cb) {
-                // get their BEST aptitude test score
-                GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
-                    if (err) {
-                        return reject(err);
-                    }
-                    // for jobs that require GQ Aptitude test
-                    if (apt_score.length > 0) {
-                        var percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
-                        var gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
-                        // if the job has a competency test, compute the two, else use only aptitude test score
-
-                        // if (result.score) {
-                        //     composite_score = (gq_score / 2) + (percentage / 2);
-                        //     aptitude_test_results.push(composite_score);
-                        // } else {
-                        //     composite_score = apt_score[0].score;
-                        //     aptitude_test_results.push(apt_score[0].score);
-                        // }
-                        let composite_score = (gq_score / 2) + (percentage / 2);
-                        aptitude_test_results.push(composite_score);
-
-                        gq_results.push({
-                            test_id: result.id,
-                            applicant: result.candidate,
-                            job_score: result.score ? percentage : 'NA', // condition not really required
-                            percentage: gq_score,
-                            percentile: '-',
-                            test_result: percentage > 59 ? 'Passed' : 'Failed',
-                            composite_score: composite_score,
-                            aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
-                            integrity_score: result.proctor.integrity_score,
-                            proctor_status: result.proctor.status,
-                            proctor_id: result.proctor.id,
-                            createdAt: result.createdAt
-                        });
-                        cb();
-                    } else {
-                        cb();
-                    }
-                });
-            }, function() {
-                gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b });
+            }, function(err) {
+                if (err) return reject(err);
+                gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b; });
                 return resolve(gq_results);
             });
         });
     },
+
+    // processJobResult: function(results) {
+    //     return new Promise(function(resolve, reject) {
+    //         var gq_results = [];
+    //         var aptitude_test_results = []; // for computing aptitude test ranking
+    //         async.eachSeries(results, function(result, cb) {
+    //             // get their BEST aptitude test score
+    //             GQAptitudeTestResult.find({ user: result.candidate.id }).sort('score desc').limit(1).exec(function(err, apt_score) {
+    //             GQTestResult.find({ test: [1, 2, 3], candidate: candidate.uid }).exec(function (err1, gqTestResults) {                    
+    //                 if (err) {
+    //                     return reject(err);
+    //                 }
+    //                 // for jobs that require GQ Aptitude test
+    //                 if (apt_score.length > 0) {
+    //                     let percentage = ((parseInt(result.score) / parseInt(result.no_of_questions)) * 100).toFixed(1);
+    //                     let gq_score =  ((apt_score[0].score / 60) * 100).toFixed(1);
+    //                     // if the job has a competency test, compute the two, else use only aptitude test score
+
+    //                     // if (result.score) {
+    //                     //     composite_score = (gq_score / 2) + (percentage / 2);
+    //                     //     aptitude_test_results.push(composite_score);
+    //                     // } else {
+    //                     //     composite_score = apt_score[0].score;
+    //                     //     aptitude_test_results.push(apt_score[0].score);
+    //                     // }
+    //                     let composite_score = (gq_score / 2) + (percentage / 2);
+    //                     aptitude_test_results.push(composite_score);
+
+    //                     gq_results.push({
+    //                         test_id: result.id,
+    //                         applicant: result.candidate,
+    //                         job_score: result.score ? percentage : 'NA', // condition not really required
+    //                         percentage: gq_score,
+    //                         percentile: '-',
+    //                         test_result: percentage > 59 ? 'Passed' : 'Failed',
+    //                         composite_score: composite_score,
+    //                         aptitude_test: apt_score.length > 0 ? apt_score[0].score : '-',
+    //                         integrity_score: result.proctor.integrity_score,
+    //                         proctor_status: result.proctor.status,
+    //                         proctor_id: result.proctor.id,
+    //                         createdAt: result.createdAt
+    //                     });
+    //                     cb();
+    //                 } else {
+    //                     cb();
+    //                 }
+    //             });
+    //         }, function() {
+    //             gq_results.aptitude_scores = aptitude_test_results.sort(function(a, b) { return a - b });
+    //             return resolve(gq_results);
+    //         });
+    //     });
+    //},
 
     saveTestScore: function(test_id, score, no_of_questions, candidate_id, proctor_session) {
         return new Promise(function(resolve, reject) {

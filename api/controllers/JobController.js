@@ -512,9 +512,15 @@ module.exports = {
 		}
 		Job.findOne({ id: job_id }).populate('company').then(job => {
             JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test').then(jobTest => {
-                const sql = `SELECT score, fullname, u.id AS uid, gq.id AS test_id, gq.createdAt, u.email FROM application ap 
-                        JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
-                        JOIN user u ON u.id = gq.user WHERE job = ? AND gq.status = 'Accepted' ORDER BY score DESC`;
+                
+                if (job.require_test === true) {
+                    const sql = `SELECT fullname, u.id AS uid, u.email FROM application ap 
+                            JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
+                            JOIN user u ON u.id = gq.user WHERE job = ? AND gq.status = 'Accepted' ORDER BY score DESC`;
+                } else {
+                    const sql = `SELECT fullname, u.id AS uid, u.email FROM application ap  
+                                JOIN user u ON u.id = ap.aplicant WHERE job = ?`;
+                }
             
                 GQAptitudeTestResult.query(sql, [ job_id ], function(err, candidates) {            
                     if (err) {
@@ -525,7 +531,7 @@ module.exports = {
                             return res.serverError(err);
                         }
 
-                        CBTService.getJobTestResults(candidates, jobTest).then(function(allCandidates) {
+                        CBTService.getJobTestResults(candidates, jobTest, job.require_test).then(function(allCandidates) {
                             let companyName;
                             if ((job.source === null || job.source === 'gq') && job.company) {
                                 companyName = job.company.company_name;
