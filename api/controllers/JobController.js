@@ -553,7 +553,7 @@ module.exports = {
                                 job_id: job_id
                             });
                         }).catch(err => {
-                            //return res.serverError(err);
+                            return res.serverError(err);
                         });
                     });
 				});
