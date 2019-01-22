@@ -37,6 +37,10 @@ module.exports = {
           type: 'string'
       },
 
+      proctor: {
+          model: 'proctorsession'
+      },
+
       transcript_id: {
           type: 'string'
       }
