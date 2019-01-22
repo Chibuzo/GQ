@@ -512,14 +512,14 @@ module.exports = {
 		}
 		Job.findOne({ id: job_id }).populate('company').then(job => {
             JobTest.findOne({ job_level: job.job_level, job_category_id: job.category }).populate('test').then(jobTest => {
-                
+                let sql;
                 if (job.require_test === true) {
-                    const sql = `SELECT fullname, u.id AS uid, u.email FROM application ap 
+                    sql = `SELECT fullname, u.id AS uid, u.email FROM application ap 
                             JOIN gqaptitudetestresult gq ON ap.applicant = gq.user 
                             JOIN user u ON u.id = gq.user WHERE job = ? AND gq.status = 'Accepted' ORDER BY score DESC`;
                 } else {
-                    const sql = `SELECT fullname, u.id AS uid, u.email FROM application ap  
-                                JOIN user u ON u.id = ap.aplicant WHERE job = ?`;
+                    sql = `SELECT fullname, u.id AS uid, u.email FROM application ap  
+                                JOIN user u ON u.id = ap.applicant WHERE job = ?`;
                 }
             
                 GQAptitudeTestResult.query(sql, [ job_id ], function(err, candidates) {            
@@ -669,7 +669,12 @@ module.exports = {
         var today = new Date();
         var backdate = today.setDate(today.getDate() - 2);
         Job.update({ id: req.param('job_id') }, { closing_date: new Date(backdate).toISOString() }).exec(function(err, job) {
-            return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+            if (err) {
+                return res.serverError(err);
+            }
+            if (job.length > 0)
+                return res.redirect('/admin/coy-jobs/' + job[0].company + '/open');
+            return res.redirect('/job/closejob/' + req.param('job_id'));
         });
     },
 
