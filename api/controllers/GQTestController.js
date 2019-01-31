@@ -545,7 +545,7 @@ module.exports = {
     viewResults: function(req, res) {
         var test_id = req.param('test_id');
         GQTestResult.find({ test: test_id }).populate('candidate').populate('test').limit(100).exec(function(err, results) {
-            if (err) {}
+            if (err) return res.json(400, { status: 'error', message: err });
             if (results.length > 0) {
                 GQTestResult.find({test: test_id}).groupBy('test').average('score').exec(function(err, test_ave) {
 
@@ -574,7 +574,8 @@ module.exports = {
 
     deleteTest: function(req, res) {
         if (req.session.admin === true) {
-            GQTest.destroy({ id: req.param('test_id') }).exec(function() {
+            GQTest.destroy({ id: req.param('test_id') }).exec(function(err) {
+                if (err) return res.json(400, { status: 'error', message: err });
                 // handle questions
                 GQTestQuestions.destroy({test: req.param('test_id')}).exec(function () {});
                 return res.json(200, { status: 'success' });
@@ -591,6 +592,7 @@ module.exports = {
 
     deleteResult: function(req, res) {
         GQTestResult.destroy({ id: req.param('test_id') }).exec(function(err, test) {
+            if (err) return res.json(400, { status: 'error', message: err });
             try {
                 ProctorService.deleteProctorFiles(test[0].proctor);
             } catch(err) {
@@ -609,9 +611,13 @@ module.exports = {
         var hr = process.hrtime();
         var filename = '/aud_' + hr[1] + '.wav';
         path += filename;
-        var audio = req.param('data').split(';base64,').pop();
-        var buff = new Buffer(audio, 'base64');
-        fs.writeFileSync(path, buff);
+        try {
+            var audio = req.param('data').split(';base64,').pop();
+            var buff = new Buffer(audio, 'base64');
+            fs.writeFileSync(path, buff);
+        } catch (err) {
+            return res.json(400, { status: 'error', message: err });
+        };
 
         // copy the uploaded audio to S3
         S3Service.uploadProtorFile(path, 'audio/wav').then(function(resp) {        
@@ -656,9 +662,13 @@ module.exports = {
         var hr = process.hrtime();
         var filename = `/pic_${eventName}${hr[1]}.png`;
         path += filename;
-        var photo = req.param('imgBase64').split(';base64,').pop();
-        var buff = new Buffer(photo, 'base64');
-        fs.writeFileSync(path, buff);
+        try {
+            var photo = req.param('imgBase64').split(';base64,').pop();
+            var buff = new Buffer(photo, 'base64');
+            fs.writeFileSync(path, buff);
+        } catch (err) {
+            return res.json(400, { status: 'error', message: err });
+        };
 
         // copy the uploaded photo to S3
         S3Service.uploadProtorFile(path, 'image/png').then(function(resp) {

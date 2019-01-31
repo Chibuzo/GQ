@@ -97,8 +97,8 @@ module.exports = {
 
 
     saveEvidenceData: function(req, res) {
-        let integrity_score = req.param('integrity_score');
-        let session_id = req.param('session_id');
+        let integrity_score = req.param('integrity_score') || -1;
+        let session_id = req.param('session_id') || -1;
         let invigilationTracking = req.param('invigilationTracking') || {};
 
         let data = {

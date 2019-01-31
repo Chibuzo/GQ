@@ -1,7 +1,5 @@
 module.exports = {
     saveTest: function (tests) {
-        //var n = 0;
-        //tests.records.forEach(function(test) {
         async.eachSeries(tests.records, function(test, cb) {
             TestCategory.findOrCreate({ category: test.category }, { category: test.category }).exec(function(err, cat) {
                 if (err) return console.log(err);
@@ -16,14 +14,12 @@ module.exports = {
                     category: cat.id
                 };
                 CBTTest.create(data).exec(function (err) {
-                    console.log('Error occurred while saving test.');
                     console.log(err);
                     cb();
                 });
             });
         }, function(err) {
             if (err) console.log(err);
-            console.log('Done!');
         });
     },
 
@@ -68,7 +64,7 @@ module.exports = {
                         job_percentage = test_result.percentage || test_result.transcript_id ? parseInt(test_result.percentage) : ((parseInt(test_result.score) / parseInt(test_result.no_of_questions)) * 100).toFixed(1);
                         composite_score = req_gq_test ? (job_percentage / 2) + (gq_percentage / 2) : job_percentage;
                     } else {
-                        // candidate hasn't taken competency test
+                        // candidate hasn't taken competency test, continue with the next candidate
                         return cb();
                     }
 
