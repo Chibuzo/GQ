@@ -3,6 +3,14 @@
 <link href="/styles/gq-cbt.css" rel="stylesheet" />
 {{ cv.css | safe }}
 <style>
+    .h6 {
+        text-transform: none !important;
+    }
+
+    .t {
+        padding-top: 40px !important;
+    }
+    
 	.tab-pane {
 		overflow: hidden;
 		min-height: 500px;
