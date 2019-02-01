@@ -7,9 +7,9 @@
 
 module.exports = {
     startSession: function(req, res) {
-        var test_id = req.param('test_id');
+        let test_id = req.param('test_id');
 
-        var user_id;
+        let user_id;
         if (req.path.split('/')[1] == 'api') {
             if (_.isUndefined(req.param('user_id')) || isNaN(req.param('user_id'))) {
                 return res.json(400, { status: 'error', message: 'User ID must be numeric' });
@@ -25,6 +25,7 @@ module.exports = {
         }     
 
         // Create a new proctor session for each test.
+        const source = req.param('source') || 'GQ';
         return ProctorSession.create({ test_id: test_id, user_id: user_id }).exec(function(err, sess) {
             if (err) {
                 return res.json(400, { status: 'error', message: 'Invalid input data' });

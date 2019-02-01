@@ -6439,6 +6439,11 @@ module.exports = {
             returnURL: 'https://getqualified.work/test/show-result/' + req.param('test_id'),
             dev: false,
             debug: false,
+            secure_mode: 1,
+            max_retries: 5,
+            browser_proctoring: 1,
+            webcam_proctoring: 1,
+            webcam_mandatory: 1,
             er_internal: '1296451'
         };
         request.post('https://assessments.getqualified.work/webservices/generateticket.aspx', { form: qs.stringify(data) }, function(err, response, body) {
