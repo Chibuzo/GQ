@@ -42,6 +42,12 @@
         .opt-icons .fa {
             margin: 2px 4px;
         }
+
+        @media (max-width: 991px) {
+            .table-responsive {
+                 overflow-y: visible !important;
+            }
+        }
     </style>
 {% endblock %}
 <!--Start of Tawk.to Script-->

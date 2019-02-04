@@ -12,7 +12,7 @@ module.exports = {
             GQTest.find().exec(function(err, gqtests) {
                 JobCategory.find().exec(function(err, jobcategories) { // GQ tests
                     if (err) return;
-                    JobTest.find().exec(function (err, jobtests) {
+                    JobTest.find().populate('test').exec(function (err, jobtests) {
                         //var job_tests = [];
                         //jobtests.forEach(function(test) {
                             //if (test.test_source == 'gq') {
