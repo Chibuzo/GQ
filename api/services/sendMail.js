@@ -7,21 +7,23 @@ var options = {
     viewPath: sails.config.appPath + '/views/emails/'
 };
 let transporter = nodemailer.createTransport({
-    //host: 'email-smtp.us-east-1.amazonaws.com',
-    host: 'smtp.zoho.com',
+    host: 'email-smtp.us-east-1.amazonaws.com',
+    //host: 'smtp.zoho.com',
     port: 465,
-    secure: true, // true for 465, false for other ports
+    secure: true, // true for 465, false for other ports,
+    pool: true,
+    rateLimit: 20,
     auth: {
-        // user: 'AKIAJWG4GYVXU25FAE3Q',
-        // pass: 'An1W3fla+EB6cCgehn+rLukdFxzO7DgoSz/oMg4cAvqU'
-        user: 'noreply@getqualified.work',
-        pass: 'GQ+18#n3w@pzwd&'
+        user: 'AKIAJ6ZGFHQ3E6D42M5Q',
+        pass: 'BDP9s9BRDWfZwtSevVQfskZdJ5XFggjmjgFQcdQvR6tG'
+        //user: 'noreply@getqualified.work',
+        //pass: 'GQ+18#n3w@pzwd&'
     }
 });
 transporter.use('compile', hbs(options));
 
 const BASE_URL = sails.config.baseurl;
-const SENT_FROM = 'noreply@getqualified.work';
+const SENT_FROM = 'noreply@smarttalent.co';
 const GQ_EMAIL = 'support@getqualified.work';
 const PRODUCTIVE_PEOPLE_EMAIL = 'sefinatu.atta@productivepeople.org';
 
